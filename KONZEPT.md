@@ -244,7 +244,7 @@ Gründe:
 - Wir haben sie bereits: **Deckung ist das Wohlfahrtsmaß** — was die Menschen
   brauchen, verglichen mit dem, was sie bekommen. Eine zweite Zahl daneben wäre eine
   Verdopplung mit unklarem Verhältnis zur ersten.
-- Sie würde E10 unterlaufen. Eine Zufriedenheitszahl ist eine Benotung durch die
+- Sie würde E12 unterlaufen. Eine Zufriedenheitszahl ist eine Benotung durch die
   Hintertür, deren Formel wir festlegen müssten — also unsere Politik.
 
 Stattdessen wirkt Unterdeckung **konkret auf reale Größen** — Sterberate,
@@ -313,7 +313,88 @@ und **Fogel** (Nobelpreis) zu Ernährung und Wachstum.
 
 **Zu Spielbeginn gibt es genau zwei Ränge**: überleben und ein Dach.
 
-### E10 — Keine Benotung
+### E10 — Arbeit fließt in genau zwei Dinge
+
+| | Kostet | Ergebnis |
+|---|---|---|
+| **Sektorbetrieb** | jeden Tick | Deckung einer Bedarfsstufe (E9) — teilt sich **selbst** zu, von unten nach oben durch die Ränge |
+| **Projekt** | einmalig | Kapazität oder Wissen |
+
+Mehr Typen gibt es nicht. Insbesondere sind **Politikfelder kein eigener Typ**:
+Bildung ist ein Sektor mit Kapazität (Schulgebäude), Verfahren, Inputs und einer
+Bedarfsstufe. Was dort jeden Tick Arbeit kostet, sind die Lehrer — laufender
+Sektorbetrieb, genau wie Bauern in der Landwirtschaft. Grundschule → weiterführende
+Schule → Universität sind Projekte, die Kapazität erzeugen, und irgendwann braucht man
+viele Universitäten, genau wie viele Mühlen. „Politikfeld" ist kein Mechanismus,
+sondern nur ein **Name für einen Sektor, dessen Leistung öffentlich bereitgestellt
+wird**.
+
+**Ein Projekt ist Arbeit rein, Ergebnis raus.** Zwei Ergebnistypen:
+
+- **Kapazität** — physisch, verfällt, wiederholbar (Landrodung, Mühle, Speicher, Schule)
+- **Wissen** — dauerhaft, verfällt nie, einmalig (ein neues Verfahren nach E5)
+
+Damit ist **Landrodung ein normales Projekt**, kein Sonderfall: Sie erzeugt den
+Kapazitätsinput „Land", wie die Mühle die Kapazität „Mühle" erzeugt. Der einzige
+Unterschied ist die Wiederholbarkeit — und dass jede Wiederholung mehr Arbeit für
+schlechteres Land kostet (E6). Eigenschaft des Projekttyps, kein Extramechanismus.
+
+**Der Forschungsbaum ist nichts Eigenes**, sondern schlicht die Liste der verfügbaren
+Projekte. Ein Wissensprojekt schaltet weitere Projekte frei.
+
+**Die reale Decke:** Arbeit lässt sich nur bis zu dem Punkt aus der Bedarfsdeckung
+abziehen, an dem sie unter Rang 1 fällt — dann sterben Menschen oder wandern ab. Die
+Grenze ist keine Spielregel, sie fällt aus dem Modell. Ungenutzte Arbeit **verfällt
+sichtbar** und ist nicht nachholbar:
+
+> *Monat 34 — 8 Arbeitsmonate ungenutzt verfallen.*
+
+Das ist die Arbeitslosigkeits-Intuition, lange bevor das Wort fällt. Anker: Konsum-
+Investitions-Abwägung und Produktionsmöglichkeitenkurve; der Verfall ungenutzter
+Arbeit ist der post-keynesianische Punkt, dass nicht produzierter Output dauerhaft
+verloren ist.
+
+**Große Sprünge in der Ressourcenbasis** kommen nicht aus einer Sonderregel für Land,
+sondern daraus, dass **manche Projekte Institutionen sind** (E1) — Nationalstaats-
+gründung, Kolonisierung der Galaxis. Regimewechsel, die *unter anderem* die extensive
+Grenze aufreißen. Nur eine Größenordnung, kein neuer Mechanismus. Ehrlich bleibt es,
+weil solche Sprünge reale Kosten haben (Arbeit, Menschenleben) und, sobald es Nachbarn
+gibt, deren Grenze enger machen. Expansion wird als reale Option mit realem Preis
+gezeigt, nicht empfohlen.
+
+*Verworfen auf dem Weg dorthin: die Unterscheidung Gemeinschaftsarbeit vs. Fron. Sie
+hatte keine mechanische Wirkung — beides ist „der Spieler weist Projekten Arbeit zu".
+Wie es heißt, darf sich mit der Epoche ändern; das ist Erzählung und kostenlos. Nur
+ein Übergang zählt: von Befehl zu Kauf (E11).*
+
+### E11 — Eigentum entsteht erst mit dem Geld
+
+**Solange es kein Geld gibt, gibt es keine Eigentumsfrage.** Die Siedlung rodet, die
+Fläche gehört der Siedlung. Ohne Tausch ist Eigentum keine sinnvolle Kategorie — der
+Anfang bleibt damit simpel.
+
+**Sobald Geld existiert, wird Eigentum pro Sektor zur Entscheidung.** Bei privatem
+Eigentum baut der Spieler nicht mehr selbst; die Menschen bauen Mühlen, wenn es sich
+lohnt.
+
+**Privatisierung ist damit Automatisierung.** In einem Incremental ist die Belohnung
+für gemeisterte Mechanik immer, dass sie sich fortan selbst erledigt — und hier ist
+genau das buchstäblich Privatisierung. Spielspaß und ökonomische Korrektheit zeigen
+in dieselbe Richtung.
+
+Der Tausch ist echt und neutral:
+
+| | Öffentlich | Privat |
+|---|---|---|
+| Baut | wenn der Spieler entscheidet | wenn es sich lohnt |
+| Tempo | langsam, aber steuerbar | schnell und selbsttätig |
+| In der Flaute | kann gegensteuern | **versiegt genau dann, wenn es gebraucht wird** |
+| Ertrag | an alle | an die Eigentümer |
+
+Keine moralische Wahl, sondern Reaktionsgeschwindigkeit gegen Krisenanfälligkeit.
+Details gehören zur Geld- und Ungleichheitsdiskussion.
+
+### E12 — Keine Benotung
 
 Es gibt am Ende kein Urteil und keine Punktzahl über die Spielweise. Kennzahlen
 beschreiben, sie bewerten nicht. Sobald das Spiel Gleichheit oder Preisstabilität
@@ -363,7 +444,8 @@ Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es dranko
   muss jede Bedarfsstufe in eine reale Größe zurückzahlen. Für Kultur ist unklar,
   worin. Bloße Legitimität reicht als Begründung nicht; wird bei den Politikfeldern
   geklärt.
-- **Fortschrittsstruktur.** Wie werden Institutionen und Verfahren freigeschaltet?
+- **Fortschrittsstruktur.** Wie ist die Projektliste aufgebaut — Anzahl, Reihenfolge,
+  Voraussetzungen, wieviel gleichzeitig sichtbar?
 - **Geldeinführung.** Der wichtigste Moment des Spiels.
 - **Auslastung und Inflation.**
 - **Ungleichheit.** Braucht einen echten *wirtschaftlichen* Effekt (höhere Sparquote
@@ -394,6 +476,10 @@ Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es dranko
   die Deckung und wäre eine Benotung durch die Hintertür (E8).
 - **„Dringlichkeit" als Sektormerkmal.** Ersetzt durch die konkrete Angabe je Sektor,
   worauf seine Unterdeckung real wirkt (E8).
+- **Regler „Bedarf ↔ Zukunft".** Ersetzt durch Projekte (E10) — konkreter, und der
+  Übergang zum Geldkauf von Arbeit wird dadurch scharf statt weich.
+- **Gemeinschaftsarbeit vs. Fron als eigene Stufen.** Ohne mechanischen Unterschied.
+- **Politikfelder als eigener Typ neben Projekten.** Politikfelder sind Sektoren (E10).
 
 ---
 
@@ -410,6 +496,8 @@ Jede Mechanik braucht eine Entsprechung in der Lehre. Stand jetzt:
 | Sättigung, Strukturwandel | Engelsches Gesetz; Pasinetti |
 | Trägheit | Time-to-build (Kydland/Prescott); Investitionsverzögerung bei Kalecki |
 | Verfall | Abschreibung; Dienstleistungen als nicht lagerfähig |
+| Projekte, Konsum gegen Investition | Produktionsmöglichkeitenkurve; intertemporale Wahl |
+| Verfall ungenutzter Arbeit | Post-Keynesianisch: nicht produzierter Output ist dauerhaft verloren |
 | Bevölkerung | Malthus; Unified Growth Theory (Galor/Weil) |
 | Gestufte Bedarfshierarchie | Pasinetti; Georgescu-Roegen (1954) |
 | Ernährung → Arbeitsfähigkeit | Effizienzlohntheorie (Leibenstein, Dasgupta/Ray); Fogel |
