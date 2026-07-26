@@ -228,7 +228,36 @@ Demographie nicht finanzierbar" ist **über Geld falsch und über reale Ressourc
 wahr**. Weniger Hände müssen für mehr Münder produzieren — eine echte Beschränkung,
 keine monetäre.
 
-### E8 — Keine Benotung
+**Leitregel für den Zustand: so wenig gespeichert wie möglich, alles Übrige jeden Tick
+abgeleitet.** Neue Zustandsgrößen entstehen erst in dem Moment, in dem eine Mechanik
+sie tatsächlich braucht — Altersstruktur mit Bildung und Rente, Qualifikation sobald
+ein Verfahren sie als Input verlangt, Schichten sobald es Geld und damit Sparquoten
+gibt.
+
+### E8 — Keine Zufriedenheit; Unterdeckung wirkt konkret
+
+Es gibt **keine Zufriedenheits- oder Stimmungsgröße**, weder jetzt noch später. Drei
+Gründe:
+
+- Sie ist keine volkswirtschaftliche Größe. Ein Stimmungsbalken, der die Wirtschaft
+  antreibt, ist genau das, was fachlich sofort angestrichen wird.
+- Wir haben sie bereits: **Deckung ist das Wohlfahrtsmaß** — was die Menschen
+  brauchen, verglichen mit dem, was sie bekommen. Eine zweite Zahl daneben wäre eine
+  Verdopplung mit unklarem Verhältnis zur ersten.
+- Sie würde E9 unterlaufen. Eine Zufriedenheitszahl ist eine Benotung durch die
+  Hintertür, deren Formel wir festlegen müssten — also unsere Politik.
+
+Stattdessen erklärt **jeder Sektor konkret, was seine Unterdeckung real bewirkt**.
+Keine abstrakte Dringlichkeitsstufe, sondern eine Wirkung auf eine reale Größe:
+
+| Sektor | Unterdeckung wirkt auf |
+|---|---|
+| Nahrung | Sterberate, sofort und stark |
+| Wohnraum | Sterberate schwach, Geburtenrate stark |
+| Gesundheit | Sterberate, Arbeitsfähigkeit |
+| Bildung | verfügbare Verfahren (E5) |
+
+### E9 — Keine Benotung
 
 Es gibt am Ende kein Urteil und keine Punktzahl über die Spielweise. Kennzahlen
 beschreiben, sie bewerten nicht. Sobald das Spiel Gleichheit oder Preisstabilität
@@ -274,8 +303,9 @@ Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es dranko
   Ändert sich vermutlich mit dem Fortschritt.
 - **Prognose.** Der Spieler braucht Vorausschau, um bei **trägen** Sektoren
   rechtzeitig zu handeln — er muss sehen können, dass Wohnraum knapp *werden wird*.
-- **Fünftes Sektormerkmal „Dringlichkeit"** — verhungert man ohne, oder ist es nur
-  unangenehm? Erst nötig, wenn Unterdeckung Folgen haben soll.
+- **Sektoren ohne Überlebensbezug** — Kultur, Freizeit. Nach E8 bewirkt ihre
+  Unterdeckung nichts, also ignoriert der Spieler sie. Sie brauchen eine bessere
+  Begründung als bloße Legitimität; wie genau, wird bei den Politikfeldern geklärt.
 - **Fortschrittsstruktur.** Wie werden Institutionen und Verfahren freigeschaltet?
 - **Geldeinführung.** Der wichtigste Moment des Spiels.
 - **Auslastung und Inflation.**
@@ -303,6 +333,10 @@ Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es dranko
   Ja/Nein — der Effekt entsteht aus der Rückfallebene (E5).
 - **„Nur Arbeit ist knapp".** Wäre Arbeitswertlehre und würde die Malthus-Dynamik
   mechanisch unmöglich machen.
+- **Zufriedenheit als Zustandsgröße.** Keine volkswirtschaftliche Größe, verdoppelt
+  die Deckung und wäre eine Benotung durch die Hintertür (E8).
+- **„Dringlichkeit" als Sektormerkmal.** Ersetzt durch die konkrete Angabe je Sektor,
+  worauf seine Unterdeckung real wirkt (E8).
 
 ---
 
