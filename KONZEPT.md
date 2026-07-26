@@ -244,20 +244,76 @@ Gründe:
 - Wir haben sie bereits: **Deckung ist das Wohlfahrtsmaß** — was die Menschen
   brauchen, verglichen mit dem, was sie bekommen. Eine zweite Zahl daneben wäre eine
   Verdopplung mit unklarem Verhältnis zur ersten.
-- Sie würde E9 unterlaufen. Eine Zufriedenheitszahl ist eine Benotung durch die
+- Sie würde E10 unterlaufen. Eine Zufriedenheitszahl ist eine Benotung durch die
   Hintertür, deren Formel wir festlegen müssten — also unsere Politik.
 
-Stattdessen erklärt **jeder Sektor konkret, was seine Unterdeckung real bewirkt**.
-Keine abstrakte Dringlichkeitsstufe, sondern eine Wirkung auf eine reale Größe:
+Stattdessen wirkt Unterdeckung **konkret auf reale Größen** — Sterberate,
+Geburtenrate, Arbeitsfähigkeit, verfügbare Verfahren. Wo genau, hängt an der
+Bedarfsstufe, nicht am Sektor als Ganzem (→ E9).
 
-| Sektor | Unterdeckung wirkt auf |
+### E9 — Bedarf ist gestuft und rangiert über alle Sektoren
+
+Bedarf ist nicht „Anzahl × fester Wert pro Kopf" — das widerspräche der Sättigung
+(E3) und machte Strukturwandel unmöglich. Stattdessen gibt es **eine Rangliste von
+Bedarfsstufen über alle Sektoren hinweg**:
+
+| Rang | Stufe | Menge pro Kopf |
+|---|---|---|
+| 1 | Nahrung — überleben | 1,0 |
+| 2 | Wohnraum — Dach über dem Kopf | 0,3 |
+| 3 | Nahrung — satt werden | 0,8 |
+| 4 | Wohnraum — eigener Raum | 0,5 |
+| … | … | … |
+
+**Gedeckt wird von unten nach oben.** Solange Rang 1 nicht voll ist, bringt Produktion
+auf Rang 3 nichts. Überschuss oberhalb der aktuellen Stufe geht in den Speicher, aber
+nicht in Wohlstand.
+
+**Grundregel: Jede Stufe zahlt in eine reale Größe zurück. Eine Stufe, die in nichts
+zurückzahlt, existiert nicht als Stufe.** Für den Spielanfang:
+
+| Rang | Bewirkt |
 |---|---|
-| Nahrung | Sterberate, sofort und stark |
-| Wohnraum | Sterberate schwach, Geburtenrate stark |
-| Gesundheit | Sterberate, Arbeitsfähigkeit |
-| Bildung | verfügbare Verfahren (E5) |
+| 1 — Nahrung, überleben | Unterdeckung → Sterberate steigt. Bei 100 % ist die Bevölkerung stabil, mehr nicht. |
+| 2 — Dach | Senkt Sterberate weiter, hebt Geburtenrate |
+| 3 — Nahrung, satt | Hebt Geburtenrate **und Arbeitsfähigkeit** (Arbeitsmonate pro Kopf) |
 
-### E9 — Keine Benotung
+Der **halbe Erfolg** von Rang 3 trägt die gesamte Frühphase: Die höhere Geburtenrate
+frisst sich selbst auf (mehr Menschen auf gleicher Fläche → sinkender Ertrag pro Kopf
+→ zurück Richtung Rang 1, das ist Malthus). Die höhere **Arbeitsfähigkeit ist dagegen
+pro Kopf** und wird vom Bevölkerungswachstum *nicht* aufgefressen — ein dauerhafter
+realer Gewinn. Der Spieler erlebt: „Ich stehe wieder auf Kante, aber irgendwas ist
+trotzdem besser geworden." Genau dieser halbe Erfolg treibt ihn zur Produktivität.
+
+Arbeitsfähigkeit ist **kein neuer Zustand**, sondern jeden Tick aus der Deckung
+abgeleitet (konform zur Leitregel in E7).
+
+Weitere Folgen:
+
+- **Sättigung wird konkret**: Die Nahrungsstufen hören bei Rang 3 auf, darüber kommt
+  nichts mehr. Gesundheit und Bildung haben Stufen bis weit nach oben.
+- **Strukturwandel entsteht von allein**: Sind die Nahrungsstufen abgehakt, hat
+  zusätzliche Arbeit in der Landwirtschaft keinen Wert mehr. Muss nicht gescriptet
+  werden (→ E6).
+- **Der Spieler weiß immer, was als Nächstes dran ist.** Die Rangliste ist der
+  Fortschrittsbalken der unteren Schicht — „Rang 4 von 6 gedeckt" versteht man sofort
+  und es benotet nichts.
+- **Ungleichheit wird später anschaulich**: Sobald es Schichten gibt, sitzen sie auf
+  *verschiedenen Rängen* — die einen bei Rang 9, die anderen bei Rang 2. Weit
+  greifbarer als ein Gini-Wert.
+- **Der Kultursektor braucht damit eine Begründung**: Können wir nicht sagen, worin er
+  real zurückzahlt, kommt er nicht ins Spiel.
+
+Anker: **Pasinettis** hierarchische Bedürfnisstruktur mit Sättigung — der
+Standardweg, Strukturwandel endogen zu erzeugen; vorher **Georgescu-Roegen**
+(Hierarchie der Bedürfnisse, 1954). Ausdrücklich *nicht* Maslow: die Ordnung ist
+ökonomisch begründet, nicht psychologisch. Die Wirkung von Ernährung auf
+Arbeitsfähigkeit: ernährungsbasierte Effizienzlohntheorie (Leibenstein; Dasgupta/Ray)
+und **Fogel** (Nobelpreis) zu Ernährung und Wachstum.
+
+**Zu Spielbeginn gibt es genau zwei Ränge**: überleben und ein Dach.
+
+### E10 — Keine Benotung
 
 Es gibt am Ende kein Urteil und keine Punktzahl über die Spielweise. Kennzahlen
 beschreiben, sie bewerten nicht. Sobald das Spiel Gleichheit oder Preisstabilität
@@ -303,9 +359,10 @@ Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es dranko
   Ändert sich vermutlich mit dem Fortschritt.
 - **Prognose.** Der Spieler braucht Vorausschau, um bei **trägen** Sektoren
   rechtzeitig zu handeln — er muss sehen können, dass Wohnraum knapp *werden wird*.
-- **Sektoren ohne Überlebensbezug** — Kultur, Freizeit. Nach E8 bewirkt ihre
-  Unterdeckung nichts, also ignoriert der Spieler sie. Sie brauchen eine bessere
-  Begründung als bloße Legitimität; wie genau, wird bei den Politikfeldern geklärt.
+- **Sektoren ohne Überlebensbezug** — Kultur, Freizeit. Nach der Grundregel in E9
+  muss jede Bedarfsstufe in eine reale Größe zurückzahlen. Für Kultur ist unklar,
+  worin. Bloße Legitimität reicht als Begründung nicht; wird bei den Politikfeldern
+  geklärt.
 - **Fortschrittsstruktur.** Wie werden Institutionen und Verfahren freigeschaltet?
 - **Geldeinführung.** Der wichtigste Moment des Spiels.
 - **Auslastung und Inflation.**
@@ -354,6 +411,8 @@ Jede Mechanik braucht eine Entsprechung in der Lehre. Stand jetzt:
 | Trägheit | Time-to-build (Kydland/Prescott); Investitionsverzögerung bei Kalecki |
 | Verfall | Abschreibung; Dienstleistungen als nicht lagerfähig |
 | Bevölkerung | Malthus; Unified Growth Theory (Galor/Weil) |
+| Gestufte Bedarfshierarchie | Pasinetti; Georgescu-Roegen (1954) |
+| Ernährung → Arbeitsfähigkeit | Effizienzlohntheorie (Leibenstein, Dasgupta/Ray); Fogel |
 | Geldschöpfung durch Kredit (später) | Bank of England, Quarterly Bulletin 2014 |
 | Steuern treiben die Währung (später) | Knapp, Lerner, Wray, Ehnts |
 
