@@ -244,7 +244,7 @@ Gründe:
 - Wir haben sie bereits: **Deckung ist das Wohlfahrtsmaß** — was die Menschen
   brauchen, verglichen mit dem, was sie bekommen. Eine zweite Zahl daneben wäre eine
   Verdopplung mit unklarem Verhältnis zur ersten.
-- Sie würde E12 unterlaufen. Eine Zufriedenheitszahl ist eine Benotung durch die
+- Sie würde E15 unterlaufen. Eine Zufriedenheitszahl ist eine Benotung durch die
   Hintertür, deren Formel wir festlegen müssten — also unsere Politik.
 
 Stattdessen wirkt Unterdeckung **konkret auf reale Größen** — Sterberate,
@@ -329,18 +329,19 @@ viele Universitäten, genau wie viele Mühlen. „Politikfeld" ist kein Mechanis
 sondern nur ein **Name für einen Sektor, dessen Leistung öffentlich bereitgestellt
 wird**.
 
-**Ein Projekt ist Arbeit rein, Ergebnis raus.** Zwei Ergebnistypen:
+**Ein Projekt ist Arbeit rein, Ergebnis raus.** Genaueres Schema in E13.
 
-- **Kapazität** — physisch, verfällt, wiederholbar (Landrodung, Mühle, Speicher, Schule)
-- **Wissen** — dauerhaft, verfällt nie, einmalig (ein neues Verfahren nach E5)
-
-Damit ist **Landrodung ein normales Projekt**, kein Sonderfall: Sie erzeugt den
-Kapazitätsinput „Land", wie die Mühle die Kapazität „Mühle" erzeugt. Der einzige
-Unterschied ist die Wiederholbarkeit — und dass jede Wiederholung mehr Arbeit für
-schlechteres Land kostet (E6). Eigenschaft des Projekttyps, kein Extramechanismus.
+Die Trennlinie zwischen beidem ist **Konsumgut vs. Produktionsmittel**: Eine Hütte
+deckt einen Bedarfsrang, also ist sie Sektorproduktion und teilt sich selbst zu. Eine
+Mühle ist Input für einen Sektor, also ist sie ein Projekt. Das trägt bis ans Ende —
+Wohnungen bleiben immer Sektorproduktion, auch als Plattenbau.
 
 **Der Forschungsbaum ist nichts Eigenes**, sondern schlicht die Liste der verfügbaren
 Projekte. Ein Wissensprojekt schaltet weitere Projekte frei.
+
+**Alle knappen Inputs werden nach derselben Regel zugeteilt** wie Arbeit: von unten
+nach oben durch die Rangliste (E9). Reicht Land nicht für Rang 1 *und* Rang 2, bekommt
+es Nahrung. Eine Regel für Arbeit, Land und später Energie — kein Sonderfall.
 
 **Die reale Decke:** Arbeit lässt sich nur bis zu dem Punkt aus der Bedarfsdeckung
 abziehen, an dem sie unter Rang 1 fällt — dann sterben Menschen oder wandern ab. Die
@@ -394,7 +395,149 @@ Der Tausch ist echt und neutral:
 Keine moralische Wahl, sondern Reaktionsgeschwindigkeit gegen Krisenanfälligkeit.
 Details gehören zur Geld- und Ungleichheitsdiskussion.
 
-### E12 — Keine Benotung
+### E12 — Projektschema
+
+Alles daran ist Konfiguration, nichts ist Code.
+
+**Bedingungen, in zwei Stufen.** Freischaltung ist nur ein Sonderfall der
+Vorbedingung, aber es gibt zwei Sätze davon:
+
+- **Sichtbar ab** — das Projekt erscheint, grau, mit Namen. Wirkung noch unbekannt.
+- **Machbar ab** — es lässt sich starten.
+
+Bedingungen sind immer Zustandsabfragen desselben Typs: *Projekt X fertig*,
+*Bevölkerung ≥ 200*, *Rang 3 gedeckt*, *Kapazität Mühle ≥ 4*.
+
+**Kosten.** Anfangs nur Arbeit, später zusätzlich Vorleistungen (E4).
+
+**Wirkung.** Vier Typen, ein Projekt kann mehrere haben:
+
+| Typ | Beispiel | Häufigkeit |
+|---|---|---|
+| **+ Kapazität** | Hütten, Mühle, Universität | ständig |
+| **+ Verfahren** | Fruchtwechsel, Pflug (E5) | häufig |
+| **+ Sektor** | Bildung existiert jetzt, mit eigenen Bedarfsrängen | selten |
+| **+ Regel** | Geld existiert · Sektoren sind privatisierbar · neuer Hebel | **sehr selten** |
+
+Der letzte Typ ist die Institution aus E1 — der, der die Oberfläche verändert. Die
+Geldeinführung ist ein Projekt mit *Regel*-Wirkung, das anschließend Privatisierung
+(E11) als weitere Regel freischaltet. Die Häufigkeitsspalte ist der Taktgeber:
+**Kapazität als Grundrauschen, Verfahren als regelmäßiges Futter, Regeln als seltene
+laute Momente.**
+
+**Zwei Anzeigepflichten:**
+
+- Bei sichtbaren, nicht machbaren Projekten steht **immer die fehlende Voraussetzung**
+  da — nicht „gesperrt", sondern *„braucht: Bevölkerung ≥ 60 (aktuell 41)"*.
+- Jedes Projekt zeigt, **was es aufschließt**. Damit entsteht der Horizont lokal und
+  ständig, statt aus einem einzelnen fernen Versprechen.
+
+### E13 — Fläche, Wald und die zwei Erschließungsprojekte
+
+**Die Gesamtfläche des Gebiets ist der feste Faktor** der Frühphase (E2, E6, E7). Sie
+besteht aus zwei Nutzungen:
+
+```
+Gebiet: 240 ha
+  Wald       ███████████████░░░░░  180 ha
+  Ackerland  ████░░░░░░░░░░░░░░░░   60 ha
+```
+
+Zwei verschiedene wiederholbare Projekte:
+
+| | **Rodung** | **Landnahme** |
+|---|---|---|
+| Was passiert | Wald → Ackerland, **innerhalb** des Gebiets | Das **Gebiet selbst** wird größer |
+| Kosten | Arbeit | Arbeit, viel mehr |
+| Ergibt | Ackerland + einmalig Holz | Neue Fläche — **als Wald** |
+| Grenze | wenn kein Wald mehr steht | wenn es sich nicht mehr lohnt |
+
+**Rodung schafft kein Land — sie schichtet um.** Das macht die Malthus-Decke aus E7
+echt: Roden fühlt sich wie Wachstum an, ist aber ein Vorschuss. Ist der Wald weg, geht
+es nicht weiter und Intensivierung ist die einzige Antwort. Erzeugte Rodung
+unbegrenzt Land, gäbe es diese Wand nie und die Agrarrevolution wäre eine nette Option
+statt einer Notwendigkeit.
+
+Landnahme bringt neuen **Wald**, den man anschließend roden kann — zwei Entscheidungen,
+weil es zwei verschiedene Anstrengungen sind. Spielerisch besser als ein Schritt, weil
+neue Fläche *beides* ermöglicht: mehr Holzbasis oder mehr Acker.
+
+**Neues Land wird schlechter, nicht teurer.** Jede Landnahme bringt Fläche, die einen
+festen Prozentsatz schlechter ist als die vorige. Ertrag = `Hektar × Güte ×
+Verfahrensertrag`.
+
+| Landnahme | Güte |
+|---|---|
+| Startgebiet | 1,00 |
+| 1. | 0,95 |
+| 5. | 0,77 |
+| 10. | 0,60 |
+| 20. | 0,36 |
+
+*(Platzhalterzahlen, Balancing später.)* Güte statt Kosten aus drei Gründen: Es ist
+**Ricardo im Original** (Differentialrente handelt von Qualität, nicht von
+Erschließungskosten). Es erzeugt die **richtige Dynamik** — bei steigenden Kosten
+würde man einfach länger sparen, bei fallender Güte wird Expansion allmählich sinnlos
+und Intensivierung gewinnt durch Vergleich (E6). Und es **zahlt später doppelt**:
+Sobald es Geld gibt, werden Güteunterschiede zu Einkommensunterschieden — die
+Grundrente, die man sonst mühsam nachrüsten müsste.
+
+Eine harte Obergrenze braucht es nicht; bei Güte 0,2 lohnt Landnahme von allein nicht
+mehr. Die Wand ist weich, aber sie steht.
+
+**Die Grenzgüte steht vor dem Klick da, nicht danach:**
+
+> **Landnahme** — 60 AM
+> +20 ha Wald, Güte **0,77** *(dein Durchschnitt: 0,94)*
+
+Der Spieler sieht den abnehmenden Ertrag **am Rand**, bevor er ihn bezahlt — gute
+Bedienung und zugleich exakt das ökonomische Konzept: Entscheidungen fallen am Rand,
+nicht im Durchschnitt.
+
+Landnahme ist von Anfang an verfügbar, nur teuer. Solange Wald steht, ist Rodung
+offensichtlich besser. Sie **wartet** auf ihren Moment, statt freigeschaltet zu werden.
+
+### E14 — Startaufstellung
+
+**Drei Sektoren**: Nahrung, Wohnraum, Holz. Alle teilen sich selbst zu (E10). Wohnraum
+braucht **Holz als Vorleistung**, also zieht das System von allein Arbeit in die
+Holzwirtschaft, wenn Rang 2 unterdeckt ist — der Spieler erlebt eine Lieferkette, ohne
+eine zu bedienen. *Vorleistungen gibt es zunächst nur für Wohnraum und für Projekte,
+nicht flächendeckend; Nahrung braucht weiterhin nur Land und Arbeit.*
+
+**Roden und Holz gewinnen sind zwei Dinge.** Rodung vernichtet Wald dauerhaft (E13);
+die **Holzwirtschaft** (Sektor) gewinnt laufend Holz aus stehendem Wald, ohne ihn zu
+verbrauchen. Zum Start gibt es genau **einen** Wirkungspfad auf den Waldbestand — nur
+Rodung verkleinert ihn. Übernutzung, Aufforstung und Nachwuchsraten kommen später.
+Daraus entsteht die erste sichtbare Zielkonkurrenz: **Fläche und Wald sind dasselbe
+Land**, und der Spieler sieht seine Entscheidung in der Welt statt nur in Zahlen.
+
+**Drei Projektstränge**, deren erster Schritt jeweils sofort machbar ist, alle ohne
+Geld begehbar:
+
+| Nahrung | Wohnraum | Holz |
+|---|---|---|
+| Fruchtwechsel | Fachwerk | Bessere Äxte |
+| ↳ Pflug *(braucht Holz)* | ↳ Ziegel *(neuer Sektor Lehm)* | ↳ Forstwirtschaft |
+| ↳ Wassermühle *(+ Mühle bauen)* | | |
+
+Dazu **Rodung** und **Landnahme** als dauerhaft wiederholbare Projekte (E13).
+
+Leitsatz für die Dosierung: **Projekte sind der Spaß, Sektoren sind die Leserei.** Ein
+Projekt mehr ist eine Entscheidung mehr; ein Sektor mehr ist eine Tabellenzeile mehr,
+die verstanden werden muss, bevor irgendetwas entschieden werden darf. Also viele
+kleinteilige Projekte von Anfang an, drei Sektoren am Anfang, weitere langsam.
+
+Der Reiz der ersten halben Stunde entsteht daraus, dass **der Engpass wandert**: Erst
+fehlt Nahrung → roden. Dann fehlt Wohnraum → mehr Holz. Dann fehlt Wald, weil zu viel
+gerodet wurde → Forstwirtschaft oder Ziegel. Dann fehlt Ackerland, weil der Wald
+geschont wird → Fruchtwechsel statt Rodung. Das ist E6 in klein, viermal, jedes Mal
+mit einer anderen Antwort.
+
+*Wackelkandidat:* **Ziegel** bringt einen vierten Sektor sehr früh. Bleibt vorerst
+drin, aber als Erstes wieder heraus, falls der Anfang zäh wirkt.
+
+### E15 — Keine Benotung
 
 Es gibt am Ende kein Urteil und keine Punktzahl über die Spielweise. Kennzahlen
 beschreiben, sie bewerten nicht. Sobald das Spiel Gleichheit oder Preisstabilität
@@ -444,8 +587,6 @@ Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es dranko
   muss jede Bedarfsstufe in eine reale Größe zurückzahlen. Für Kultur ist unklar,
   worin. Bloße Legitimität reicht als Begründung nicht; wird bei den Politikfeldern
   geklärt.
-- **Fortschrittsstruktur.** Wie ist die Projektliste aufgebaut — Anzahl, Reihenfolge,
-  Voraussetzungen, wieviel gleichzeitig sichtbar?
 - **Geldeinführung.** Der wichtigste Moment des Spiels.
 - **Auslastung und Inflation.**
 - **Ungleichheit.** Braucht einen echten *wirtschaftlichen* Effekt (höhere Sparquote
@@ -480,6 +621,10 @@ Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es dranko
   Übergang zum Geldkauf von Arbeit wird dadurch scharf statt weich.
 - **Gemeinschaftsarbeit vs. Fron als eigene Stufen.** Ohne mechanischen Unterschied.
 - **Politikfelder als eigener Typ neben Projekten.** Politikfelder sind Sektoren (E10).
+- **„Hütten bauen" als Projekt.** Kategorienfehler — ein Dach deckt Rang 2, ist also
+  Sektorproduktion (E10).
+- **Steigende Erschließungskosten** als Bremse der Expansion. Ersetzt durch fallende
+  Grenzgüte (E13), die dem Ricardo-Anker entspricht und die bessere Dynamik erzeugt.
 
 ---
 
@@ -492,7 +637,8 @@ Jede Mechanik braucht eine Entsprechung in der Lehre. Stand jetzt:
 | Zweischichtigkeit, Identitäten | Godley/Lavoie, stock-flow-konsistente Modellierung |
 | Verfahren mit Rückfallebene | Aktivitätsanalyse (Koopmans); Sraffa, von Neumann |
 | Vorleistungen, Lieferketten | Input-Output-Analyse (Leontief); VGR |
-| Extensiv vs. intensiv, beste Fläche zuerst | Ricardo, Differentialrente |
+| Extensiv vs. intensiv, fallende Grenzgüte | Ricardo, Differentialrente |
+| Konsumgut vs. Produktionsmittel | Standardunterscheidung der VGR |
 | Sättigung, Strukturwandel | Engelsches Gesetz; Pasinetti |
 | Trägheit | Time-to-build (Kydland/Prescott); Investitionsverzögerung bei Kalecki |
 | Verfall | Abschreibung; Dienstleistungen als nicht lagerfähig |
