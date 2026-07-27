@@ -571,6 +571,189 @@ etwas zu entscheiden geben.** Sonst wird Zuschauen zum Spiel.
 
 ---
 
+## Technik
+
+### T1 — Functional Core, Imperative Shell
+
+**Daten sind unveränderliche Werte. Verhalten darf objektorientiert sein.** In
+Java-Begriffen: Value Objects plus Strategy Pattern plus Registry.
+
+Die Simulation ist rein und weiß nichts von der Oberfläche:
+
+```ts
+tick(state, config) → state
+apply(state, action, config) → state
+```
+
+Kein DOM, kein `Math.random` (nur ein gesäter Generator **im** State), keine Uhr.
+Gleicher Eingang, gleicher Ausgang, immer.
+
+Das ist keine Ästhetik, sondern die Bedingung dafür, dass derselbe Code **in zwei
+Umgebungen** läuft — im Browser und headless in Node. Und dafür, dass der Weltzustand
+kopierbar, speicherbar, vergleichbar und zurückspulbar ist. Ein Objektgraph mit
+veränderlichen Feldern kann das nicht ohne Aliasing- und Serialisierungsschmerzen.
+
+**Faustregel:** *Klassen dürfen rechnen, aber nichts behalten.* Was zwischen zwei Ticks
+überlebt, steht im `GameState` — sonst nirgends. Wird per Test geprüft.
+
+Die Grenze `sim/` ↛ `ui/` wird per Lint-Regel **erzwungen**, nicht per Disziplin.
+
+### T2 — Der Tick ist eine geordnete Liste von Phasen
+
+```ts
+interface Phase { readonly id: string; run(state, config): GameState }
+
+const PIPELINE: Phase[] = [
+  new DecayPhase(), new LaborSupplyPhase(), new InputAllocationPhase(),
+  new ProductionPhase(), new CoveragePhase(), new PopulationPhase(),
+  new ProjectPhase(),
+  // new MoneyPhase(),  ← kommt später einfach dazu
+];
+```
+
+**Geld einzuführen heißt später: eine Zeile in dieser Liste.** Keine bestehende Phase
+wird angefasst. Ebenso bei den Projektwirkungen aus E12 — je Wirkungstyp ein
+`EffectHandler` in einer Registry. Open/Closed in Reinform: neuer Typ = neue Klasse +
+Registry-Eintrag, keine Änderung an bestehenden Dateien.
+
+Komposition schlägt Vererbung; flache Interfaces, keine tiefen Basisklassen.
+
+### T3 — Inhalt ist Daten, die Engine interpretiert sie
+
+Sektoren, Verfahren, Projekte, Bedarfsränge, Kurven — alles Konfiguration, **ohne Code
+darin**:
+
+```ts
+expandTerritory: {
+  visibleWhen: [], availableWhen: [],
+  cost: { labor: 60 },
+  effects: [{ type: "area", kind: "forest", amount: 20 }],
+  repeatable: { qualityDecay: { kind: "exponential", factor: 0.95 } },
+}
+```
+
+Keine Funktionen in der Konfiguration — sonst ist sie Code und Balancing wird wieder
+Programmieren. Als TypeScript statt JSON, damit der Editor Tippfehler in Kennungen
+sofort meldet.
+
+### T4 — Der Spieler ist eine Strategie hinter einer Schnittstelle
+
+```ts
+interface Policy { decide(state: GameState): Action[] }
+```
+
+| | Implementierung |
+|---|---|
+| Echtes Spiel | `HumanPolicy` — sammelt Klicks aus der Oberfläche |
+| Headless-Lauf | `ExpansionistPolicy`, `IntensifierPolicy`, `PassivePolicy` |
+
+Dieselbe Schleife, dieselbe Simulation, nur der Entscheider wird getauscht. Damit sind
+Headless-Läufe (`npm run simulate -- --years 300 --seed 42`) ein erstklassiges
+Werkzeug: 300 Spieljahre in einer Sekunde, um etwa den wandernden Engpass aus E14 zu
+prüfen, ohne eine halbe Stunde zu spielen.
+
+Und es ist ein **Konzeptprüfer**: Kommt `PassivePolicy` genauso weit wie eine
+durchdachte Strategie, sind unsere Entscheidungen bedeutungslos und das Spiel ist
+kaputt.
+
+### T5 — Stack und Aufbau
+
+| | | Warum |
+|---|---|---|
+| **TypeScript** | überall | Hunderte Konfigurationswerte mit Kennungen, die zusammenpassen müssen — Tippfehler wären in JS stille Fehler |
+| **Vite** | Build & Dev-Server | Keine Konfiguration, sofortiges Neuladen |
+| **Svelte 5** | Oberfläche | Die Oberfläche ist Text, Tabellen, Balken, Listen. React brächte Zeremonie ohne Nutzen |
+| **Vitest** | Tests | Gehört zu Vite |
+| **Node 24** | Werkzeuge | Führt TypeScript **direkt** aus (Type-Stripping) — Headless-Läufe und Tests brauchen keinen Build-Schritt |
+
+Rein statische Auslieferung: `npm run build` → `dist/`, auf jeden Webspace legbar.
+Kein Backend, keine Datenbank.
+
+```
+src/
+  sim/        state.ts · tick.ts · phases/ · effects/ · random.ts
+  content/    sectors.ts · processes.ts · projects.ts · needs.ts
+  policy/     policy.ts · bots/
+  persistence/
+  ui/
+  i18n/       de.ts · en.ts · t.ts
+tools/        simulate.ts
+test/         invariants/ · scenarios/
+```
+
+**Invariant-Tests von Anfang an** — sie sind das Rückgrat der dritten Zielanforderung,
+weil sie die Buchhaltungsidentitäten überprüfbar statt behauptet machen:
+
+```ts
+test("allocated labor sums to supply", ...)
+test("forest + farmland = total area", ...)
+// später: Geldmenge === kumuliertes Defizit
+```
+
+### T6 — Code ist Englisch, die Oberfläche wird übersetzt
+
+**Der gesamte Code ist Englisch** — Bezeichner, Kommentare, Dateinamen, Commits. Nur
+`KONZEPT.md` und die Oberfläche sind Deutsch.
+
+| Konzept | Code |
+|---|---|
+| Sektor | `Sector` |
+| Verfahren | `Process` |
+| Bedarfsrang | `NeedTier` |
+| Deckung | `coverage` |
+| Auslastung | `utilization` |
+| Vorleistung | `intermediate` |
+| Kapazität | `capacity` |
+| Güte | `quality` |
+| Rodung / Landnahme | `clearForest` / `expandTerritory` |
+
+**Die Simulation erzeugt nie Text**, sondern typisierte Ereignisse —
+`{ type: "FOREST_CLEARED", hectares: 10 }`. Die Oberfläche übersetzt sie. Damit ist
+i18n fast geschenkt: eine flache Schlüsseltabelle je Sprache, eine `t()`-Funktion,
+keine Bibliothek. Die Chronik bleibt automatisch übersetzbar.
+
+### T7 — Speicherstände: nur das, was jetzt billig und später teuer ist
+
+Bewusst **kein** Verwaltungskonzept — ob es eine Spielstandsverwaltung überhaupt geben
+soll, ist offen. Festgelegt wird nur, was einen späteren Umbau verhindert:
+
+**1. Der Zustand ist ein einfacher, serialisierbarer Wert; der Inhalt steckt nicht
+drin.** Gespeichert wird nur, was sich beim Spielen ändert — Bevölkerung, Bestände,
+erledigte Projekte als Kennungen, Zuteilungen, Zufallszustand, Tick. Sektoren,
+Projekte und Balancing-Zahlen gehören zum Programm. Damit bleiben Stände klein und
+**Balance-Änderungen werden automatisch übernommen**, statt Teststände zu zerstören.
+
+**2. Ein Umschlag um den Zustand, von Anfang an:**
+
+```json
+{ "schemaVersion": 1, "gameVersion": "0.1.0", "meta": { ... }, "state": { ... } }
+```
+
+**3. Speichern läuft über eine Schnittstelle**, nicht über verstreute
+localStorage-Aufrufe:
+
+```ts
+interface SaveStore {
+  save(id: string, snapshot: Snapshot): Promise<void>;
+  load(id: string): Promise<Snapshot | null>;
+  list(): Promise<SaveMeta[]>;
+  delete(id: string): Promise<void>;
+}
+```
+
+**Asynchron von Anfang an**, obwohl localStorage synchron ist — sonst bräuchte ein
+späterer Wechsel auf IndexedDB oder einen Server eine Änderung an jeder Aufrufstelle.
+**Mit `id` von Anfang an**, auch wenn zunächst nur eine benutzt wird — mehrere Plätze
+sind damit später geschenkt.
+
+**Vorgabe:** Nichts wird überschrieben oder rotiert. Gespeichert wird bewusst und
+benannt.
+
+Rotation, Autosave-Strategie, Export, Teilen-Codes und Verlaufsindex sind
+**Implementierungen hinter dieser Schnittstelle** und jederzeit nachrüstbar.
+
+---
+
 ## Offen
 
 Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es drankommt:
@@ -596,8 +779,16 @@ Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es dranko
 - **Politikfelder.**
 - **Oberfläche.**
 - **Ob und wie das Spiel endet.**
-- **Technik**: Projektaufbau, Konfigurationsformat, Teststrategie für die
-  Identitäten, Balancing.
+
+Technisch noch offen:
+
+- **Ereignisse und Chronik** — wie die Simulation Vorgänge meldet, ohne Text zu
+  erzeugen; wie daraus die Chronik wird.
+- **Tick-Schleife und Abo** — wer die Uhr hält, wie die Oberfläche den Zustand bekommt.
+- **Code-Qualität** — Linter, Formatierer, die erzwungene Import-Grenze.
+- **Konkrete Zahlen** — Startbevölkerung, Erträge, Projektkosten, Wachstumsraten.
+- **Veröffentlichung** — wo das Spiel am Ende liegt. Statische Dateien, also
+  unkritisch; zum Schluss.
 
 ---
 
