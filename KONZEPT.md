@@ -543,6 +543,40 @@ Es gibt am Ende kein Urteil und keine Punktzahl über die Spielweise. Kennzahlen
 beschreiben, sie bewerten nicht. Sobald das Spiel Gleichheit oder Preisstabilität
 benotet, benotet es Politik und die Neutralität ist verloren.
 
+### E16 — Wie die Zuteilung rechnet
+
+**Gierig, Rang für Rang, in Bündeln.**
+
+Die Reihenfolge je Tick:
+
+1. **Projekte bekommen, was der Spieler ihnen zugewiesen hat.** Nach E10 darf der
+   Spieler der Bedarfsdeckung Arbeit entziehen, also wird das zuerst abgezogen.
+2. **Der Rest geht durch die Rangliste** aus E9, von unten nach oben.
+
+**Die Regel:**
+
+> Ein Rang nimmt so viel, wie er verwerten kann. Was er nicht verwerten kann, geht an
+> den nächsten.
+
+Damit ist die Teildeckung geklärt: Ist Rang 1 (Nahrung, überleben) durch **Ackerland**
+begrenzt und nicht durch Arbeit, bringt zusätzliche Arbeit dort nichts. Sie wandert
+weiter an Rang 2 (Wohnraum, Dach). Der Rang bleibt unterdeckt, obwohl noch Hände frei
+waren — weil die Hände dort keinen Ertrag mehr gebracht hätten. Ökonomisch genau
+richtig: zugeteilt wird bis dahin, wo der Grenzertrag null ist, dann weiter.
+
+**Inputs werden nicht einzeln zugeteilt.** Ein Rang fordert ein **Bündel** an — so viel
+Arbeit *und* so viel Fläche, wie sein Verfahren verlangt. Das folgt aus E5: Feste
+Inputverhältnisse heißen, dass das Bündel bestimmt ist, sobald das Verfahren feststeht.
+Es gibt keinen Freiheitsgrad, über den getrennt zu entscheiden wäre. Läuft ein Input
+aus, greift die Rückfallebene aus E5, nicht eine eigene Zuteilungsregel.
+
+**Gleichstand gibt es nicht.** Die Rangliste ist streng geordnet, und jeder Rang gehört
+zu genau einem Sektor. Zwei Ansprüche können nie gleichauf liegen.
+
+**Nichts davon wird gespeichert.** Die Zuteilung ist eine Rechnung innerhalb des Ticks,
+aus dem vorigen Zustand und der Konfiguration. Sie hinterlässt nur ihre Ergebnisse —
+Bestände, Fortschritt der Projekte.
+
 ---
 
 ## Vorläufig
