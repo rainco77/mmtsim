@@ -649,6 +649,25 @@ läuft dann eben langsamer. Und ein geladener Spielstand verhält sich identisch
 unabhängig davon, wann er geladen wird — Voraussetzung dafür, dass ein mitgeschickter
 Spielstand aus einem Fehlerbericht dieselbe Lage ergibt (T7).
 
+**Der neue Zustand ergibt sich vollständig aus dem letzten.** Die Simulation braucht
+nie mehr als den vorigen Stand — kein Rückblick über mehrere Ticks.
+
+Verzögerungen werden deshalb als **mitgeführter Zustand** abgebildet, nicht als Blick
+in die Vergangenheit. Ein Bau, der drei Jahre dauert, ist ein Eintrag „noch 12 Ticks"
+im aktuellen Zustand, kein Blick 36 Ticks zurück. Das ist die Standardform dynamischer
+Modelle: Jedes System mit endlichem Gedächtnis lässt sich in ein Modell erster Ordnung
+überführen, indem man den Zustand erweitert.
+
+**Der Verlauf ist reine Darstellungsdaten. Die Simulation liest ihn nie.**
+
+**Aufzeichnen und Wegschreiben sind Aufgaben der Hülle**, nicht der Simulation. Ein-
+und Ausgabe in der Simulation würde sie bremsen und ihre Reinheit brechen (T1). Das
+Headless-Werkzeug (T4) ist seine eigene Hülle und entscheidet selbst, ob es überhaupt
+mitschreibt.
+
+Für die erste Fassung liegt der Verlauf **nur im Arbeitsspeicher**; es wird nichts
+persistiert.
+
 ### T3 — Inhalt ist Daten, die Engine interpretiert sie
 
 Sektoren, Verfahren, Projekte, Bedarfsränge, Kurven — alles Konfiguration, **ohne Code
