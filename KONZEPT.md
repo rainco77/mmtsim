@@ -738,10 +738,23 @@ test("forest + farmland = total area", ...)
 | Güte | `quality` |
 | Rodung / Landnahme | `clearForest` / `expandTerritory` |
 
-**Die Simulation erzeugt nie Text**, sondern typisierte Ereignisse —
-`{ type: "FOREST_CLEARED", hectares: 10 }`. Die Oberfläche übersetzt sie. Damit ist
-i18n fast geschenkt: eine flache Schlüsseltabelle je Sprache, eine `t()`-Funktion,
-keine Bibliothek. Die Chronik bleibt automatisch übersetzbar.
+**Die Simulation erzeugt weder Text noch Meldungen.** Sie liefert ihren Zustand; alles,
+was der Spieler zu sehen bekommt, entsteht außerhalb.
+
+Eine Meldung an den Spieler ist ein **i18n-Schlüssel plus ein paar Zahlen**, aufgerufen
+von der Oberfläche:
+
+```ts
+t("forest_cleared", { hectares: 10, remaining: 170 })
+```
+
+```
+de: forest_cleared: "Wald gerodet: {hectares} ha, {remaining} ha verbleiben."
+```
+
+Mehr braucht es nicht: eine flache Schlüsseltabelle je Sprache, eine `t()`-Funktion,
+keine Bibliothek. Wann eine Meldung erscheint, ist eine Bedingung auf dem Zustand —
+gewöhnlicher Code in der Oberfläche.
 
 ### T7 — Speicherstände: nur das, was jetzt billig und später teuer ist
 
@@ -809,8 +822,6 @@ Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es dranko
 
 Technisch noch offen:
 
-- **Ereignisse und Chronik** — wie die Simulation Vorgänge meldet, ohne Text zu
-  erzeugen; wie daraus die Chronik wird.
 - **Code-Qualität** — Linter, Formatierer, die erzwungene Import-Grenze.
 - **Konkrete Zahlen** — Startbevölkerung, Erträge, Projektkosten, Wachstumsraten.
 - **Veröffentlichung** — wo das Spiel am Ende liegt. Statische Dateien, also
