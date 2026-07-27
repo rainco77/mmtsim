@@ -618,6 +618,37 @@ Registry-Eintrag, keine Änderung an bestehenden Dateien.
 
 Komposition schlägt Vererbung; flache Interfaces, keine tiefen Basisklassen.
 
+**Die Simulation hat keine Uhr. Die Hülle ruft `tick` auf.**
+
+| Umgebung | Wer treibt |
+|---|---|
+| Browser | ein Zeitgeber, oder ein Knopf, oder beides |
+| Headless-Lauf | eine Schleife, so schnell die Maschine kann |
+| Test | eine Schleife über feste Schritte |
+
+Die Hülle hält den aktuellen Zustand und meldet der Oberfläche, wenn er sich geändert
+hat.
+
+**Spielzeit ist die Anzahl der Ticks, nicht die Echtzeit.** Es gibt kein Nachholen von
+Offline-Zeit: Schließen pausiert, Öffnen setzt genau dort fort, wo aufgehört wurde —
+egal ob nach fünf Minuten oder drei Wochen.
+
+Der Grund ist inhaltlich, nicht technisch. Liefe die Zeit ohne den Spieler weiter,
+wären nach Stunden Tausende Ticks vergangen: Projekte längst fertig, Hände seitdem
+brach — und ungenutzte Arbeit ist nach E10 **dauerhaft verloren**. Der Spieler käme zu
+einer Lage zurück, die er nicht verursacht hat und nicht rückgängig machen kann. Damit
+bliebe nur die Wahl, Abwesenheit zu belohnen (und ausgerechnet die zentrale Lehre
+auszuhebeln) oder sie zu bestrafen. Folgenlos ist besser als beides.
+
+**Der Spieler stellt die Geschwindigkeit im Spiel ein und kann pausieren.**
+Beschleunigung heißt schlicht: mehr Ticks pro Sekunde. Eine Einstellung der Hülle, nie
+eine Änderung am Modell.
+
+Zwei Dinge fallen dabei ab: Gebremste Hintergrund-Tabs sind kein Fehlerfall, das Spiel
+läuft dann eben langsamer. Und ein geladener Spielstand verhält sich identisch,
+unabhängig davon, wann er geladen wird — Voraussetzung dafür, dass ein mitgeschickter
+Spielstand aus einem Fehlerbericht dieselbe Lage ergibt (T7).
+
 ### T3 — Inhalt ist Daten, die Engine interpretiert sie
 
 Sektoren, Verfahren, Projekte, Bedarfsränge, Kurven — alles Konfiguration, **ohne Code
@@ -758,10 +789,6 @@ Rotation, Autosave-Strategie, Export, Teilen-Codes und Verlaufsindex sind
 
 Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es drankommt:
 
-- **Beschleunigung (2×, 5×).** Spricht dafür: Spieler wollen viel Fortschritt pro
-  Echtzeit, und Beschleunigung kostet sie Spielzeit — ein Tausch, kein Cheat.
-  Spricht dagegen: entwertet die Trägheit, die Weitsicht lehren soll. Jederzeit
-  änderbar, deshalb zurückgestellt.
 - **Volkswirtschaftliche Kennzahlen.** Welche sind je Entwicklungsstufe sinnvoll?
   Ändert sich vermutlich mit dem Fortschritt.
 - **Prognose.** Der Spieler braucht Vorausschau, um bei **trägen** Sektoren
@@ -784,7 +811,6 @@ Technisch noch offen:
 
 - **Ereignisse und Chronik** — wie die Simulation Vorgänge meldet, ohne Text zu
   erzeugen; wie daraus die Chronik wird.
-- **Tick-Schleife und Abo** — wer die Uhr hält, wie die Oberfläche den Zustand bekommt.
 - **Code-Qualität** — Linter, Formatierer, die erzwungene Import-Grenze.
 - **Konkrete Zahlen** — Startbevölkerung, Erträge, Projektkosten, Wachstumsraten.
 - **Veröffentlichung** — wo das Spiel am Ende liegt. Statische Dateien, also
