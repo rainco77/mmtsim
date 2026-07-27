@@ -796,6 +796,41 @@ benannt.
 Rotation, Autosave-Strategie, Export, Teilen-Codes und Verlaufsindex sind
 **Implementierungen hinter dieser Schnittstelle** und jederzeit nachrüstbar.
 
+### T8 — Code-Qualität
+
+**Prettier zum Formatieren, ESLint zum Prüfen.**
+
+Die Alternative wäre Biome — ein Werkzeug statt zwei, eine Konfiguration, schneller.
+Dagegen spricht genau ein Punkt: **`.svelte`-Dateien.** Biome versteht davon nur die
+Skriptblöcke, nicht die Vorlagen; für Prettier und ESLint gibt es ausgereifte
+Svelte-Erweiterungen. Zwei Werkzeuge sind der Preis dafür, dass beide unsere
+Dateitypen wirklich können.
+
+Formatierung wird nicht diskutiert, sondern automatisch angewandt.
+
+**TypeScript streng:** `strict: true` plus **`noUncheckedIndexedAccess`**.
+
+Das zweite ist bei uns wichtiger als üblich, weil ständig über Kennungen auf
+Konfiguration zugegriffen wird — `sectors[id]`, `processes[id]`. Ohne die Einstellung
+behauptet TypeScript, da käme immer etwas zurück; mit ihr muss der Fall behandelt
+werden, dass die Kennung nicht existiert. Genau die Fehlerklasse, die sonst erst beim
+Balancing auffällt.
+
+**Regeln werden nach ihrer Art durchgesetzt:**
+
+| Art | Mittel |
+|---|---|
+| **Statische Regeln** — wer darf wen importieren (`sim/` ↛ `ui/`) | **ESLint**, `no-restricted-imports` ist eingebaut |
+| **Verhaltensregeln** — dass Phasen zwischen Ticks nichts behalten (T1), dass Buchhaltungsidentitäten aufgehen, dass zugeteilte Arbeit sich aufs Angebot summiert | **Tests** |
+
+Der Linter meldet Importverstöße sofort im Editor, also bevor die Datei überhaupt
+fertig ist — für eine Regel, die man gar nicht erst verletzen soll, der bessere
+Zeitpunkt als ein fehlschlagender Test. Verhaltensregeln kann er dagegen nicht prüfen,
+weil sie am Code nicht ablesbar sind.
+
+Falls die Importregeln später zahlreicher werden, wäre `dependency-cruiser` der
+nächste Schritt. Für eine einzige Regel lohnt er nicht.
+
 ---
 
 ## Offen
@@ -822,7 +857,6 @@ Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es dranko
 
 Technisch noch offen:
 
-- **Code-Qualität** — Linter, Formatierer, die erzwungene Import-Grenze.
 - **Konkrete Zahlen** — Startbevölkerung, Erträge, Projektkosten, Wachstumsraten.
 - **Veröffentlichung** — wo das Spiel am Ende liegt. Statische Dateien, also
   unkritisch; zum Schluss.
