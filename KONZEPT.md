@@ -628,10 +628,80 @@ Projekt liefert nichts.
 Im Zustand je laufendem Projekt: **Fortschritt, Position in der Reihenfolge, pausiert
 ja/nein.**
 
-### E19 — Wie Bevölkerungswachstum rechnet
+### E19 — Verfall und die drei Eigenschaften eines Bestands
+
+**Verfall ist geometrisch: ein fester Anteil je Tick.** Ein Bestand von 100 mit 2 %
+wird zu 98, dann zu 96,04 — er nähert sich der Null, erreicht sie aber nie von allein.
+Das ist die **geometrische Abschreibung**, mit der statistische Ämter den Kapitalstock
+fortschreiben (Perpetual-Inventory-Methode). Lineare Abschreibung wäre für einen
+laufend nachgefüllten Bestand unnatürlich, weil sie einen Endzeitpunkt braucht.
+
+**Die Rate gehört zu jedem Bestand, und null ist erlaubt** — dann braucht es keine
+Sonderfälle:
+
+| Bestand | Rate |
+|---|---|
+| Dienstleistungen (Pflege) | 100 % je Tick — gar nicht lagerfähig |
+| Nahrung im Speicher | mittel, sie verdirbt |
+| Mühlen, Gebäude | langsam |
+| Wohnraum | sehr langsam |
+| **Fläche** | **null** |
+
+Wissen taucht nicht auf: Es ist kein Bestand, sondern eine Menge freigeschalteter
+Dinge (E10).
+
+**Verfall ist der erste Schritt im Tick.** Erst zerfällt, was zerfällt, dann wird mit
+dem gerechnet, was übrig ist — die übliche Reihenfolge der Bestandsrechnung:
+Anfangsbestand, Abgang, Zugänge.
+
+**Bestände sind kontinuierlich**, keine Stückzahlen. „3,7 Mühlen" ist intern richtig
+und wird gerundet angezeigt. So wird auch der Kapitalstock gemessen: als Größe, nicht
+als Stückliste. Andernfalls bräuchte jedes Gebäude ein eigenes Alter.
+
+**Instandhaltung gibt es nicht als eigenen Mechanismus.** Erhalt ist Neubau dessen, was
+zerfallen ist. Bei Konsumgütern läuft das von allein — Wohnraum verfällt, die Deckung
+sinkt, die Zuteilung schiebt wieder Arbeit hinein. Bei Kapazität startet der Spieler
+ein Projekt neu. Ob sich das nach Aufmerksamkeit oder nach Fleißarbeit anfühlt, hängt
+allein an den Raten und ist Balancing, nicht Mechanik.
+
+**Ein Bestand hat drei Eigenschaften, die sich frei kombinieren:**
+
+| Eigenschaft | Gilt für | Beispiel |
+|---|---|---|
+| **Verfall** | jeden Bestand | Mühle 2 %, Fläche 0 % |
+| **Zuflussart** | woher der Zuwachs kommt | aus Produktion — oder **proportional zum eigenen Bestand** |
+| **Kohorten** | optional, unabhängig von beidem | Altersgruppen, Baujahrgänge |
+
+Die zweite Art unterscheidet **biologische Bestände**: Eine Mühle baut keine Mühlen,
+Menschen bekommen Kinder.
+
+```
+gewöhnlicher Bestand:   neu = Produktion       − Verfall × Bestand
+biologischer Bestand:   neu = Zuwachs × Bestand − Verfall × Bestand
+```
+
+Das ist kein Sonderfall der Bevölkerung, sondern eine Klasse: **Wald** (Nachwuchs
+proportional zum stehenden Wald, in E14 auf später verschoben) und **Zugtiere** (Input
+des Pfluggespanns in E5) teilen sie.
+
+Kohorten sind davon unabhängig und passen auf Menschen, Wälder **und Gebäude** —
+Gebäude verschiedenen Alters sind unterschiedlich gut, in der Volkswirtschaft
+**Jahrgangskapital**. Eingeführt werden sie nur dort, wo sie etwas tragen.
+
+**Die Regeln sind gemeinsam; Aufbau des Zustands und Darstellung sind davon
+unabhängig.** Nach T1 kennt die Simulation die Oberfläche ohnehin nicht: Die
+Bevölkerung darf groß und mit eigener Warnzone oben stehen, während Mühlen in einer
+Tabellenzeile stehen. Zentralität ist keine Modelleigenschaft. Ob die Bevölkerung im
+Zustand ein eigenes benanntes Feld bekommt, ändert an der Rechnung nichts und wird beim
+Bau entschieden.
+
+### E20 — Wie Bevölkerungswachstum rechnet
 
 **Zwei Raten**, je Tick und je Kopf: **Geburtenrate** und **Sterberate**. Ihre Differenz
-verändert die Kopfzahl. Mehr nicht.
+verändert die Kopfzahl. Beide sind die allgemeinen Größen aus E19, auf Menschen
+angewandt — die Sterberate *ist* der Verfall, die Geburtenrate *ist* der
+bestandsproportionale Zufluss. Auch die Mindestgröße gilt allgemein: Ein zu kleiner
+Restwald erholt sich ebenso wenig wie eine zu kleine Herde.
 
 **Jede Bedarfsstufe verschiebt eine der beiden Raten.** Sie erklärt in der
 Konfiguration, welche Rate sie betrifft und wie stark — bei voller Deckung gegenüber
@@ -683,7 +753,7 @@ wird „→ Sterberate der Kleinkinder sehr stark, der Erwachsenen mäßig". Ges
 sind derselbe Fall — eine Kohorte ist eine Gruppe mit eigenen Raten. Der Umstieg ist
 eine Schemamigration nach T7.
 
-### E20 — Wie die Zuteilung rechnet
+### E21 — Wie die Zuteilung rechnet
 
 **Gierig, Rang für Rang, in Bündeln.**
 
@@ -1100,7 +1170,9 @@ Jede Mechanik braucht eine Entsprechung in der Lehre. Stand jetzt:
 | Projekte, Konsum gegen Investition | Produktionsmöglichkeitenkurve; intertemporale Wahl |
 | Verfall ungenutzter Arbeit | Post-Keynesianisch: nicht produzierter Output ist dauerhaft verloren |
 | Bevölkerung | Malthus; Unified Growth Theory (Galor/Weil) |
-| Mindestlebensfähige Größe | Demographie; minimum viable population |
+| Mindestlebensfähige Größe | Populationsbiologie; minimum viable population |
+| Geometrischer Verfall | Perpetual-Inventory-Methode der Kapitalstockrechnung |
+| Kohorten bei Kapital | Jahrgangskapital |
 | Gestufte Bedarfshierarchie | Pasinetti; Georgescu-Roegen (1954) |
 | Ernährung → Produktivität | Effizienzlohntheorie (Leibenstein, Dasgupta/Ray); Fogel |
 | Köpfe × Arbeitsfähigkeit × Produktivität | Zerlegung der VGR; Arbeit in Effizienzeinheiten (Solow) |
