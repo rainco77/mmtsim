@@ -410,7 +410,9 @@ Bedingungen sind immer Zustandsabfragen desselben Typs: *Projekt X fertig*,
 
 **Kosten.** Anfangs nur Arbeit, später zusätzlich Vorleistungen (E4).
 
-**Wirkung.** Vier Typen, ein Projekt kann mehrere haben:
+**Wirkung.** Vier Typen, ein Projekt kann mehrere haben — und **Wirkungen dürfen
+negativ sein**. Eine Flächenumwandlung (E13) ist damit schlicht ein Paar aus einer
+negativen und einer positiven Kapazitätswirkung; ein fünfter Typ ist dafür nicht nötig.
 
 | Typ | Beispiel | Häufigkeit |
 |---|---|---|
@@ -432,39 +434,64 @@ laute Momente.**
 - Jedes Projekt zeigt, **was es aufschließt**. Damit entsteht der Horizont lokal und
   ständig, statt aus einem einzelnen fernen Versprechen.
 
-### E13 — Fläche, Wald und die zwei Erschließungsprojekte
+### E13 — Fläche
 
-**Die Gesamtfläche des Gebiets ist der feste Faktor** der Frühphase (E2, E6, E7). Sie
-besteht aus zwei Nutzungen:
+**Fläche hat Typen.** Ein Sektor verlangt einen bestimmten Typ als Kapazitätsinput (E4):
+
+| Typ | Wer ihn braucht |
+|---|---|
+| **Wildnis** | Holz |
+| **Erschlossene Fläche** | Nahrung **und** Wohnraum |
+
+Nahrung und Wohnraum konkurrieren also um **dieselbe** Fläche — der interessante Teil,
+und historisch richtig: Man baut auf Land, das man auch beackern könnte. Damit gibt es
+am Anfang trotz nur zweier Typen sofort die dreifache Konkurrenz: Nahrung gegen
+Wohnraum um die erschlossene Fläche, beide gegen Holz um die Wildnis.
+
+Die Aufspaltung in **Ackerland und Bauland** kommt erst, wenn sie etwas trägt — etwa
+wenn Städte entstehen. Bis dahin wäre sie eine Unterscheidung ohne Unterschied.
+
+Wohnraum **belegt** seine Fläche, solange es steht, und gibt sie beim Verfall wieder
+frei — Kapazität nach E4, kein Verbrauch.
+
+**Projekte wandeln Typen um.** Es gibt nur eine Art Flächenprojekt:
+
+| Projekt | Wandelt |
+|---|---|
+| **Rodung** | Wildnis → erschlossene Fläche, dazu einmalig Holz |
+| **Landnahme** | unerschlossen → Wildnis |
+| später **Aufforstung** | erschlossene Fläche → Wildnis |
+| später **Bebauung** | Ackerland → Bauland |
+
+**Das erreichbare Gebiet ist gedeckelt.**
 
 ```
-Gebiet: 240 ha
-  Wald       ███████████████░░░░░  180 ha
-  Ackerland  ████░░░░░░░░░░░░░░░░   60 ha
+erreichbar   ████████████████░░░░░░░░   ← Deckel der Epoche
+erschlossen  ████████░░░░░░░░
+  Wildnis          ██████
+  erschl. Fläche   ██
 ```
 
-Zwei verschiedene wiederholbare Projekte:
+Landnahme läuft nur bis zum Deckel. Darüber hinaus geht es nur mit einer
+**Institution** — einem Projekt mit Regel-Wirkung nach E12:
 
-| | **Rodung** | **Landnahme** |
-|---|---|---|
-| Was passiert | Wald → Ackerland, **innerhalb** des Gebiets | Das **Gebiet selbst** wird größer |
-| Kosten | Arbeit | Arbeit, viel mehr |
-| Ergibt | Ackerland + einmalig Holz | Neue Fläche — **als Wald** |
-| Grenze | wenn kein Wald mehr steht | wenn es sich nicht mehr lohnt |
+| Institution | Hebt den Deckel auf |
+|---|---|
+| Stammesverband | die Region |
+| Nationalstaatsgründung | das Territorium |
+| Raumfahrt | das Sonnensystem |
+| Interstellare Fahrt | die Galaxis |
 
-**Rodung schafft kein Land — sie schichtet um.** Das macht die Malthus-Decke aus E7
-echt: Roden fühlt sich wie Wachstum an, ist aber ein Vorschuss. Ist der Wald weg, geht
-es nicht weiter und Intensivierung ist die einzige Antwort. Erzeugte Rodung
-unbegrenzt Land, gäbe es diese Wand nie und die Agrarrevolution wäre eine nette Option
-statt einer Notwendigkeit.
+Damit sind die großen Sprünge aus E10 kein Sonderfall mehr, sondern haben einen
+Mechanismus. **Das erreichbare Gebiet wird nicht gespeichert** — es ergibt sich aus
+Grundgebiet plus den erledigten Institutionsprojekten. Wie gut die Fläche einer neuen
+Stufe ist, gehört zum Deckel und ist Inhalt; eine Stufe kann besseres oder schlechteres
+Land bringen.
 
-Landnahme bringt neuen **Wald**, den man anschließend roden kann — zwei Entscheidungen,
-weil es zwei verschiedene Anstrengungen sind. Spielerisch besser als ein Schritt, weil
-neue Fläche *beides* ermöglicht: mehr Holzbasis oder mehr Acker.
+**Zwei Bremsen, eine weiche und eine harte:**
 
-**Neues Land wird schlechter, nicht teurer.** Jede Landnahme bringt Fläche, die einen
-festen Prozentsatz schlechter ist als die vorige. Ertrag = `Hektar × Güte ×
-Verfahrensertrag`.
+**Weich — die Güte fällt.** Das Beste wird zuerst genommen. Jede Landnahme bringt
+Fläche, die einen festen Prozentsatz schlechter ist als die vorige.
 
 | Landnahme | Güte |
 |---|---|
@@ -474,28 +501,47 @@ Verfahrensertrag`.
 | 10. | 0,60 |
 | 20. | 0,36 |
 
-*(Platzhalterzahlen, Balancing später.)* Güte statt Kosten aus drei Gründen: Es ist
-**Ricardo im Original** (Differentialrente handelt von Qualität, nicht von
-Erschließungskosten). Es erzeugt die **richtige Dynamik** — bei steigenden Kosten
-würde man einfach länger sparen, bei fallender Güte wird Expansion allmählich sinnlos
-und Intensivierung gewinnt durch Vergleich (E6). Und es **zahlt später doppelt**:
-Sobald es Geld gibt, werden Güteunterschiede zu Einkommensunterschieden — die
-Grundrente, die man sonst mühsam nachrüsten müsste.
+*(Platzhalterzahlen, Balancing später.)* Güte statt steigender Kosten aus drei Gründen:
+Es ist **Ricardo im Original** (Differentialrente handelt von Qualität, nicht von
+Erschließungskosten). Es erzeugt die richtige Dynamik — bei steigenden Kosten würde man
+einfach länger sparen, bei fallender Güte wird Expansion allmählich sinnlos und
+Intensivierung gewinnt durch Vergleich (E6). Und es zahlt später doppelt: Sobald es
+Geld gibt, werden Güteunterschiede zu Einkommensunterschieden — die Grundrente.
 
-Eine harte Obergrenze braucht es nicht; bei Güte 0,2 lohnt Landnahme von allein nicht
-mehr. Die Wand ist weich, aber sie steht.
+**Hart — der Deckel.** Irgendwann geht gar nichts mehr, und dann bleibt nur
+Intensivierung oder eine neue Institution. Die weiche Bremse macht die Entscheidung
+interessant, die harte macht sie alternativlos. Zusammen erzeugen sie den Kipppunkt aus
+E6 verlässlich, statt darauf zu hoffen.
+
+**Güte wirkt über die Sektoren, nicht über die Fläche.** Ein Hektar ist für Wohnraum
+ein Hektar; Bodenqualität beeinflusst den **Ertrag**, und Wohnraum hat keinen. Also
+erklärt jeder Sektor, wie stark die Güte in seinen Ertrag eingeht:
+
+| Sektor | Güte wirkt |
+|---|---|
+| Nahrung | stark |
+| Holz | mittel |
+| Wohnraum | gar nicht |
+
+Das ist eine Zahl in der Sektorkonfiguration (T3) und ökonomisch das Richtige: Ricardos
+Differentialrente handelt von **Ertragsunterschieden**, nicht von einer allgemeinen
+Landgüte. Die Güte selbst hängt am **Flächentyp**; werden Typen später gesplittet,
+bekommt jeder seine eigene Kurve.
 
 **Die Grenzgüte steht vor dem Klick da, nicht danach:**
 
 > **Landnahme** — 60 Arbeit
-> +20 ha Wald, Güte **0,77** *(dein Durchschnitt: 0,94)*
+> +20 ha Wildnis, Güte **0,77** *(dein Durchschnitt: 0,94)*
 
 Der Spieler sieht den abnehmenden Ertrag **am Rand**, bevor er ihn bezahlt — gute
-Bedienung und zugleich exakt das ökonomische Konzept: Entscheidungen fallen am Rand,
-nicht im Durchschnitt.
+Bedienung und zugleich das ökonomische Konzept: Entscheidungen fallen am Rand, nicht im
+Durchschnitt.
 
-Landnahme ist von Anfang an verfügbar, nur teuer. Solange Wald steht, ist Rodung
-offensichtlich besser. Sie **wartet** auf ihren Moment, statt freigeschaltet zu werden.
+**Benannte Vereinfachung:** Dass Wohnraum **guten Ackerboden** verbraucht, bilden wir
+nicht ab — Bauen nimmt Fläche durchschnittlicher Güte, weil wir nicht mitschreiben,
+welche Parzelle wer nutzt. Der Verlust an gutem Boden ist damit unterschätzt. Auflösbar,
+sobald Ackerland und Bauland getrennte Typen mit eigenen Güten sind; das braucht keine
+Buchführung über einzelne Parzellen, nur einen zweiten Typ.
 
 ### E14 — Startaufstellung
 
@@ -505,12 +551,12 @@ Holzwirtschaft, wenn Rang 2 unterdeckt ist — der Spieler erlebt eine Lieferket
 eine zu bedienen. *Vorleistungen gibt es zunächst nur für Wohnraum und für Projekte,
 nicht flächendeckend; Nahrung braucht weiterhin nur Land und Arbeit.*
 
-**Roden und Holz gewinnen sind zwei Dinge.** Rodung vernichtet Wald dauerhaft (E13);
-die **Holzwirtschaft** (Sektor) gewinnt laufend Holz aus stehendem Wald, ohne ihn zu
-verbrauchen. Zum Start gibt es genau **einen** Wirkungspfad auf den Waldbestand — nur
-Rodung verkleinert ihn. Übernutzung, Aufforstung und Nachwuchsraten kommen später.
-Daraus entsteht die erste sichtbare Zielkonkurrenz: **Fläche und Wald sind dasselbe
-Land**, und der Spieler sieht seine Entscheidung in der Welt statt nur in Zahlen.
+**Roden und Holz gewinnen sind zwei Dinge.** Rodung vernichtet Wildnis dauerhaft
+(E13); die **Holzwirtschaft** (Sektor) gewinnt laufend Holz aus stehender Wildnis, ohne
+sie zu verbrauchen. Zum Start gibt es genau **einen** Wirkungspfad auf den
+Wildnisbestand — nur Rodung verkleinert ihn. Übernutzung, Aufforstung und Nachwuchsraten
+kommen später. Daraus entsteht die erste sichtbare Zielkonkurrenz, und der Spieler sieht
+seine Entscheidung in der Welt statt nur in Zahlen.
 
 **Drei Projektstränge**, deren erster Schritt jeweils sofort machbar ist, alle ohne
 Geld begehbar:
@@ -786,6 +832,44 @@ zu genau einem Sektor. Zwei Ansprüche können nie gleichauf liegen.
 **Nichts davon wird gespeichert.** Die Zuteilung ist eine Rechnung innerhalb des Ticks,
 aus dem vorigen Zustand und der Konfiguration. Sie hinterlässt nur ihre Ergebnisse —
 Bestände, Fortschritt der Projekte.
+
+### E22 — Was im Zustand steht
+
+Regel: **gespeichert wird nur, was Geschichte hat.** Alles Berechenbare wird jeden Tick
+neu gerechnet und nirgends abgelegt. Das hält den Spielstand klein (T7) und verhindert,
+dass zwei Stellen dasselbe behaupten und auseinanderlaufen.
+
+**Gespeichert — acht Dinge:**
+
+| | |
+|---|---|
+| **Tickzähler** | |
+| **Zufallszustand** | nach T1 im Zustand, nie ein globaler Zufallsgenerator |
+| **Bestände** | eine Zahl je Bestand: Bevölkerung, Nahrung, Wohnraum, Holz — dazu eine je Flächentyp (E13), anfangs Wildnis und erschlossene Fläche |
+| **Zahl der Landnahmen** | daraus wird die Güte gerechnet (E13) |
+| **Produktivität** | mitgeführt |
+| **Arbeitsfähigkeit** | mitgeführt |
+| **Erledigte Projekte** | je Kennung, wie oft — deckt einmalige und wiederholbare gleichermaßen ab |
+| **Laufende Projekte** | je Projekt: Fortschritt, Position, pausiert ja/nein (E18) |
+
+**Warum Produktivität und Arbeitsfähigkeit gespeichert werden**, obwohl sie aus der
+Deckung folgen: Genau hier saß ein Zirkelschluss — Deckung braucht Produktion,
+Produktion braucht Arbeitsleistung, Arbeitsleistung braucht Produktivität,
+Produktivität braucht Deckung. Nach T2 wird der Kreis aufgetrennt, indem beide Faktoren
+mitgeführt und am Ende des Ticks aus der frisch berechneten Deckung fortgeschrieben
+werden. Sie sind damit auch der Ort, an dem später Gesundheit und Bildung einzahlen.
+
+**Abgeleitet — jeden Tick neu, nirgends abgelegt:**
+
+Köpfe (heute gleich der Bevölkerung, später aus den Kohorten) · Arbeitsvolumen = Köpfe ×
+Arbeitsfähigkeit · Arbeitsleistung = Arbeitsvolumen × Produktivität · **erreichbares
+Gebiet** (aus Grundgebiet und erledigten Institutionsprojekten, E13) · Güte des nächsten
+Landstücks und Durchschnittsgüte · Deckung je Rang · Auslastung · welches Verfahren wie
+stark läuft · Produktion · Geburten- und Sterberate · welche Projekte sichtbar und
+machbar sind · welche Verfahren freigeschaltet sind
+
+Die Liste ist kurz genug, dass ein Spielstand klein bleibt — im Wesentlichen ein Dutzend
+Zahlen plus zwei kleine Listen. Das bestätigt, was T7 vorausgesetzt hatte.
 
 ---
 
