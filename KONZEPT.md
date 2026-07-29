@@ -628,7 +628,62 @@ Projekt liefert nichts.
 Im Zustand je laufendem Projekt: **Fortschritt, Position in der Reihenfolge, pausiert
 ja/nein.**
 
-### E19 — Wie die Zuteilung rechnet
+### E19 — Wie Bevölkerungswachstum rechnet
+
+**Zwei Raten**, je Tick und je Kopf: **Geburtenrate** und **Sterberate**. Ihre Differenz
+verändert die Kopfzahl. Mehr nicht.
+
+**Jede Bedarfsstufe verschiebt eine der beiden Raten.** Sie erklärt in der
+Konfiguration, welche Rate sie betrifft und wie stark — bei voller Deckung gegenüber
+gar keiner. Dazwischen wird linear verrechnet. Für den Anfang ergibt sich aus E9:
+
+| Stufe | Verschiebt |
+|---|---|
+| 1 — Nahrung, überleben | Sterberate: bei Unterdeckung stark nach oben |
+| 2 — Dach | Sterberate leicht nach unten, Geburtenrate nach oben |
+| 3 — Nahrung, satt | Geburtenrate nach oben |
+
+**Linear reicht**, weil die nötige Nichtlinearität schon in der **Rangstruktur** steckt:
+Ein unterdeckter Rang 1 bedeutet Hunger, und das ist ein anderes Regime als „Rang 3
+fehlt". Die Ränge zerteilen den Raum bereits, also braucht es innerhalb einer Stufe
+keine Kurve. Das hält die Konfiguration bei zwei Zahlen je Stufe.
+
+**Der Gleichgewichtspunkt:** Rang 1 voll gedeckt und sonst nichts → Geburten = Tode,
+die Bevölkerung steht. Das legt zugleich die Grundwerte beider Raten fest — sie sind in
+diesem Zustand gleich groß. Damit ist der Malthus-Punkt aus E7 exakt definiert statt
+Gefühlssache.
+
+**Die Bevölkerung wird intern als Bruchzahl geführt** und gerundet angezeigt. Bei
+dreißig Menschen und kleinen Raten wäre eine ganzzahlige Rechnung sonst über viele
+Ticks bewegungslos und würde dann springen.
+
+**Scheitern an einer Schwelle, nicht bei null.** Fällt die Bevölkerung unter eine
+Mindestgröße, gilt die Siedlung als aufgegeben und der Lauf ist zu Ende.
+
+Das ist kein Zugeständnis an die Spielbarkeit, sondern fachlich das Richtigere: Eine
+Gemeinschaft unterhalb einer bestimmten Größe ist nicht überlebensfähig — keine
+Arbeitsteilung, kein Puffer gegen ein schlechtes Jahr, kein Ersatz für Ausfälle.
+**Mindestlebensfähige Größe** ist ein etablierter Begriff, und historisch wurden zu
+klein gewordene Siedlungen aufgegeben oder gingen in anderen auf. Bis auf den letzten
+Menschen zu rechnen wäre die unrealistischere Variante.
+
+Zugleich verhindert es, dass der Spieler auf einer winzigen Zahl festhängt, wo
+prozentuales Wachstum quälend langsam ist. **Die Schwelle muss sichtbar sein** — als
+Zone, auf die man zuläuft, nicht als Überraschung.
+
+Was nach dem Scheitern passiert, hängt an der offenen Frage, ob und wie das Spiel
+endet.
+
+**Kohorten später:** Das Modell ist der Ein-Kohorten-Fall eines allgemeinen
+Kohortenmodells, nicht eine Zahl mit Sonderregeln. Die Erweiterung besteht darin, dass
+aus der Zahl ein Vektor wird, die Raten je Gruppe gelten und ein Alterungsschritt
+dazukommt. Möglich ist das, weil die Raten **aus Regeln über der Deckung berechnet**
+werden (T3) statt fest im Code zu stehen: Aus „Rang 1 unterdeckt → Sterberate hoch"
+wird „→ Sterberate der Kleinkinder sehr stark, der Erwachsenen mäßig". Geschlechter
+sind derselbe Fall — eine Kohorte ist eine Gruppe mit eigenen Raten. Der Umstieg ist
+eine Schemamigration nach T7.
+
+### E20 — Wie die Zuteilung rechnet
 
 **Gierig, Rang für Rang, in Bündeln.**
 
@@ -1045,6 +1100,7 @@ Jede Mechanik braucht eine Entsprechung in der Lehre. Stand jetzt:
 | Projekte, Konsum gegen Investition | Produktionsmöglichkeitenkurve; intertemporale Wahl |
 | Verfall ungenutzter Arbeit | Post-Keynesianisch: nicht produzierter Output ist dauerhaft verloren |
 | Bevölkerung | Malthus; Unified Growth Theory (Galor/Weil) |
+| Mindestlebensfähige Größe | Demographie; minimum viable population |
 | Gestufte Bedarfshierarchie | Pasinetti; Georgescu-Roegen (1954) |
 | Ernährung → Produktivität | Effizienzlohntheorie (Leibenstein, Dasgupta/Ray); Fogel |
 | Köpfe × Arbeitsfähigkeit × Produktivität | Zerlegung der VGR; Arbeit in Effizienzeinheiten (Solow) |
