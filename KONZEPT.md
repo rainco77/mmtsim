@@ -104,6 +104,7 @@ Konfiguration, nie neue Mechanik.
 | **Verfallsrate** | Wie schnell zerfällt der Bestand? | Bestimmt, ob Puffer möglich sind (Pflege 100 %/Tick, Wohnraum sehr langsam) |
 | **Sättigung** | Wieviel braucht ein Mensch, bis genug ist? | Motor des Strukturwandels — Wachstum muss woandershin, wenn Grundbedarf gedeckt ist |
 | **Trägheit** | Wie lange von Entscheidung bis Wirkung? | Grund, warum Wirtschaftspolitik schwer ist |
+| **Empfindlichkeit** | Wie stark schlägt die Jahresgüte durch? | Wetter trifft Acker stark, Bau gar nicht (E24) |
 
 **Produktivität ist kein Sektormerkmal**, sondern Ergebnis der oberen Schichten (E2)
 und der verfügbaren Verfahren (E5).
@@ -890,7 +891,7 @@ dass zwei Stellen dasselbe behaupten und auseinanderlaufen.
 | | |
 |---|---|
 | **Tickzähler** | |
-| **Zufallszustand** | nach T1 im Zustand, nie ein globaler Zufallsgenerator |
+| **Zufallszustand** | Hauptseed plus je Strom ein Zählerstand (E25); nie ein globaler Generator |
 | **Bestände** | eine Zahl je Bestand: Bevölkerung, Nahrung, Wohnraum, Holz — dazu eine je Flächentyp (E13), anfangs Wildnis und erschlossene Fläche |
 | **Zahl der Landnahmen** | daraus wird die Güte gerechnet (E13) |
 | **Produktivität** | mitgeführt |
@@ -950,6 +951,123 @@ Voraussetzung dafür, dass E1 überhaupt umsetzbar ist.
 **Folge für alles Weitere:** Epochen brauchen im Modell gar nichts. Preise,
 Privatisierung, Banken und Außenhandel müssen sich nicht in ein Epochensystem
 einpassen, sondern nur in Projektwirkungen und Schalter.
+
+### E24 — Schwankung
+
+**Die Jahresgüte** — eine Zahl je Tick mit Mittelwert 1, auf die jeder Sektor mit seiner
+**eigenen Empfindlichkeit** reagiert:
+
+| Sektor | Empfindlichkeit |
+|---|---|
+| Nahrung | hoch |
+| Holz | gering |
+| Wohnraum (Bau) | keine |
+
+Ein gemeinsamer Wurf statt einer je Sektor, weil **Wetter gemeinsam ist**: Ein schlechtes
+Jahr trifft Acker und Waldwirtschaft zusammen, nur unterschiedlich stark. Bei
+unabhängigen Würfen wäre genau das unmöglich. Nebenbei ergibt es eine lesbare Zahl („ein
+schlechtes Jahr") statt eines Bündels unsichtbarer Störungen.
+
+Die Empfindlichkeit ist ein **viertes Sektormerkmal** neben Sättigung und Trägheit (E3)
+und wie die anderen reine Konfiguration (T3).
+
+**Sie wirkt nur auf Erträge, nicht auf den Verfall.** Gegen schwankenden Verfall plant
+niemand — es wäre Rauschen ohne Entscheidung, und Rauschen verdeckt in einem Lehrspiel,
+ob eine Entscheidung gewirkt hat. Angewandt wird sie multiplikativ in der
+Produktionsphase.
+
+**Die Verteilung hat einen langen linken Rand:** Mittelwert 1, eine Obergrenze, seltene
+starke Ausfälle nach unten. Das ist die empirisch richtige Form — Ernten haben eine
+biologische Obergrenze, aber nach unten kein Gegenstück; es gibt Missernten, aber keine
+Ernten mit dreifachem Ertrag. Eine symmetrische Streuung wäre die unrealistischere Wahl.
+
+Daraus folgt: **kein zweiter Mechanismus für Missernten.** Eine Missernte ist der linke
+Rand derselben Verteilung, kein eigenes Ereignissystem. Die genaue Kurve ist Balancing.
+
+**Der Erwartungswert bleibt unberührt.** Die Streuung verschiebt den konfigurierten
+Mittelwert nicht — damit bleibt er die Zahl, an der gedreht wird, und die Streuung ist ein
+zweiter, unabhängiger Regler.
+
+Trotzdem wird das Spiel **härter, nicht nur unruhiger**, und darin liegt der ökonomische
+Gehalt: **Verhungern ist nicht symmetrisch.** Eine schlechte Ernte kann Menschen töten,
+eine gute macht sie nicht doppelt lebendig. Bei gleichem Mittelwert ist mehr Streuung
+strikt schlechter. Genau das ist der Wert eines Puffers — und nach E19 kostet der etwas.
+Erst damit ist Vorratshaltung eine Abwägung statt einer Formalität.
+
+### E25 — Benannte Zufallsströme
+
+Ein **Hauptseed**, daraus mehrere unabhängige Ströme:
+
+| Strom | Wofür |
+|---|---|
+| `weather` | Jahresgüte für die inländische Produktion (E24) |
+| `events` | zufällige Ereignisse |
+| `foreign` | Weltmarktpreise, Wechselkurs |
+
+Der Zustand trägt den Hauptseed und **je Strom einen Zählerstand**:
+
+```
+random: { seed, draws: { weather: 47, events: 3 } }
+```
+
+Gezogen wird aus `hash(seed, stromname, zähler)` — unabhängige Ströme bei einem einzigen
+Seed.
+
+**Je Strom ein eigener Zähler, und das ist nicht Ordnungsliebe:** Ein neuer Strom darf die
+bestehenden nicht verschieben. Bei einem gemeinsamen Zähler würde jedes zusätzliche
+Ziehen — etwa wenn Ereignisse dazukommen — die ganze Wetterfolge verändern; jeder
+Balance-Lauf, jeder Spielstand und jeder Test verhielte sich anders, ohne dass eine Zahl
+angefasst wurde. Mit getrennten Zählern ist ein neuer Strom vollständig isoliert und
+sogar rückwärtskompatibel: Ein fehlender Zählerstand bedeutet „nie gezogen", also braucht
+es nicht einmal eine Migration nach T7.
+
+**Gleichlauf ist eine Entwurfsentscheidung, kein Zufall.** Zwei Dinge schwanken nur dann
+gemeinsam, wenn sie ausdrücklich denselben Strom benutzen. Der Wechselkurs darf nicht an
+der Getreideernte hängen.
+
+Die Regel aus T1 bleibt: kein `Math.random` in der Simulation, nur der gesäte Generator
+im Zustand. Der Linter prüft es.
+
+### E26 — Tests prüfen Mechanik, nicht Balance
+
+Mit dem Seed im Zustand ist `tick` eine reine Funktion. **Keine Toleranzen, keine
+Bandbreiten** — Toleranzen wären das Eingeständnis, den Zufall nicht zu kontrollieren.
+Getestet wird zweierlei:
+
+**Invarianten**, für jeden Seed und jeden Zustand: Fläche summiert sich auf das Gebiet,
+zugeteilte Arbeit übersteigt nie das Angebot, Deckung liegt in [0, 1], kein Bestand wird
+negativ, Verfall vermehrt nie. Sie überleben jede Zahlenänderung.
+
+**Mechanik**: *Fehlt Holz, pausiert das Projekt und verbraucht nichts.* *Reicht das Silo
+nicht, verfällt der Überhang mit der höheren Rate.* *Ist ein Rang durch Fläche begrenzt,
+wandert Arbeit zum nächsten.*
+
+**Vermieden werden Momentaufnahmen** wie „nach 100 Ticks ist die Bevölkerung 34,217".
+Deterministisch, aber sie brechen bei jeder Balance-Änderung und sagen nichts über die
+Absicht.
+
+### E27 — Balancing ist eine Messung
+
+**Derselbe Seed macht Vergleiche exakt:** Zwei Läufe unterscheiden sich ausschließlich
+durch die geänderte Zahl, die Würfe fallen identisch.
+
+**Viele Seeds machen sie belastbar:** Eine Balance, die bei Seed 42 trägt, kann bei Seed 7
+scheitern. Bei Sekundenbruchteilen je Lauf sind hundert Seeds kostenlos.
+
+Geprüft wird gegen Kriterien, die sich aus den Festlegungen ergeben — Zahlen aus einem
+Lauf, keine Eindrücke:
+
+| Kriterium | Woher |
+|---|---|
+| Wechselt der bindende Input im Verlauf? | E6 |
+| Beißt die Malthus-Falle und lässt wieder los? | E7, E20 |
+| Wird Intensivierung irgendwann besser als Expansion? | E6, E13 |
+| Kommt eine passive Strategie genauso weit wie eine aktive? | T4 |
+| Gibt es Zustände ohne Weg zurück? | E20 |
+| Überlebt eine kompetente Strategie, eine sorglose nicht? | belohnt Schwankung Können statt Glück |
+
+**Die Schwankung wird von Anfang an eingeschaltet.** Mit Puffern zu wirtschaften ist
+teurer als ohne; wer erst ohne austariert und sie später zuschaltet, macht alles zweimal.
 
 ---
 
@@ -1377,6 +1495,7 @@ Jede Mechanik braucht eine Entsprechung in der Lehre. Stand jetzt:
 | Verfall ungenutzter Arbeit | Post-Keynesianisch: nicht produzierter Output ist dauerhaft verloren |
 | Bevölkerung | Malthus; Unified Growth Theory (Galor/Weil) |
 | Mindestlebensfähige Größe | Populationsbiologie; minimum viable population |
+| Lagerung als Aktivität | Aktivitätsanalyse (Koopmans, von Neumann) |
 | Geometrischer Verfall | Perpetual-Inventory-Methode der Kapitalstockrechnung |
 | Kohorten bei Kapital | Jahrgangskapital |
 | Gestufte Bedarfshierarchie | Pasinetti; Georgescu-Roegen (1954) |
