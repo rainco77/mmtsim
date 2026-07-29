@@ -903,9 +903,6 @@ funktionieren. Bei Kapazitätswirkungen ist geklärt, dass sie negativ sein dür
 für Regeln stand es nirgends — und ohne es kann kein Hebel je verschwinden. Es ist die
 Voraussetzung dafür, dass E1 überhaupt umsetzbar ist.
 
-**In der Oberfläche sieht das aus wie bei Paperclips:** Eine neue Spalte kommt dazu, die
-alte wird vereinfacht oder verschwindet.
-
 **Folge für alles Weitere:** Epochen brauchen im Modell gar nichts. Preise,
 Privatisierung, Banken und Außenhandel müssen sich nicht in ein Epochensystem
 einpassen, sondern nur in Projektwirkungen und Schalter.
