@@ -76,7 +76,7 @@ kollektive Lesart kostet mechanisch nichts und ist unangreifbar.
 
 **Untere Schicht — die reale Wirtschaft.** Knapp sind **reale Ressourcen**: die Zeit
 der Menschen, Fläche, Rohstoffe, Anlagen, Energie. Welche davon *bindet*, hängt vom
-Sektor und von der Epoche ab (→ E6). Am Anfang ist es Fläche, kurz darauf Arbeit.
+Branche und von der Epoche ab (→ E6). Am Anfang ist es Fläche, kurz darauf Arbeit.
 
 > Formulierungen wie „nur die Zeit der Menschen ist knapp" sind bewusst verworfen. Das
 > wäre faktisch eine Arbeitswertlehre und würde sofort als Parteinahme eingeordnet
@@ -94,9 +94,9 @@ Bei „können wir uns X leisten?" ist die Antwort immer dieselbe wie in Monat 1
 **was bindet gerade, und ist dort Luft?** Nie „ist Geld da?". Und die Grenze bleibt
 ehrlich: ohne Luft wird es teurer statt mehr.
 
-### E3 — Sektormerkmale
+### E3 — Branchenmerkmale
 
-Alle Sektoren laufen über dasselbe Schema. Ein neuer Sektor ist eine Zeile
+Alle Branchen laufen über dasselbe Schema. Ein neuer Branche ist eine Zeile
 Konfiguration, nie neue Mechanik.
 
 | Merkmal | Frage | Trägt im Spiel |
@@ -106,7 +106,7 @@ Konfiguration, nie neue Mechanik.
 | **Trägheit** | Wie lange von Entscheidung bis Wirkung? | Grund, warum Wirtschaftspolitik schwer ist |
 | **Empfindlichkeit** | Wie stark schlägt die Jahresgüte durch? | Wetter trifft Acker stark, Bau gar nicht (E24) |
 
-**Produktivität ist kein Sektormerkmal**, sondern Ergebnis der oberen Schichten (E2)
+**Produktivität ist keine Branchenmerkmal**, sondern Ergebnis der oberen Schichten (E2)
 und der verfügbaren Verfahren (E5).
 
 **Elastizität ist ebenfalls kein Merkmal**, sondern ein Ergebnis (→ E5). Als feste
@@ -115,7 +115,7 @@ Zeithorizont, sie ist keine Konstante.
 
 ### E4 — Inputs: Kapazität vs. Vorleistung
 
-Sektoren haben **Inputs**, nicht nur Arbeit. Zwei Arten:
+Branchen haben **Inputs**, nicht nur Arbeit. Zwei Arten:
 
 **Kapazität** — wird **belegt**, nicht verbraucht. Land, Gebäude, Maschinen. Steht
 während der Produktion zur Verfügung und ist danach wieder frei. Verfällt über die
@@ -126,8 +126,8 @@ Produktion, muss jeden Tick neu beschafft werden.
 
 Das ist die Trennung der Volkswirtschaftlichen Gesamtrechnung; der zweite Begriff
 heißt dort wörtlich *Vorleistungen*. Lieferketten sind damit nichts anderes als die
-**Input-Output-Tabelle nach Leontief** — jeder Sektor bezieht Vorleistungen von
-anderen Sektoren.
+**Input-Output-Tabelle nach Leontief** — jede Branche bezieht Vorleistungen von
+anderen Branchen.
 
 Zwei Dinge fallen gratis ab:
 
@@ -142,7 +142,7 @@ und bringt dann sofort ihre eigene Verwundbarkeit mit.
 
 ### E5 — Verfahren mit Rückfallebene
 
-Jeder Sektor hat mehrere **Verfahren**, jedes mit eigenen Inputs und eigener
+Jede Branche hat mehrere **Verfahren**, jedes mit eigenen Inputs und eigener
 Produktivität. Beispiel Nahrung im Endausbau:
 
 | Verfahren | Inputs | Ertrag je Arbeitseinheit |
@@ -162,7 +162,7 @@ Folgen:
 
 - **Auslastung geht nie über 100 %.** Was nicht mehr in die Maschinen passt, läuft auf
   der Rückfallebene. Kein Sonderfall.
-- **Der harte Stopp bleibt möglich**, ohne Extramerkmal: ein Sektor ohne Rückfallebene
+- **Der harte Stopp bleibt möglich**, ohne Extramerkmal: eine Branche ohne Rückfallebene
   (Chipfertigung) steht ohne Energie einfach still.
 - **Elastizität ist definiert**: elastisch, solange ein besseres Verfahren noch Luft
   hat; unelastisch, wenn alles auf der schlechtesten Stufe läuft und der feste Faktor
@@ -193,7 +193,7 @@ Reicht das Silo für 200 Einheiten und liegen 300 da, verfallen 200 mit 1 % und 
 
 **Ein Verfahren hat also Inputs, eine Rückfallposition und ein Ergebnis; das Ergebnis
 ist entweder eine Produktion oder eine Verfallsrate.** Und ein Verfahren gehört zu dem,
-worauf es wirkt: ein Produktionsverfahren zu einem **Sektor**, ein Lagerverfahren zu
+worauf es wirkt: ein Produktionsverfahren zu einem **Branche**, ein Lagerverfahren zu
 einem **Bestand**.
 
 Das ist kein Kunstgriff: In der Aktivitätsanalyse ist **Lagerung eine Aktivität wie jede
@@ -282,13 +282,13 @@ Gründe:
 
 Stattdessen wirkt Unterdeckung **konkret auf reale Größen** — Sterberate,
 Geburtenrate, Arbeitsfähigkeit, Produktivität, verfügbare Verfahren. Wo genau, hängt an der
-Bedarfsstufe, nicht am Sektor als Ganzem (→ E9).
+Bedarfsstufe, nicht an der Branche als Ganzer (→ E9).
 
-### E9 — Bedarf ist gestuft und rangiert über alle Sektoren
+### E9 — Bedarf ist gestuft und rangiert über alle Branchen
 
 Bedarf ist nicht „Anzahl × fester Wert pro Kopf" — das widerspräche der Sättigung
 (E3) und machte Strukturwandel unmöglich. Stattdessen gibt es **eine Rangliste von
-Bedarfsstufen über alle Sektoren hinweg**:
+Bedarfsstufen über alle Branchen hinweg**:
 
 | Rang | Stufe | Menge pro Kopf |
 |---|---|---|
@@ -350,24 +350,24 @@ und **Fogel** (Nobelpreis) zu Ernährung und Wachstum.
 
 | | Kostet | Ergebnis |
 |---|---|---|
-| **Sektorbetrieb** | jeden Tick | Deckung einer Bedarfsstufe (E9) — teilt sich **selbst** zu, von unten nach oben durch die Ränge |
+| **Branchenbetrieb** | jeden Tick | Deckung einer Bedarfsstufe (E9) — teilt sich **selbst** zu, von unten nach oben durch die Ränge |
 | **Projekt** | einmalig | Kapazität oder Wissen |
 
 Mehr Typen gibt es nicht. Insbesondere sind **Politikfelder kein eigener Typ**:
-Bildung ist ein Sektor mit Kapazität (Schulgebäude), Verfahren, Inputs und einer
+Bildung ist eine Branche mit Kapazität (Schulgebäude), Verfahren, Inputs und einer
 Bedarfsstufe. Was dort jeden Tick Arbeit kostet, sind die Lehrer — laufender
-Sektorbetrieb, genau wie Bauern in der Landwirtschaft. Grundschule → weiterführende
+Branchenbetrieb, genau wie Bauern in der Landwirtschaft. Grundschule → weiterführende
 Schule → Universität sind Projekte, die Kapazität erzeugen, und irgendwann braucht man
 viele Universitäten, genau wie viele Mühlen. „Politikfeld" ist kein Mechanismus,
-sondern nur ein **Name für einen Sektor, dessen Leistung öffentlich bereitgestellt
+sondern nur ein **Name für eine Branche, deren Leistung öffentlich bereitgestellt
 wird**.
 
 **Ein Projekt ist Arbeit rein, Ergebnis raus.** Genaueres Schema in E13.
 
 Die Trennlinie zwischen beidem ist **Konsumgut vs. Produktionsmittel**: Eine Hütte
-deckt einen Bedarfsrang, also ist sie Sektorproduktion und teilt sich selbst zu. Eine
-Mühle ist Input für einen Sektor, also ist sie ein Projekt. Das trägt bis ans Ende —
-Wohnungen bleiben immer Sektorproduktion, auch als Plattenbau.
+deckt einen Bedarfsrang, also ist sie Branchenproduktion und teilt sich selbst zu. Eine
+Mühle ist Input für eine Branche, also ist sie ein Projekt. Das trägt bis ans Ende —
+Wohnungen bleiben immer Branchenproduktion, auch als Plattenbau.
 
 **Der Forschungsbaum ist nichts Eigenes**, sondern schlicht die Liste der verfügbaren
 Projekte. Ein Wissensprojekt schaltet weitere Projekte frei.
@@ -407,7 +407,7 @@ ein Übergang zählt: von Befehl zu Kauf (E11).*
 Fläche gehört der Siedlung. Ohne Tausch ist Eigentum keine sinnvolle Kategorie — der
 Anfang bleibt damit simpel.
 
-**Sobald Geld existiert, wird Eigentum pro Sektor zur Entscheidung.** Bei privatem
+**Sobald Geld existiert, wird Eigentum pro Branche zur Entscheidung.** Bei privatem
 Eigentum baut der Spieler nicht mehr selbst; die Menschen bauen Mühlen, wenn es sich
 lohnt.
 
@@ -453,8 +453,8 @@ das könnte kein Hebel je verschwinden, was E1 verlangt (→ E23).
 |---|---|---|
 | **+ Kapazität** | Hütten, Mühle, Universität | ständig |
 | **+ Verfahren** | Fruchtwechsel, Pflug (E5) | häufig |
-| **+ Sektor** | Bildung existiert jetzt, mit eigenen Bedarfsrängen | selten |
-| **+ Regel** | Geld existiert · Sektoren sind privatisierbar · neuer Hebel | **sehr selten** |
+| **+ Branche** | Bildung existiert jetzt, mit eigenen Bedarfsrängen | selten |
+| **+ Regel** | Geld existiert · Branchen sind privatisierbar · neuer Hebel | **sehr selten** |
 
 Der letzte Typ ist die Institution aus E1 — der, der die Oberfläche verändert. Die
 Geldeinführung ist ein Projekt mit *Regel*-Wirkung, das anschließend Privatisierung
@@ -471,7 +471,7 @@ laute Momente.**
 
 ### E13 — Fläche
 
-**Fläche hat Typen.** Ein Sektor verlangt einen bestimmten Typ als Kapazitätsinput (E4):
+**Fläche hat Typen.** Eine Branche verlangt einen bestimmten Typ als Kapazitätsinput (E4):
 
 | Typ | Wer ihn braucht |
 |---|---|
@@ -548,17 +548,17 @@ Intensivierung oder eine neue Institution. Die weiche Bremse macht die Entscheid
 interessant, die harte macht sie alternativlos. Zusammen erzeugen sie den Kipppunkt aus
 E6 verlässlich, statt darauf zu hoffen.
 
-**Güte wirkt über die Sektoren, nicht über die Fläche.** Ein Hektar ist für Wohnraum
+**Güte wirkt über die Branchen, nicht über die Fläche.** Ein Hektar ist für Wohnraum
 ein Hektar; Bodenqualität beeinflusst den **Ertrag**, und Wohnraum hat keinen. Also
-erklärt jeder Sektor, wie stark die Güte in seinen Ertrag eingeht:
+erklärt jede Branche, wie stark die Güte in ihren Ertrag eingeht:
 
-| Sektor | Güte wirkt |
+| Branche | Güte wirkt |
 |---|---|
 | Nahrung | stark |
 | Holz | mittel |
 | Wohnraum | gar nicht |
 
-Das ist eine Zahl in der Sektorkonfiguration (T3) und ökonomisch das Richtige: Ricardos
+Das ist eine Zahl in der Branchenkonfiguration (T3) und ökonomisch das Richtige: Ricardos
 Differentialrente handelt von **Ertragsunterschieden**, nicht von einer allgemeinen
 Landgüte. Die Güte selbst hängt am **Flächentyp**; werden Typen später gesplittet,
 bekommt jeder seine eigene Kurve.
@@ -580,14 +580,14 @@ Buchführung über einzelne Parzellen, nur einen zweiten Typ.
 
 ### E14 — Startaufstellung
 
-**Drei Sektoren**: Nahrung, Wohnraum, Holz. Alle teilen sich selbst zu (E10). Wohnraum
+**Drei Branchen**: Nahrung, Wohnraum, Holz. Alle teilen sich selbst zu (E10). Wohnraum
 braucht **Holz als Vorleistung**, also zieht das System von allein Arbeit in die
 Holzwirtschaft, wenn Rang 2 unterdeckt ist — der Spieler erlebt eine Lieferkette, ohne
 eine zu bedienen. *Vorleistungen gibt es zunächst nur für Wohnraum und für Projekte,
 nicht flächendeckend; Nahrung braucht weiterhin nur Land und Arbeit.*
 
 **Roden und Holz gewinnen sind zwei Dinge.** Rodung vernichtet Wildnis dauerhaft
-(E13); die **Holzwirtschaft** (Sektor) gewinnt laufend Holz aus stehender Wildnis, ohne
+(E13); die **Holzwirtschaft** (Branche) gewinnt laufend Holz aus stehender Wildnis, ohne
 sie zu verbrauchen. Zum Start gibt es genau **einen** Wirkungspfad auf den
 Wildnisbestand — nur Rodung verkleinert ihn. Übernutzung, Aufforstung und Nachwuchsraten
 kommen später. Daraus entsteht die erste sichtbare Zielkonkurrenz, und der Spieler sieht
@@ -599,15 +599,15 @@ Geld begehbar:
 | Nahrung | Wohnraum | Holz |
 |---|---|---|
 | Fruchtwechsel | Fachwerk | Bessere Äxte |
-| ↳ Pflug *(braucht Holz)* | ↳ Ziegel *(neuer Sektor Lehm)* | ↳ Forstwirtschaft |
+| ↳ Pflug *(braucht Holz)* | ↳ Ziegel *(neuer Branche Lehm)* | ↳ Forstwirtschaft |
 | ↳ Wassermühle *(+ Mühle bauen)* | | |
 
 Dazu **Rodung** und **Landnahme** als dauerhaft wiederholbare Projekte (E13).
 
-Leitsatz für die Dosierung: **Projekte sind der Spaß, Sektoren sind die Leserei.** Ein
-Projekt mehr ist eine Entscheidung mehr; ein Sektor mehr ist eine Tabellenzeile mehr,
+Leitsatz für die Dosierung: **Projekte sind der Spaß, Branchen sind die Leserei.** Ein
+Projekt mehr ist eine Entscheidung mehr; eine Branche mehr ist eine Tabellenzeile mehr,
 die verstanden werden muss, bevor irgendetwas entschieden werden darf. Also viele
-kleinteilige Projekte von Anfang an, drei Sektoren am Anfang, weitere langsam.
+kleinteilige Projekte von Anfang an, drei Branchen am Anfang, weitere langsam.
 
 Der Reiz der ersten halben Stunde entsteht daraus, dass **der Engpass wandert**: Erst
 fehlt Nahrung → roden. Dann fehlt Wohnraum → mehr Holz. Dann fehlt Wald, weil zu viel
@@ -615,7 +615,7 @@ gerodet wurde → Forstwirtschaft oder Ziegel. Dann fehlt Ackerland, weil der Wa
 geschont wird → Fruchtwechsel statt Rodung. Das ist E6 in klein, viermal, jedes Mal
 mit einer anderen Antwort.
 
-*Wackelkandidat:* **Ziegel** bringt einen vierten Sektor sehr früh. Bleibt vorerst
+*Wackelkandidat:* **Ziegel** bringt einen vierten Branche sehr früh. Bleibt vorerst
 drin, aber als Erstes wieder heraus, falls der Anfang zäh wirkt.
 
 ### E15 — Keine Benotung
@@ -651,7 +651,7 @@ nicht, weil sie weniger kostet, sondern weil mehr geleistet wird.
 | | Wirkt auf | Beispiel |
 |---|---|---|
 | **Produktivität** | die Arbeitsleistung insgesamt, überall | Bildung, Gesundheit, Ernährung |
-| **Verfahren** (E5) | den Ertrag je Arbeitsleistung **in einem Sektor** | Fruchtwechsel, bessere Äxte, Wassermühle |
+| **Verfahren** (E5) | den Ertrag je Arbeitsleistung **in einer Branche** | Fruchtwechsel, bessere Äxte, Wassermühle |
 
 Bessere Äxte machen Holz schneller verfügbar — sie senken **nicht** die Holzkosten
 einer Mühle. Das eine ist Humankapital, das andere Technik; sie multiplizieren sich.
@@ -874,7 +874,7 @@ Es gibt keinen Freiheitsgrad, über den getrennt zu entscheiden wäre. Läuft ei
 aus, greift die Rückfallebene aus E5, nicht eine eigene Zuteilungsregel.
 
 **Gleichstand gibt es nicht.** Die Rangliste ist streng geordnet, und jeder Rang gehört
-zu genau einem Sektor. Zwei Ansprüche können nie gleichauf liegen.
+zu genau einer Branche. Zwei Ansprüche können nie gleichauf liegen.
 
 **Nichts davon wird gespeichert.** Die Zuteilung ist eine Rechnung innerhalb des Ticks,
 aus dem vorigen Zustand und der Konfiguration. Sie hinterlässt nur ihre Ergebnisse —
@@ -929,7 +929,7 @@ bereits ausdrückbar:
 
 | Was die Epoche bringt | Wirkungstyp aus E12 |
 |---|---|
-| Neue Sektoren | + Sektor |
+| Neue Branchen | + Branche |
 | Neue Verfahren | + Verfahren |
 | Mehr erreichbares Gebiet | + Kapazität (E13) |
 | Neue Regeln und Hebel | + Regel |
@@ -954,21 +954,21 @@ einpassen, sondern nur in Projektwirkungen und Schalter.
 
 ### E24 — Schwankung
 
-**Die Jahresgüte** — eine Zahl je Tick mit Mittelwert 1, auf die jeder Sektor mit seiner
+**Die Jahresgüte** — eine Zahl je Tick mit Mittelwert 1, auf die jede Branche mit ihrer
 **eigenen Empfindlichkeit** reagiert:
 
-| Sektor | Empfindlichkeit |
+| Branche | Empfindlichkeit |
 |---|---|
 | Nahrung | hoch |
 | Holz | gering |
 | Wohnraum (Bau) | keine |
 
-Ein gemeinsamer Wurf statt einer je Sektor, weil **Wetter gemeinsam ist**: Ein schlechtes
+Ein gemeinsamer Wurf statt einer je Branche, weil **Wetter gemeinsam ist**: Ein schlechtes
 Jahr trifft Acker und Waldwirtschaft zusammen, nur unterschiedlich stark. Bei
 unabhängigen Würfen wäre genau das unmöglich. Nebenbei ergibt es eine lesbare Zahl („ein
 schlechtes Jahr") statt eines Bündels unsichtbarer Störungen.
 
-Die Empfindlichkeit ist ein **viertes Sektormerkmal** neben Sättigung und Trägheit (E3)
+Die Empfindlichkeit ist ein **viertes Branchenmerkmal** neben Sättigung und Trägheit (E3)
 und wie die anderen reine Konfiguration (T3).
 
 **Sie wirkt nur auf Erträge, nicht auf den Verfall.** Gegen schwankenden Verfall plant
@@ -1196,7 +1196,7 @@ persistiert.
 
 ### T3 — Inhalt ist Daten, die Engine interpretiert sie
 
-Sektoren, Verfahren, Projekte, Bedarfsränge, Kurven — alles Konfiguration, **ohne Code
+Branchen, Verfahren, Projekte, Bedarfsränge, Kurven — alles Konfiguration, **ohne Code
 darin**:
 
 ```ts
@@ -1261,7 +1261,7 @@ ausgelieferten Spiels.
 
 **`derive(state, config)` liefert die abgeleiteten Größen als Daten** — die Liste aus
 E22: Köpfe, Arbeitsvolumen, Arbeitsleistung, erreichbares Gebiet, Güte, Deckung je Rang,
-Auslastung, laufendes Verfahren je Sektor, Produktion, Geburten- und Sterberate,
+Auslastung, laufendes Verfahren je Branche, Produktion, Geburten- und Sterberate,
 sichtbare und machbare Projekte, und **welcher Input bindet**.
 
 Das Letzte ist der wichtigste Wert: Es prüft E6 (der Engpass wandert) direkt. Bindet
@@ -1315,7 +1315,7 @@ test("forest + farmland = total area", ...)
 
 | Konzept | Code |
 |---|---|
-| Sektor | `Sector` |
+| Branche | `Sector` |
 | Verfahren | `Process` |
 | Bedarfsrang | `NeedTier` |
 | Deckung | `coverage` |
@@ -1350,7 +1350,7 @@ soll, ist offen. Festgelegt wird nur, was einen späteren Umbau verhindert:
 
 **1. Der Zustand ist ein einfacher, serialisierbarer Wert; der Inhalt steckt nicht
 drin.** Gespeichert wird nur, was sich beim Spielen ändert — Bevölkerung, Bestände,
-erledigte Projekte als Kennungen, Zuteilungen, Zufallszustand, Tick. Sektoren,
+erledigte Projekte als Kennungen, Zuteilungen, Zufallszustand, Tick. Branchen,
 Projekte und Balancing-Zahlen gehören zum Programm. Damit bleiben Stände klein und
 **Balance-Änderungen werden automatisch übernommen**, statt Teststände zu zerstören.
 
@@ -1426,9 +1426,9 @@ Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es dranko
 
 - **Volkswirtschaftliche Kennzahlen.** Welche sind je Entwicklungsstufe sinnvoll?
   Ändert sich vermutlich mit dem Fortschritt.
-- **Prognose.** Der Spieler braucht Vorausschau, um bei **trägen** Sektoren
+- **Prognose.** Der Spieler braucht Vorausschau, um bei **trägen** Branchen
   rechtzeitig zu handeln — er muss sehen können, dass Wohnraum knapp *werden wird*.
-- **Sektoren ohne Überlebensbezug** — Kultur, Freizeit. Nach der Grundregel in E9
+- **Branchen ohne Überlebensbezug** — Kultur, Freizeit. Nach der Grundregel in E9
   muss jede Bedarfsstufe in eine reale Größe zurückzahlen. Für Kultur ist unklar,
   worin. Bloße Legitimität reicht als Begründung nicht; wird bei den Politikfeldern
   geklärt.
@@ -1454,24 +1454,24 @@ Technisch noch offen:
 
 - **Wohlstandsjahre** (monoton steigende Leitzahl aus Bevölkerung × Deckung). Die
   Zeit läuft ohnehin hoch, und Siedlungsgröße ist die ehrlichere Erfolgszahl.
-- **Fluss vs. Bestand als eigenes Sektormerkmal.** Ein Haus ist einfach langsamer
+- **Fluss vs. Bestand als eigenes Branchenmerkmal.** Ein Haus ist einfach langsamer
   Verfall plus hohe Trägheit.
-- **Elastizität als Sektormerkmal.** Fachlich falsch als Konstante; entsteht jetzt aus
+- **Elastizität als Branchenmerkmal.** Fachlich falsch als Konstante; entsteht jetzt aus
   den Verfahren (E5).
-- **„Zwingend vs. ersetzbar" als Attribut an der Kante Sektor↔Input.** Kein
+- **„Zwingend vs. ersetzbar" als Attribut an der Kante Branche↔Input.** Kein
   Ja/Nein — der Effekt entsteht aus der Rückfallebene (E5).
 - **„Nur Arbeit ist knapp".** Wäre Arbeitswertlehre und würde die Malthus-Dynamik
   mechanisch unmöglich machen.
 - **Zufriedenheit als Zustandsgröße.** Keine volkswirtschaftliche Größe, verdoppelt
   die Deckung und wäre eine Benotung durch die Hintertür (E8).
-- **„Dringlichkeit" als Sektormerkmal.** Ersetzt durch die konkrete Angabe je Sektor,
+- **„Dringlichkeit" als Branchenmerkmal.** Ersetzt durch die konkrete Angabe je Branche,
   worauf seine Unterdeckung real wirkt (E8).
 - **Regler „Bedarf ↔ Zukunft".** Ersetzt durch Projekte (E10) — konkreter, und der
   Übergang zum Geldkauf von Arbeit wird dadurch scharf statt weich.
 - **Gemeinschaftsarbeit vs. Fron als eigene Stufen.** Ohne mechanischen Unterschied.
-- **Politikfelder als eigener Typ neben Projekten.** Politikfelder sind Sektoren (E10).
+- **Politikfelder als eigener Typ neben Projekten.** Politikfelder sind Branchen (E10).
 - **„Hütten bauen" als Projekt.** Kategorienfehler — ein Dach deckt Rang 2, ist also
-  Sektorproduktion (E10).
+  Branchenproduktion (E10).
 - **Steigende Erschließungskosten** als Bremse der Expansion. Ersetzt durch fallende
   Grenzgüte (E13), die dem Ricardo-Anker entspricht und die bessere Dynamik erzeugt.
 
@@ -1511,7 +1511,12 @@ Jede Mechanik braucht eine Entsprechung in der Lehre. Stand jetzt:
 - **Deckung** = Produktion ÷ Bedarf. *Kommt bei den Menschen genug an?*
 - **Auslastung** = wie stark die **Kapazitätsinputs** belegt sind. *Ginge mehr, wenn
   mehr nachgefragt würde?* Nie über 100 % (E5).
-- **Verfahren** = eine Produktionsweise eines Sektors, mit eigenen Inputs und eigener
+- **Branche** = wo produziert wird: Nahrung, Wohnraum, Holz.
+- **Sektor** = wer ein Konto hat und entscheidet: Haushalte, Zentralinstanz, Staat,
+  Unternehmen, Banken, Ausland. In der VGR heißt das **institutionelle Einheit**; „Sektor"
+  ist dort ebenfalls die Kontoseite, und es ist auch das Wort, das in MMT-Texten
+  („Sektorbilanzen", „sektorale Salden") verwendet wird.
+- **Verfahren** = eine Produktionsweise einer Branche, mit eigenen Inputs und eigener
   Produktivität.
 - **Vorleistung** = Input, der in der Produktion verbraucht wird.
 - **Kapazität** = Input, der belegt und wieder frei wird.
