@@ -144,7 +144,7 @@ und bringt dann sofort ihre eigene Verwundbarkeit mit.
 Jeder Sektor hat mehrere **Verfahren**, jedes mit eigenen Inputs und eigener
 Produktivität. Beispiel Nahrung im Endausbau:
 
-| Verfahren | Inputs | Ertrag je Arbeitsmonat |
+| Verfahren | Inputs | Ertrag je Arbeitseinheit |
 |---|---|---|
 | Maschinell | Land, Maschinen, Energie, Dünger | 40 |
 | Pfluggespann | Land, Zugtiere, Futter | 8 |
@@ -248,7 +248,7 @@ Gründe:
   Hintertür, deren Formel wir festlegen müssten — also unsere Politik.
 
 Stattdessen wirkt Unterdeckung **konkret auf reale Größen** — Sterberate,
-Geburtenrate, Arbeitsfähigkeit, verfügbare Verfahren. Wo genau, hängt an der
+Geburtenrate, Arbeitszeit je Kopf, Produktivität, verfügbare Verfahren. Wo genau, hängt an der
 Bedarfsstufe, nicht am Sektor als Ganzem (→ E9).
 
 ### E9 — Bedarf ist gestuft und rangiert über alle Sektoren
@@ -276,16 +276,16 @@ zurückzahlt, existiert nicht als Stufe.** Für den Spielanfang:
 |---|---|
 | 1 — Nahrung, überleben | Unterdeckung → Sterberate steigt. Bei 100 % ist die Bevölkerung stabil, mehr nicht. |
 | 2 — Dach | Senkt Sterberate weiter, hebt Geburtenrate |
-| 3 — Nahrung, satt | Hebt Geburtenrate **und Arbeitsfähigkeit** (Arbeitsmonate pro Kopf) |
+| 3 — Nahrung, satt | Hebt Geburtenrate **und Produktivität** |
 
 Der **halbe Erfolg** von Rang 3 trägt die gesamte Frühphase: Die höhere Geburtenrate
 frisst sich selbst auf (mehr Menschen auf gleicher Fläche → sinkender Ertrag pro Kopf
-→ zurück Richtung Rang 1, das ist Malthus). Die höhere **Arbeitsfähigkeit ist dagegen
+→ zurück Richtung Rang 1, das ist Malthus). Die höhere **Produktivität ist dagegen
 pro Kopf** und wird vom Bevölkerungswachstum *nicht* aufgefressen — ein dauerhafter
 realer Gewinn. Der Spieler erlebt: „Ich stehe wieder auf Kante, aber irgendwas ist
 trotzdem besser geworden." Genau dieser halbe Erfolg treibt ihn zur Produktivität.
 
-Arbeitsfähigkeit ist **kein neuer Zustand**, sondern jeden Tick aus der Deckung
+Die Produktivität ist **kein neuer Zustand**, sondern jeden Tick aus der Deckung
 abgeleitet (konform zur Leitregel in E7).
 
 Weitere Folgen:
@@ -308,7 +308,7 @@ Anker: **Pasinettis** hierarchische Bedürfnisstruktur mit Sättigung — der
 Standardweg, Strukturwandel endogen zu erzeugen; vorher **Georgescu-Roegen**
 (Hierarchie der Bedürfnisse, 1954). Ausdrücklich *nicht* Maslow: die Ordnung ist
 ökonomisch begründet, nicht psychologisch. Die Wirkung von Ernährung auf
-Arbeitsfähigkeit: ernährungsbasierte Effizienzlohntheorie (Leibenstein; Dasgupta/Ray)
+Produktivität: ernährungsbasierte Effizienzlohntheorie (Leibenstein; Dasgupta/Ray)
 und **Fogel** (Nobelpreis) zu Ernährung und Wachstum.
 
 **Zu Spielbeginn gibt es genau zwei Ränge**: überleben und ein Dach.
@@ -348,7 +348,7 @@ abziehen, an dem sie unter Rang 1 fällt — dann sterben Menschen oder wandern 
 Grenze ist keine Spielregel, sie fällt aus dem Modell. Ungenutzte Arbeit **verfällt
 sichtbar** und ist nicht nachholbar:
 
-> *Monat 34 — 8 Arbeitsmonate ungenutzt verfallen.*
+> *8 Arbeitseinheiten ungenutzt verfallen.*
 
 Das ist die Arbeitslosigkeits-Intuition, lange bevor das Wort fällt. Anker: Konsum-
 Investitions-Abwägung und Produktionsmöglichkeitenkurve; der Verfall ungenutzter
@@ -487,7 +487,7 @@ mehr. Die Wand ist weich, aber sie steht.
 
 **Die Grenzgüte steht vor dem Klick da, nicht danach:**
 
-> **Landnahme** — 60 AM
+> **Landnahme** — 60 Arbeit
 > +20 ha Wald, Güte **0,77** *(dein Durchschnitt: 0,94)*
 
 Der Spieler sieht den abnehmenden Ertrag **am Rand**, bevor er ihn bezahlt — gute
@@ -543,14 +543,99 @@ Es gibt am Ende kein Urteil und keine Punktzahl über die Spielweise. Kennzahlen
 beschreiben, sie bewerten nicht. Sobald das Spiel Gleichheit oder Preisstabilität
 benotet, benotet es Politik und die Neutralität ist verloren.
 
-### E16 — Wie die Zuteilung rechnet
+### E16 — Arbeit: drei Faktoren, zwei abgeleitete Größen
+
+```
+Köpfe  ×  Arbeitszeit je Kopf   =  Arbeitsvolumen
+Arbeitsvolumen  ×  Produktivität  =  Arbeitsleistung
+```
+
+Gespeichert werden nur die **drei Faktoren**, die beiden Produkte sind abgeleitet.
+
+| Faktor | Was er ist | Getrieben von |
+|---|---|---|
+| **Köpfe** | wer für Arbeit zur Verfügung steht — nicht einfach alle Menschen | Demographie; nach E7 am Anfang alle, mit der Altersstruktur später getrennt |
+| **Arbeitszeit je Kopf** | wie viel Zeit eine Person beisteuert | Gesundheit, später Arbeitszeit als politische Größe |
+| **Produktivität** | wie viel eine Zeiteinheit hervorbringt | Ernährung, Gesundheit, Bildung, Wissen |
+
+**Arbeitsleistung ist die Größe, die zugeteilt wird und in der alle Kosten stehen.**
+
+**Projektkosten sind fest, in Arbeitsleistung.** Sie ändern sich nie. Was sich ändert,
+ist die Angebotsseite: Eine gebildetere, gesündere Bevölkerung stellt aus derselben
+Kopfzahl mehr Arbeitsleistung bereit. Dieselbe Mühle ist dadurch schneller fertig —
+nicht, weil sie weniger kostet, sondern weil mehr geleistet wird.
+
+**Produktivität und Verfahren sind zwei verschiedene Dinge und beißen sich nicht:**
+
+| | Wirkt auf | Beispiel |
+|---|---|---|
+| **Produktivität** | die Arbeitsleistung insgesamt, überall | Bildung, Gesundheit, Ernährung |
+| **Verfahren** (E5) | den Ertrag je Arbeitsleistung **in einem Sektor** | Fruchtwechsel, bessere Äxte, Wassermühle |
+
+Bessere Äxte machen Holz schneller verfügbar — sie senken **nicht** die Holzkosten
+einer Mühle. Das eine ist Humankapital, das andere Technik; sie multiplizieren sich.
+
+Die Trennung der drei Faktoren kostet nichts (die Produkte sind abgeleitet) und ist
+nötig, weil sie später auseinanderlaufen: **Arbeitsproduktivität** ist definiert als
+Ergebnis je Arbeitsvolumen und wäre bei verschmolzenen Zahlen nicht mehr berechenbar;
+und Arbeitszeitverkürzung senkt das Volumen, ohne die Produktivität anzutasten. Es
+sind auch in der amtlichen Statistik getrennte Größen.
+
+In der Oberfläche ist **Arbeitsleistung** die Arbeitszahl; die drei Faktoren stehen als
+ihre Quellen darunter. Der Spieler sieht damit, dass *mehr Leute*, *länger arbeiten*
+und *besser arbeiten* drei verschiedene Wege sind.
+
+### E17 — Die Tickdauer wird nicht festgelegt
+
+Es wird nirgends behauptet, welchen realen Zeitraum ein Tick abbildet. Es werden nur
+Ticks gezählt.
+
+Das löst ein Problem, das sonst unlösbar bleibt: Eine einzige Tickdauer kann nicht
+gleichzeitig zu einer neolithischen Siedlung und zu einem modernen Staat passen. Was
+die Ökonomie trägt, sind ohnehin die **Verhältnisse** — dass Wohnraum vielfach länger
+braucht als eine Ernte.
+
+Der Preis: Ohne Anker lässt sich nicht behaupten, dass Bevölkerungs- oder Bauraten
+realistischen Werten entsprechen. Sie werden nach Gefühl und nach ihrem Verhältnis
+zueinander austariert. Die Aussagen des Spiels hängen an Zusammenhängen, nicht an
+Jahreszahlen.
+
+### E18 — Projekte in Arbeit
+
+**Kosten sind ein Bündel beliebiger Ressourcen**, nicht nur Arbeitsleistung.
+
+**Ein Projekt hat eine Mindestdauer in Ticks.** Je Tick braucht es *Kosten geteilt
+durch diese Tickzahl* von **jeder** Ressource. Fehlt eine davon, **pausiert es und
+verbraucht gar nichts** — die Arbeit, die es dadurch nicht abnimmt, fließt nach E16
+weiter zum nächsten.
+
+Damit ist der Fortschritt eine einzige Prozentzahl, alle Ressourcen laufen im
+Gleichschritt, und ein blockiertes Projekt frisst nichts. Ein Projekt kann **länger**
+dauern als seine Mindestdauer, nie kürzer.
+
+Die Mindestdauer ist unmittelbar die **Trägheit aus E3**: Sie verhindert, dass ein
+Vorhaben durch Aufwerfen aller Hände in einem Tick durchgedrückt wird. Neun Frauen
+bekommen kein Kind in einem Monat.
+
+**Reihenfolge:** Der Startzeitpunkt bestimmt sie voreingestellt — ältere zuerst —, der
+Spieler kann umsortieren. Das Modell ist ohnehin eine geordnete Liste; woher die
+Ordnung kommt, ist Sache der Oberfläche.
+
+**Pause:** Ein pausiertes Projekt bekommt nichts und behält seinen Fortschritt. Kein
+Verfall. Der Anreiz, sich nicht zu verzetteln, besteht ohnehin — ein halbfertiges
+Projekt liefert nichts.
+
+Im Zustand je laufendem Projekt: **Fortschritt, Position in der Reihenfolge, pausiert
+ja/nein.**
+
+### E19 — Wie die Zuteilung rechnet
 
 **Gierig, Rang für Rang, in Bündeln.**
 
 Die Reihenfolge je Tick:
 
-1. **Projekte bekommen, was der Spieler ihnen zugewiesen hat.** Nach E10 darf der
-   Spieler der Bedarfsdeckung Arbeit entziehen, also wird das zuerst abgezogen.
+1. **Projekte bekommen, was der Spieler ihnen zugewiesen hat** (E18). Nach E10 darf
+   der Spieler der Bedarfsdeckung Arbeit entziehen, also wird das zuerst abgezogen.
 2. **Der Rest geht durch die Rangliste** aus E9, von unten nach oben.
 
 **Die Regel:**
@@ -961,7 +1046,8 @@ Jede Mechanik braucht eine Entsprechung in der Lehre. Stand jetzt:
 | Verfall ungenutzter Arbeit | Post-Keynesianisch: nicht produzierter Output ist dauerhaft verloren |
 | Bevölkerung | Malthus; Unified Growth Theory (Galor/Weil) |
 | Gestufte Bedarfshierarchie | Pasinetti; Georgescu-Roegen (1954) |
-| Ernährung → Arbeitsfähigkeit | Effizienzlohntheorie (Leibenstein, Dasgupta/Ray); Fogel |
+| Ernährung → Produktivität | Effizienzlohntheorie (Leibenstein, Dasgupta/Ray); Fogel |
+| Köpfe × Arbeitszeit × Produktivität | Zerlegung der VGR; Arbeit in Effizienzeinheiten (Solow) |
 | Geldschöpfung durch Kredit (später) | Bank of England, Quarterly Bulletin 2014 |
 | Steuern treiben die Währung (später) | Knapp, Lerner, Wray, Ehnts |
 
