@@ -1034,6 +1034,45 @@ Und es ist ein **Konzeptprüfer**: Kommt `PassivePolicy` genauso weit wie eine
 durchdachte Strategie, sind unsere Entscheidungen bedeutungslos und das Spiel ist
 kaputt.
 
+**Zum Balancing gehört eine laufende Sitzung.** Ein Node-Prozess hält den Zustand im
+Arbeitsspeicher und nimmt über eine kleine HTTP-Schnittstelle auf `localhost`
+JavaScript entgegen — mit `s` (Zustand), `cfg` (Konfiguration) und `report` im
+Sichtbereich:
+
+```bash
+npm run session
+eval 's = tick(s, cfg); report(s)'
+eval 's = apply(s, {type:"startProject", id:"clearForest"}, cfg)'
+eval 's.stocks'
+eval 'for (let i=0;i<20;i++) s = tick(s, cfg); reportCompact(s)'
+```
+
+Synchron, interaktiv, ohne Zustandsdatei und ohne Neuanfang: Der Zustand ist eine
+Variable in einem laufenden Prozess. Nach jedem Tick lässt sich sehen, was passiert
+ist, und der nächste Befehl baut darauf auf.
+
+**Ein einziger Endpunkt genügt.** Ticken, handeln, in den Zustand schauen, eine
+Schleife laufen lassen, eine Zwischenrechnung anstellen — alles derselbe Weg. Eine
+feste Befehlsliste könnte immer nur das, woran beim Entwurf gedacht wurde. HTTP statt
+Node-Konsole, weil jeder Aufruf für sich abgeschlossen ist, während der Prozess
+weiterläuft.
+
+Nur an `localhost` gebunden, ausschließlich Entwicklungswerkzeug, nie Teil des
+ausgelieferten Spiels.
+
+**`report(state)` in zwei Formen** — ein ausführlicher Block und eine kompakte Zeile je
+Tick, aus der sich Verläufe ablesen lassen:
+
+```
+Tick  Bev    Wildnis  erschl.  Nahr  Wohn  R1    R2    Bindet
+  44  33,8     144       36     58    11   100%   84%  erschl. Fläche
+  45  34,0     144       36     59    11   100%   83%  erschl. Fläche
+  46  34,1     142       38     61    11   100%   82%  Holz
+```
+
+Die **Bindet**-Spalte ist der wichtigste Teil: Sie prüft E6 (der Engpass wandert)
+direkt. Steht dort über zweihundert Ticks immer dasselbe, stimmen die Zahlen nicht.
+
 ### T5 — Stack und Aufbau
 
 | | | Warum |
