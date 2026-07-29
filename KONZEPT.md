@@ -1036,15 +1036,16 @@ kaputt.
 
 **Zum Balancing gehört eine laufende Sitzung.** Ein Node-Prozess hält den Zustand im
 Arbeitsspeicher und nimmt über eine kleine HTTP-Schnittstelle auf `localhost`
-JavaScript entgegen — mit `s` (Zustand), `cfg` (Konfiguration) und `report` im
-Sichtbereich:
+JavaScript entgegen — mit `s` (Zustand), `cfg` (Konfiguration) und `derive` im
+Sichtbereich. **Ausgabe ist JSON**, kein formatierter Text: eindeutig, vollständig, und
+jede Sicht lässt sich im Aufruf selbst zusammenstellen.
 
 ```bash
 npm run session
-eval 's = tick(s, cfg); report(s)'
+eval 's = tick(s, cfg); ({...s, ...derive(s, cfg)})'
 eval 's = apply(s, {type:"startProject", id:"clearForest"}, cfg)'
 eval 's.stocks'
-eval 'for (let i=0;i<20;i++) s = tick(s, cfg); reportCompact(s)'
+eval 'for (let i=0;i<20;i++) s = tick(s, cfg); derive(s, cfg).binding'
 ```
 
 Synchron, interaktiv, ohne Zustandsdatei und ohne Neuanfang: Der Zustand ist eine
@@ -1060,18 +1061,20 @@ weiterläuft.
 Nur an `localhost` gebunden, ausschließlich Entwicklungswerkzeug, nie Teil des
 ausgelieferten Spiels.
 
-**`report(state)` in zwei Formen** — ein ausführlicher Block und eine kompakte Zeile je
-Tick, aus der sich Verläufe ablesen lassen:
+**`derive(state, config)` liefert die abgeleiteten Größen als Daten** — die Liste aus
+E22: Köpfe, Arbeitsvolumen, Arbeitsleistung, erreichbares Gebiet, Güte, Deckung je Rang,
+Auslastung, laufendes Verfahren je Sektor, Produktion, Geburten- und Sterberate,
+sichtbare und machbare Projekte, und **welcher Input bindet**.
 
-```
-Tick  Bev    Wildnis  erschl.  Nahr  Wohn  R1    R2    Bindet
-  44  33,8     144       36     58    11   100%   84%  erschl. Fläche
-  45  34,0     144       36     59    11   100%   83%  erschl. Fläche
-  46  34,1     142       38     61    11   100%   82%  Holz
-```
+Das Letzte ist der wichtigste Wert: Es prüft E6 (der Engpass wandert) direkt. Bindet
+über zweihundert Ticks immer dasselbe, stimmen die Zahlen nicht. Und es steht *nicht* im
+Zustand — nach E21 hinterlässt die Zuteilung nur ihre Ergebnisse, welcher Input gebunden
+hat, ist danach weg. Ohne `derive` wäre es nicht erreichbar.
 
-Die **Bindet**-Spalte ist der wichtigste Teil: Sie prüft E6 (der Engpass wandert)
-direkt. Steht dort über zweihundert Ticks immer dasselbe, stimmen die Zahlen nicht.
+**`derive` ist kein Werkzeug daneben, sondern regulärer Teil der Simulation.** Die
+Oberfläche braucht genau dieselben Werte, um Deckung, Auslastung und Engpass anzuzeigen.
+Es ist die saubere Antwort darauf, dass abgeleitete Größen nirgends gespeichert werden:
+Sie kommen aus einer Funktion, nicht aus dem Zustand.
 
 ### T5 — Stack und Aufbau
 
