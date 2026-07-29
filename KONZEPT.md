@@ -177,6 +177,38 @@ Kapitalkontroverse — die schärfste methodische Kritik in dem Feld.
 
 Zu Spielbeginn hat Nahrung **genau ein Verfahren**: Handarbeit auf Land.
 
+**Verfahren wirken nicht nur auf Produktion, sondern auch auf den Verfall.** Der
+wiederverwendbare Teil dieses Abschnitts ist die **Rückfallordnung**, nicht die
+Produktion. Sie passt auf Lagerung unverändert:
+
+| Lagerverfahren | Braucht | Verfallsrate |
+|---|---|---|
+| Silo | Kapazität Silo | 1 % |
+| Grube | Kapazität Grube | 4 % |
+| im Freien | nichts | 12 % |
+
+Reicht das Silo für 200 Einheiten und liegen 300 da, verfallen 200 mit 1 % und 100 mit
+4 % — wie bei der Mühle, wo ein Teil maschinell und der Rest von Hand mahlt.
+
+**Ein Verfahren hat also Inputs, eine Rückfallposition und ein Ergebnis; das Ergebnis
+ist entweder eine Produktion oder eine Verfallsrate.** Und ein Verfahren gehört zu dem,
+worauf es wirkt: ein Produktionsverfahren zu einem **Sektor**, ein Lagerverfahren zu
+einem **Bestand**.
+
+Das ist kein Kunstgriff: In der Aktivitätsanalyse ist **Lagerung eine Aktivität wie jede
+andere** — sie wandelt „Gut heute" in „Gut morgen" mit einem Verlust. So behandeln es
+Koopmans und von Neumann, auf die sich dieser Abschnitt ohnehin beruft.
+
+*Verworfen: Lagerung vollständig als Produktion zu führen („Nahrung morgen" aus
+„Nahrung heute" mit Ertrag 0,95). Theoretisch sauberer — es gäbe dann keinen Verfall
+mehr als eigenes Konzept —, würde aber E19 umbauen, jeden Bestand jeden Tick durch ein
+Lagerverfahren schleusen und die Lesbarkeit verschlechtern, ohne dass sich im Spiel
+etwas ändert.*
+
+Zu Spielbeginn hat **jeder Bestand genau ein Lagerverfahren**: „im Freien", ohne Inputs.
+Das ist exakt die feste Verfallsrate aus E19. Die Liste wächst erst mit einem
+Speicherprojekt.
+
 ### E6 — Der Engpass wandert
 
 Land wächst nicht von selbst, soll aber auch nicht ewig die Frage bleiben. Auf jeden
@@ -705,6 +737,18 @@ Anfangsbestand, Abgang, Zugänge.
 **Bestände sind kontinuierlich**, keine Stückzahlen. „3,7 Mühlen" ist intern richtig
 und wird gerundet angezeigt. So wird auch der Kapitalstock gemessen: als Größe, nicht
 als Stückliste. Andernfalls bräuchte jedes Gebäude ein eigenes Alter.
+
+**Keine harten Speichergrenzen.** Halten kostet — der Verfall ist proportional zum
+Bestand, ein Vorrat von 400 kostet bei 5 % zwanzig Einheiten je Tick. Daraus folgt von
+allein ein Gleichgewicht: Der Vorrat wächst nur so lange, wie der Überschuss die
+Verluste übersteigt. Ein Deckel ist dafür nicht nötig, und es ist auch der historische
+Grund, warum Vorräte begrenzt waren — nicht fehlender Platz, sondern Verderb.
+
+**Ein Speicher ist deshalb kein Behälter mit Fassungsvermögen, sondern Kapazität, die
+die Verfallsrate für die gedeckte Menge senkt** (Lagerverfahren, E5). Grenzen sind damit
+immer **wirtschaftlich** und nie willkürlich; es gibt nirgends ein „Lager voll". Und
+damit ist ein Puffer nicht kostenlos, was die Voraussetzung dafür ist, dass
+Vorratshaltung überhaupt eine Abwägung sein kann.
 
 **Instandhaltung gibt es nicht als eigenen Mechanismus.** Erhalt ist Neubau dessen, was
 zerfallen ist. Bei Konsumgütern läuft das von allein — Wohnraum verfällt, die Deckung
