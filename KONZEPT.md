@@ -413,6 +413,8 @@ Bedingungen sind immer Zustandsabfragen desselben Typs: *Projekt X fertig*,
 **Wirkung.** Vier Typen, ein Projekt kann mehrere haben — und **Wirkungen dürfen
 negativ sein**. Eine Flächenumwandlung (E13) ist damit schlicht ein Paar aus einer
 negativen und einer positiven Kapazitätswirkung; ein fünfter Typ ist dafür nicht nötig.
+Bei Regel-Wirkungen heißt dasselbe, dass sie **ersetzen und abschalten** dürfen — ohne
+das könnte kein Hebel je verschwinden, was E1 verlangt (→ E23).
 
 | Typ | Beispiel | Häufigkeit |
 |---|---|---|
@@ -870,6 +872,43 @@ machbar sind · welche Verfahren freigeschaltet sind
 
 Die Liste ist kurz genug, dass ein Spielstand klein bleibt — im Wesentlichen ein Dutzend
 Zahlen plus zwei kleine Listen. Das bestätigt, was T7 vorausgesetzt hatte.
+
+### E23 — Was eine Epoche ist
+
+**Eine Epoche ist kein Mechanismus, sondern ein abgeleiteter Name.**
+
+Was existiert, sind erledigte **Institutionsprojekte**. Eine neue Epoche beginnt, wenn
+ein bestimmtes Projekt fertig wird — und das ist genau die **Regel-Wirkung**, die E12
+schon vorsieht, keine zusätzliche Maschinerie. Alles, was eine Epoche bringt, ist damit
+bereits ausdrückbar:
+
+| Was die Epoche bringt | Wirkungstyp aus E12 |
+|---|---|
+| Neue Sektoren | + Sektor |
+| Neue Verfahren | + Verfahren |
+| Mehr erreichbares Gebiet | + Kapazität (E13) |
+| Neue Regeln und Hebel | + Regel |
+
+**Kein Epochenzähler im Zustand.** Wo die Oberfläche „Frühstaat" schreiben soll, ergibt
+sich das aus den erledigten Projekten — wie das erreichbare Gebiet in E13, das aus
+demselben Grund nicht gespeichert wird.
+
+**Regeln sind Schalter, die die Phasen lesen.** „+ Regel" heißt: Ein Projekt setzt einen
+Schalter, und die Phasen aus T2 verhalten sich danach. Weil Schalter aus erledigten
+Projekten folgen, kommt auch dafür nichts Neues in den Zustand.
+
+**Regel-Wirkungen dürfen ersetzen und abschalten, nicht nur hinzufügen.** E1 verspricht,
+dass Hebel verschwinden: Sobald Lohnarbeit kommt, hört „Arbeit direkt zuteilen" auf zu
+funktionieren. Bei Kapazitätswirkungen ist geklärt, dass sie negativ sein dürfen (E12);
+für Regeln stand es nirgends — und ohne es kann kein Hebel je verschwinden. Es ist die
+Voraussetzung dafür, dass E1 überhaupt umsetzbar ist.
+
+**In der Oberfläche sieht das aus wie bei Paperclips:** Eine neue Spalte kommt dazu, die
+alte wird vereinfacht oder verschwindet.
+
+**Folge für alles Weitere:** Epochen brauchen im Modell gar nichts. Preise,
+Privatisierung, Banken und Außenhandel müssen sich nicht in ein Epochensystem
+einpassen, sondern nur in Projektwirkungen und Schalter.
 
 ---
 
