@@ -248,7 +248,7 @@ Gründe:
   Hintertür, deren Formel wir festlegen müssten — also unsere Politik.
 
 Stattdessen wirkt Unterdeckung **konkret auf reale Größen** — Sterberate,
-Geburtenrate, Arbeitszeit je Kopf, Produktivität, verfügbare Verfahren. Wo genau, hängt an der
+Geburtenrate, Arbeitsfähigkeit, Produktivität, verfügbare Verfahren. Wo genau, hängt an der
 Bedarfsstufe, nicht am Sektor als Ganzem (→ E9).
 
 ### E9 — Bedarf ist gestuft und rangiert über alle Sektoren
@@ -546,7 +546,7 @@ benotet, benotet es Politik und die Neutralität ist verloren.
 ### E16 — Arbeit: drei Faktoren, zwei abgeleitete Größen
 
 ```
-Köpfe  ×  Arbeitszeit je Kopf   =  Arbeitsvolumen
+Köpfe  ×  Arbeitsfähigkeit   =  Arbeitsvolumen
 Arbeitsvolumen  ×  Produktivität  =  Arbeitsleistung
 ```
 
@@ -555,7 +555,7 @@ Gespeichert werden nur die **drei Faktoren**, die beiden Produkte sind abgeleite
 | Faktor | Was er ist | Getrieben von |
 |---|---|---|
 | **Köpfe** | wer für Arbeit zur Verfügung steht — nicht einfach alle Menschen | Demographie; nach E7 am Anfang alle, mit der Altersstruktur später getrennt |
-| **Arbeitszeit je Kopf** | wie viel Zeit eine Person beisteuert | Gesundheit, später Arbeitszeit als politische Größe |
+| **Arbeitsfähigkeit** | Faktor 0–1: welcher Anteil einer Person für Arbeit zur Verfügung steht | Gesundheit, später Arbeitszeitregelungen |
 | **Produktivität** | wie viel eine Zeiteinheit hervorbringt | Ernährung, Gesundheit, Bildung, Wissen |
 
 **Arbeitsleistung ist die Größe, die zugeteilt wird und in der alle Kosten stehen.**
@@ -1047,7 +1047,7 @@ Jede Mechanik braucht eine Entsprechung in der Lehre. Stand jetzt:
 | Bevölkerung | Malthus; Unified Growth Theory (Galor/Weil) |
 | Gestufte Bedarfshierarchie | Pasinetti; Georgescu-Roegen (1954) |
 | Ernährung → Produktivität | Effizienzlohntheorie (Leibenstein, Dasgupta/Ray); Fogel |
-| Köpfe × Arbeitszeit × Produktivität | Zerlegung der VGR; Arbeit in Effizienzeinheiten (Solow) |
+| Köpfe × Arbeitsfähigkeit × Produktivität | Zerlegung der VGR; Arbeit in Effizienzeinheiten (Solow) |
 | Geldschöpfung durch Kredit (später) | Bank of England, Quarterly Bulletin 2014 |
 | Steuern treiben die Währung (später) | Knapp, Lerner, Wray, Ehnts |
 
