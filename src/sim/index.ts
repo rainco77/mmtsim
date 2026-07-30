@@ -25,10 +25,27 @@ export type {
   QualitySource,
   StockDef,
   TierEffect,
-  WeatherConfig,
+  RiskConfig,
+  ShockShape,
 } from "./config.ts";
 export { indexConfig, tierEffectAt } from "./config.ts";
-export type { Derived, ProjectView } from "./derive.ts";
+export type { BranchOrdering, Derived, ProjectView } from "./derive.ts";
+export type {
+  OrderedProcesses,
+  OrderingContext,
+  OrderingReason,
+  ProcessOrdering,
+} from "./ordering.ts";
+export {
+  DeclaredOrdering,
+  ManualOrdering,
+  ORDERING_RESOLVER,
+  OrderingResolver,
+  ScarcityOrdering,
+  tightestInput,
+} from "./ordering.ts";
+export type { Shocks } from "./risk.ts";
+export { drawShocks, exposureMagnitude, shockFactor } from "./risk.ts";
 export { derive } from "./derive.ts";
 export { applyEffect, effectTypesWithHandler } from "./effects.ts";
 export type {
@@ -43,7 +60,12 @@ export type {
   StockId,
 } from "./ids.ts";
 export type { Phase, TickContext } from "./phases.ts";
-export { HOUSEHOLDS, laborPerformance, PIPELINE } from "./phases.ts";
+export {
+  HOUSEHOLDS,
+  laborPerformance,
+  MANUAL_PROCESS_CHOICE,
+  PIPELINE,
+} from "./phases.ts";
 export type { RandomState } from "./random.ts";
 export { counterOf, createRandomState, draw, peek, uniformAt } from "./random.ts";
 export type { StartOptions } from "./setup.ts";

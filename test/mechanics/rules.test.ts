@@ -11,6 +11,7 @@ import {
   indexConfig,
   PIPELINE,
   tick,
+  tightestInput,
   type Config,
   type GameState,
 } from "../../src/sim/index.ts";
@@ -124,12 +125,12 @@ describe("random streams stay independent (E25)", () => {
 
 describe("the year's quality (E24)", () => {
   it("has mean one, an upper bound and a long left tail", () => {
-    const exponent = STAGE1.weather.exponent;
+    const exponent = STAGE1.shocks["weather"]!.exponent;
     const scale = (exponent + 1) / exponent;
     let state = createState(STAGE1, { seed: 4 });
     const values: number[] = [];
     for (let i = 0; i < 4000; i += 1) {
-      values.push(derive(state, index).yearQuality);
+      values.push(derive(state, index).shocks["weather"] ?? 1);
       state = tick(state, index);
     }
     const mean = values.reduce((a, b) => a + b, 0) / values.length;
@@ -234,13 +235,17 @@ describe("projects (E18)", () => {
 
 describe("processes and the fallback level (E5)", () => {
   it("a technique without a capacity input replaces its predecessor entirely", () => {
-    const before = createState(STAGE1, { seed: 7 });
-    const after = finish(before, "better_tools");
+    const withScarcity = (state: GameState): GameState => ({
+      ...state,
+      // Labour is what binds, and both techniques use the same land — so the
+      // better one simply takes over; there is nothing to fall back to.
+      scarcity: { labor: 1 },
+    });
+    const before = withScarcity(createState(STAGE1, { seed: 7 }));
+    const after = withScarcity(finish(createState(STAGE1, { seed: 7 }), "better_tools"));
 
-    const runsBefore = derive(before, index).runs;
-    const runsAfter = derive(after, index).runs;
-    expect(runsBefore.map((r) => r.process)).toEqual(["gathering"]);
-    expect(runsAfter.map((r) => r.process)).toEqual(["gathering_tools"]);
+    expect(derive(before, index).runs.map((r) => r.process)).toEqual(["gathering"]);
+    expect(derive(after, index).runs.map((r) => r.process)).toEqual(["gathering_tools"]);
   });
 
   it("what a higher priority cannot carry falls to the next one", () => {
@@ -258,24 +263,151 @@ describe("processes and the fallback level (E5)", () => {
         },
       },
     };
-    state = { ...state, completedProjects: { ...state.completedProjects, sedentism: 1 } };
+    state = {
+      ...state,
+      completedProjects: { ...state.completedProjects, sedentism: 1 },
+      // Wilderness is what binds, so farming leads — but three hectares of
+      // cleared land cannot carry two hundred people, and the rest falls back.
+      scarcity: { "area:wilderness": 1 },
+    };
 
     const processes = derive(state, index).runs.map((r) => r.process);
     expect(processes).toContain("farming");
     expect(processes).toContain("gathering_tools");
   });
 
-  it("the engine never judges which process is better — priority decides", () => {
-    // A process with a worse yield but a higher priority runs first.
-    const flipped: Config = {
-      ...STAGE1,
-      processes: STAGE1.processes.map((p) =>
-        p.id === "gathering" ? { ...p, priority: 999, outputPerLabor: 0.2 } : p,
-      ),
+  it("the declared priority applies while nothing has bound yet (E5)", () => {
+    // First tick: scarcity is empty, so the content's order holds.
+    const state = createState(STAGE1, { seed: 7 });
+    expect(state.scarcity).toEqual({});
+    expect(derive(state, index).runs[0]?.process).toBe("gathering");
+  });
+
+  it("when labour binds, the process with the better yield per labour leads", () => {
+    let state = finish(createState(STAGE1, { seed: 7 }), "better_tools");
+    state = {
+      ...state,
+      completedProjects: { ...state.completedProjects, sedentism: 1 },
+      // Labour was the tight input last tick, land was not.
+      scarcity: { labor: 1 },
+      sectors: {
+        ...state.sectors,
+        households: {
+          ...state.sectors["households"]!,
+          heads: 60,
+          // A full store, so the risk discount is switched off and scarcity
+          // alone explains the order.
+          stocks: { food: 500 },
+          areas: { cleared: { area: 500, quality: 1 } },
+        },
+      },
     };
-    const local = indexConfig(flipped);
-    const state = finish(createState(flipped, { seed: 7 }), "better_tools");
-    expect(derive(state, local).runs[0]?.process).toBe("gathering");
+    // Farming has the higher declared priority but the worse yield per labour.
+    const lead = derive(state, index).ordering.find((o) => o.branch === "food");
+    expect(lead?.lead).not.toBe("farming");
+  });
+
+  it("when the forest runs out, farming takes over — Boserup (E6, E13)", () => {
+    // Wilderness binds, and farming is the only process that does not need any:
+    // a process that does not touch the scarce input is the best answer to that
+    // scarcity, not the worst.
+    let state = finish(createState(STAGE1, { seed: 7 }), "better_tools");
+    state = {
+      ...state,
+      completedProjects: { ...state.completedProjects, sedentism: 1 },
+      scarcity: { "area:wilderness": 1 },
+      sectors: {
+        ...state.sectors,
+        households: {
+          ...state.sectors["households"]!,
+          heads: 60,
+          stocks: { food: 200 },
+          areas: { cleared: { area: 40, quality: 1 } },
+        },
+      },
+    };
+    const lead = derive(state, index).ordering.find((o) => o.branch === "food");
+    expect(lead?.lead).toBe("farming");
+  });
+
+  it("a thin store pushes towards the less exposed process (E5, E24)", () => {
+    // Two processes, same yield, different exposure.
+    const twin: Config = {
+      ...STAGE1,
+      risk: { aversion: 0.9, switchMargin: 0, scarcityMemory: 0 },
+      processes: [
+        ...STAGE1.processes,
+        {
+          id: "gathering_safe",
+          branch: "food",
+          priority: 5,
+          outputPerLabor: 0.9,
+          areaPerOutput: { wilderness: 3.0 },
+          intermediatesPerOutput: {},
+          exposure: { weather: 0.05 },
+          qualityWeight: 0.5,
+          unlockedFromStart: true,
+        },
+      ],
+    };
+    const local = indexConfig(twin);
+    const base = createState(twin, { seed: 7 });
+
+    const thin = {
+      ...base,
+      scarcity: { labor: 1 },
+      sectors: {
+        ...base.sectors,
+        households: { ...base.sectors["households"]!, stocks: { food: 0 } },
+      },
+    };
+    const fat = {
+      ...base,
+      scarcity: { labor: 1 },
+      sectors: {
+        ...base.sectors,
+        households: { ...base.sectors["households"]!, stocks: { food: 500 } },
+      },
+    };
+
+    const leadThin = derive(thin, local).ordering.find((o) => o.branch === "food")?.lead;
+    const leadFat = derive(fat, local).ordering.find((o) => o.branch === "food")?.lead;
+    expect(leadThin).toBe("gathering_safe");
+    expect(leadFat).not.toBe("gathering_safe");
+  });
+
+  it("the switch margin holds the scarce input in place (E5)", () => {
+    // Relieving a shortage makes it stop binding, so without a margin the
+    // choice of input would swing back every tick — and the economy with it.
+    // The margin sits on the *input*, never on the process: a new technique is
+    // often only twenty per cent better and must still be adopted.
+    expect(tightestInput({ labor: 0.5, "area:wilderness": 0.55 }, "labor", 0.5)).toBe(
+      "labor",
+    );
+    expect(tightestInput({ labor: 0.5, "area:wilderness": 0.9 }, "labor", 0.5)).toBe(
+      "area:wilderness",
+    );
+    expect(tightestInput({ labor: 0.5 }, undefined, 0.5)).toBe("labor");
+    expect(tightestInput({}, "labor", 0.5)).toBe("labor");
+  });
+
+  it("the player's order wins while the rule holds, and is ignored once it falls", () => {
+    let state = finish(createState(STAGE1, { seed: 7 }), "better_tools");
+    state = apply(
+      state,
+      { type: "setProcessOrder", branch: "food", order: ["gathering"] },
+      index,
+    ).state;
+    expect(
+      derive(state, index).ordering.find((o) => o.branch === "food")?.reason.kind,
+    ).toBe("manual");
+
+    const withoutRule: Config = { ...STAGE1, rulesFromStart: [] };
+    const local = indexConfig(withoutRule);
+    const reason = derive(state, local).ordering.find((o) => o.branch === "food")?.reason;
+    expect(reason?.kind).not.toBe("manual");
+    // The setting stays in the state, it is only ignored — no migration (T7).
+    expect(state.manualOrder["food"]).toEqual(["gathering"]);
   });
 });
 
@@ -286,8 +418,9 @@ describe("allocation runs rank by rank (E21)", () => {
       state,
       index,
       sectorId: "households",
-      yearQuality: 1,
+      shocks: {},
       laborToProjects: 0,
+      manualAllowed: false,
       unlockedBranches: new Set(["food"]),
       unlockedProcesses: new Set(["gathering"]),
     });

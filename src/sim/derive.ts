@@ -1,7 +1,7 @@
 import { allocate, type AllocationResult } from "./allocation.ts";
 import { type ConfigIndex, tierEffectAt } from "./config.ts";
 import type { AreaTypeId, ProjectId, StockId } from "./ids.ts";
-import { HOUSEHOLDS, laborPerformance } from "./phases.ts";
+import { HOUSEHOLDS, laborPerformance, MANUAL_PROCESS_CHOICE } from "./phases.ts";
 import { peek } from "./random.ts";
 import { areaOf, type Area, type GameState } from "./state.ts";
 import {
@@ -11,6 +11,7 @@ import {
   type ConditionContext,
 } from "./unlocks.ts";
 import type { Condition } from "./config.ts";
+import type { OrderingReason } from "./ordering.ts";
 
 /**
  * Everything derivable, as data (T4).
@@ -36,7 +37,10 @@ export interface Derived {
   readonly laborToProjects: number;
   readonly laborUnused: number;
 
-  readonly yearQuality: number;
+  /** The peeked shock per stream — mean 1, below 1 is a bad draw (E24). */
+  readonly shocks: Readonly<Record<string, number>>;
+  /** Ordering per branch with the reason it holds, so a switch is never silent. */
+  readonly ordering: readonly BranchOrdering[];
 
   readonly stocks: Readonly<Record<StockId, number>>;
   readonly unownedAreas: Readonly<Record<AreaTypeId, Area>>;
@@ -66,6 +70,14 @@ export interface Derived {
   readonly rules: readonly string[];
 }
 
+/** Why this branch runs what it runs (E5) — data, never text (T6). */
+export interface BranchOrdering {
+  readonly branch: string;
+  readonly reason: OrderingReason;
+  readonly processes: readonly string[];
+  readonly lead?: string;
+}
+
 export interface ProjectView {
   readonly id: ProjectId;
   readonly visible: boolean;
@@ -88,9 +100,12 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
   const workAbility = sector?.workAbility ?? 0;
   const productivity = sector?.productivity ?? 0;
 
-  const exponent = index.config.weather.exponent;
-  const scale = (exponent + 1) / exponent;
-  const yearQuality = Math.pow(peek(state.random, "weather"), 1 / exponent) * scale;
+  // Peeked, not drawn: describing the situation must not advance anything.
+  const shocks: Record<string, number> = {};
+  for (const [stream, shape] of Object.entries(index.config.shocks)) {
+    const scale = (shape.exponent + 1) / shape.exponent;
+    shocks[stream] = Math.pow(peek(state.random, stream), 1 / shape.exponent) * scale;
+  }
 
   const laborAvailable = laborPerformance(sector);
   const laborToProjects = plannedProjectLabor(state, index, laborAvailable);
@@ -99,10 +114,11 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     state,
     index,
     sectorId: HOUSEHOLDS,
-    yearQuality,
+    shocks,
     laborToProjects,
     unlockedBranches: unlocks.branches,
     unlockedProcesses: unlocks.processes,
+    manualAllowed: unlocks.rules.has(MANUAL_PROCESS_CHOICE),
   });
 
   const coverage: Record<string, number> = {};
@@ -155,7 +171,18 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     laborPerformance: laborAvailable,
     laborToProjects,
     laborUnused: allocation.laborUnused,
-    yearQuality,
+    shocks,
+    ordering: [...Object.entries(allocation.orderingReason)].map(([branch, reason]) => {
+      const lead = allocation.leadProcess[branch];
+      return {
+        branch,
+        reason,
+        processes: allocation.runs
+          .filter((run) => index.process.get(run.process)?.branch === branch)
+          .map((run) => run.process),
+        ...(lead === undefined ? {} : { lead }),
+      };
+    }),
     stocks: sector?.stocks ?? {},
     unownedAreas: state.unownedAreas,
     ownedAreas: sector?.areas ?? {},

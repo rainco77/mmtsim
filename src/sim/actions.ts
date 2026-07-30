@@ -1,5 +1,5 @@
 import type { ConfigIndex } from "./config.ts";
-import type { ProjectId } from "./ids.ts";
+import type { BranchId, ProcessId, ProjectId } from "./ids.ts";
 import type { ActiveProject, GameState } from "./state.ts";
 
 /**
@@ -10,7 +10,15 @@ export type Action =
   | { readonly type: "startProject"; readonly id: ProjectId }
   | { readonly type: "pauseProject"; readonly id: ProjectId; readonly paused: boolean }
   | { readonly type: "reorderProject"; readonly id: ProjectId; readonly order: number }
-  | { readonly type: "abandonProject"; readonly id: ProjectId };
+  | { readonly type: "abandonProject"; readonly id: ProjectId }
+  /** Set the order of processes for one branch by hand (E5). */
+  | {
+      readonly type: "setProcessOrder";
+      readonly branch: BranchId;
+      readonly order: readonly ProcessId[];
+    }
+  /** Hand the branch back to the computation. A mistake must be revocable. */
+  | { readonly type: "clearProcessOrder"; readonly branch: BranchId };
 
 export interface ActionResult {
   readonly state: GameState;
@@ -41,6 +49,13 @@ export function apply(
           activeProjects: state.activeProjects.filter((p) => p.id !== action.id),
         },
       };
+    case "setProcessOrder":
+      return setProcessOrder(state, action.branch, action.order, index);
+    case "clearProcessOrder": {
+      const rest = { ...state.manualOrder };
+      delete rest[action.branch];
+      return { state: { ...state, manualOrder: rest } };
+    }
   }
 }
 
@@ -58,6 +73,22 @@ function startProject(state: GameState, id: ProjectId, index: ConfigIndex): Acti
   const order = state.activeProjects.reduce((max, p) => Math.max(max, p.order), 0) + 1;
   const active: ActiveProject = { id, progress: 0, order, paused: false };
   return { state: { ...state, activeProjects: [...state.activeProjects, active] } };
+}
+
+function setProcessOrder(
+  state: GameState,
+  branch: BranchId,
+  order: readonly ProcessId[],
+  index: ConfigIndex,
+): ActionResult {
+  for (const id of order) {
+    const process = index.process.get(id);
+    if (process === undefined) return { state, rejected: `unknown process "${id}"` };
+    if (process.branch !== branch) {
+      return { state, rejected: `process "${id}" does not belong to branch "${branch}"` };
+    }
+  }
+  return { state: { ...state, manualOrder: { ...state.manualOrder, [branch]: order } } };
 }
 
 function mapProject(

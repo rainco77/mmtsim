@@ -1,4 +1,11 @@
-import type { AreaTypeId, ProjectId, SectorId, StockId } from "./ids.ts";
+import type {
+  AreaTypeId,
+  BranchId,
+  ProcessId,
+  ProjectId,
+  SectorId,
+  StockId,
+} from "./ids.ts";
 import type { RandomState } from "./random.ts";
 
 /**
@@ -37,6 +44,32 @@ export interface GameState {
   readonly completedProjects: Readonly<Record<ProjectId, number>>;
 
   readonly activeProjects: readonly ActiveProject[];
+
+  /**
+   * How tight each input was last tick, in [0, 1]. Carried, because what binds
+   * is only known after the allocation and the ordering needs it beforehand —
+   * the same way T2 breaks the circle around the carried factors. It is also
+   * the more lifelike reading: an economy reacts to yesterday's scarcity.
+   */
+  readonly scarcity: Readonly<Record<string, number>>;
+
+  /**
+   * Which input counted as the scarce one last tick (E5). Carried, and it keeps
+   * its place unless another is clearly scarcer: relieving a shortage makes it
+   * stop binding, which would otherwise send the economy swinging back and
+   * forth between two inputs every tick.
+   */
+  readonly bindingInput?: string;
+
+  /** Which process led per branch last tick, for the switch margin (E5). */
+  readonly leadProcess: Readonly<Record<BranchId, ProcessId>>;
+
+  /**
+   * The order the player set per branch (E5). A branch he has not touched
+   * follows the computation. When the rule falls away later, this is ignored
+   * rather than deleted — so no migration is needed (T7).
+   */
+  readonly manualOrder: Readonly<Record<BranchId, readonly ProcessId[]>>;
 }
 
 export interface SectorState {

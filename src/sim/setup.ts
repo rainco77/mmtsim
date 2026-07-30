@@ -38,5 +38,8 @@ export function createState(config: Config, options: StartOptions): GameState {
     landTakings: 0,
     completedProjects: {},
     activeProjects: [],
+    scarcity: {},
+    leadProcess: {},
+    manualOrder: {},
   };
 }

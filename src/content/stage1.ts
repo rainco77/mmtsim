@@ -50,7 +50,7 @@ export const STAGE1: Config = {
       outputPerLabor: 1.3,
       areaPerOutput: { wilderness: 3.0 },
       intermediatesPerOutput: {},
-      weatherSensitivity: 0.7,
+      exposure: { weather: 0.7 },
       qualityWeight: 0.5,
       unlockedFromStart: true,
     },
@@ -61,7 +61,7 @@ export const STAGE1: Config = {
       outputPerLabor: 1.6,
       areaPerOutput: { wilderness: 3.0 },
       intermediatesPerOutput: {},
-      weatherSensitivity: 0.7,
+      exposure: { weather: 0.7 },
       qualityWeight: 0.5,
       unlockedFromStart: false,
     },
@@ -72,7 +72,7 @@ export const STAGE1: Config = {
       outputPerLabor: 1.95,
       areaPerOutput: { wilderness: 3.0 },
       intermediatesPerOutput: {},
-      weatherSensitivity: 0.7,
+      exposure: { weather: 0.7 },
       qualityWeight: 0.5,
       unlockedFromStart: false,
     },
@@ -83,7 +83,7 @@ export const STAGE1: Config = {
       outputPerLabor: 2.3,
       areaPerOutput: { wilderness: 2.6 },
       intermediatesPerOutput: {},
-      weatherSensitivity: 0.8,
+      exposure: { weather: 0.8 },
       qualityWeight: 0.5,
       unlockedFromStart: false,
     },
@@ -98,7 +98,7 @@ export const STAGE1: Config = {
       outputPerLabor: 1.6,
       areaPerOutput: { cleared: 0.35 },
       intermediatesPerOutput: {},
-      weatherSensitivity: 0.6,
+      exposure: { weather: 0.6 },
       qualityWeight: 0.9,
       unlockedFromStart: false,
     },
@@ -113,7 +113,7 @@ export const STAGE1: Config = {
       outputPerLabor: 1.35,
       areaPerOutput: { cleared: 0.2 },
       intermediatesPerOutput: {},
-      weatherSensitivity: 0.5,
+      exposure: { weather: 0.5 },
       qualityWeight: 0.9,
       unlockedFromStart: false,
     },
@@ -125,7 +125,7 @@ export const STAGE1: Config = {
       outputPerLabor: 0.9,
       areaPerOutput: { wilderness: 1.2 },
       intermediatesPerOutput: {},
-      weatherSensitivity: 0.2,
+      exposure: { weather: 0.2 },
       qualityWeight: 0.4,
       unlockedFromStart: false,
     },
@@ -136,7 +136,7 @@ export const STAGE1: Config = {
       outputPerLabor: 0.35,
       areaPerOutput: { cleared: 0.05 },
       intermediatesPerOutput: { wood: 1.4 },
-      weatherSensitivity: 0.0,
+      exposure: { weather: 0.0 },
       qualityWeight: 0.0,
       unlockedFromStart: false,
     },
@@ -342,7 +342,20 @@ export const STAGE1: Config = {
     minimumViableSize: 12,
   },
 
-  weather: { shape: "powerLeftSkewed", exponent: 8 },
+  shocks: { weather: { shape: "powerLeftSkewed", exponent: 8 } },
+
+  // Risk aversion: how strongly a thin store pushes towards the reliable
+  // process (E5).
+  //
+  // The switch margin was measured, not guessed. At 0.1 the ordering twitched
+  // 223 times per run and the settlement reached 244 heads; at 0.5 it settles
+  // after three switches and reaches 2700. Above 0.75 it locks up entirely and
+  // the settlement dies, because the scarce input can then never change again.
+  risk: { aversion: 0.5, switchMargin: 0.5, scarcityMemory: 0.85 },
+
+  // The player may set the order by hand from the start; a later institution
+  // unsets this rule (E23) and the economy decides alone from then on.
+  rulesFromStart: ["manualProcessChoice"],
 
   land: { baseQuality: 1.0, qualityDecayPerTaking: 0.05 },
 

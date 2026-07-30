@@ -15,7 +15,7 @@ import type { GameState } from "./state.ts";
  */
 export function tick(state: GameState, index: ConfigIndex): GameState {
   const ctx: TickContext = {
-    yearQuality: 1,
+    shocks: {},
     unlocks: computeUnlocks(state, index),
     laborAvailable: 0,
     laborToProjects: 0,

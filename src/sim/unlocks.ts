@@ -49,6 +49,9 @@ export function computeUnlocks(state: GameState, index: ConfigIndex): Unlocks {
   }
 
   const rules = new Set<RuleId>();
+  // Rules that hold before any project has been finished (E23); a later project
+  // may still switch them off.
+  for (const rule of index.config.rulesFromStart) setRules.add(rule);
   for (const rule of setRules) if (!unsetRules.has(rule)) rules.add(rule);
 
   return { branches, processes, rules };

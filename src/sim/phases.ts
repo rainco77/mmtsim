@@ -2,7 +2,7 @@ import { allocate, type AllocationResult } from "./allocation.ts";
 import { type ConfigIndex, tierEffectAt } from "./config.ts";
 import { applyEffect } from "./effects.ts";
 import type { SectorId, StockId } from "./ids.ts";
-import { draw } from "./random.ts";
+import { drawShocks, type Shocks } from "./risk.ts";
 import {
   stockOf,
   type ActiveProject,
@@ -20,7 +20,7 @@ import { computeUnlocks, type Unlocks } from "./unlocks.ts";
  * away at the end of the tick.
  */
 export interface TickContext {
-  yearQuality: number;
+  shocks: Shocks;
   unlocks: Unlocks;
   laborAvailable: number;
   laborToProjects: number;
@@ -36,6 +36,9 @@ export interface Phase {
 /** Until property exists there is exactly one sector (E22). */
 export const HOUSEHOLDS: SectorId = "households";
 
+/** While this rule holds, the player may set the process order himself (E5). */
+export const MANUAL_PROCESS_CHOICE = "manualProcessChoice";
+
 export function laborPerformance(sector: SectorState | undefined): number {
   if (sector === undefined) return 0;
   return sector.heads * sector.workAbility * sector.productivity;
@@ -44,19 +47,16 @@ export function laborPerformance(sector: SectorState | undefined): number {
 // ------------------------------------------------------------------ weather
 
 /**
- * The year's quality (E24): one common draw per tick, on which every process
- * reacts with its own sensitivity. Mean exactly 1, an upper bound, a long left
- * tail — harvests have a ceiling but no counterpart below, so a bad year is the
- * left edge of this distribution and needs no second mechanism.
+ * One draw per random stream per tick (E24, E25). Every process reacts with its
+ * own exposure — and two processes on the same stream break down together,
+ * which is what makes moving to another stream a real spreading of risk.
  */
-export class WeatherPhase implements Phase {
-  readonly id = "weather";
+export class ShockPhase implements Phase {
+  readonly id = "shocks";
 
   run(state: GameState, index: ConfigIndex, ctx: TickContext): GameState {
-    const { value, random } = draw(state.random, "weather");
-    const exponent = index.config.weather.exponent;
-    const scale = (exponent + 1) / exponent;
-    ctx.yearQuality = Math.pow(value, 1 / exponent) * scale;
+    const { shocks, random } = drawShocks(state.random, index.config);
+    ctx.shocks = shocks;
     return { ...state, random };
   }
 }
@@ -189,10 +189,11 @@ export class ProductionPhase implements Phase {
       state,
       index,
       sectorId: HOUSEHOLDS,
-      yearQuality: ctx.yearQuality,
+      shocks: ctx.shocks,
       laborToProjects: ctx.laborToProjects,
       unlockedBranches: ctx.unlocks.branches,
       unlockedProcesses: ctx.unlocks.processes,
+      manualAllowed: ctx.unlocks.rules.has(MANUAL_PROCESS_CHOICE),
     });
     ctx.allocation = result;
 
@@ -210,6 +211,11 @@ export class ProductionPhase implements Phase {
     return {
       ...state,
       sectors: { ...state.sectors, [HOUSEHOLDS]: { ...sector, stocks } },
+      // Carried into the next tick, because the ordering needs to know what
+      // was scarce before it can allocate (E5).
+      scarcity: result.scarcity,
+      ...(result.bindingInput === undefined ? {} : { bindingInput: result.bindingInput }),
+      leadProcess: result.leadProcess,
     };
   }
 }
@@ -296,7 +302,7 @@ export class CarryPhase implements Phase {
 }
 
 export const PIPELINE: readonly Phase[] = [
-  new WeatherPhase(),
+  new ShockPhase(),
   new DecayPhase(),
   new ProjectPhase(),
   new ProductionPhase(),

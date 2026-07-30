@@ -4,6 +4,7 @@ import type {
   NeedTierId,
   ProcessId,
   ProjectId,
+  RandomStreamId,
   RuleId,
   SectorId,
   StockId,
@@ -64,7 +65,11 @@ export interface ProcessDef {
   readonly id: ProcessId;
   readonly branch: BranchId;
 
-  /** Higher runs first. Ties are forbidden and are checked by a test. */
+  /**
+   * Fallback ordering only (E5): used in the very first tick, when nothing has
+   * bound yet, and whenever scarcity gives no answer. Higher runs first; ties
+   * are forbidden and are checked by a test.
+   */
   readonly priority: number;
 
   /** Output per unit of labour performance, on land of quality 1. */
@@ -77,11 +82,11 @@ export interface ProcessDef {
   readonly intermediatesPerOutput: Readonly<Record<StockId, number>>;
 
   /**
-   * How strongly the year's quality strikes here (E24). Belongs to the process,
-   * not to the branch: irrigated and dry fields are the same branch with very
-   * different exposure.
+   * Exposure per named random stream (E24, E25) — risk is not only weather.
+   * Belongs to the process, not to the branch: irrigated and dry fields are the
+   * same branch with very different exposure.
    */
-  readonly weatherSensitivity: number;
+  readonly exposure: Readonly<Record<RandomStreamId, number>>;
 
   /** How strongly land quality enters the yield (E13). Housing does not care. */
   readonly qualityWeight: number;
@@ -221,16 +226,42 @@ export interface PopulationConfig {
 // ---------------------------------------------------------------- weather
 
 /**
- * The year's quality (E24): mean 1, an upper bound, rare severe failures
- * downwards. Harvests have a biological ceiling but no counterpart below.
- *
- * Shape `powerLeftSkewed`: `u^(1/exponent) · (exponent+1)/exponent` for a
- * uniform `u`. Mean is exactly 1, the upper bound is `(exponent+1)/exponent`,
- * and the left tail grows longer as the exponent rises.
+ * The shape of one random stream (E24): mean 1, an upper bound, rare severe
+ * failures downwards. Harvests have a biological ceiling but no counterpart
+ * below, so a bad year is the left edge of this distribution and needs no
+ * second mechanism.
  */
-export interface WeatherConfig {
+export interface ShockShape {
   readonly shape: "powerLeftSkewed";
   readonly exponent: number;
+}
+
+/**
+ * How strongly a thin buffer pushes towards the reliable process (E5).
+ *
+ * Not a taste but a consequence of E24: undercovering rank 100 raises the death
+ * rate while overcovering brings nothing back, so at the same mean more spread
+ * is strictly worse — and the closer to the edge, the more so. Peasants chose
+ * the hardy, lower-yielding variety without any politics.
+ */
+export interface RiskConfig {
+  /** 0 switches the risk term off entirely. */
+  readonly aversion: number;
+  /**
+   * A running process keeps its place unless a challenger is better by this
+   * margin.
+   */
+  readonly switchMargin: number;
+  /**
+   * How much of the previous scarcity measurement is kept, in [0, 1).
+   *
+   * The margin above guards the wrong thing on its own: it compares processes
+   * *within* one input, while the twitching comes from the **binding input
+   * itself** alternating between two that are almost equally tight. An economy
+   * answers to persistent scarcity, not to a single bad tick — so the signal is
+   * smoothed, not the choice.
+   */
+  readonly scarcityMemory: number;
 }
 
 // ---------------------------------------------------------------- land
@@ -264,7 +295,11 @@ export interface Config {
   readonly needTiers: readonly NeedTierDef[];
   readonly projects: readonly ProjectDef[];
   readonly population: PopulationConfig;
-  readonly weather: WeatherConfig;
+  /** Shape per random stream (E25); streams nobody is exposed to are unused. */
+  readonly shocks: Readonly<Record<RandomStreamId, ShockShape>>;
+  readonly risk: RiskConfig;
+  /** Rules that hold before any project has been finished (E23). */
+  readonly rulesFromStart: readonly RuleId[];
   readonly land: LandConfig;
   readonly carried: CarriedConfig;
 }
