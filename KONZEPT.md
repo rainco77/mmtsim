@@ -43,6 +43,12 @@ nicht was *wünschenswert* ist.
 - Der Anfang muss super simpel sein. Komplexität kommt ausschließlich schrittweise
   im Spielverlauf dazu.
 - Nach jeder Einigung: dieses Dokument fortschreiben, dann committen.
+- **Der Entwicklungsbogen wird nicht am Schreibtisch entworfen.** Nach E28 muss ein
+  Übergang einen Schmerz beantworten — und ein Schmerz wird **gefunden, nicht
+  erfunden**. Der Versuch, die Stufen bis zur galaktischen Zivilisation vorab
+  durchzuplanen, ist gescheitert: Jeder am Schreibtisch konstruierte Engpass hielt der
+  Prüfung nicht stand. Gebaut wird die nächste Stufe; der übernächste Übergang ergibt
+  sich daraus, was beim Spielen tatsächlich stört.
 
 ---
 
@@ -1569,11 +1575,22 @@ Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es dranko
   muss jede Bedarfsstufe in eine reale Größe zurückzahlen. Für Kultur ist unklar,
   worin. Bloße Legitimität reicht als Begründung nicht; wird bei den Politikfeldern
   geklärt.
-- **Geldeinführung.** Der wichtigste Moment des Spiels.
+- **Geldeinführung.** Der wichtigste Moment des Spiels. Merkposten für später, **keine
+  Entscheidung**: Die amerikanischen Kolonien sind der bestdokumentierte Fall für
+  „ausgeben vor besteuern" — Massachusetts 1690 druckt Papierscheine, um heimkehrende
+  Soldaten zu bezahlen, die es weder befehlen noch in Korn entlohnen kann, und macht sie
+  durch Steuerannahme gültig; Pennsylvania 1723 ebenso (Farley Grubb). Der europäische
+  Gegenfall zeigt dieselbe Ursache von der anderen Seite: Grundherren wandelten
+  Frondienst in Geldzins um, weil sie Güter brauchten, die auf dem eigenen Gut nicht
+  wuchsen. *(Nicht unbestritten — Quantitätstheoretiker halten die Kolonien für
+  silberbasierter. Die Aktenlage zu Ausgabe und Steuerannahme ist unstrittig.)*
 - **Auslastung und Inflation.**
 - **Ungleichheit.** Braucht einen echten *wirtschaftlichen* Effekt (höhere Sparquote
   oben → Nachfrageausfall), nicht nur eine Anzeige.
-- **Banken und Kredit.**
+- **Banken und Kredit.** Merkposten: Mit dem Giralgeld **zerbricht** die Regel
+  „Umlaufmenge = kumuliertes Staatsdefizit", die vorher gilt. Das ist kein Fehler,
+  sondern der beabsichtigte Lerneffekt — der Spieler sieht eine Regel fallen, die er für
+  ein Gesetz gehalten hat, und sie wird durch die vollständige Saldenmechanik ersetzt.
 - **Außenhandel und Währung.**
 - **Politikfelder.**
 - **Oberfläche.**
@@ -1611,6 +1628,27 @@ Technisch noch offen:
   Branchenproduktion (E10).
 - **Steigende Erschließungskosten** als Bremse der Expansion. Ersetzt durch fallende
   Grenzgüte (E13), die dem Ricardo-Anker entspricht und die bessere Dynamik erzeugt.
+
+### Aus dem gescheiterten Entwicklungsbogen
+
+- **„Ungleichheit ist die Voraussetzung für Geld."** Geprüft und falsch. Rechnungseinheit,
+  Schuld, Währung und Banken brauchen sie nicht — sie brauchen viele Güter, eine
+  Zeitlücke und jemanden, der fordern kann. Ungleichheit ist Voraussetzung für einen
+  **Arbeitsmarkt**, und der liegt nicht auf dem Weg zum Geld: Lohnarbeit wird historisch
+  weit später verbreitet als Rechnungseinheiten und Schuldverträge. **Diese Annahme war
+  die Wurzel aller Folgefehler unten.**
+- **Rechnungseinheit als eigener Übergang.** Kein Engpass. Der kirchliche Zehnte war eine
+  Naturalabgabe und kam ohne gemeinsamen Maßstab aus.
+- **„Arbeit gegen Anteil" als früher Übergang.** Der Engpass dafür entsteht nicht:
+  Güteunterschiede ändern den **Ertrag** je Hektar, nicht die **Arbeit** je Hektar. Bei
+  gleicher Fläche je Kopf gibt es weder brachliegendes Land noch freie Hände.
+- **Hundert Haushaltseinheiten mit Gewicht**, Mobilitätsschwellen zwischen Schichten,
+  Verteilungsschlüssel für Projektinputs, freiwillige Beiträge im Verhältnis des Nutzens,
+  anteiliges Einziehen bei allen Schichten, Zuordnung von Projekten zu Schichten durch
+  den Spieler. Alles Folgen derselben falschen Annahme.
+- **„Gemeinbesitz"** als Halter der Wildnis. Wildnis hat **keinen** Halter, sie ist
+  unbesessen. Eine **Allmende** wäre etwas anderes — geregelte Gemeinschaftsnutzung mit
+  Zugangsregeln, also eine Institution, die es nicht gibt.
 
 ---
 
