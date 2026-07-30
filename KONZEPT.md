@@ -151,8 +151,28 @@ Produktivität. Beispiel Nahrung im Endausbau:
 | Pfluggespann | Land, Zugtiere, Futter | 8 |
 | Handarbeit | Land | 3 |
 
-**Regel: Das beste Verfahren läuft, bis einer seiner Inputs ausgeht. Der Rest fällt
-auf das nächste zurück.**
+**Regel: Verfahren haben eine erklärte Priorität. Das höchstpriore läuft, bis einer
+seiner Inputs ausgeht. Der Rest fällt auf das nächste zurück.**
+
+**Die Priorität steht in der Konfiguration, sie wird nicht aus dem Ertrag abgeleitet.**
+Die Engine urteilt nie darüber, was „besser" ist. Nötig ist das, sobald ein Verfahren
+Ertrag gegen etwas anderes tauscht: Bewässerung hat denselben oder geringeren Ertrag je
+Arbeitsleistung, aber deutlich geringere Empfindlichkeit gegen die Jahresgüte (E24). Aus
+dem Ertrag abgeleitet würde sie nie laufen, obwohl Kanäle gebaut sind.
+
+**Zwei Arten von Verfahren:**
+
+**Ohne Kapazitätsinput** — eine Technik. Wer mit Speeren jagen kann, kann es überall.
+Sie **ersetzt ihre Vorgängerin vollständig**; es wird nichts gemischt und eine
+Rückfallebene nie gebraucht. So sehen die Verfahrensketten der Frühphase aus.
+
+**Mit Kapazitätsinput** — Mühle, Kanal, Maschine. Sie läuft **so weit die Kapazität
+reicht**, der Rest fällt auf die nächste Priorität.
+
+Daraus folgt, dass es **keinen Wahlmechanismus zwischen Verfahren braucht**: Bewässerung
+steht über Trockenfeldbau und läuft auf so viel Fläche, wie Kanäle gebaut sind. **Die
+Entscheidung des Spielers ist, wie viele Kanäle er baut** — also ein Projekt, und damit
+dort, wo Entscheidungen in diesem Modell wohnen.
 
 Fehlt Energie für die halbe Maschinenflotte, läuft sie halb, der Rest geht ans
 Pfluggespann oder an die Hand. Die Produktion bricht nicht ein — die
@@ -176,7 +196,14 @@ Hülle. Entscheidend: **Substitution wird nicht unterstellt, sie entsteht.** Dam
 umgehen wir die aggregierte Produktionsfunktion vom Cobb-Douglas-Typ und mit ihr die
 Kapitalkontroverse — die schärfste methodische Kritik in dem Feld.
 
-Zu Spielbeginn hat Nahrung **genau ein Verfahren**: Handarbeit auf Land.
+**Einheitenregel: Was in die Wahl der Einheit hineinrechenbar ist, braucht keinen
+eigenen Mechanismus.** Nahrung wird in **Nährwert** gemessen, nicht in Masse. Damit ist
+Kochen ein gewöhnliches Verfahren, das den Ertrag hebt — dieselbe Sammelarbeit liefert
+mehr verwertbare Kalorien. Ohne die richtige Einheit hätte man eine Verbrauchssenkung
+als Produktivitätsgewinn tarnen müssen, was eine Verdrehung wäre. Dasselbe gilt für
+Sperrigkeit bei Lagerkapazität.
+
+Zu Spielbeginn hat Nahrung **genau ein Verfahren**: Sammeln auf Wildnis (E29).
 
 **Verfahren wirken nicht nur auf Produktion, sondern auch auf den Verfall.** Der
 wiederverwendbare Teil dieses Abschnitts ist die **Rückfallordnung**, nicht die
@@ -290,13 +317,28 @@ Bedarf ist nicht „Anzahl × fester Wert pro Kopf" — das widerspräche der S�
 (E3) und machte Strukturwandel unmöglich. Stattdessen gibt es **eine Rangliste von
 Bedarfsstufen über alle Branchen hinweg**:
 
-| Rang | Stufe | Menge pro Kopf |
-|---|---|---|
-| 1 | Nahrung — überleben | 1,0 |
-| 2 | Wohnraum — Dach über dem Kopf | 0,3 |
-| 3 | Nahrung — satt werden | 0,8 |
-| 4 | Wohnraum — eigener Raum | 0,5 |
-| … | … | … |
+| Rangzahl | Stufe | Branche | Menge pro Kopf |
+|---|---|---|---|
+| 100 | Nahrung — überleben | Nahrung | 1,0 |
+| 200 | Dach über dem Kopf | Wohnraum | 0,3 |
+| 300 | Nahrung — satt werden | Nahrung | 0,8 |
+| 400 | eigener Raum | Wohnraum | 0,5 |
+| … | … | … | … |
+
+**Ränge gehören zur Branche, sind aber global geordnet.** Jeder Rang erklärt eine
+**absolute Rangzahl**, keine Position in einer Liste. Die geltende Liste ist: alle
+Ränge, die gerade existieren, nach ihrer Zahl sortiert. Kommt die Branche Wohnraum
+hinzu, rutscht „Dach" von allein zwischen die beiden Nahrungsränge — in welcher
+Reihenfolge der Spieler Branchen freischaltet, ist damit gleichgültig. Das ist nötig,
+weil Branchen aus Projektwirkungen entstehen (E12) und deren Reihenfolge nicht
+feststeht.
+
+Die **Lücken sind Absicht**: Sie lassen Platz, später einen Rang dazwischenzusetzen,
+ohne alles umzunummerieren. Zwei Nebenbedingungen: Die Zahlen müssen **eindeutig** sein,
+sonst entstünde der Gleichstand, den E21 ausschließt. Und sie sind **fest** —
+Umsortieren im Spielverlauf braucht es nicht, weil die Sättigung aus E3 den Effekt schon
+leistet: Sind die Nahrungsränge gedeckt, wandert die Nachfrage von allein nach oben. Das
+ist Engels Gesetz, ohne dass sich eine Reihenfolge ändert.
 
 **Gedeckt wird von unten nach oben.** Solange Rang 1 nicht voll ist, bringt Produktion
 auf Rang 3 nichts. Überschuss oberhalb der aktuellen Stufe geht in den Speicher, aber
@@ -954,22 +996,26 @@ einpassen, sondern nur in Projektwirkungen und Schalter.
 
 ### E24 — Schwankung
 
-**Die Jahresgüte** — eine Zahl je Tick mit Mittelwert 1, auf die jede Branche mit ihrer
-**eigenen Empfindlichkeit** reagiert:
+**Die Jahresgüte** — eine Zahl je Tick mit Mittelwert 1, auf die jedes **Verfahren** mit
+seiner **eigenen Empfindlichkeit** reagiert:
 
-| Branche | Empfindlichkeit |
+| Verfahren | Empfindlichkeit |
 |---|---|
-| Nahrung | hoch |
-| Holz | gering |
-| Wohnraum (Bau) | keine |
+| Sammeln | hoch |
+| Ackerbau, trocken | hoch |
+| Ackerbau, bewässert | gering |
+| Waldwirtschaft | gering |
+| Bau | keine |
 
 Ein gemeinsamer Wurf statt einer je Branche, weil **Wetter gemeinsam ist**: Ein schlechtes
 Jahr trifft Acker und Waldwirtschaft zusammen, nur unterschiedlich stark. Bei
 unabhängigen Würfen wäre genau das unmöglich. Nebenbei ergibt es eine lesbare Zahl („ein
 schlechtes Jahr") statt eines Bündels unsichtbarer Störungen.
 
-Die Empfindlichkeit ist ein **viertes Branchenmerkmal** neben Sättigung und Trägheit (E3)
-und wie die anderen reine Konfiguration (T3).
+**Die Empfindlichkeit gehört zum Verfahren, nicht zur Branche.** Bewässerter und
+trockener Acker sind dieselbe Branche mit sehr verschiedener Wetterabhängigkeit — später
+genauso Gewächshaus gegen Freiland. An der Branche festgemacht wäre Bewässerung nicht
+darstellbar. Sie ist reine Konfiguration (T3), wie die Branchenmerkmale in E3.
 
 **Sie wirkt nur auf Erträge, nicht auf den Verfall.** Gegen schwankenden Verfall plant
 niemand — es wäre Rauschen ohne Entscheidung, und Rauschen verdeckt in einem Lehrspiel,
@@ -1068,6 +1114,97 @@ Lauf, keine Eindrücke:
 
 **Die Schwankung wird von Anfang an eingeschaltet.** Mit Puffern zu wirtschaften ist
 teurer als ohne; wer erst ohne austariert und sie später zuschaltet, macht alles zweimal.
+
+### E28 — Das Muster jedes Übergangs
+
+**Der Spieler kommt weiter, weil etwas wehtut — nicht weil ein Baum es erlaubt.**
+
+Jeder Übergang von einer Stufe zur nächsten füllt fünf Felder aus:
+
+| Feld | Frage |
+|---|---|
+| **1 Engpass** | Was bindet, und zwar so, dass es weh tut? |
+| **2 Warum die alten Mittel nicht reichen** | Sonst würde man einfach weiter intensivieren |
+| **3 Was die Institution eröffnet** | Neue Branche, neues Verfahren, neue Regel, mehr Gebiet (E12) |
+| **4 Was sie kostet** | Welcher direkte Hebel verschwindet (E1) |
+| **5 Voraussetzung im Modell** | Welche Struktur muss vorher existieren |
+
+Feld 5 sagt, was **jetzt** angelegt werden muss, damit spätere Stufen funktionieren.
+Feld 4 hält das Spiel ehrlich: Nach E1 hat jede Institution einen Preis, und der ist
+keine Strafe, sondern die Lektion.
+
+**Das Muster ist zugleich ein Prüfstein.** Lässt sich ein Feld nicht ausfüllen, gehört
+der Übergang nicht ins Spiel. Ein Mechanismus, der historisch stimmt, aber im Spiel
+keinen Druck beantwortet, bleibt Dekoration — mit leerem Feld 1 fällt das vorher auf
+statt hinterher.
+
+### E29 — Übergang 1: Jäger und Sammler → Siedlung
+
+**Epoche „Jäger und Sammler".** Auf dem Bildschirm: Bevölkerung, Wildnis, Nahrung,
+Deckung von Rang 100 und Rang 300. Kein Wohnraum, kein Holz, keine erschlossene Fläche,
+kein Vorrat.
+
+Verfahrenskette der Branche Nahrung über das ganze Spiel:
+`Sammeln` → `Ackerbau` → `Pflug` → `Maschinell`
+
+Sammeln braucht **Wildnis**, kein erschlossenes Land: guter Ertrag je Arbeitsleistung,
+sehr geringer je Fläche, hohe Empfindlichkeit gegen die Jahresgüte. Nahrung hat eine
+sehr hohe Verfallsrate — **kein Vorrat möglich** (E19).
+
+Verfügbare Projekte:
+
+| Projekt | Voraussetzung | Wirkung |
+|---|---|---|
+| **Bessere Werkzeuge** | keine | Verfahren `Sammeln mit Werkzeugen` — mehr Ertrag je Arbeitsleistung |
+| **Feuer nutzen** | Bessere Werkzeuge | Verfahren `Sammeln, gekocht` — dasselbe Sammelgut ernährt mehr Menschen (Einheit ist Nährwert, E5) |
+| **Jagdwaffen** | Feuer nutzen | Verfahren `Jagd und Sammeln` |
+| **Sesshaftigkeit** | Bevölkerung ≥ Schwelle | die ganze folgende Epoche |
+
+Alle drei Verfahrensprojekte sind **Techniken ohne Kapazitätsinput** und ersetzen ihre
+Vorgängerin vollständig (E5). Sie liegen auf einer Achse und bilden eine Kette.
+
+Der Ablauf ist damit eine kurze, verständliche Kette: **Werkzeuge → Rang 300 wird
+teilweise gedeckt → Bevölkerung wächst → Sesshaftigkeit wird machbar.** Ohne die
+Verfahrensprojekte steht die Bevölkerung, weil Rang 100 gerade gedeckt ist und dort nach
+E20 Geburten = Tode gilt. Der Spieler muss also erst die Produktivität heben, um
+überhaupt an die Voraussetzung zu kommen.
+
+**Schwankung gibt es ab Tick 1** — die Jahresgüte wirkt in der Produktionsphase (E24),
+und Sammeln ist Produktion. Was sich später ändert, ist nicht die Schwankung, sondern
+was man gegen sie tun kann:
+
+| | Schwankung ist |
+|---|---|
+| Jäger und Sammler | **Schicksal.** Kein Vorrat möglich, also keine Abwehr. Ein schlechtes Jahr tötet. |
+| Siedlung | **eine Entscheidung.** Lagerfähigkeit gibt es, ein Puffer kostet etwas (E19), also ist die Frage, wieviel man vorhält. |
+
+**Das Institutionsprojekt heißt Sesshaftigkeit, das Verfahren heißt Ackerbau.** Die
+Trennung folgt E12: Eine Institution ändert Regeln, ein Verfahren ist eine Art zu
+produzieren. Sesshaftigkeit bringt Ackerbau mit, aber auch den Flächentyp, die
+Lagerfähigkeit und den Anspruch auf Land — hieße das Projekt „Ackerbau", wäre unklar,
+warum es all das andere tut.
+
+Nach dem Muster aus E28:
+
+| Feld | |
+|---|---|
+| **Engpass** | Die Bevölkerung stößt an die Decke, die Sammeln trägt. Ohne erschlossene Fläche und ohne Vorrat stagniert sie. |
+| **Alte Mittel reichen nicht** | Mehr Hände bringen beim Sammeln kaum mehr Ertrag; die genutzte Fläche ist nicht vermehrbar, Vorrat nicht bildbar. Intensivierung gibt es dort nicht. |
+| **Institution eröffnet** | Flächentyp *erschlossene Fläche* · Verfahren *Ackerbau* · Nahrung wird lagerfähig · Projekte *Rodung* und *Landnahme* · Branchen *Holz* und *Wohnraum* · Rang 200 „Dach" |
+| **Kosten** | Ackerbau bringt **mehr je Fläche, aber weniger je Arbeitsleistung** (Boserup). Der einzelne Mensch arbeitet mehr für dasselbe, und die Gemeinschaft ist an ihr Land gebunden. |
+| **Voraussetzung im Modell** | Nichts Neues: Flächentypen (E13), Verfahren (E5), Verfallsraten je Bestand (E19). |
+
+**Sesshaftigkeit bringt eine Regel mit, die später alles trägt: Wer ein Feld bestellt,
+hat einen Anspruch darauf.** Besitz wird nicht gewählt, er entsteht mit der
+Sesshaftigkeit — ein Nomade besitzt kein Land, ein Bauer schon.
+
+Der Sprung ist absichtlich groß: von zwei Projekten und einer Branche auf drei Branchen,
+zwei konkurrierende Flächentypen, drei Bedarfsränge und ein halbes Dutzend Projekte.
+Genau das soll ein Institutionsprojekt nach E1 leisten.
+
+**Bemerkenswert:** Der Übergang verschlechtert die Lage des Einzelnen und passiert
+trotzdem. Das ist der Befund über die neolithische Revolution — im Spiel nicht
+behauptet, sondern gerechnet.
 
 ---
 
@@ -1494,6 +1631,7 @@ Jede Mechanik braucht eine Entsprechung in der Lehre. Stand jetzt:
 | Projekte, Konsum gegen Investition | Produktionsmöglichkeitenkurve; intertemporale Wahl |
 | Verfall ungenutzter Arbeit | Post-Keynesianisch: nicht produzierter Output ist dauerhaft verloren |
 | Bevölkerung | Malthus; Unified Growth Theory (Galor/Weil) |
+| Ackerbau: mehr je Fläche, weniger je Arbeitsleistung | Boserup |
 | Mindestlebensfähige Größe | Populationsbiologie; minimum viable population |
 | Lagerung als Aktivität | Aktivitätsanalyse (Koopmans, von Neumann) |
 | Geometrischer Verfall | Perpetual-Inventory-Methode der Kapitalstockrechnung |
