@@ -168,28 +168,35 @@ seiner Inputs ausgeht. Der Rest fällt auf das nächste zurück.**
 Ordnung der Verfahren, nie ein einzelnes ausgewähltes.** Nur so lässt sich später
 zwischen ihnen umschalten, ohne dass die Rückfallebene neu gebaut werden muss.
 
-**Gerechnet (die Voreinstellung).** Die Ordnung folgt zwei Größen:
+**Gerechnet (die Voreinstellung).** Die Ordnung folgt dem **Ertrag je
+Arbeitsleistung**, vermindert um einen Risikoabschlag, der danach gewichtet wird, wie
+dünn der Puffer ist. Wer satt ist und einen vollen Speicher hat, kann sich Streuung
+leisten; wer auf Kante lebt, nimmt das Verlässliche.
 
-1. **Ergiebigkeit im bindenden Input.** Was gerade knapp ist, entscheidet, was das beste
-   Verfahren ist — und das wandert nach E6 im Lauf des Spiels. Eine feste Priorität kann
-   nicht für alle Lagen richtig sein: Bei reichlich Land und knapper Arbeit ist Jagd
-   richtig, bei knappem Land Ackerbau. Erzwänge man den Ackerbau, ackerte die Siedlung
-   sich in den Hunger, während der Wald brachliegt.
-2. **Ein Abschlag für Risiko, gewichtet nach der Dicke des Puffers.** Wer satt ist und
-   einen vollen Speicher hat, kann sich Streuung leisten und nimmt das Ertragreichste;
-   wer auf Kante lebt, nimmt das Verlässliche.
+**Das ist eine Zuteilung, keine Wahl.** In der Geschichte gab es keinen Umstieg von
+Jagd auf Ackerbau — beide liefen jahrtausendelang nebeneinander, und die Anteile
+verschoben sich mit der Bevölkerungsdichte. Arbeit ist der einzige Input, den jedes
+Verfahren braucht; alles andere ist eine eigene Kapazität. Also läuft das
+arbeitsergiebigste Verfahren, bis **seine** Kapazität erschöpft ist, und das nächste
+nimmt den Rest. Die Jagd läuft, bis die Wildnis aufgebraucht ist, der Ackerbau nimmt
+auf, was übrig bleibt — beide gleichzeitig, mit monoton wandernden Anteilen. Boserup
+als verschiebende Mischung, nicht als Sprung.
 
-> Der Zirkel — was bindet, weiß man erst nach der Zuteilung — wird wie in T2
-> aufgetrennt: **Der Zustand trägt mit, was im letzten Tick gebunden hat.** Das ist
-> zugleich das Wirklichkeitsnähere: Eine Wirtschaft reagiert auf die Knappheit von
-> gestern, nicht auf die von heute. Im ersten Tick gilt die in der Konfiguration
-> erklärte Priorität.
+Und es ist **stabil**, weil die Ordnung von nichts abhängt, was die Zuteilung selbst
+verändert: Ertrag je Arbeitsleistung ist eine Eigenschaft des Verfahrens.
 
-> **Gegen das Flattern eine Schwelle:** Ein Wechsel greift erst, wenn das neue Verfahren
-> im bindenden Input **mindestens 10 % ergiebiger** ist als das laufende. Sonst könnte
-> die Ordnung bei zwei fast gleich knappen Inputs von Tick zu Tick springen und die
-> Wirtschaft zappeln. Der Wert ist bewusst niedrig gewählt und wird nach der Messung
-> gegebenenfalls angehoben.
+> *Verworfen auf dem Weg dorthin:* eine Ordnung nach dem **bindenden Input**. Sie war
+> als Rangfrage gestellt, wo eine Zuteilungsfrage stand — und schwang deshalb: Jede
+> Wahl entlastet ihren eigenen Engpass, also bindet gleich darauf der andere. Weder
+> Glättung noch Schwellen noch Trägheit lösen das; sie machen das Schwingen nur
+> langsamer. Der Fehler lag in der Fragestellung.
+
+**Verfahren, die Flächenertrag gegen Arbeitsertrag tauschen, werden gar nicht
+gegeneinander gereiht** — sie unterscheiden sich durch ihren **Flächentyp**.
+Bewässertes Land ist ein eigener Typ, den der Kanalbau schafft, genau wie Rodung
+Wildnis in Ackerland verwandelt. Jedes Verfahren läuft dann auf seinem eigenen Boden,
+und die Entscheidung ist der Bau — also ein Projekt, und damit dort, wo Entscheidungen
+in diesem Modell wohnen.
 
 **Warum der Puffer über das Risiko entscheidet und nicht der Spieler:** Der Abschlag ist
 keine Haltung, sondern folgt aus dem Modell selbst. Nach E24 ist Verhungern nicht
@@ -199,8 +206,8 @@ gewählt; eine Lösung, die das an einen Spielerhebel hängt, verlöre sie mit d
 
 Nebenbei bekommt der Vorrat damit einen zweiten Sinn: **Ein Vorrat erlaubt es, Risiken
 einzugehen.** Wer nichts hat, muss sicher gehen und bleibt deshalb ärmer — die
-Risikotragfähigkeit steigt mit dem Vermögen. Die Armutsfalle wird sichtbar, ohne dass wir
-sie einbauen.
+Risikotragfähigkeit steigt mit dem Vermögen. Die Armutsfalle wird sichtbar, ohne dass
+wir sie einbauen.
 
 **Von Hand (die Übersteuerung).** Der Spieler kann die Ordnung je Branche selbst setzen
 und wieder freigeben. Eine Branche, die er nicht angefasst hat, folgt der Automatik —
@@ -1018,6 +1025,26 @@ zu genau einer Branche. Zwei Ansprüche können nie gleichauf liegen.
 aus dem vorigen Zustand und der Konfiguration. Sie hinterlässt nur ihre Ergebnisse —
 Bestände, Fortschritt der Projekte.
 
+**Die gemessene Grenze dieses Verfahrens: geteilte Kapazitäten kann es nicht abwägen.**
+
+Ein Lauf nach 900 Ticks: 213 Menschen, die Wildnis zu 100 % genutzt, **560 ha
+Ackerland zu 11 % genutzt**, 49 Arbeitseinheiten frei — und trotzdem Wärme bei 0,69 und
+Wohnraum bei 0,00.
+
+Der Grund: Rang 100 wird zuerst gedeckt, und die Jagd ist arbeitsergiebiger als der
+Ackerbau. Sie nimmt sich die **Wildnis**. Die Holzwirtschaft, die dieselbe Wildnis
+braucht, findet danach nur Reste — obwohl daneben Ackerland brachliegt, auf dem die
+Nahrung ebenso hätte wachsen können.
+
+Eine wirkliche Gesellschaft würde hier mehr ackern und weniger jagen, um Wald für
+Brennholz freizugeben. Rang für Rang vorzugehen kann das nicht: Beim Decken von Rang 100
+ist nicht bekannt, dass Rang 150 dieselbe Fläche braucht.
+
+**Das ist kein Programmierfehler, sondern die Grenze des Verfahrens** — und damit der
+erste Engpass für Preise, den wir nicht konstruieren mussten, sondern gemessen haben.
+Nicht „Vergleichen wäre bequemer", sondern: *Die Zuteilung trifft nachweislich schlechte
+Entscheidungen, und ohne einen gemeinsamen Maßstab kann sie es nicht besser.*
+
 ### E22 — Was im Zustand steht
 
 Regel: **gespeichert wird nur, was Geschichte hat.** Alles Berechenbare wird jeden Tick
@@ -1696,6 +1723,11 @@ Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es dranko
   ist · und schlicht die *Zahl der Branchen*, weil aus einer Entscheidung irgendwann
   Fleißarbeit wird. Der zweite Kandidat wirkt am stärksten, weil er den Hebel nicht
   wegnimmt, sondern **von selbst sinnlos macht**.
+- **Preise, und wodurch sie entstehen.** Der Engpass dafür ist gemessen (E21): Die
+  gierige Zuteilung kann eine geteilte Kapazität nicht zwischen zwei Rängen abwägen.
+  Offen ist, ob der Spieler Preise durch ein Projekt einführt, ob dabei die manuelle
+  Steuerung der Zuteilung wegfällt — oder ob diese schon vorher überflüssig geworden
+  ist und ganz entfallen kann.
 - **Geldeinführung.** Der wichtigste Moment des Spiels. Merkposten für später, **keine
   Entscheidung**: Die amerikanischen Kolonien sind der bestdokumentierte Fall für
   „ausgeben vor besteuern" — Massachusetts 1690 druckt Papierscheine, um heimkehrende
@@ -1734,6 +1766,10 @@ Technisch noch offen:
   Verfall plus hohe Trägheit.
 - **Elastizität als Branchenmerkmal.** Fachlich falsch als Konstante; entsteht jetzt aus
   den Verfahren (E5).
+- **Die Verfahrensordnung nach dem bindenden Input.** Als Rangfrage gestellt, wo eine
+  Zuteilungsfrage stand: Jede Wahl entlastet ihren eigenen Engpass, also schwingt die
+  Ordnung. Glättung, Schwellen auf Input- und Verfahrenswahl und Trägheit machen es nur
+  langsamer, nicht stabil. Ersetzt durch die Ordnung nach Arbeitsertrag (E5).
 - **Die Verfahrensordnung als feste Zahl in der Konfiguration.** Sie kann nicht für alle
   Lagen richtig sein, weil der bindende Input wandert (E6): Bei reichlich Land und
   knapper Arbeit erzwang sie den Ackerbau, während der Wald brachlag und die Siedlung
