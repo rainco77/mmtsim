@@ -1117,6 +1117,36 @@ Dass der Plan nicht optimal ist, ist zugleich ein Gewinn: **Ein Verschiebeverfah
 findet eine Lösung, ein Preis findet die beste.** Wäre schon hier optimiert, hätten
 Preise später nichts mehr zu holen.
 
+**Beim Bauen korrigiert.** Schritt 5 oben — „bleibt Ungedecktes → höchsten Rang
+streichen" — war zu grob, und zwar in zwei Punkten. Beide fielen sofort auf: Die
+Siedlung starb in **100 %** der Läufe.
+
+- **Der Grenzrang wird zum Teil bedient, nicht ganz gestrichen.** Ein Rang, der zu 90 %
+  ginge, bekam nichts, und die Ränge darunter saßen auf ungenutzter Arbeit — gemessen:
+  Nahrung/Überleben gedeckt, Sättigung bei 0, bei 7,9 freien Arbeitseinheiten.
+  Rationieren heißt einen kleineren Anteil, nicht keinen. Der größte Anteil, der noch
+  passt, wird durch Halbieren gesucht; da der Anteil in [0, 1] liegt, genügt eine feste
+  Zahl Schritte, und es ist keine Toleranz zu stellen (E26).
+- **Ein gescheiterter Rang stoppt die niedrigeren nicht.** Ein Rang, den der Wald
+  aufhält, hält keinen Rang auf, der an der Wildnis hängt. Die Rangfolge entscheidet,
+  wer einen *umstrittenen* Input zuerst bekommt — nicht, dass darunter alles leer
+  ausgeht. Gemessen bei der Sesshaftigkeit: Wohnraum 0 **und** Sättigung 0, bei 45
+  freien Arbeitseinheiten.
+
+**Zwischenprodukte sind kein fester Vorrat.** Der Plan rechnete Holz gegen den
+*Bestand* an Holz. Der ist fast immer null, weil Holz im selben Tick geschlagen und
+verbaut wird — also war Wohnraum bei jedem Anteil unmöglich, und es wurde nie ein Haus
+gebaut. Ein Bestand wird nicht nur entnommen, er wird auch hergestellt: Ein Input, den
+der Plan selbst erzeugt, zählt **netto** (E4). Beim Ausführen folgt daraus die
+Reihenfolge — wer herstellt, läuft vor dem, der verbraucht.
+
+**Der gemessene Defekt ist behoben.** Derselbe Lauf nach 900 Ticks: Ackerland **11 % →
+100 %** genutzt, Wohnraum **0,00 → 0,84**, Bevölkerung **213 → 1707**. Alle acht
+Kriterien bestehen; T4 (Entscheidungen zählen) von zuvor gescheitert auf Faktor 7,3.
+Dass am Ende beide Flächen zu 100 % genutzt sind, ein Teil der Arbeit aber frei bleibt
+und die Sättigung bei 0 liegt, ist kein Fehler mehr, sondern Malthus: Das Land bindet,
+die Arbeit ist im Überschuss (E7).
+
 ### E22 — Was im Zustand steht
 
 Regel: **gespeichert wird nur, was Geschichte hat.** Alles Berechenbare wird jeden Tick

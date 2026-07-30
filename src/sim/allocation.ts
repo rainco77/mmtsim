@@ -5,6 +5,7 @@ import {
   type OrderingContext,
   type OrderingReason,
 } from "./ordering.ts";
+import { makePlan, type Demand, type Plan, type PlanContext } from "./plan.ts";
 import { shockFactor, type Shocks } from "./risk.ts";
 import { areaOf, type GameState } from "./state.ts";
 
@@ -130,93 +131,7 @@ function qualityFor(process: ProcessDef, pools: Pools): number {
   return first === undefined ? 1 : (pools.area[first]?.quality ?? 1);
 }
 
-/**
- * How much this process could produce at most, and what limits it first.
- *
- * `ignoreIntermediates` matters: to decide how much of an input to order, the
- * limit must be computed *without* that input — otherwise nothing is ordered
- * because nothing is there, and nothing is there because nothing was ordered.
- */
-function capacityOf(
-  process: ProcessDef,
-  pools: Pools,
-  shocks: Shocks,
-  ignoreIntermediates = false,
-): { max: number; binding: Binding } {
-  const perLabor = effectiveOutputPerLabor(process, qualityFor(process, pools), shocks);
-  if (perLabor <= 0) return { max: 0, binding: { kind: "none" } };
 
-  let max = pools.labor * perLabor;
-  let binding: Binding = { kind: "labor" };
-
-  for (const areaType of Object.keys(process.areaPerOutput)) {
-    const perOutput = effectiveAreaPerOutput(
-      process,
-      areaType,
-      qualityFor(process, pools),
-    );
-    if (perOutput <= 0) continue;
-    const limit = (pools.area[areaType]?.available ?? 0) / perOutput;
-    if (limit < max) {
-      max = limit;
-      binding = { kind: "area", what: areaType };
-    }
-  }
-
-  if (!ignoreIntermediates) {
-    for (const [stockId, perOutput] of Object.entries(process.intermediatesPerOutput)) {
-      if (perOutput <= 0) continue;
-      const limit = (pools.stock[stockId] ?? 0) / perOutput;
-      if (limit < max) {
-        max = limit;
-        binding = { kind: "intermediate", what: stockId };
-      }
-    }
-  }
-
-  return { max: Math.max(0, max), binding };
-}
-
-/**
- * Labour needed for one unit of a stock, including everything up the chain —
- * the labour content of the input-output table (E4).
- *
- * Without it, ordering an input would be planned against labour that the input
- * itself will use up, and a chain would order far more than it can carry.
- */
-function laborContent(
-  stockId: StockId,
-  ctx: ProductionContext,
-  seen: Set<StockId>,
-): number {
-  const cached = ctx.laborContent.get(stockId);
-  if (cached !== undefined) return cached;
-  if (seen.has(stockId)) return Infinity;
-
-  const branch = ctx.index.config.branches.find((b) => b.produces === stockId);
-  if (branch === undefined || !ctx.unlockedBranches.has(branch.id)) return Infinity;
-
-  const process = (ctx.index.processesOfBranch.get(branch.id) ?? []).find((p) =>
-    ctx.unlockedProcesses.has(p.id),
-  );
-  if (process === undefined) return Infinity;
-
-  seen.add(stockId);
-  const perLabor = effectiveOutputPerLabor(
-    process,
-    qualityFor(process, ctx.pools),
-    ctx.shocks,
-  );
-  let total = perLabor > 0 ? 1 / perLabor : Infinity;
-  for (const [needed, perOutput] of Object.entries(process.intermediatesPerOutput)) {
-    if (perOutput <= 0) continue;
-    total += perOutput * laborContent(needed, ctx, seen);
-  }
-  seen.delete(stockId);
-
-  ctx.laborContent.set(stockId, total);
-  return total;
-}
 
 function consume(
   process: ProcessDef,
@@ -252,115 +167,7 @@ function consume(
   return labor;
 }
 
-interface ProductionContext {
-  readonly index: ConfigIndex;
-  readonly pools: Pools;
-  readonly shocks: Shocks;
-  readonly produced: Record<StockId, number>;
-  readonly consumed: Record<StockId, number>;
-  readonly areaUsed: Record<AreaTypeId, number>;
-  readonly runsByProcess: Map<ProcessId, { output: number; labor: number }>;
-  readonly unlockedBranches: ReadonlySet<string>;
-  readonly unlockedProcesses: ReadonlySet<ProcessId>;
-  /** Guards against a cycle in the input-output table. */
-  readonly inProgress: Set<StockId>;
-  /** Labour content per stock, computed once per allocation. */
-  readonly laborContent: Map<StockId, number>;
-  /** Ordering per branch, resolved once per allocation (E5). */
-  readonly ordering: Map<BranchId, readonly ProcessDef[]>;
-  readonly orderingReason: Map<BranchId, OrderingReason>;
-  readonly leadProcess: Map<BranchId, ProcessId>;
-}
 
-/**
- * Produce up to `amount` of a stock, running the branch's processes by priority
- * and falling back when one runs out (E5).
- *
- * Intermediates are produced on demand: a branch that lacks an input triggers
- * production of that input first. That is the input-output chain from E4 —
- * without it a stock nobody needs directly, like the wood a house is built of,
- * would never be made at all.
- */
-function produceInto(
-  stockId: StockId,
-  amount: number,
-  ctx: ProductionContext,
-): { output: number; binding: Binding } {
-  if (amount <= 1e-12) return { output: 0, binding: { kind: "none" } };
-  if (ctx.inProgress.has(stockId)) {
-    // A cycle in the chain: stop rather than loop. Demand cannot be resolved
-    // by producing more of what is already being produced.
-    return { output: 0, binding: { kind: "intermediate", what: stockId } };
-  }
-
-  const branch = [...ctx.index.config.branches].find(
-    (candidate) => candidate.produces === stockId,
-  );
-  if (branch === undefined || !ctx.unlockedBranches.has(branch.id)) {
-    return { output: 0, binding: { kind: "intermediate", what: stockId } };
-  }
-
-  ctx.inProgress.add(stockId);
-  let remaining = amount;
-  let output = 0;
-  let binding: Binding = { kind: "none" };
-
-  const processes = ctx.ordering.get(branch.id) ?? [];
-
-  for (const process of processes) {
-    if (remaining <= 1e-12) break;
-
-    // How much is worth aiming for: labour for the *whole chain*, and this
-    // process's own area — deliberately without the intermediates, which are
-    // exactly what is about to be ordered.
-    const reach = capacityOf(process, ctx.pools, ctx.shocks, true);
-    const content = laborContent(stockId, ctx, new Set());
-    const chainLimit =
-      content > 0 && Number.isFinite(content) ? ctx.pools.labor / content : 0;
-    const wanted = Math.min(remaining, reach.max, chainLimit);
-
-    let upstream: Binding | undefined;
-    for (const [needed, perOutput] of Object.entries(process.intermediatesPerOutput)) {
-      if (perOutput <= 0) continue;
-      const short = wanted * perOutput - (ctx.pools.stock[needed] ?? 0);
-      if (short <= 1e-12) continue;
-      const made = produceInto(needed, short, ctx);
-      // If the input itself fell short, the real bottleneck lies upstream —
-      // say "wilderness ran out", not "wood is missing".
-      if (made.output < short - 1e-9 && made.binding.kind !== "none") {
-        upstream = made.binding;
-      }
-    }
-
-    const { max, binding: direct } = capacityOf(process, ctx.pools, ctx.shocks);
-    const limit = upstream ?? direct;
-    const made = Math.min(remaining, max);
-    if (made > 1e-12) {
-      const labor = consume(
-        process,
-        made,
-        ctx.pools,
-        ctx.shocks,
-        ctx.areaUsed,
-        ctx.consumed,
-      );
-      const run = ctx.runsByProcess.get(process.id) ?? { output: 0, labor: 0 };
-      ctx.runsByProcess.set(process.id, {
-        output: run.output + made,
-        labor: run.labor + labor,
-      });
-      ctx.produced[stockId] = (ctx.produced[stockId] ?? 0) + made;
-      ctx.pools.stock[stockId] = (ctx.pools.stock[stockId] ?? 0) + made;
-      output += made;
-      remaining -= made;
-    }
-    // The fallback level: what did not fit runs on the next process (E5).
-    if (remaining > 1e-12) binding = limit;
-  }
-
-  ctx.inProgress.delete(stockId);
-  return { output, binding };
-}
 
 export interface AllocationInput {
   readonly state: GameState;
@@ -382,51 +189,35 @@ export function allocate(input: AllocationInput): AllocationResult {
 
   const heads = sector?.heads ?? 0;
   const laborAvailable = heads * (sector?.workAbility ?? 0) * (sector?.productivity ?? 0);
+  const laborForProduction = Math.max(0, laborAvailable - laborToProjects);
 
   const pools: Pools = {
-    labor: Math.max(0, laborAvailable - laborToProjects),
+    labor: laborForProduction,
     area: poolAreas(state, sectorId, config),
     stock: { ...(sector?.stocks ?? {}) },
   };
-  const laborForProduction = pools.labor;
 
-  const produced: Record<StockId, number> = {};
-  const consumed: Record<StockId, number> = {};
-  const areaUsed: Record<AreaTypeId, number> = {};
-  const runsByProcess = new Map<ProcessId, { output: number; labor: number }>();
-  const laborContent = new Map<StockId, number>();
-  const tiers: TierOutcome[] = [];
+  const availableProcesses = config.processes.filter(
+    (process) =>
+      input.unlockedProcesses.has(process.id) && input.unlockedBranches.has(process.branch),
+  );
+  const buffer = survivalBuffer(state, index, sectorId);
 
-  // The ordering of processes is resolved once per allocation, per branch (E5).
-  // Both sources deliver the same shape, so the fallback level below works
-  // unchanged whichever one was used.
+  // The ordering per branch, resolved once (E5). Both sources deliver the same
+  // shape, so the plan below does not care which one was used.
   const ordering = new Map<BranchId, readonly ProcessDef[]>();
   const orderingReason = new Map<BranchId, OrderingReason>();
   const leadProcess = new Map<BranchId, ProcessId>();
-  const buffer = survivalBuffer(state, index, sectorId);
 
   for (const branch of config.branches) {
     if (!input.unlockedBranches.has(branch.id)) continue;
-    const available = (index.processesOfBranch.get(branch.id) ?? []).filter((process) =>
-      input.unlockedProcesses.has(process.id),
-    );
+    const forBranch = availableProcesses.filter((process) => process.branch === branch.id);
     const orderCtx: OrderingContext = {
       index,
-      available,
+      available: forBranch,
       buffer,
       manual: state.manualOrder[branch.id],
-      yieldPerLabor: (process) => {
-        const content = laborContentOf(
-          process,
-          index,
-          pools,
-          shocks,
-          input.unlockedBranches,
-          input.unlockedProcesses,
-          new Set(),
-        );
-        return Number.isFinite(content) && content > 0 ? 1 / content : 0;
-      },
+      yieldPerLabor: (process) => yieldPerLabor(process, index, pools, shocks, input),
     };
     const resolved = ORDERING_RESOLVER.resolve(branch, orderCtx, input.manualAllowed);
     ordering.set(branch.id, resolved.processes);
@@ -435,93 +226,121 @@ export function allocate(input: AllocationInput): AllocationResult {
     if (first !== undefined) leadProcess.set(branch.id, first.id);
   }
 
+  // Ranks eat from the store first, lowest rank first (E9). What is left over
+  // is the demand the plan has to cover.
+  const consumed: Record<StockId, number> = {};
+  const fromStock = new Map<string, number>();
+  const demands: Demand[] = [];
+  const tierList = index.tiersByRank.filter((tier) => input.unlockedBranches.has(tier.branch));
+
+  for (const tier of tierList) {
+    const need = heads * tier.perHead;
+    const inStock = pools.stock[tier.stock] ?? 0;
+    const taken = Math.min(need, Math.max(0, inStock));
+    pools.stock[tier.stock] = inStock - taken;
+    fromStock.set(tier.id, taken);
+    if (need - taken > 1e-9) {
+      demands.push({ tier, stock: tier.stock, amount: need - taken });
+    }
+  }
+
+  const planCtx: PlanContext = {
+    index,
+    supplies: {
+      labor: pools.labor,
+      areas: Object.fromEntries(
+        Object.entries(pools.area).map(([id, pool]) => [
+          id,
+          { area: pool.available, quality: pool.quality },
+        ]),
+      ),
+      stocks: { ...pools.stock },
+    },
+    available: availableProcesses,
+    yieldPerLabor: (process) => yieldPerLabor(process, index, pools, shocks, input),
+    order: (stock, processes) => {
+      const branch = config.branches.find((b) => b.produces === stock);
+      const wanted = branch === undefined ? undefined : ordering.get(branch.id);
+      if (wanted === undefined) return processes;
+      return wanted.filter((process) => processes.some((p) => p.id === process.id));
+    },
+  };
+
+  const plan = makePlan(expandDemands(demands, planCtx), planCtx);
+
+  // Carry the plan out: consume inputs, book output.
+  const produced: Record<StockId, number> = {};
+  const areaUsed: Record<AreaTypeId, number> = {};
+  const runs: ProcessRun[] = [];
+  let totalOutput = 0;
+
+  // Producers before consumers: a house cannot be built from wood that is only
+  // cut later in the loop. `consume` draws intermediates from the pool, so what
+  // is made has to be in it first (E4).
+  const inDependencyOrder = [...plan.levels.keys()].sort((a, b) => {
+    const pa = index.process.get(a);
+    const pb = index.process.get(b);
+    if (pa === undefined || pb === undefined) return 0;
+    const outA = index.branch.get(pa.branch)?.produces;
+    const outB = index.branch.get(pb.branch)?.produces;
+    const aFeedsB = outA !== undefined && (pb.intermediatesPerOutput[outA] ?? 0) > 0;
+    const bFeedsA = outB !== undefined && (pa.intermediatesPerOutput[outB] ?? 0) > 0;
+    return aFeedsB ? -1 : bFeedsA ? 1 : 0;
+  });
+
+  for (const id of inDependencyOrder) {
+    const level = plan.levels.get(id) ?? 0;
+    const process = index.process.get(id);
+    if (process === undefined || level <= 1e-12) continue;
+    const labor = consume(process, level, pools, shocks, areaUsed, consumed);
+    const stock = index.branch.get(process.branch)?.produces;
+    if (stock !== undefined) {
+      produced[stock] = (produced[stock] ?? 0) + level;
+      // Available to whatever needs it as an input further down the loop.
+      pools.stock[stock] = (pools.stock[stock] ?? 0) + level;
+    }
+    runs.push({ process: id, output: level, labor, share: 0 });
+    totalOutput += level;
+  }
+  const withShares = runs.map((run) => ({
+    ...run,
+    share: totalOutput > 0 ? run.output / totalOutput : 0,
+  }));
+
+  // Coverage per tier: the store it took plus its share of what was produced,
+  // handed out by rank (E9 rations, it does not produce).
+  const left: Record<StockId, number> = { ...produced };
+  const tiers: TierOutcome[] = [];
   let overallBinding: Binding = { kind: "none" };
   let bindingTier: string | undefined;
 
-  for (const tier of index.tiersByRank) {
-    if (!input.unlockedBranches.has(tier.branch)) continue;
-
+  for (const tier of tierList) {
     const need = heads * tier.perHead;
-    if (need <= 0) {
-      tiers.push({
-        tier: tier.id,
-        rank: tier.rank,
-        need: 0,
-        fromStock: 0,
-        produced: 0,
-        coverage: 1,
-        binding: { kind: "none" },
-      });
-      continue;
-    }
+    const taken = fromStock.get(tier.id) ?? 0;
+    const wanted = Math.max(0, need - taken);
+    const got = Math.min(wanted, left[tier.stock] ?? 0);
+    left[tier.stock] = (left[tier.stock] ?? 0) - got;
 
-    // A tier needs a *level*, not a flow: `perHead` is what a person must have,
-    // and only what is missing has to be made. That is how E3 gets rid of the
-    // stock/flow distinction — a house is simply slow decay, bread is fast.
-    // With decay at 85 % almost the whole amount is missing again every tick,
-    // so food behaves as a flow; housing at 0.4 % only needs its wear replaced.
-    //
-    // Lower ranks help themselves to what is there first (E9).
-    const inStock = pools.stock[tier.stock] ?? 0;
-    const fromStock = Math.min(need, Math.max(0, inStock));
-    pools.stock[tier.stock] = inStock - fromStock;
-
-    const outcome = produceInto(tier.stock, need - fromStock, {
-      index,
-      pools,
-      shocks,
-      produced,
-      consumed,
-      areaUsed,
-      runsByProcess,
-      unlockedBranches: input.unlockedBranches,
-      unlockedProcesses: input.unlockedProcesses,
-      inProgress: new Set<StockId>(),
-      laborContent,
-      ordering,
-      orderingReason,
-      leadProcess,
-    });
-    const producedHere = outcome.output;
-    const binding = outcome.binding;
-
-    // What is claimed stays claimed, so a higher rank cannot help itself to the
-    // same units a second time.
-    pools.stock[tier.stock] = (pools.stock[tier.stock] ?? 0) - producedHere;
-
-    // And what is *used up* in use is booked as consumption — that is eating,
-    // and it hangs on the heads. Wearing out is a different matter and has
-    // already happened in the decay phase (E19).
-    const served = fromStock + producedHere;
-    const eaten = served * tier.consumedOnUse;
-    if (eaten > 0) consumed[tier.stock] = (consumed[tier.stock] ?? 0) + eaten;
-    // Whatever is not used up goes back into the pool for the next tick.
-    pools.stock[tier.stock] = (pools.stock[tier.stock] ?? 0) + (served - eaten);
-
-    const coverage = need > 0 ? Math.min(1, (fromStock + producedHere) / need) : 1;
+    const coverage = need > 0 ? Math.min(1, (taken + got) / need) : 1;
+    const binding = coverage < 1 - 1e-9 ? bindingFromPlan(plan) : { kind: "none" as const };
     tiers.push({
       tier: tier.id,
       rank: tier.rank,
       need,
-      fromStock,
-      produced: producedHere,
+      fromStock: taken,
+      produced: got,
       coverage,
       binding,
     });
-
     if (coverage < 1 - 1e-9 && bindingTier === undefined) {
       overallBinding = binding;
       bindingTier = tier.id;
     }
-  }
 
-  const totalOutput = [...runsByProcess.values()].reduce((sum, r) => sum + r.output, 0);
-  const runs: ProcessRun[] = [...runsByProcess.entries()].map(([id, run]) => ({
-    process: id,
-    output: run.output,
-    labor: run.labor,
-    share: totalOutput > 0 ? run.output / totalOutput : 0,
-  }));
+    const served = taken + got;
+    const eaten = served * tier.consumedOnUse;
+    if (eaten > 0) consumed[tier.stock] = (consumed[tier.stock] ?? 0) + eaten;
+  }
 
   return {
     laborAvailable,
@@ -531,13 +350,76 @@ export function allocate(input: AllocationInput): AllocationResult {
     tiers,
     produced,
     consumed,
-    runs,
+    runs: withShares,
     areaUsed,
     binding: overallBinding,
     ...(bindingTier === undefined ? {} : { bindingTier }),
     leadProcess: Object.fromEntries(leadProcess),
     orderingReason: Object.fromEntries(orderingReason),
   };
+}
+
+/** Output per unit of labour, chain included (E4). */
+function yieldPerLabor(
+  process: ProcessDef,
+  index: ConfigIndex,
+  pools: Pools,
+  shocks: Shocks,
+  input: AllocationInput,
+): number {
+  const content = laborContentOf(
+    process,
+    index,
+    pools,
+    shocks,
+    input.unlockedBranches,
+    input.unlockedProcesses,
+    new Set(),
+  );
+  return Number.isFinite(content) && content > 0 ? 1 / content : 0;
+}
+
+/**
+ * Derived demand (E4): a house needs wood, so planning for houses means
+ * planning for the wood as well. Without this a stock nobody needs directly
+ * would never be made.
+ */
+function expandDemands(demands: readonly Demand[], ctx: PlanContext): readonly Demand[] {
+  const all = [...demands];
+  for (let i = 0; i < all.length && i < 200; i += 1) {
+    const demand = all[i];
+    if (demand === undefined) continue;
+    const branch = ctx.index.config.branches.find((b) => b.produces === demand.stock);
+    if (branch === undefined) continue;
+    const process = ctx.order(
+      demand.stock,
+      ctx.available.filter((p) => p.branch === branch.id),
+    )[0];
+    if (process === undefined) continue;
+    for (const [needed, per] of Object.entries(process.intermediatesPerOutput)) {
+      if (per <= 0) continue;
+      const have = ctx.supplies.stocks[needed] ?? 0;
+      const wanted = demand.amount * per - have;
+      if (wanted > 1e-9) all.push({ tier: demand.tier, stock: needed, amount: wanted });
+    }
+  }
+  return all;
+}
+
+/** Which input stopped the plan — the check on E6. */
+function bindingFromPlan(plan: Plan): Binding {
+  let worst: string | undefined;
+  let value = 0;
+  for (const [input, missing] of plan.shortfall) {
+    if (missing > value) {
+      value = missing;
+      worst = input;
+    }
+  }
+  if (worst === undefined) return { kind: "none" };
+  if (worst === "labor") return { kind: "labor" };
+  if (worst.startsWith("area:")) return { kind: "area", what: worst.slice(5) };
+  return { kind: "intermediate", what: worst.slice(6) };
 }
 
 /**
