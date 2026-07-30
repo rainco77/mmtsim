@@ -155,6 +155,20 @@ export const STAGE1: Config = {
       consumedOnUse: 1,
       deathRate: { atZero: 0.08, atFull: 0 },
     },
+    // Firewood. The biggest bulk good of the pre-industrial economy: cooking
+    // and heating took far more wood than building did. Deliberately the *same*
+    // stock as construction timber, so the ranking decides — and at rank 150,
+    // ahead of shelter at 200, people burn their building material first.
+    // Which is what happened.
+    {
+      id: "warmth_fire",
+      rank: 150,
+      stock: "wood",
+      branch: "wood",
+      perHead: 0.1,
+      consumedOnUse: 1,
+      deathRate: { atZero: 0.02, atFull: 0 },
+    },
     {
       id: "shelter_roof",
       rank: 200,
