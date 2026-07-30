@@ -448,11 +448,28 @@ describe("supply chains (E4)", () => {
       },
     };
     state = finish(state, "sedentism");
-    state = runTicks(state, 30);
+    // Enough cleared land that food does not claim all of it: rank 100 comes
+    // before rank 200, so without spare acres nothing is ever built.
+    state = {
+      ...state,
+      sectors: {
+        ...state.sectors,
+        households: {
+          ...state.sectors["households"]!,
+          areas: { cleared: { area: 300, quality: 1 } },
+        },
+      },
+    };
 
-    const d = derive(state, index);
-    expect(d.produced["wood"] ?? 0).toBeGreaterThan(0);
-    expect(d.coverage["shelter_roof"] ?? 0).toBeGreaterThan(0);
+    // Checked over a stretch, not in a single tick: once the roofs stand they
+    // only need their wear replaced, so a given tick may well make no wood.
+    let everMadeWood = false;
+    for (let i = 0; i < 40; i += 1) {
+      if ((derive(state, index).produced["wood"] ?? 0) > 0) everMadeWood = true;
+      state = tick(state, index);
+    }
+    expect(everMadeWood).toBe(true);
+    expect(state.sectors["households"]?.stocks["housing"] ?? 0).toBeGreaterThan(0);
   });
 
   it("names the upstream bottleneck, not the missing intermediate", () => {

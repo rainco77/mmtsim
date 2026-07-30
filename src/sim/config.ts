@@ -113,6 +113,20 @@ export interface NeedTierDef {
   readonly branch: BranchId;
   readonly perHead: number;
 
+  /**
+   * Share of the served amount that is used up in use.
+   *
+   * Bread is eaten, a roof is lived under. **Consumption hangs on the heads,
+   * decay on the stock** — two different things, and E19's decay covers only
+   * the second one. Food is 1, housing 0.
+   *
+   * This is a property of the *need relation*, not of the branch: E3 rightly
+   * says a house is slow decay, but the flow through a stock cannot be got at
+   * through the decay rate, because that scales with the store and not with
+   * the people.
+   */
+  readonly consumedOnUse: number;
+
   readonly birthRate?: TierEffect;
   readonly deathRate?: TierEffect;
   readonly productivity?: TierEffect;

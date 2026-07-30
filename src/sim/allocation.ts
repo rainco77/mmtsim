@@ -435,10 +435,18 @@ export function allocate(input: AllocationInput): AllocationResult {
     const producedHere = outcome.output;
     const binding = outcome.binding;
 
-    // What is claimed by this tier stays claimed: a higher rank must not help
-    // itself to the same units a second time. It is not used up, though —
-    // wearing out is decay's business (E19), and that already happened.
+    // What is claimed stays claimed, so a higher rank cannot help itself to the
+    // same units a second time.
     pools.stock[tier.stock] = (pools.stock[tier.stock] ?? 0) - producedHere;
+
+    // And what is *used up* in use is booked as consumption — that is eating,
+    // and it hangs on the heads. Wearing out is a different matter and has
+    // already happened in the decay phase (E19).
+    const served = fromStock + producedHere;
+    const eaten = served * tier.consumedOnUse;
+    if (eaten > 0) consumed[tier.stock] = (consumed[tier.stock] ?? 0) + eaten;
+    // Whatever is not used up goes back into the pool for the next tick.
+    pools.stock[tier.stock] = (pools.stock[tier.stock] ?? 0) + (served - eaten);
 
     const coverage = need > 0 ? Math.min(1, (fromStock + producedHere) / need) : 1;
     tiers.push({

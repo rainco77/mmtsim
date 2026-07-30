@@ -15,15 +15,13 @@ export const STAGE1: Config = {
       // Measured in nutrition, not in mass (E5): that is why cooking is an
       // ordinary process raising the yield instead of a disguised cut in
       // consumption.
-      // Eating shows up here: a tier needs a *level* (E3), so the stock settles
-      // at what the population needs, and the decay rate is the share of it
-      // that has to be produced again every tick. Consumption therefore scales
-      // with heads, as it must.
-      decayPerTick: 0.95,
+      // Decay is spoilage, nothing else — eating is consumption and sits on the
+      // need tier. Without a store almost nothing survives the tick.
+      decayPerTick: 0.9,
       // Sedentism makes food storable — a rule the phase reads (E23). Not
       // storable *for free*: holding a store still costs, which is what makes
       // the buffer against a bad year a trade-off rather than a formality (E19).
-      decayWhenRule: [{ rule: "settled", decayPerTick: 0.7 }],
+      decayWhenRule: [{ rule: "settled", decayPerTick: 0.12 }],
     },
     { id: "wood", decayPerTick: 0.02 },
     // Buildings need upkeep: maintenance is simply rebuilding what fell apart,
@@ -49,7 +47,7 @@ export const STAGE1: Config = {
       id: "gathering",
       branch: "food",
       priority: 100,
-      outputPerLabor: 1.05,
+      outputPerLabor: 1.3,
       areaPerOutput: { wilderness: 3.0 },
       intermediatesPerOutput: {},
       weatherSensitivity: 0.7,
@@ -60,7 +58,7 @@ export const STAGE1: Config = {
       id: "gathering_tools",
       branch: "food",
       priority: 110,
-      outputPerLabor: 1.3,
+      outputPerLabor: 1.6,
       areaPerOutput: { wilderness: 3.0 },
       intermediatesPerOutput: {},
       weatherSensitivity: 0.7,
@@ -71,7 +69,7 @@ export const STAGE1: Config = {
       id: "gathering_cooked",
       branch: "food",
       priority: 120,
-      outputPerLabor: 1.6,
+      outputPerLabor: 1.95,
       areaPerOutput: { wilderness: 3.0 },
       intermediatesPerOutput: {},
       weatherSensitivity: 0.7,
@@ -82,7 +80,7 @@ export const STAGE1: Config = {
       id: "hunting",
       branch: "food",
       priority: 130,
-      outputPerLabor: 1.7,
+      outputPerLabor: 2.3,
       areaPerOutput: { wilderness: 2.6 },
       intermediatesPerOutput: {},
       weatherSensitivity: 0.8,
@@ -97,7 +95,7 @@ export const STAGE1: Config = {
       id: "farming",
       branch: "food",
       priority: 200,
-      outputPerLabor: 1.25,
+      outputPerLabor: 1.6,
       areaPerOutput: { cleared: 0.35 },
       intermediatesPerOutput: {},
       weatherSensitivity: 0.6,
@@ -109,10 +107,10 @@ export const STAGE1: Config = {
     // This is the way out of the trap — expansion runs into the fixed factor,
     // and only working the same land harder gets past it (E6, E13).
     {
-      id: "farming_rotation",
+      id: "farming_fallow",
       branch: "food",
       priority: 210,
-      outputPerLabor: 1.15,
+      outputPerLabor: 1.35,
       areaPerOutput: { cleared: 0.2 },
       intermediatesPerOutput: {},
       weatherSensitivity: 0.5,
@@ -154,6 +152,7 @@ export const STAGE1: Config = {
       stock: "food",
       branch: "food",
       perHead: 1.0,
+      consumedOnUse: 1,
       deathRate: { atZero: 0.08, atFull: 0 },
     },
     {
@@ -162,6 +161,7 @@ export const STAGE1: Config = {
       stock: "housing",
       branch: "housing",
       perHead: 0.3,
+      consumedOnUse: 0,
       deathRate: { atZero: 0.005, atFull: 0 },
       birthRate: { atZero: 0, atFull: 0.003 },
     },
@@ -171,6 +171,7 @@ export const STAGE1: Config = {
       stock: "food",
       branch: "food",
       perHead: 0.8,
+      consumedOnUse: 1,
       birthRate: { atZero: 0, atFull: 0.011 },
       productivity: { atZero: 0, atFull: 0.2 },
     },
@@ -278,7 +279,7 @@ export const STAGE1: Config = {
     // learning by doing, expressed through the finished projects that are in
     // the state anyway (E12).
     {
-      id: "crop_rotation",
+      id: "fallowing",
       visibleWhen: [{ kind: "rule", id: "settled", set: true }],
       availableWhen: [
         { kind: "rule", id: "settled", set: true },
@@ -288,7 +289,7 @@ export const STAGE1: Config = {
       stockCost: {},
       minTicks: 30,
       repeatable: false,
-      effects: [{ type: "process", id: "farming_rotation" }],
+      effects: [{ type: "process", id: "farming_fallow" }],
       sector: "households",
     },
 
