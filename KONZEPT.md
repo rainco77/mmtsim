@@ -164,11 +164,66 @@ Produktivität. Beispiel Nahrung im Endausbau:
 **Regel: Verfahren haben eine erklärte Priorität. Das höchstpriore läuft, bis einer
 seiner Inputs ausgeht. Der Rest fällt auf das nächste zurück.**
 
-**Die Priorität steht in der Konfiguration, sie wird nicht aus dem Ertrag abgeleitet.**
-Die Engine urteilt nie darüber, was „besser" ist. Nötig ist das, sobald ein Verfahren
-Ertrag gegen etwas anderes tauscht: Bewässerung hat denselben oder geringeren Ertrag je
-Arbeitsleistung, aber deutlich geringere Empfindlichkeit gegen die Jahresgüte (E24). Aus
-dem Ertrag abgeleitet würde sie nie laufen, obwohl Kanäle gebaut sind.
+**Woher die Ordnung kommt, hat zwei Quellen — und beide liefern dieselbe Form: eine
+Ordnung der Verfahren, nie ein einzelnes ausgewähltes.** Nur so lässt sich später
+zwischen ihnen umschalten, ohne dass die Rückfallebene neu gebaut werden muss.
+
+**Gerechnet (die Voreinstellung).** Die Ordnung folgt zwei Größen:
+
+1. **Ergiebigkeit im bindenden Input.** Was gerade knapp ist, entscheidet, was das beste
+   Verfahren ist — und das wandert nach E6 im Lauf des Spiels. Eine feste Priorität kann
+   nicht für alle Lagen richtig sein: Bei reichlich Land und knapper Arbeit ist Jagd
+   richtig, bei knappem Land Ackerbau. Erzwänge man den Ackerbau, ackerte die Siedlung
+   sich in den Hunger, während der Wald brachliegt.
+2. **Ein Abschlag für Risiko, gewichtet nach der Dicke des Puffers.** Wer satt ist und
+   einen vollen Speicher hat, kann sich Streuung leisten und nimmt das Ertragreichste;
+   wer auf Kante lebt, nimmt das Verlässliche.
+
+> Der Zirkel — was bindet, weiß man erst nach der Zuteilung — wird wie in T2
+> aufgetrennt: **Der Zustand trägt mit, was im letzten Tick gebunden hat.** Das ist
+> zugleich das Wirklichkeitsnähere: Eine Wirtschaft reagiert auf die Knappheit von
+> gestern, nicht auf die von heute. Im ersten Tick gilt die in der Konfiguration
+> erklärte Priorität.
+
+> **Gegen das Flattern eine Schwelle:** Ein Wechsel greift erst, wenn das neue Verfahren
+> im bindenden Input **mindestens 10 % ergiebiger** ist als das laufende. Sonst könnte
+> die Ordnung bei zwei fast gleich knappen Inputs von Tick zu Tick springen und die
+> Wirtschaft zappeln. Der Wert ist bewusst niedrig gewählt und wird nach der Messung
+> gegebenenfalls angehoben.
+
+**Warum der Puffer über das Risiko entscheidet und nicht der Spieler:** Der Abschlag ist
+keine Haltung, sondern folgt aus dem Modell selbst. Nach E24 ist Verhungern nicht
+symmetrisch — Unterdeckung von Rang 100 hebt die Sterberate, Überdeckung bringt nichts
+zurück. Bauern haben die widerstandsfähige, ertragsärmere Sorte auch ohne jede Politik
+gewählt; eine Lösung, die das an einen Spielerhebel hängt, verlöre sie mit dem Hebel.
+
+Nebenbei bekommt der Vorrat damit einen zweiten Sinn: **Ein Vorrat erlaubt es, Risiken
+einzugehen.** Wer nichts hat, muss sicher gehen und bleibt deshalb ärmer — die
+Risikotragfähigkeit steigt mit dem Vermögen. Die Armutsfalle wird sichtbar, ohne dass wir
+sie einbauen.
+
+**Von Hand (die Übersteuerung).** Der Spieler kann die Ordnung je Branche selbst setzen
+und wieder freigeben. Eine Branche, die er nicht angefasst hat, folgt der Automatik —
+**auch wenn sich die Ordnung dabei ändert.** Wer den Hebel ignoriert, darf nicht
+verhungern, und eine im ersten Tick eingefrorene Ordnung wäre ohnehin willkürlich, weil
+dann noch nichts bindet.
+
+Damit erleidet der Spieler die Regel **an der eigenen Übersteuerung**: Die Wirtschaft
+schaltet auf die sichere Sorte, er hält das für Kleinmut, erzwingt die Ertragssorte, und
+im nächsten schlechten Jahr sterben Menschen. Sein Fehler, nicht ein schlechter Standard
+— und daraus lernt man ungleich mehr.
+
+**Die Begründung ist immer sichtbar.** `derive` rechnet die Ordnung ohnehin, also liefert
+es den Grund mit: *„Jagd läuft ← Arbeit bindet"*, *„sichere Sorte läuft ← Vorrat dünn"*.
+Ein Wechsel ist damit keine Zauberei, sondern eine Meldung mit Grund.
+
+**Der Hebel hängt an einer Regel (E23), und beide Wege existieren von Anfang an im
+Code** — nur einer ist aktiv. Wird die Regel später abgeschaltet, ist das eine Zeile
+Konfiguration und kein Neubau. Die gesetzte Ordnung bleibt dann im Zustand liegen und
+wird ignoriert statt gelöscht, also braucht es keine Migration nach T7.
+
+Was der Spieler dabei verliert, ist genau benennbar: **das Recht, es besser wissen zu
+wollen.**
 
 **Zwei Arten von Verfahren:**
 
@@ -1053,7 +1108,26 @@ Jahr trifft Acker und Waldwirtschaft zusammen, nur unterschiedlich stark. Bei
 unabhängigen Würfen wäre genau das unmöglich. Nebenbei ergibt es eine lesbare Zahl („ein
 schlechtes Jahr") statt eines Bündels unsichtbarer Störungen.
 
-**Die Empfindlichkeit gehört zum Verfahren, nicht zur Branche.** Bewässerter und
+**Risiko ist nicht nur Wetter.** Ein Verfahren erklärt seine **Aussetzung je
+Zufallsstrom** (E25), nicht eine einzelne Wetterempfindlichkeit:
+
+```
+{ weather: 0.7 }                 trockener Acker
+{ weather: 0.2 }                 bewässerter Acker
+{ weather: 0.1, disease: 0.6 }   Monokultur
+{ foreign: 0.8 }                 Produktion für den Export
+```
+
+Erst damit wird der Satz aus E25 wirksam, dass Gleichlauf eine Entwurfsentscheidung ist:
+Zwei Verfahren am selben Strom brechen **gemeinsam** ein, und ein Verfahren, das auf
+einen anderen Strom ausweicht, ist eine echte **Streuung** des Risikos — nicht bloß ein
+niedrigerer Wert. Das ist der Unterschied zwischen einer widerstandsfähigeren und einer
+anderen Sorte.
+
+Der Risikoabschlag in der Verfahrensordnung (E5) summiert über alle Ströme, die ein
+Verfahren berührt.
+
+**Die Aussetzung gehört zum Verfahren, nicht zur Branche.** Bewässerter und
 trockener Acker sind dieselbe Branche mit sehr verschiedener Wetterabhängigkeit — später
 genauso Gewächshaus gegen Freiland. An der Branche festgemacht wäre Bewässerung nicht
 darstellbar. Sie ist reine Konfiguration (T3), wie die Branchenmerkmale in E3.
@@ -1610,6 +1684,18 @@ Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es dranko
   muss jede Bedarfsstufe in eine reale Größe zurückzahlen. Für Kultur ist unklar,
   worin. Bloße Legitimität reicht als Begründung nicht; wird bei den Politikfeldern
   geklärt.
+- **Wodurch die Verfahrensordnung aus der Hand des Spielers gleitet** (E5). Der
+  Mechanismus steht — ein Projekt setzt die Regel auf `false`, und E23 erlaubt das
+  Abschalten —, offen ist nur, welches. Kandidaten, alle mechanisch identisch:
+  *Verkoppelung*, also der Wegfall des Flurzwangs, weil verzahnte Felder gemeinsam
+  bestellt werden müssen und zusammengelegte nicht mehr · **die Aufteilung des
+  Haushaltssektors**, weil *eine* Wahl je Branche sinnlos wird, sobald jeder Halter
+  andere Güte und anderen Puffer hat — dasselbe Projekt, das die Halter erzeugt, setzt
+  die Regel mit ab, also braucht es kein eigenes · *Preise*, weil der Markt die Frage
+  beantwortet · *Spezialisierung*, weil die Entscheidung dorthin wandert, wo das Wissen
+  ist · und schlicht die *Zahl der Branchen*, weil aus einer Entscheidung irgendwann
+  Fleißarbeit wird. Der zweite Kandidat wirkt am stärksten, weil er den Hebel nicht
+  wegnimmt, sondern **von selbst sinnlos macht**.
 - **Geldeinführung.** Der wichtigste Moment des Spiels. Merkposten für später, **keine
   Entscheidung**: Die amerikanischen Kolonien sind der bestdokumentierte Fall für
   „ausgeben vor besteuern" — Massachusetts 1690 druckt Papierscheine, um heimkehrende
@@ -1648,6 +1734,11 @@ Technisch noch offen:
   Verfall plus hohe Trägheit.
 - **Elastizität als Branchenmerkmal.** Fachlich falsch als Konstante; entsteht jetzt aus
   den Verfahren (E5).
+- **Die Verfahrensordnung als feste Zahl in der Konfiguration.** Sie kann nicht für alle
+  Lagen richtig sein, weil der bindende Input wandert (E6): Bei reichlich Land und
+  knapper Arbeit erzwang sie den Ackerbau, während der Wald brachlag und die Siedlung
+  hungerte. Ersetzt durch die gerechnete Ordnung in E5; die erklärte Priorität bleibt nur
+  noch Rückfall für den ersten Tick.
 - **„Zwingend vs. ersetzbar" als Attribut an der Kante Branche↔Input.** Kein
   Ja/Nein — der Effekt entsteht aus der Rückfallebene (E5).
 - **„Nur Arbeit ist knapp".** Wäre Arbeitswertlehre und würde die Malthus-Dynamik

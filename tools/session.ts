@@ -51,10 +51,9 @@ const scope = {
     if (result.rejected !== undefined) throw new Error(result.rejected);
     return result.state;
   },
-  reset: (seed: number) => {
-    session.s = createState(session.cfg, { seed });
-    return session.s.tick;
-  },
+  // Returns the fresh state; the caller assigns it (`s = reset(42)`). Setting
+  // it here would be overwritten by the write-back at the end of the call.
+  reset: (seed: number) => createState(session.cfg, { seed }),
   run: (state: GameState, ticks: number) => {
     let next = state;
     for (let i = 0; i < ticks; i += 1) next = tick(next, session.idx);
@@ -64,19 +63,26 @@ const scope = {
   config: () => session.cfg,
 };
 
+/**
+ * Evaluates an expression — or, if that does not parse, a block of statements
+ * whose last expression is the result. Loops and declarations must work, or the
+ * session is not a session but a calculator.
+ */
 function evaluate(source: string): unknown {
   const names = ["s", "cfg", "idx", ...Object.keys(scope)];
   const values = [session.s, session.cfg, session.idx, ...Object.values(scope)];
-  // Assignments to `s` inside the expression must stick, so the body writes
-  // back into the session before returning.
-  const body = `
-    let __result = (function () { return (${source}); })();
-    return { __result, __state: s };
-  `;
-  const fn = new Function(...names, body) as (...args: unknown[]) => {
-    __result: unknown;
-    __state: GameState;
-  };
+
+  const asExpression = `let __result = (${source});\nreturn { __result, __state: s };`;
+  const asStatements = `let __result = (function () {\n${source}\n})();\nreturn { __result, __state: s };`;
+
+  let fn: ((...args: unknown[]) => { __result: unknown; __state: GameState }) | undefined;
+  try {
+    fn = new Function(...names, asExpression) as typeof fn;
+  } catch {
+    fn = new Function(...names, asStatements) as typeof fn;
+  }
+  if (fn === undefined) throw new Error("could not compile");
+
   const out = fn(...values);
   session.s = out.__state;
   return out.__result;
