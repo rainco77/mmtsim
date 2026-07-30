@@ -434,3 +434,48 @@ describe("sedentism (E29)", () => {
     expect(afterOne.landTakings).toBe(1);
   });
 });
+
+describe("supply chains (E4)", () => {
+  it("produces an intermediate nobody needs directly", () => {
+    // Housing needs wood; nothing needs wood for its own sake. Without derived
+    // demand no wood would ever be made and the roof would stay uncovered.
+    let state = finish(createState(STAGE1, { seed: 7 }), "better_tools");
+    state = {
+      ...state,
+      sectors: {
+        ...state.sectors,
+        households: { ...state.sectors["households"]!, heads: 120 },
+      },
+    };
+    state = finish(state, "sedentism");
+    state = runTicks(state, 30);
+
+    const d = derive(state, index);
+    expect(d.produced["wood"] ?? 0).toBeGreaterThan(0);
+    expect(d.coverage["shelter_roof"] ?? 0).toBeGreaterThan(0);
+  });
+
+  it("names the upstream bottleneck, not the missing intermediate", () => {
+    // Wood is short because there is no wilderness left — that is what should
+    // be reported, not "wood is missing".
+    let state = finish(createState(STAGE1, { seed: 7 }), "better_tools");
+    state = {
+      ...state,
+      unownedAreas: { wilderness: { area: 0.01, quality: 1 } },
+      sectors: {
+        ...state.sectors,
+        households: {
+          ...state.sectors["households"]!,
+          heads: 200,
+          stocks: { food: 400 },
+          areas: { cleared: { area: 400, quality: 1 } },
+        },
+      },
+      completedProjects: { better_tools: 1, sedentism: 1 },
+    };
+    const d = derive(state, index);
+    expect(d.coverage["shelter_roof"] ?? 1).toBeLessThan(1);
+    expect(d.binding.kind).toBe("area");
+    expect(d.binding.what).toBe("wilderness");
+  });
+});

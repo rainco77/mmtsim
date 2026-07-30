@@ -100,27 +100,36 @@ function effectiveOutputPerLabor(
   return process.outputPerLabor * Math.max(0, qualityFactor) * Math.max(0, weatherFactor);
 }
 
-/** How much this process could produce at most, and what limits it first. */
+/** The quality of the land this process works on. */
+function qualityFor(process: ProcessDef, pools: Pools): number {
+  const first = Object.keys(process.areaPerOutput)[0];
+  return first === undefined ? 1 : (pools.area[first]?.quality ?? 1);
+}
+
+/**
+ * How much this process could produce at most, and what limits it first.
+ *
+ * `ignoreIntermediates` matters: to decide how much of an input to order, the
+ * limit must be computed *without* that input — otherwise nothing is ordered
+ * because nothing is there, and nothing is there because nothing was ordered.
+ */
 function capacityOf(
   process: ProcessDef,
   pools: Pools,
   yearQuality: number,
+  ignoreIntermediates = false,
 ): { max: number; binding: Binding } {
-  const areaEntries = Object.entries(process.areaPerOutput);
-  const quality =
-    areaEntries.length > 0
-      ? areaEntries[0]
-        ? (pools.area[areaEntries[0][0]]?.quality ?? 1)
-        : 1
-      : 1;
-
-  const perLabor = effectiveOutputPerLabor(process, quality, yearQuality);
+  const perLabor = effectiveOutputPerLabor(
+    process,
+    qualityFor(process, pools),
+    yearQuality,
+  );
   if (perLabor <= 0) return { max: 0, binding: { kind: "none" } };
 
   let max = pools.labor * perLabor;
   let binding: Binding = { kind: "labor" };
 
-  for (const [areaType, perOutput] of areaEntries) {
+  for (const [areaType, perOutput] of Object.entries(process.areaPerOutput)) {
     if (perOutput <= 0) continue;
     const limit = (pools.area[areaType]?.available ?? 0) / perOutput;
     if (limit < max) {
@@ -129,16 +138,59 @@ function capacityOf(
     }
   }
 
-  for (const [stockId, perOutput] of Object.entries(process.intermediatesPerOutput)) {
-    if (perOutput <= 0) continue;
-    const limit = (pools.stock[stockId] ?? 0) / perOutput;
-    if (limit < max) {
-      max = limit;
-      binding = { kind: "intermediate", what: stockId };
+  if (!ignoreIntermediates) {
+    for (const [stockId, perOutput] of Object.entries(process.intermediatesPerOutput)) {
+      if (perOutput <= 0) continue;
+      const limit = (pools.stock[stockId] ?? 0) / perOutput;
+      if (limit < max) {
+        max = limit;
+        binding = { kind: "intermediate", what: stockId };
+      }
     }
   }
 
   return { max: Math.max(0, max), binding };
+}
+
+/**
+ * Labour needed for one unit of a stock, including everything up the chain —
+ * the labour content of the input-output table (E4).
+ *
+ * Without it, ordering an input would be planned against labour that the input
+ * itself will use up, and a chain would order far more than it can carry.
+ */
+function laborContent(
+  stockId: StockId,
+  ctx: ProductionContext,
+  seen: Set<StockId>,
+): number {
+  const cached = ctx.laborContent.get(stockId);
+  if (cached !== undefined) return cached;
+  if (seen.has(stockId)) return Infinity;
+
+  const branch = ctx.index.config.branches.find((b) => b.produces === stockId);
+  if (branch === undefined || !ctx.unlockedBranches.has(branch.id)) return Infinity;
+
+  const process = (ctx.index.processesOfBranch.get(branch.id) ?? []).find((p) =>
+    ctx.unlockedProcesses.has(p.id),
+  );
+  if (process === undefined) return Infinity;
+
+  seen.add(stockId);
+  const perLabor = effectiveOutputPerLabor(
+    process,
+    qualityFor(process, ctx.pools),
+    ctx.yearQuality,
+  );
+  let total = perLabor > 0 ? 1 / perLabor : Infinity;
+  for (const [needed, perOutput] of Object.entries(process.intermediatesPerOutput)) {
+    if (perOutput <= 0) continue;
+    total += perOutput * laborContent(needed, ctx, seen);
+  }
+  seen.delete(stockId);
+
+  ctx.laborContent.set(stockId, total);
+  return total;
 }
 
 function consume(
@@ -187,6 +239,8 @@ interface ProductionContext {
   readonly unlockedProcesses: ReadonlySet<ProcessId>;
   /** Guards against a cycle in the input-output table. */
   readonly inProgress: Set<StockId>;
+  /** Labour content per stock, computed once per allocation. */
+  readonly laborContent: Map<StockId, number>;
 }
 
 /**
@@ -229,18 +283,30 @@ function produceInto(
   for (const process of processes) {
     if (remaining <= 1e-12) break;
 
-    // First make sure the intermediates for what we intend to run are there.
-    const wanted = Math.min(
-      remaining,
-      capacityOf(process, ctx.pools, ctx.yearQuality).max,
-    );
+    // How much is worth aiming for: labour for the *whole chain*, and this
+    // process's own area — deliberately without the intermediates, which are
+    // exactly what is about to be ordered.
+    const reach = capacityOf(process, ctx.pools, ctx.yearQuality, true);
+    const content = laborContent(stockId, ctx, new Set());
+    const chainLimit =
+      content > 0 && Number.isFinite(content) ? ctx.pools.labor / content : 0;
+    const wanted = Math.min(remaining, reach.max, chainLimit);
+
+    let upstream: Binding | undefined;
     for (const [needed, perOutput] of Object.entries(process.intermediatesPerOutput)) {
       if (perOutput <= 0) continue;
       const short = wanted * perOutput - (ctx.pools.stock[needed] ?? 0);
-      if (short > 1e-12) produceInto(needed, short, ctx);
+      if (short <= 1e-12) continue;
+      const made = produceInto(needed, short, ctx);
+      // If the input itself fell short, the real bottleneck lies upstream —
+      // say "wilderness ran out", not "wood is missing".
+      if (made.output < short - 1e-9 && made.binding.kind !== "none") {
+        upstream = made.binding;
+      }
     }
 
-    const { max, binding: limit } = capacityOf(process, ctx.pools, ctx.yearQuality);
+    const { max, binding: direct } = capacityOf(process, ctx.pools, ctx.yearQuality);
+    const limit = upstream ?? direct;
     const made = Math.min(remaining, max);
     if (made > 1e-12) {
       const labor = consume(
@@ -299,6 +365,7 @@ export function allocate(input: AllocationInput): AllocationResult {
   const consumed: Record<StockId, number> = {};
   const areaUsed: Record<AreaTypeId, number> = {};
   const runsByProcess = new Map<ProcessId, { output: number; labor: number }>();
+  const laborContent = new Map<StockId, number>();
   const tiers: TierOutcome[] = [];
 
   let overallBinding: Binding = { kind: "none" };
@@ -343,6 +410,7 @@ export function allocate(input: AllocationInput): AllocationResult {
       unlockedBranches: input.unlockedBranches,
       unlockedProcesses: input.unlockedProcesses,
       inProgress: new Set<StockId>(),
+      laborContent,
     });
     const producedHere = outcome.output;
     const binding = outcome.binding;
