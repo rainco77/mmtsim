@@ -43,6 +43,10 @@ nicht was *wünschenswert* ist.
 - Der Anfang muss super simpel sein. Komplexität kommt ausschließlich schrittweise
   im Spielverlauf dazu.
 - Nach jeder Einigung: dieses Dokument fortschreiben, dann committen.
+- **Auch die Umsetzung schreibt fort.** Was beim Bauen oder Austarieren entschieden
+  wird — weil ein Lauf einen Fehler zeigt oder eine Festlegung sich als unvollständig
+  erweist —, kommt hier hinein, mit dem Befund, der dazu geführt hat. Sonst weiß bald
+  niemand mehr, warum der Code etwas anderes tut als das Konzept.
 - **Der Entwicklungsbogen wird nicht am Schreibtisch entworfen.** Nach E28 muss ein
   Übergang einen Schmerz beantworten — und ein Schmerz wird **gefunden, nicht
   erfunden**. Der Versuch, die Stufen bis zur galaktischen Zivilisation vorab
@@ -500,7 +504,7 @@ das könnte kein Hebel je verschwinden, was E1 verlangt (→ E23).
 | Typ | Beispiel | Häufigkeit |
 |---|---|---|
 | **+ Kapazität** | Hütten, Mühle, Universität | ständig |
-| **+ Verfahren** | Fruchtwechsel, Pflug (E5) | häufig |
+| **+ Verfahren** | Brache, Pflug (E5) | häufig |
 | **+ Branche** | Bildung existiert jetzt, mit eigenen Bedarfsrängen | selten |
 | **+ Regel** | Geld existiert · Branchen sind privatisierbar · neuer Hebel | **sehr selten** |
 
@@ -611,6 +615,22 @@ Differentialrente handelt von **Ertragsunterschieden**, nicht von einer allgemei
 Landgüte. Die Güte selbst hängt am **Flächentyp**; werden Typen später gesplittet,
 bekommt jeder seine eigene Kurve.
 
+**Sie wirkt auf die Fläche, nicht auf die Arbeit** — `Ertrag = Hektar × Güte ×
+Verfahrensertrag`. Schlechter Boden heißt *mehr Hektar für dieselbe Ernte*, nicht mehr
+Arbeit je Hektar.
+
+> *Befund aus der Umsetzung:* Andersherum gerechnet macht schlechter Boden die Arbeit
+> teurer statt die Fläche knapper — dann wirkt der feste Faktor nicht, und die
+> Malthus-Falle schnappt nie zu, egal an welchen Wachstumsraten man dreht.
+
+**Der Deckel ist eine Bedingung am Projekt**, nicht eine eigene Zustandsgröße: Jede
+Landnahme bringt eine feste Parzelle, also *ist* eine Höchstzahl an Landnahmen eine
+Höchstfläche. Bis dorthin greift die weiche Bremse der fallenden Güte, danach die
+harte.
+
+> *Befund aus der Umsetzung:* Solange der Deckel fehlte, lief Landnahme unbegrenzt, und
+> die Falle konnte nicht zuschnappen — die Bevölkerung wuchs ohne Grenze.
+
 **Die Grenzgüte steht vor dem Klick da, nicht danach:**
 
 > **Landnahme** — 60 Arbeit
@@ -646,7 +666,7 @@ Geld begehbar:
 
 | Nahrung | Wohnraum | Holz |
 |---|---|---|
-| Fruchtwechsel | Fachwerk | Bessere Äxte |
+| Brache | Fachwerk | Bessere Äxte |
 | ↳ Pflug *(braucht Holz)* | ↳ Ziegel *(neuer Branche Lehm)* | ↳ Forstwirtschaft |
 | ↳ Wassermühle *(+ Mühle bauen)* | | |
 
@@ -660,7 +680,7 @@ kleinteilige Projekte von Anfang an, drei Branchen am Anfang, weitere langsam.
 Der Reiz der ersten halben Stunde entsteht daraus, dass **der Engpass wandert**: Erst
 fehlt Nahrung → roden. Dann fehlt Wohnraum → mehr Holz. Dann fehlt Wald, weil zu viel
 gerodet wurde → Forstwirtschaft oder Ziegel. Dann fehlt Ackerland, weil der Wald
-geschont wird → Fruchtwechsel statt Rodung. Das ist E6 in klein, viermal, jedes Mal
+geschont wird → Brache statt Rodung. Das ist E6 in klein, viermal, jedes Mal
 mit einer anderen Antwort.
 
 *Wackelkandidat:* **Ziegel** bringt einen vierten Branche sehr früh. Bleibt vorerst
@@ -699,7 +719,7 @@ nicht, weil sie weniger kostet, sondern weil mehr geleistet wird.
 | | Wirkt auf | Beispiel |
 |---|---|---|
 | **Produktivität** | die Arbeitsleistung insgesamt, überall | Bildung, Gesundheit, Ernährung |
-| **Verfahren** (E5) | den Ertrag je Arbeitsleistung **in einer Branche** | Fruchtwechsel, bessere Äxte, Wassermühle |
+| **Verfahren** (E5) | den Ertrag je Arbeitsleistung **in einer Branche** | Brache, bessere Äxte, Wassermühle |
 
 Bessere Äxte machen Holz schneller verfügbar — sie senken **nicht** die Holzkosten
 einer Mühle. Das eine ist Humankapital, das andere Technik; sie multiplizieren sich.
@@ -764,6 +784,21 @@ wird zu 98, dann zu 96,04 — er nähert sich der Null, erreicht sie aber nie vo
 Das ist die **geometrische Abschreibung**, mit der statistische Ämter den Kapitalstock
 fortschreiben (Perpetual-Inventory-Methode). Lineare Abschreibung wäre für einen
 laufend nachgefüllten Bestand unnatürlich, weil sie einen Endzeitpunkt braucht.
+
+**Verfall ist Verderb und Abnutzung — nicht Verbrauch.** Das eine hängt am *Bestand*,
+das andere an den *Köpfen*. Brot wird gegessen, ein Dach wird bewohnt; die Verfallsrate
+kann den Durchfluss durch einen Bestand nicht abbilden, weil sie mit dem Lager skaliert
+und nicht mit den Menschen.
+
+Deshalb trägt jede **Bedarfsstufe** (E9) einen Anteil, der in der Nutzung aufgebraucht
+wird: Nahrung 1, Wohnraum 0. Das ist eine Eigenschaft der **Bedarfsbeziehung**, nicht
+der Branche.
+
+> *Befund aus der Umsetzung:* Ohne diese Trennung wurde Nahrung nie gegessen. Der
+> Verbrauch ließ sich nur über die Verfallsrate nachbilden — und dann „aß" die Siedlung
+> einen festen Anteil ihres Lagers, gleichgültig wie viele Menschen es waren. Die
+> Aussage weiter unten unter *Verworfen*, ein Haus sei einfach langsamer Verfall, gilt
+> deshalb nur für die **Haltbarkeit**, nicht für den Durchfluss.
 
 **Die Rate gehört zu jedem Bestand, und null ist erlaubt** — dann braucht es keine
 Sonderfälle:
@@ -1608,7 +1643,8 @@ Technisch noch offen:
 
 - **Wohlstandsjahre** (monoton steigende Leitzahl aus Bevölkerung × Deckung). Die
   Zeit läuft ohnehin hoch, und Siedlungsgröße ist die ehrlichere Erfolgszahl.
-- **Fluss vs. Bestand als eigenes Branchenmerkmal.** Ein Haus ist einfach langsamer
+- **Fluss vs. Bestand als eigenes Branchenmerkmal.** Gilt für die *Haltbarkeit*: ein
+  Haus ist einfach langsamer
   Verfall plus hohe Trägheit.
 - **Elastizität als Branchenmerkmal.** Fachlich falsch als Konstante; entsteht jetzt aus
   den Verfahren (E5).
@@ -1670,6 +1706,7 @@ Jede Mechanik braucht eine Entsprechung in der Lehre. Stand jetzt:
 | Verfall ungenutzter Arbeit | Post-Keynesianisch: nicht produzierter Output ist dauerhaft verloren |
 | Bevölkerung | Malthus; Unified Growth Theory (Galor/Weil) |
 | Ackerbau: mehr je Fläche, weniger je Arbeitsleistung | Boserup |
+| Abgeleitete Nachfrage, Arbeitsinhalt einer Ware | Leontief; Arbeitswerte der Input-Output-Tabelle |
 | Mindestlebensfähige Größe | Populationsbiologie; minimum viable population |
 | Lagerung als Aktivität | Aktivitätsanalyse (Koopmans, von Neumann) |
 | Geometrischer Verfall | Perpetual-Inventory-Methode der Kapitalstockrechnung |
