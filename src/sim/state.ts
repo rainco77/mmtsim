@@ -1,0 +1,98 @@
+import type { AreaTypeId, ProjectId, SectorId, StockId } from "./ids.ts";
+import type { RandomState } from "./random.ts";
+
+/**
+ * The whole world state (E22).
+ *
+ * Rule: only what has a history is stored. Everything derivable is recomputed
+ * every tick and lives nowhere — see `derive.ts`.
+ *
+ * The value is plain and serialisable throughout (T7): no functions, no class
+ * instances, no cycles. That is what makes saving, comparing and rewinding
+ * possible at all.
+ */
+export interface GameState {
+  /** Game time is the number of ticks. Nothing claims what a tick is (E17). */
+  readonly tick: number;
+
+  readonly random: RandomState;
+
+  /**
+   * Every stock has a holder from the start (E22). Until property exists there
+   * is exactly one sector — but the shape must not change later, because every
+   * reading site would be affected.
+   */
+  readonly sectors: Readonly<Record<SectorId, SectorState>>;
+
+  /**
+   * Land that belongs to nobody (E13). Wilderness is unowned, not commonly
+   * owned: a regulated commons would be an institution, and there is none.
+   */
+  readonly unownedAreas: Readonly<Record<AreaTypeId, Area>>;
+
+  /** How often territory was taken; the quality of the next parcel follows (E13). */
+  readonly landTakings: number;
+
+  /** How often each project was finished — covers one-off and repeatable alike. */
+  readonly completedProjects: Readonly<Record<ProjectId, number>>;
+
+  readonly activeProjects: readonly ActiveProject[];
+}
+
+export interface SectorState {
+  /** Fractional; displayed rounded (E20). */
+  readonly heads: number;
+
+  readonly stocks: Readonly<Record<StockId, number>>;
+
+  /** Owned land, per area type. Empty until property exists. */
+  readonly areas: Readonly<Record<AreaTypeId, Area>>;
+
+  /**
+   * Carried factors (E16). They follow from coverage, but coverage follows from
+   * production, which follows from them — the circle is broken by carrying them
+   * from the previous tick (T2).
+   */
+  readonly productivity: number;
+  readonly workAbility: number;
+}
+
+/** Area always travels with its quality, because each holder has its own (E13). */
+export interface Area {
+  readonly area: number;
+  readonly quality: number;
+}
+
+/** A project under way (E18). */
+export interface ActiveProject {
+  readonly id: ProjectId;
+  /** 0 … 1. Reaching 1 completes it. */
+  readonly progress: number;
+  /** Lower runs earlier; the start time seeds it, the player may reorder. */
+  readonly order: number;
+  readonly paused: boolean;
+}
+
+export const EMPTY_AREA: Area = { area: 0, quality: 1 };
+
+export function areaOf(areas: Readonly<Record<AreaTypeId, Area>>, id: AreaTypeId): Area {
+  return areas[id] ?? EMPTY_AREA;
+}
+
+export function stockOf(stocks: Readonly<Record<StockId, number>>, id: StockId): number {
+  return stocks[id] ?? 0;
+}
+
+export function completedCount(state: GameState, id: ProjectId): number {
+  return state.completedProjects[id] ?? 0;
+}
+
+export function withSector(
+  state: GameState,
+  id: SectorId,
+  change: (sector: SectorState) => SectorState,
+): GameState {
+  const sector = state.sectors[id];
+  if (sector === undefined) return state;
+  return { ...state, sectors: { ...state.sectors, [id]: change(sector) } };
+}

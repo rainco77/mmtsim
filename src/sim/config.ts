@@ -1,0 +1,298 @@
+import type {
+  AreaTypeId,
+  BranchId,
+  NeedTierId,
+  ProcessId,
+  ProjectId,
+  RuleId,
+  SectorId,
+  StockId,
+} from "./ids.ts";
+
+/**
+ * Content is data; the engine interprets it (T3).
+ *
+ * Nothing in here is a function. A curve is described by a named shape and its
+ * parameters, never by code — otherwise balancing would be programming again.
+ */
+
+// ---------------------------------------------------------------- stocks
+
+export interface StockDef {
+  readonly id: StockId;
+  /**
+   * Geometric decay: the same share is lost every tick (E19). Zero is allowed
+   * and means "keeps forever"; one means "not storable at all".
+   */
+  readonly decayPerTick: number;
+  /**
+   * A rule may replace the rate (E23: rules are switches the phases read).
+   * That is how food becomes storable with sedentism without a fifth effect
+   * type. The first matching active rule wins.
+   */
+  readonly decayWhenRule?: readonly {
+    readonly rule: RuleId;
+    readonly decayPerTick: number;
+  }[];
+}
+
+// ---------------------------------------------------------------- areas
+
+export interface AreaTypeDef {
+  readonly id: AreaTypeId;
+}
+
+// ---------------------------------------------------------------- branches
+
+/** A branch is where something is produced. */
+export interface BranchDef {
+  readonly id: BranchId;
+  readonly produces: StockId;
+  /** Available from the start, or unlocked by a project effect (E12). */
+  readonly unlockedFromStart: boolean;
+}
+
+// ---------------------------------------------------------------- processes
+
+/**
+ * A way of producing (E5). Processes carry an explicit priority: the engine
+ * never judges which one is "better". Without that, irrigation — same or lower
+ * yield, much lower weather sensitivity — would never run although the canals
+ * stand.
+ */
+export interface ProcessDef {
+  readonly id: ProcessId;
+  readonly branch: BranchId;
+
+  /** Higher runs first. Ties are forbidden and are checked by a test. */
+  readonly priority: number;
+
+  /** Output per unit of labour performance, on land of quality 1. */
+  readonly outputPerLabor: number;
+
+  /** Area occupied per unit of output, by type. Occupied, not consumed (E4). */
+  readonly areaPerOutput: Readonly<Record<AreaTypeId, number>>;
+
+  /** Stocks used up per unit of output (E4). Empty at the start. */
+  readonly intermediatesPerOutput: Readonly<Record<StockId, number>>;
+
+  /**
+   * How strongly the year's quality strikes here (E24). Belongs to the process,
+   * not to the branch: irrigated and dry fields are the same branch with very
+   * different exposure.
+   */
+  readonly weatherSensitivity: number;
+
+  /** How strongly land quality enters the yield (E13). Housing does not care. */
+  readonly qualityWeight: number;
+
+  readonly unlockedFromStart: boolean;
+}
+
+// ---------------------------------------------------------------- needs
+
+/**
+ * How strongly a need tier moves a quantity. Interpolated linearly between no
+ * coverage and full coverage — the non-linearity that famine mortality needs
+ * already sits in the ranking itself (E20).
+ */
+export interface TierEffect {
+  readonly atZero: number;
+  readonly atFull: number;
+}
+
+/**
+ * A need tier (E9). Tiers belong to a branch but are ordered globally by an
+ * absolute rank number, so the order in which the player unlocks branches does
+ * not matter. Gaps are deliberate.
+ */
+export interface NeedTierDef {
+  readonly id: NeedTierId;
+  readonly rank: number;
+  readonly stock: StockId;
+  readonly branch: BranchId;
+  readonly perHead: number;
+
+  readonly birthRate?: TierEffect;
+  readonly deathRate?: TierEffect;
+  readonly productivity?: TierEffect;
+  readonly workAbility?: TierEffect;
+}
+
+// ---------------------------------------------------------------- projects
+
+export type Condition =
+  | { readonly kind: "population"; readonly min: number }
+  | { readonly kind: "projectDone"; readonly id: ProjectId; readonly min: number }
+  | { readonly kind: "rule"; readonly id: RuleId; readonly set: boolean }
+  | { readonly kind: "unownedArea"; readonly areaType: AreaTypeId; readonly min: number }
+  | { readonly kind: "coverage"; readonly tier: NeedTierId; readonly min: number };
+
+/**
+ * Where the quality of added area comes from — declarative, never a function
+ * (T3). `from` inherits the average of another type, which is what clearing
+ * does; `nextTaking` uses the falling marginal quality from E13 and advances
+ * the count of takings.
+ */
+export type QualitySource =
+  | { readonly kind: "fixed"; readonly value: number }
+  | { readonly kind: "from"; readonly areaType: AreaTypeId }
+  | { readonly kind: "nextTaking" };
+
+/** The four effect types from E12. Amounts may be negative. */
+export type Effect =
+  | {
+      readonly type: "capacity";
+      readonly areaType: AreaTypeId;
+      /** Omitted means unowned land (E13). */
+      readonly sector?: SectorId;
+      readonly amount: number;
+      /** Quality of the added area; omitted keeps the existing average. */
+      readonly quality?: QualitySource;
+    }
+  | { readonly type: "process"; readonly id: ProcessId }
+  | { readonly type: "branch"; readonly id: BranchId }
+  | { readonly type: "rule"; readonly id: RuleId; readonly set: boolean };
+
+export interface ProjectDef {
+  readonly id: ProjectId;
+
+  /** Appears greyed out, with its name (E12). */
+  readonly visibleWhen: readonly Condition[];
+  /** Can be started. */
+  readonly availableWhen: readonly Condition[];
+
+  /** Labour performance in total, spread evenly over the minimum duration. */
+  readonly laborCost: number;
+  /** Stocks in total, likewise spread evenly (E18). */
+  readonly stockCost: Readonly<Record<StockId, number>>;
+
+  /**
+   * Never faster than this, however many hands are thrown at it — this is the
+   * inertia from E3. Longer is possible when an input is missing (E18).
+   */
+  readonly minTicks: number;
+
+  readonly repeatable: boolean;
+
+  readonly effects: readonly Effect[];
+
+  /** Which sector carries and receives it. One sector until property exists. */
+  readonly sector: SectorId;
+}
+
+// ---------------------------------------------------------------- population
+
+export interface PopulationConfig {
+  /**
+   * Base rates per tick. Equal by construction: with rank 100 fully covered and
+   * nothing above it, births equal deaths and the population stands (E20).
+   */
+  readonly baseBirthRate: number;
+  readonly baseDeathRate: number;
+
+  /**
+   * Below this the settlement is given up and the run ends (E20). Not a
+   * concession to playability: a community under a certain size is not viable.
+   */
+  readonly minimumViableSize: number;
+}
+
+// ---------------------------------------------------------------- weather
+
+/**
+ * The year's quality (E24): mean 1, an upper bound, rare severe failures
+ * downwards. Harvests have a biological ceiling but no counterpart below.
+ *
+ * Shape `powerLeftSkewed`: `u^(1/exponent) · (exponent+1)/exponent` for a
+ * uniform `u`. Mean is exactly 1, the upper bound is `(exponent+1)/exponent`,
+ * and the left tail grows longer as the exponent rises.
+ */
+export interface WeatherConfig {
+  readonly shape: "powerLeftSkewed";
+  readonly exponent: number;
+}
+
+// ---------------------------------------------------------------- land
+
+export interface LandConfig {
+  /** Quality of the very first territory. */
+  readonly baseQuality: number;
+  /** Each taking yields land this much worse than the previous one (E13). */
+  readonly qualityDecayPerTaking: number;
+}
+
+// ---------------------------------------------------------------- carried
+
+export interface CarriedConfig {
+  readonly baseProductivity: number;
+  readonly baseWorkAbility: number;
+  /**
+   * How fast the carried factors follow coverage. One means immediately from
+   * the previous tick, smaller values smooth over several ticks.
+   */
+  readonly adjustmentPerTick: number;
+}
+
+// ---------------------------------------------------------------- whole
+
+export interface Config {
+  readonly stocks: readonly StockDef[];
+  readonly areaTypes: readonly AreaTypeDef[];
+  readonly branches: readonly BranchDef[];
+  readonly processes: readonly ProcessDef[];
+  readonly needTiers: readonly NeedTierDef[];
+  readonly projects: readonly ProjectDef[];
+  readonly population: PopulationConfig;
+  readonly weather: WeatherConfig;
+  readonly land: LandConfig;
+  readonly carried: CarriedConfig;
+}
+
+// ---------------------------------------------------------------- lookups
+
+/**
+ * Indexed access to the content. Built once per run; holds nothing that
+ * changes, so it is not state.
+ */
+export interface ConfigIndex {
+  readonly config: Config;
+  readonly stock: ReadonlyMap<StockId, StockDef>;
+  readonly branch: ReadonlyMap<BranchId, BranchDef>;
+  readonly process: ReadonlyMap<ProcessId, ProcessDef>;
+  readonly project: ReadonlyMap<ProjectId, ProjectDef>;
+  readonly tier: ReadonlyMap<NeedTierId, NeedTierDef>;
+  /** Need tiers sorted by rank, lowest first (E9). */
+  readonly tiersByRank: readonly NeedTierDef[];
+  /** Processes of a branch sorted by priority, highest first (E5). */
+  readonly processesOfBranch: ReadonlyMap<BranchId, readonly ProcessDef[]>;
+}
+
+export function indexConfig(config: Config): ConfigIndex {
+  const processesOfBranch = new Map<BranchId, ProcessDef[]>();
+  for (const process of config.processes) {
+    const list = processesOfBranch.get(process.branch) ?? [];
+    list.push(process);
+    processesOfBranch.set(process.branch, list);
+  }
+  for (const list of processesOfBranch.values()) {
+    list.sort((a, b) => b.priority - a.priority);
+  }
+
+  return {
+    config,
+    stock: new Map(config.stocks.map((s) => [s.id, s])),
+    branch: new Map(config.branches.map((b) => [b.id, b])),
+    process: new Map(config.processes.map((p) => [p.id, p])),
+    project: new Map(config.projects.map((p) => [p.id, p])),
+    tier: new Map(config.needTiers.map((t) => [t.id, t])),
+    tiersByRank: [...config.needTiers].sort((a, b) => a.rank - b.rank),
+    processesOfBranch,
+  };
+}
+
+/** Linear interpolation of a tier effect by coverage (E20). */
+export function tierEffectAt(effect: TierEffect | undefined, coverage: number): number {
+  if (effect === undefined) return 0;
+  return effect.atZero + (effect.atFull - effect.atZero) * coverage;
+}
