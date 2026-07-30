@@ -1040,10 +1040,41 @@ Eine wirkliche Gesellschaft würde hier mehr ackern und weniger jagen, um Wald f
 Brennholz freizugeben. Rang für Rang vorzugehen kann das nicht: Beim Decken von Rang 100
 ist nicht bekannt, dass Rang 150 dieselbe Fläche braucht.
 
-**Das ist kein Programmierfehler, sondern die Grenze des Verfahrens** — und damit der
-erste Engpass für Preise, den wir nicht konstruieren mussten, sondern gemessen haben.
-Nicht „Vergleichen wäre bequemer", sondern: *Die Zuteilung trifft nachweislich schlechte
-Entscheidungen, und ohne einen gemeinsamen Maßstab kann sie es nicht besser.*
+**Die Ursache liegt nicht in der Rangliste.** Zwei Dinge waren vermischt:
+
+- **Wer zuerst bedient wird**, wenn es nicht reicht — das *soll* fest sein (E9).
+- **Womit produziert wird** — das darf **nicht** Rang für Rang entschieden werden, weil
+  Verfahren um dieselben Kapazitäten konkurrieren.
+
+Rang 100 wählte sein Verfahren, bevor überhaupt bekannt war, dass Rang 150 dieselbe
+Fläche braucht. Die Rangliste bestimmt, wer zuerst bekommt — sie darf nicht bestimmen,
+wie produziert wird.
+
+**Richtung der Lösung: erst gemeinsam planen, dann nach Rang rationieren.** Der Bedarf
+aller Ränge wird zusammen geplant — dabei sieht die Zuteilung die Konkurrenz um die
+Wildnis —, und reicht es nicht, fällt der höchste Rang und es wird neu geplant. Die
+Rangliste bleibt unverändert; nur wird geplant, **bevor** rationiert wird.
+
+Das ist auch das Wirklichkeitsnähere: Ein bäuerlicher Haushalt plant sein Jahr im
+Ganzen — Brot, Feuer, Dach — und teilt die Hände danach ein. Er plant nicht erst das
+Brot in Unkenntnis des Feuers. Anker: **Tschajanow** zum bäuerlichen Haushalt,
+**Simons** Anspruchsniveau-Suche für „reicht es? nein, eine Stufe tiefer".
+
+**Und das ist keine Planwirtschaft.** Es gibt zurzeit *einen* Haushaltssektor; die
+Siedlung ist eine wirtschaftliche Einheit, und ein Haushalt, der sein eigenes Jahr
+plant, plant für niemanden sonst. Planwirtschaft wäre es erst, für **viele unabhängige
+Einheiten** zu planen — und genau daran scheitert sie, aus Informationsgründen.
+
+> **Damit steht der ehrliche Engpass für Preise fest, und er liegt woanders als hier
+> zunächst vermutet.** Nicht „die Zuteilung rechnet schlecht" — das ist ein
+> Planungsfehler und ohne jedes Geld behebbar. Sondern: **Sobald der Haushaltssektor
+> sich aufteilt, gibt es keinen gemeinsamen Plan mehr, den jemand machen könnte.** Viele
+> Einheiten entscheiden je für sich, und was sie koordiniert, sind Preise. Das passt zu
+> E1: Der Spieler verliert die Planung nicht, weil man sie ihm nimmt, sondern weil es
+> nichts mehr zu planen gibt.
+
+**Offen und vor der Umsetzung zu entscheiden: wie der Planungsalgorithmus genau
+aussieht.** Bis dahin ist oben nur die Richtung festgehalten, nicht das Verfahren.
 
 ### E22 — Was im Zustand steht
 
@@ -1723,11 +1754,14 @@ Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es dranko
   ist · und schlicht die *Zahl der Branchen*, weil aus einer Entscheidung irgendwann
   Fleißarbeit wird. Der zweite Kandidat wirkt am stärksten, weil er den Hebel nicht
   wegnimmt, sondern **von selbst sinnlos macht**.
-- **Preise, und wodurch sie entstehen.** Der Engpass dafür ist gemessen (E21): Die
-  gierige Zuteilung kann eine geteilte Kapazität nicht zwischen zwei Rängen abwägen.
-  Offen ist, ob der Spieler Preise durch ein Projekt einführt, ob dabei die manuelle
-  Steuerung der Zuteilung wegfällt — oder ob diese schon vorher überflüssig geworden
-  ist und ganz entfallen kann.
+- **Der Planungsalgorithmus.** Richtung steht (E21): gemeinsam planen, nach Rang
+  rationieren. Das genaue Verfahren ist offen und muss vor der Umsetzung entschieden
+  werden.
+- **Preise.** Der Engpass steht (E21): Sobald der Haushaltssektor sich aufteilt, gibt es
+  keinen gemeinsamen Plan mehr. Offen bleibt, ob der Spieler Preise durch ein Projekt
+  einführt und was dabei mit der manuellen Steuerung der Zuteilung geschieht — die
+  vermutlich ohnehin ersatzlos entfallen kann, weil die Ordnung nach Arbeitsertrag zu
+  schlicht ist, um daran etwas zu lernen.
 - **Geldeinführung.** Der wichtigste Moment des Spiels. Merkposten für später, **keine
   Entscheidung**: Die amerikanischen Kolonien sind der bestdokumentierte Fall für
   „ausgeben vor besteuern" — Massachusetts 1690 druckt Papierscheine, um heimkehrende
