@@ -211,10 +211,6 @@ export class ProductionPhase implements Phase {
     return {
       ...state,
       sectors: { ...state.sectors, [HOUSEHOLDS]: { ...sector, stocks } },
-      // Carried into the next tick, because the ordering needs to know what
-      // was scarce before it can allocate (E5).
-      scarcity: result.scarcity,
-      ...(result.bindingInput === undefined ? {} : { bindingInput: result.bindingInput }),
       leadProcess: result.leadProcess,
     };
   }

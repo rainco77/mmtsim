@@ -346,12 +346,7 @@ export const STAGE1: Config = {
 
   // Risk aversion: how strongly a thin store pushes towards the reliable
   // process (E5).
-  //
-  // The switch margin was measured, not guessed. At 0.1 the ordering twitched
-  // 223 times per run and the settlement reached 244 heads; at 0.5 it settles
-  // after three switches and reaches 2700. Above 0.75 it locks up entirely and
-  // the settlement dies, because the scarce input can then never change again.
-  risk: { aversion: 0.5, switchMargin: 0.5, scarcityMemory: 0.85 },
+  risk: { aversion: 0.5 },
 
   // The player may set the order by hand from the start; a later institution
   // unsets this rule (E23) and the economy decides alone from then on.

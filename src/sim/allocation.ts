@@ -2,7 +2,6 @@ import { type Config, type ConfigIndex, type ProcessDef } from "./config.ts";
 import type { AreaTypeId, BranchId, ProcessId, SectorId, StockId } from "./ids.ts";
 import {
   ORDERING_RESOLVER,
-  tightestInput,
   type OrderingContext,
   type OrderingReason,
 } from "./ordering.ts";
@@ -67,10 +66,6 @@ export interface AllocationResult {
   readonly binding: Binding;
   readonly bindingTier?: NeedTierId;
 
-  /** How tight each input turned out, in [0, 1] — carried into the next tick. */
-  readonly scarcity: Readonly<Record<string, number>>;
-  /** Which input counted as scarce; carried into the next tick (E5). */
-  readonly bindingInput?: string;
   /** Which process led per branch, and why (E5). */
   readonly leadProcess: Readonly<Record<BranchId, ProcessId>>;
   readonly orderingReason: Readonly<Record<BranchId, OrderingReason>>;
@@ -409,7 +404,6 @@ export function allocate(input: AllocationInput): AllocationResult {
   const orderingReason = new Map<BranchId, OrderingReason>();
   const leadProcess = new Map<BranchId, ProcessId>();
   const buffer = survivalBuffer(state, index, sectorId);
-  let chosenInput: string | undefined;
 
   for (const branch of config.branches) {
     if (!input.unlockedBranches.has(branch.id)) continue;
@@ -419,27 +413,21 @@ export function allocate(input: AllocationInput): AllocationResult {
     const orderCtx: OrderingContext = {
       index,
       available,
-      scarcity: state.scarcity,
       buffer,
-      heldInput: state.bindingInput,
-      lead: state.leadProcess[branch.id],
       manual: state.manualOrder[branch.id],
-      bindingCost: (process, inputId) =>
-        bindingCost(
+      yieldPerLabor: (process) => {
+        const content = laborContentOf(
           process,
-          inputId,
+          index,
           pools,
           shocks,
-          index,
           input.unlockedBranches,
           input.unlockedProcesses,
-        ),
+          new Set(),
+        );
+        return Number.isFinite(content) && content > 0 ? 1 / content : 0;
+      },
     };
-    chosenInput = tightestInput(
-      state.scarcity,
-      state.bindingInput,
-      config.risk.switchMargin,
-    );
     const resolved = ORDERING_RESOLVER.resolve(branch, orderCtx, input.manualAllowed);
     ordering.set(branch.id, resolved.processes);
     orderingReason.set(branch.id, resolved.reason);
@@ -547,58 +535,46 @@ export function allocate(input: AllocationInput): AllocationResult {
     areaUsed,
     binding: overallBinding,
     ...(bindingTier === undefined ? {} : { bindingTier }),
-    scarcity: measureScarcity(state.scarcity, tiers, config.risk.scarcityMemory),
-    ...(chosenInput === undefined ? {} : { bindingInput: chosenInput }),
     leadProcess: Object.fromEntries(leadProcess),
     orderingReason: Object.fromEntries(orderingReason),
   };
 }
 
 /**
- * How much of one input a process needs per unit of output — including
- * everything up the chain for labour (E4). This is what the ordering compares
- * (E5): what is scarce decides which process is the better one.
+ * Labour content, standalone — the ordering needs it before anything has run.
+ * Includes everything up the chain (E4): a house costs its own labour plus the
+ * labour in the wood it is built of.
  */
-function bindingCost(
+function laborContentOf(
   process: ProcessDef,
-  input: string,
+  index: ConfigIndex,
   pools: Pools,
   shocks: Shocks,
-  index: ConfigIndex,
   unlockedBranches: ReadonlySet<string>,
   unlockedProcesses: ReadonlySet<ProcessId>,
+  seen: Set<StockId>,
 ): number {
-  if (input === "labor") {
-    const perLabor = effectiveOutputPerLabor(process, qualityFor(process, pools), shocks);
-    let total = perLabor > 0 ? 1 / perLabor : Infinity;
-    for (const [needed, per] of Object.entries(process.intermediatesPerOutput)) {
-      if (per <= 0) continue;
-      total +=
-        per *
-        laborContentOf(
-          needed,
-          index,
-          pools,
-          shocks,
-          unlockedBranches,
-          unlockedProcesses,
-          new Set(),
-        );
-    }
-    return total;
+  const perLabor = effectiveOutputPerLabor(process, qualityFor(process, pools), shocks);
+  let total = perLabor > 0 ? 1 / perLabor : Infinity;
+  for (const [needed, per] of Object.entries(process.intermediatesPerOutput)) {
+    if (per <= 0) continue;
+    total +=
+      per *
+      stockLaborContent(
+        needed,
+        index,
+        pools,
+        shocks,
+        unlockedBranches,
+        unlockedProcesses,
+        seen,
+      );
   }
-  if (input.startsWith("area:")) {
-    const areaType = input.slice(5);
-    return effectiveAreaPerOutput(process, areaType, qualityFor(process, pools));
-  }
-  if (input.startsWith("stock:")) {
-    return process.intermediatesPerOutput[input.slice(6)] ?? 0;
-  }
-  return Infinity;
+  return total;
 }
 
-/** Labour content of a stock, standalone — the ordering needs it before a run. */
-function laborContentOf(
+/** Labour content of a *stock*: the cheapest unlocked way to make one unit. */
+function stockLaborContent(
   stockId: StockId,
   index: ConfigIndex,
   pools: Pools,
@@ -610,30 +586,26 @@ function laborContentOf(
   if (seen.has(stockId)) return Infinity;
   const branch = index.config.branches.find((b) => b.produces === stockId);
   if (branch === undefined || !unlockedBranches.has(branch.id)) return Infinity;
-  const process = (index.processesOfBranch.get(branch.id) ?? []).find((p) =>
-    unlockedProcesses.has(p.id),
-  );
-  if (process === undefined) return Infinity;
 
   seen.add(stockId);
-  const perLabor = effectiveOutputPerLabor(process, qualityFor(process, pools), shocks);
-  let total = perLabor > 0 ? 1 / perLabor : Infinity;
-  for (const [needed, per] of Object.entries(process.intermediatesPerOutput)) {
-    if (per <= 0) continue;
-    total +=
-      per *
+  let best = Infinity;
+  for (const process of index.processesOfBranch.get(branch.id) ?? []) {
+    if (!unlockedProcesses.has(process.id)) continue;
+    best = Math.min(
+      best,
       laborContentOf(
-        needed,
+        process,
         index,
         pools,
         shocks,
         unlockedBranches,
         unlockedProcesses,
         seen,
-      );
+      ),
+    );
   }
   seen.delete(stockId);
-  return total;
+  return best;
 }
 
 /**
@@ -653,51 +625,4 @@ function survivalBuffer(
   const need = sector.heads * lowest.perHead;
   if (need <= 0) return 1;
   return Math.min(1, (sector.stocks[lowest.stock] ?? 0) / need);
-}
-
-/**
- * How tight each input turned out; carried into the next tick (E5).
- *
- * **Utilisation is not scarcity.** Labour runs at a hundred per cent as soon as
- * anything is tight, so measuring utilisation would make it look like the
- * scarcest input for ever and land could never take over. What counts is which
- * input actually *stopped* a tier — the shortfall it caused, weighted by how
- * much was missing.
- *
- * If nothing bound at all, the previous measurement is carried on unchanged:
- * a comfortable tick says nothing about what is scarce, and forgetting would
- * throw the ordering back to the declared one every time things go well.
- */
-function measureScarcity(
-  previous: Readonly<Record<string, number>>,
-  tiers: readonly TierOutcome[],
-  memory: number,
-): Record<string, number> {
-  const shortfall: Record<string, number> = {};
-  let need = 0;
-
-  for (const tier of tiers) {
-    need += tier.need;
-    const missing = tier.need - tier.fromStock - tier.produced;
-    if (missing <= 1e-9 || tier.binding.kind === "none") continue;
-    const key =
-      tier.binding.kind === "labor"
-        ? "labor"
-        : `${tier.binding.kind}:${tier.binding.what}`;
-    shortfall[key] = (shortfall[key] ?? 0) + missing;
-  }
-
-  if (need <= 0) return { ...previous };
-
-  // Measured against the **need**, not against the total shortfall. Relative to
-  // the shortfall one input would always read 1 and every other 0, so the
-  // smoothing below would have nothing to work with and the economy would flip
-  // wholesale every tick. Against the need two inputs can both be moderately
-  // tight — which is exactly what happens at a turning point.
-  const scarcity: Record<string, number> = {};
-  for (const input of new Set([...Object.keys(previous), ...Object.keys(shortfall)])) {
-    const observed = Math.min(1, (shortfall[input] ?? 0) / need);
-    scarcity[input] = memory * (previous[input] ?? 0) + (1 - memory) * observed;
-  }
-  return scarcity;
 }

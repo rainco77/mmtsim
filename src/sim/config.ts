@@ -247,21 +247,6 @@ export interface ShockShape {
 export interface RiskConfig {
   /** 0 switches the risk term off entirely. */
   readonly aversion: number;
-  /**
-   * A running process keeps its place unless a challenger is better by this
-   * margin.
-   */
-  readonly switchMargin: number;
-  /**
-   * How much of the previous scarcity measurement is kept, in [0, 1).
-   *
-   * The margin above guards the wrong thing on its own: it compares processes
-   * *within* one input, while the twitching comes from the **binding input
-   * itself** alternating between two that are almost equally tight. An economy
-   * answers to persistent scarcity, not to a single bad tick — so the signal is
-   * smoothed, not the choice.
-   */
-  readonly scarcityMemory: number;
 }
 
 // ---------------------------------------------------------------- land

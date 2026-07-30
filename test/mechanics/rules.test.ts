@@ -11,7 +11,6 @@ import {
   indexConfig,
   PIPELINE,
   tick,
-  tightestInput,
   type Config,
   type GameState,
 } from "../../src/sim/index.ts";
@@ -238,8 +237,6 @@ describe("processes and the fallback level (E5)", () => {
     const withScarcity = (state: GameState): GameState => ({
       ...state,
       // Labour is what binds, and both techniques use the same land — so the
-      // better one simply takes over; there is nothing to fall back to.
-      scarcity: { labor: 1 },
     });
     const before = withScarcity(createState(STAGE1, { seed: 7 }));
     const after = withScarcity(finish(createState(STAGE1, { seed: 7 }), "better_tools"));
@@ -267,8 +264,6 @@ describe("processes and the fallback level (E5)", () => {
       ...state,
       completedProjects: { ...state.completedProjects, sedentism: 1 },
       // Wilderness is what binds, so farming leads — but three hectares of
-      // cleared land cannot carry two hundred people, and the rest falls back.
-      scarcity: { "area:wilderness": 1 },
     };
 
     const processes = derive(state, index).runs.map((r) => r.process);
@@ -279,7 +274,6 @@ describe("processes and the fallback level (E5)", () => {
   it("the declared priority applies while nothing has bound yet (E5)", () => {
     // First tick: scarcity is empty, so the content's order holds.
     const state = createState(STAGE1, { seed: 7 });
-    expect(state.scarcity).toEqual({});
     expect(derive(state, index).runs[0]?.process).toBe("gathering");
   });
 
@@ -288,8 +282,6 @@ describe("processes and the fallback level (E5)", () => {
     state = {
       ...state,
       completedProjects: { ...state.completedProjects, sedentism: 1 },
-      // Labour was the tight input last tick, land was not.
-      scarcity: { labor: 1 },
       sectors: {
         ...state.sectors,
         households: {
@@ -307,34 +299,38 @@ describe("processes and the fallback level (E5)", () => {
     expect(lead?.lead).not.toBe("farming");
   });
 
-  it("when the forest runs out, farming takes over — Boserup (E6, E13)", () => {
-    // Wilderness binds, and farming is the only process that does not need any:
-    // a process that does not touch the scarce input is the best answer to that
-    // scarcity, not the worst.
+  it("when the forest runs out, farming absorbs the rest — Boserup (E6, E13)", () => {
+    // Not a switch but a mix: the labour-richest process runs until *its own*
+    // capacity is used up, and the next takes what is left. With no wilderness
+    // to speak of, gathering cannot carry the settlement and farming must.
     let state = finish(createState(STAGE1, { seed: 7 }), "better_tools");
     state = {
       ...state,
       completedProjects: { ...state.completedProjects, sedentism: 1 },
-      scarcity: { "area:wilderness": 1 },
+      unownedAreas: { wilderness: { area: 30, quality: 1 } },
       sectors: {
         ...state.sectors,
         households: {
           ...state.sectors["households"]!,
-          heads: 60,
-          stocks: { food: 200 },
-          areas: { cleared: { area: 40, quality: 1 } },
+          heads: 200,
+          stocks: { food: 0 },
+          areas: { cleared: { area: 400, quality: 1 } },
         },
       },
     };
-    const lead = derive(state, index).ordering.find((o) => o.branch === "food");
-    expect(lead?.lead).toBe("farming");
+    const runs = derive(state, index).runs;
+    const farming = runs.find((r) => r.process === "farming");
+    expect(farming).toBeDefined();
+    expect(farming?.output ?? 0).toBeGreaterThan(0);
+    // And the wilderness is used to the last hectare before farming steps in.
+    expect(derive(state, index).utilization["wilderness"] ?? 0).toBeGreaterThan(0.9);
   });
 
   it("a thin store pushes towards the less exposed process (E5, E24)", () => {
     // Two processes, same yield, different exposure.
     const twin: Config = {
       ...STAGE1,
-      risk: { aversion: 0.9, switchMargin: 0, scarcityMemory: 0 },
+      risk: { aversion: 0.9 },
       processes: [
         ...STAGE1.processes,
         {
@@ -355,7 +351,6 @@ describe("processes and the fallback level (E5)", () => {
 
     const thin = {
       ...base,
-      scarcity: { labor: 1 },
       sectors: {
         ...base.sectors,
         households: { ...base.sectors["households"]!, stocks: { food: 0 } },
@@ -363,7 +358,6 @@ describe("processes and the fallback level (E5)", () => {
     };
     const fat = {
       ...base,
-      scarcity: { labor: 1 },
       sectors: {
         ...base.sectors,
         households: { ...base.sectors["households"]!, stocks: { food: 500 } },
@@ -374,21 +368,6 @@ describe("processes and the fallback level (E5)", () => {
     const leadFat = derive(fat, local).ordering.find((o) => o.branch === "food")?.lead;
     expect(leadThin).toBe("gathering_safe");
     expect(leadFat).not.toBe("gathering_safe");
-  });
-
-  it("the switch margin holds the scarce input in place (E5)", () => {
-    // Relieving a shortage makes it stop binding, so without a margin the
-    // choice of input would swing back every tick — and the economy with it.
-    // The margin sits on the *input*, never on the process: a new technique is
-    // often only twenty per cent better and must still be adopted.
-    expect(tightestInput({ labor: 0.5, "area:wilderness": 0.55 }, "labor", 0.5)).toBe(
-      "labor",
-    );
-    expect(tightestInput({ labor: 0.5, "area:wilderness": 0.9 }, "labor", 0.5)).toBe(
-      "area:wilderness",
-    );
-    expect(tightestInput({ labor: 0.5 }, undefined, 0.5)).toBe("labor");
-    expect(tightestInput({}, "labor", 0.5)).toBe("labor");
   });
 
   it("the player's order wins while the rule holds, and is ignored once it falls", () => {

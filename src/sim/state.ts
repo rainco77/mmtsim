@@ -45,23 +45,7 @@ export interface GameState {
 
   readonly activeProjects: readonly ActiveProject[];
 
-  /**
-   * How tight each input was last tick, in [0, 1]. Carried, because what binds
-   * is only known after the allocation and the ordering needs it beforehand —
-   * the same way T2 breaks the circle around the carried factors. It is also
-   * the more lifelike reading: an economy reacts to yesterday's scarcity.
-   */
-  readonly scarcity: Readonly<Record<string, number>>;
-
-  /**
-   * Which input counted as the scarce one last tick (E5). Carried, and it keeps
-   * its place unless another is clearly scarcer: relieving a shortage makes it
-   * stop binding, which would otherwise send the economy swinging back and
-   * forth between two inputs every tick.
-   */
-  readonly bindingInput?: string;
-
-  /** Which process led per branch last tick, for the switch margin (E5). */
+  /** Which process led per branch last tick — shown, not used to decide (E5). */
   readonly leadProcess: Readonly<Record<BranchId, ProcessId>>;
 
   /**

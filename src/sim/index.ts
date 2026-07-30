@@ -41,8 +41,7 @@ export {
   ManualOrdering,
   ORDERING_RESOLVER,
   OrderingResolver,
-  ScarcityOrdering,
-  tightestInput,
+  LaborYieldOrdering,
 } from "./ordering.ts";
 export type { Shocks } from "./risk.ts";
 export { drawShocks, exposureMagnitude, shockFactor } from "./risk.ts";
