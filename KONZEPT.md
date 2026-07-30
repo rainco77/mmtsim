@@ -1073,8 +1073,49 @@ Einheiten** zu planen — und genau daran scheitert sie, aus Informationsgründe
 > E1: Der Spieler verliert die Planung nicht, weil man sie ihm nimmt, sondern weil es
 > nichts mehr zu planen gibt.
 
-**Offen und vor der Umsetzung zu entscheiden: wie der Planungsalgorithmus genau
-aussieht.** Bis dahin ist oben nur die Richtung festgehalten, nicht das Verfahren.
+**Der Planungsalgorithmus.** Das Ergebnis eines Plans ist ein Vektor von
+**Aktivitätsniveaus** — wie viel auf jedem Verfahren läuft. Arbeit und Kapazitäten sind
+Nebenbedingungen, nicht Ergebnis; ein Niveau von null heißt „läuft nicht". Das ist die
+Aktivitätsanalyse, auf die sich E5 ohnehin beruft.
+
+```
+1. Bedarf aller Ränge zusammen als Ziel
+2. je Verfahren die geforderte Menge je Input, begrenzt durch das Ziel
+3. für jeden Input:
+     Summe passt          → weiter
+     Summe passt nicht    → Überhang verlagern, beginnend bei der
+                            Verlagerung, die am meisten VON DIESEM Input
+                            freimacht; genau so viel, bis es passt
+4. eine Verlagerung erzeugt Bedarf auf einem anderen Input
+   → dieser wird in derselben Runde erneut geprüft
+5. bleibt Ungedecktes → höchsten Rang streichen, ab 1
+```
+
+**Verglichen wird immer nur innerhalb eines Inputs.** Der Konflikt entsteht dort — die
+Wildnis reicht nicht —, also muss auch nur entschieden werden, wer von der Wildnis
+weicht, und das ist in Hektar Wildnis messbar. **Kein Maßstab über Inputs hinweg, keine
+Gewichte, keine Schattenpreise.** Arbeit ist dabei kein Sonderfall, sondern ein Input wie
+jeder andere.
+
+**Die Arbeitskosten einer Umstellung gehen nicht ein**, weil ungenutzte Arbeit nach E10
+ohnehin verfällt: Ein Bedürfnis zu decken schlägt das Sparen von Arbeit, solange die
+Arbeit da ist. Fehlt sie, scheitert die Verlagerung an ihrer eigenen Grenze und es wird
+nach Rang rationiert.
+
+**Abbruch: Eine Nachfrage darf ein Verfahren nur einmal verlassen und kehrt nie
+zurück.** Damit ist die Zahl der Verlagerungen durch `Verfahren × Ränge` beschränkt und
+der Durchgang endet garantiert — ohne Schwelle, ohne Glättung.
+
+**Das Ergebnis ist ein gangbarer Plan, kein bestmöglicher.** Ein Optimum bräuchte einen
+Löser, und der scheitert an drei Dingen: eine Abhängigkeit oder mehrere hundert Zeilen
+Simplex; Toleranzen für Rundungsfehler, die E26 ausdrücklich ausschließt; und vor allem
+Undurchsichtigkeit — E5 verlangt, dass die Begründung sichtbar ist, und „weil das Optimum
+es so ergibt" kann man niemandem zeigen. Rechenzeit ist **nicht** der Grund: beides ist
+bei unseren Größen billig.
+
+Dass der Plan nicht optimal ist, ist zugleich ein Gewinn: **Ein Verschiebeverfahren
+findet eine Lösung, ein Preis findet die beste.** Wäre schon hier optimiert, hätten
+Preise später nichts mehr zu holen.
 
 ### E22 — Was im Zustand steht
 
@@ -1754,9 +1795,6 @@ Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es dranko
   ist · und schlicht die *Zahl der Branchen*, weil aus einer Entscheidung irgendwann
   Fleißarbeit wird. Der zweite Kandidat wirkt am stärksten, weil er den Hebel nicht
   wegnimmt, sondern **von selbst sinnlos macht**.
-- **Der Planungsalgorithmus.** Richtung steht (E21): gemeinsam planen, nach Rang
-  rationieren. Das genaue Verfahren ist offen und muss vor der Umsetzung entschieden
-  werden.
 - **Preise.** Der Engpass steht (E21): Sobald der Haushaltssektor sich aufteilt, gibt es
   keinen gemeinsamen Plan mehr. Offen bleibt, ob der Spieler Preise durch ein Projekt
   einführt und was dabei mit der manuellen Steuerung der Zuteilung geschieht — die
