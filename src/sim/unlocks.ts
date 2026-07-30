@@ -75,6 +75,8 @@ export function conditionHolds(condition: Condition, ctx: ConditionContext): boo
       return areaOf(ctx.state.unownedAreas, condition.areaType).area >= condition.min;
     case "coverage":
       return (ctx.coverage[condition.tier] ?? 0) >= condition.min;
+    case "landTakings":
+      return ctx.state.landTakings < condition.max;
   }
 }
 

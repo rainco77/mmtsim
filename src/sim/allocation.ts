@@ -92,12 +92,27 @@ function poolAreas(
 
 function effectiveOutputPerLabor(
   process: ProcessDef,
-  quality: number,
+  _quality: number,
   yearQuality: number,
 ): number {
-  const qualityFactor = 1 - process.qualityWeight + process.qualityWeight * quality;
   const weatherFactor = 1 + process.weatherSensitivity * (yearQuality - 1);
-  return process.outputPerLabor * Math.max(0, qualityFactor) * Math.max(0, weatherFactor);
+  return process.outputPerLabor * Math.max(0, weatherFactor);
+}
+
+/**
+ * Land quality works on the **area**, not on the labour: E13 puts it as
+ * `yield = hectares × quality × process yield`. Poor ground means more acres
+ * for the same harvest — that is Ricardo's differential rent, and it is what
+ * makes the fixed factor bite.
+ */
+function effectiveAreaPerOutput(
+  process: ProcessDef,
+  areaType: AreaTypeId,
+  quality: number,
+): number {
+  const base = process.areaPerOutput[areaType] ?? 0;
+  const factor = 1 - process.qualityWeight + process.qualityWeight * quality;
+  return factor > 0 ? base / factor : Infinity;
 }
 
 /** The quality of the land this process works on. */
@@ -129,7 +144,12 @@ function capacityOf(
   let max = pools.labor * perLabor;
   let binding: Binding = { kind: "labor" };
 
-  for (const [areaType, perOutput] of Object.entries(process.areaPerOutput)) {
+  for (const areaType of Object.keys(process.areaPerOutput)) {
+    const perOutput = effectiveAreaPerOutput(
+      process,
+      areaType,
+      qualityFor(process, pools),
+    );
     if (perOutput <= 0) continue;
     const limit = (pools.area[areaType]?.available ?? 0) / perOutput;
     if (limit < max) {
@@ -212,10 +232,10 @@ function consume(
   const labor = perLabor > 0 ? output / perLabor : 0;
 
   pools.labor -= labor;
-  for (const [areaType, perOutput] of areaEntries) {
+  for (const [areaType] of areaEntries) {
     const pool = pools.area[areaType];
     if (pool === undefined) continue;
-    const used = output * perOutput;
+    const used = output * effectiveAreaPerOutput(process, areaType, quality);
     pool.available -= used;
     areaUsed[areaType] = (areaUsed[areaType] ?? 0) + used;
   }

@@ -126,7 +126,13 @@ export type Condition =
   | { readonly kind: "projectDone"; readonly id: ProjectId; readonly min: number }
   | { readonly kind: "rule"; readonly id: RuleId; readonly set: boolean }
   | { readonly kind: "unownedArea"; readonly areaType: AreaTypeId; readonly min: number }
-  | { readonly kind: "coverage"; readonly tier: NeedTierId; readonly min: number };
+  | { readonly kind: "coverage"; readonly tier: NeedTierId; readonly min: number }
+  /**
+   * The reachable territory is capped, and only an institution lifts the cap
+   * (E13). Each taking is a fixed parcel, so a maximum count *is* a maximum
+   * territory — the hard brake next to the soft one of falling quality.
+   */
+  | { readonly kind: "landTakings"; readonly max: number };
 
 /**
  * Where the quality of added area comes from — declarative, never a function
