@@ -54,12 +54,8 @@ export interface PlanContext {
   readonly supplies: Supplies;
   /** Processes that may run, already filtered by what is unlocked. */
   readonly available: readonly ProcessDef[];
-  /**
-   * How much this tick's shocks cut this process back **for this input** — 1
-   * means untouched. Which inputs a shock reaches is not the plan's business
-   * to know: it asks, the caller decides.
-   */
-  shockFor(process: ProcessDef, input: InputId): number;
+  /** How much this tick's shocks cut this process back — 1 means untouched. */
+  shockFor(process: ProcessDef): number;
   /** Ordering within one stock, best first — see E5. */
   order(stock: StockId, processes: readonly ProcessDef[]): readonly ProcessDef[];
 }
@@ -148,7 +144,7 @@ function computeInputPerOutput(
   input: InputId,
   ctx: PlanContext,
 ): number {
-  const shock = ctx.shockFor(process, input);
+  const shock = ctx.shockFor(process);
   if (shock <= 0) return Infinity;
 
   if (input.startsWith("capacity:")) {

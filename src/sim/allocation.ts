@@ -24,7 +24,6 @@ const STORE_RANK = Number.MAX_SAFE_INTEGER;
 
 import {
   makePlan,
-  stockInput,
   type Demand,
   type Plan,
   type PlanContext,
@@ -179,20 +178,21 @@ function consume(
         ? (pools.amount[capacityEntries[0][0]]?.quality ?? 1)
         : 1
       : 1;
-  // The shock reaches the labour only — see the note where `shockFor` is set.
+  // A shock cuts the output, so every input costs more per unit of what came of
+  // it — see the note where `shockFor` is set.
   const shock = shockFactor(process, shocks);
-  const laborScale = shock > 0 ? 1 / shock : 0;
+  const scale = shock > 0 ? 1 / shock : 0;
   let labor = 0;
 
   for (const [capacity] of capacityEntries) {
     const pool = pools.amount[capacity];
     if (pool === undefined) continue;
-    const used = output * effectiveCapacityPerOutput(process, capacity, quality);
+    const used = output * effectiveCapacityPerOutput(process, capacity, quality) * scale;
     pool.available -= used;
     capacityUsed[capacity] = (capacityUsed[capacity] ?? 0) + used;
   }
   for (const [stockId, perOutput] of Object.entries(process.intermediatesPerOutput)) {
-    const used = output * perOutput * (stockId === LABOR_STOCK ? laborScale : 1);
+    const used = output * perOutput * scale;
     pools.stock[stockId] = (pools.stock[stockId] ?? 0) - used;
     consumed[stockId] = (consumed[stockId] ?? 0) + used;
     if (stockId === LABOR_STOCK) labor += used;
@@ -344,14 +344,16 @@ export function allocate(input: AllocationInput): AllocationResult {
       stocks: { ...pools.stock },
     },
     available: availableProcesses,
-    // Where a shock lands (E24/E25 — risk as named random streams): today only
-    // on the labour a process needs, exactly as before labour became an
-    // ordinary stock. That a shock reaches one input and not another is a
-    // property of the exposure, and the exposure is declared per process, not
-    // per input — so this is the single place that decides, and the only place
-    // to change once that is settled.
-    shockFor: (process: ProcessDef, input: string) =>
-      input === stockInput(LABOR_STOCK) ? shockFactor(process, shocks) : 1,
+    // Where a shock lands (E24/E25 — risk as named random streams): on the
+    // **output**, so every input costs more per unit of what came of it. A
+    // failed harvest wastes the acres it grew on exactly as it wastes the
+    // labour; reaching only the labour used to *free* land in a bad year —
+    // measured, use of the wilderness fell from 100 % to 67 % at a draw of 0.66.
+    //
+    // No input is singled out, which is also one special case fewer: exposure
+    // is declared per process, and a process either had a bad year or it did
+    // not.
+    shockFor: (process: ProcessDef) => shockFactor(process, shocks),
     order: (stock, processes) => {
       const branch = config.branches.find((b) => b.produces === stock);
       const wanted = branch === undefined ? undefined : ordering.get(branch.id);

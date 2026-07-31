@@ -1519,6 +1519,28 @@ Jahr trifft Acker und Waldwirtschaft zusammen, nur unterschiedlich stark. Bei
 unabhängigen Würfen wäre genau das unmöglich. Nebenbei ergibt es eine lesbare Zahl („ein
 schlechtes Jahr") statt eines Bündels unsichtbarer Störungen.
 
+**Der Wurf senkt den Ausstoß, nicht einen einzelnen Input.** Ein Verfahren hatte ein
+schlechtes Jahr oder nicht; was hineinging, ist dann für weniger Ertrag verbraucht — alle
+Inputkoeffizienten steigen gemeinsam.
+
+> *Befund aus der Umsetzung:* Vorher traf der Schock nur die **Arbeit**. Damit machte
+> eine Missernte **Fläche frei**: gemessen fiel die Nutzung der Wildnis bei einem Wurf
+> von 0,66 von 100 % auf 67 %. Eine missratene Ernte verbraucht ihre Fläche aber genauso
+> wie eine gelungene, sie liefert nur weniger. Seit der Wurf am Ausstoß hängt, liegt die
+> Flächennutzung bei jedem Wetter gleich — 63 bis 71 % bei Würfen von 0,36 bis 1,25.
+>
+> Es ist zugleich ein Sonderfall weniger: Vorher stand im Modell, dass Arbeit anders
+> getroffen wird als jeder andere Input.
+
+**Was ausdrücklich nicht gebaut ist:** ein Strom, der einen einzelnen Input trifft und
+einen anderen nicht. Es fand sich kein Fall, der es verlangt — misslingt die Ernte, ist
+alles vergeudet, was in sie ging. Und **Angebotsschocks** — eine Seuche, die Köpfe
+nimmt, ein Brand, der einen Vorrat vernichtet — sind über die Aussetzung gar nicht
+ausdrückbar, weil sie kein Verfahren treffen, sondern einen Bestand oder eine Kapazität.
+Sie wären ein anderer Mechanismus: eine **Wirkung, die ein Wurf auslöst**, mit denselben
+Wirkungstypen, die heute Projekte haben. Gebraucht wird das sicher — die Pest ist einer
+der großen wirtschaftlichen Vorgänge der Geschichte —, aber nicht in dieser Epoche.
+
 **Risiko ist nicht nur Wetter.** Ein Verfahren erklärt seine **Aussetzung je
 Zufallsstrom** (E25), nicht eine einzelne Wetterempfindlichkeit:
 
