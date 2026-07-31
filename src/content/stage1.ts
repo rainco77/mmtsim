@@ -372,6 +372,41 @@ export const STAGE1: Config = {
       sector: "households",
     },
 
+    // The way back out of the clearing. Without it the wilderness can only ever
+    // shrink, and a settlement that cleared too much is stuck without wood,
+    // without houses and with a death penalty it can never lift — measured, it
+    // bled out from 1774 people over six hundred ticks with hunger fully
+    // covered the whole way. E20 says there is no state without a way back.
+    //
+    // Cheap in labour and very slow: putting land back into forest is mostly a
+    // decision to stop farming it, but a forest takes its time. So noticing
+    // late still hurts, which is what makes watching the wood worth doing.
+    // Historically this is coppice and Hauberg management — forest deliberately
+    // held beside the fields rather than left over.
+    {
+      id: "afforestation",
+      visibleWhen: [{ kind: "rule", id: "settled", set: true }],
+      availableWhen: [
+        { kind: "rule", id: "settled", set: true },
+        { kind: "ownedCapacity", capacity: "cleared", min: 10 },
+      ],
+      defaultRank: PROJECTS_FIRST,
+      laborCost: 20,
+      stockCost: {},
+      minTicks: 40,
+      repeatable: true,
+      effects: [
+        { type: "capacity", capacity: "cleared", sector: "households", amount: -10 },
+        {
+          type: "capacity",
+          capacity: "wilderness",
+          amount: 10,
+          quality: { kind: "from", capacity: "cleared" },
+        },
+      ],
+      sector: "households",
+    },
+
     // Costs almost nothing but time: crop rotation is an agreement, not a
     // building. It becomes available once enough fields have been worked —
     // learning by doing, expressed through the finished projects that are in

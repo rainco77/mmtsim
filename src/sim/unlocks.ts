@@ -96,6 +96,13 @@ export function conditionHolds(condition: Condition, ctx: ConditionContext): boo
       return (ctx.coverage[condition.tier] ?? 0) >= condition.min;
     case "landTakings":
       return ctx.state.landTakings < condition.max;
+    case "ownedCapacity": {
+      let held = 0;
+      for (const sector of Object.values(ctx.state.sectors)) {
+        held += capacityOf(sector?.capacityHeld ?? {}, condition.capacity).amount;
+      }
+      return held >= condition.min;
+    }
     case "capacityPerHead": {
       if (ctx.population <= 0) return false;
       let built = 0;

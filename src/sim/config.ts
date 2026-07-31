@@ -174,6 +174,8 @@ export type Condition =
   | { readonly kind: "projectDone"; readonly id: ProjectId; readonly min: number }
   | { readonly kind: "rule"; readonly id: RuleId; readonly set: boolean }
   | { readonly kind: "unownedCapacity"; readonly capacity: CapacityId; readonly min: number }
+  /** Capacity the sector holds — the mirror of `unownedCapacity`. */
+  | { readonly kind: "ownedCapacity"; readonly capacity: CapacityId; readonly min: number }
   | { readonly kind: "coverage"; readonly tier: NeedTierId; readonly min: number }
   /**
    * The reachable territory is capped, and only an institution lifts the cap

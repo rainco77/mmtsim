@@ -666,7 +666,7 @@ frei — Kapazität nach E4, kein Verbrauch.
 |---|---|
 | **Rodung** | Wildnis → erschlossene Fläche, dazu einmalig Holz |
 | **Landnahme** | unerschlossen → Wildnis |
-| später **Aufforstung** | erschlossene Fläche → Wildnis |
+| **Aufforstung** | erschlossene Fläche → Wildnis |
 | später **Bebauung** | Ackerland → Bauland |
 
 **Das erreichbare Gebiet ist gedeckelt.**
@@ -795,11 +795,20 @@ Holzwirtschaft, wenn Rang 2 unterdeckt ist — der Spieler erlebt eine Lieferket
 eine zu bedienen. *Vorleistungen gibt es zunächst nur für Wohnraum und für Projekte,
 nicht flächendeckend; Nahrung braucht weiterhin nur Land und Arbeit.*
 
-**Roden und Holz gewinnen sind zwei Dinge.** Rodung vernichtet Wildnis dauerhaft
-(E13); die **Holzwirtschaft** (Branche) gewinnt laufend Holz aus stehender Wildnis, ohne
-sie zu verbrauchen. Zum Start gibt es genau **einen** Wirkungspfad auf den
-Wildnisbestand — nur Rodung verkleinert ihn. Übernutzung, Aufforstung und Nachwuchsraten
-kommen später. Daraus entsteht die erste sichtbare Zielkonkurrenz, und der Spieler sieht
+**Roden und Holz gewinnen sind zwei Dinge.** Die **Holzwirtschaft** (Branche) gewinnt
+laufend Holz aus stehender Wildnis, ohne sie zu verbrauchen; die **Rodung** verwandelt
+Wildnis dauerhaft in Ackerland (E13). Wer zu viel rodet, hat Felder und kein Holz.
+
+**Und deshalb gibt es die Aufforstung von Anfang an.** Sie ist der Rückweg: Ackerland
+wird wieder Wildnis, wenig Arbeit, aber sehr langsam — eine Entscheidung, kein
+Naturvorgang. Ohne sie ist die Entwaldung eine Einbahnstraße, und das verstößt gegen
+E20 (kein Zustand ohne Rückweg): Gemessen blutete eine Siedlung von 1774 Menschen über
+sechshundert Ticks aus, bei durchgehend gedecktem Hunger — es fehlte schlicht Holz für
+Häuser, weil die Rodung die Wildnis aufgezehrt hatte. Historisch ist das die Nieder- und
+Hauberg-Wirtschaft: Wald, den man neben dem Acker bewusst vorhält, statt ihn übrig zu
+lassen.
+
+Übernutzung und natürliche Nachwuchsraten kommen später. Daraus entsteht die erste sichtbare Zielkonkurrenz, und der Spieler sieht
 seine Entscheidung in der Welt statt nur in Zahlen.
 
 **Drei Projektstränge**, deren erster Schritt jeweils sofort machbar ist, alle ohne
@@ -1578,8 +1587,23 @@ Lauf, keine Eindrücke:
 | Beißt die Malthus-Falle und lässt wieder los? | E7, E20 |
 | Wird Intensivierung irgendwann besser als Expansion? | E6, E13 |
 | Kommt eine passive Strategie genauso weit wie eine aktive? | T4 |
+| **Kommt schlechtes Spiel genauso weit wie gutes?** | T4 |
 | Gibt es Zustände ohne Weg zurück? | E20 |
-| Überlebt eine kompetente Strategie, eine sorglose nicht? | belohnt Schwankung Können statt Glück |
+
+**Beide Hälften von T4 werden gebraucht.** Handeln muss besser sein als Nichtstun —
+sonst sind die Projekte Zierrat. Und *gut* zu handeln muss besser sein als schlecht zu
+handeln — sonst ist es kein Spiel, sondern ein Klickwettlauf.
+
+Der schlechte Spieler ist dabei **nicht** „stößt alles sofort an". Seit es Projekte
+gibt, die einander aufheben — Rodung und Aufforstung —, wäre das keine forsche
+Spielweise, sondern eine widersprüchliche, und ein Vergleich gegen Unsinn beweist
+nichts. Er hat dieselben Möglichkeiten und nutzt sie schlecht: Er baut, wenn es der
+Siedlung ohnehin schon schlecht geht, statt aus dem Überschuss, und nimmt, was gerade
+da ist, statt dessen, was etwas Neues bringt. Die Dringlichkeit, die er seinen Projekten
+gibt, ist dieselbe wie beim bedachten Spieler, damit sie als Erklärung ausscheidet.
+
+Gemessen: 993 gegen 139 Menschen, Faktor 7. Sterben muss dabei niemand — Scheitern ist
+die Strafe für Untätigkeit, nicht für einen Fehlgriff.
 
 **Die Schwankung wird von Anfang an eingeschaltet.** Mit Puffern zu wirtschaften ist
 teurer als ohne; wer erst ohne austariert und sie später zuschaltet, macht alles zweimal.
@@ -2087,6 +2111,12 @@ nächste Schritt. Für eine einzige Regel lohnt er nicht.
 
 Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es drankommt:
 
+- **Natürlicher Nachwuchs auf Brachland.** *Idee, nicht entschieden.* Ungenutztes
+  Ackerland fiele langsam an die Wildnis zurück — ökologisch die Sukzession, und
+  genutztes Land bliebe unangetastet, es träfe also nur, wer Land hält, ohne es zu
+  bestellen. Es löst den gemessenen Fall allerdings **nicht**: Dort waren Ackerland und
+  Wildnis beide zu 100 % genutzt, es lag nichts brach. Der Rückweg aus der Entwaldung
+  musste deshalb eine Handlung sein (Aufforstung, E13), nicht ein Naturvorgang.
 - **Volkswirtschaftliche Kennzahlen.** Welche sind je Entwicklungsstufe sinnvoll?
   Ändert sich vermutlich mit dem Fortschritt.
 - **Prognose.** Der Spieler braucht Vorausschau, um bei **trägen** Branchen

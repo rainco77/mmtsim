@@ -1,5 +1,5 @@
 import { STAGE1 } from "../src/content/stage1.ts";
-import { EagerPolicy, PassivePolicy, SensiblePolicy } from "../src/policy/bots/index.ts";
+import { PassivePolicy, PoorPolicy, SensiblePolicy } from "../src/policy/bots/index.ts";
 import type { Policy } from "../src/policy/policy.ts";
 import { apply, createState, derive, indexConfig, tick } from "../src/sim/index.ts";
 
@@ -88,28 +88,27 @@ function play(seed: number, policy: Policy): Trace {
   };
 }
 
-// The yardstick for "played thoughtfully" is the sensible bot, not the eager
+// The yardstick for "played thoughtfully" is the sensible bot, not the thoughtful
 // one: since the projects cost enough to bite, starting everything at once
 // starves the settlement, and that is a result and not a flaw.
-const eager = Array.from({ length: SEEDS }, (_, i) =>
+const thoughtful = Array.from({ length: SEEDS }, (_, i) =>
   play(101 + i * 13, new SensiblePolicy()),
 );
 const passive = Array.from({ length: SEEDS }, (_, i) =>
   play(101 + i * 13, new PassivePolicy()),
 );
-// The negative control: starting everything the moment it is offered. Since the
-// projects compete for the same hands, this is not a bolder way to play but a
-// worse one, and the measurement has to say so — otherwise the costs do not
-// bite and the choice is not a choice.
-const reckless = Array.from({ length: SEEDS }, (_, i) =>
-  play(101 + i * 13, new EagerPolicy()),
+// The second control: the same options, worse judgement — builds when the
+// settlement is already in trouble instead of out of a surplus, and takes
+// whatever is on offer rather than what brings something new.
+const poor = Array.from({ length: SEEDS }, (_, i) =>
+  play(101 + i * 13, new PoorPolicy()),
 );
 
 const mean = (xs: readonly number[]) => xs.reduce((a, b) => a + b, 0) / (xs.length || 1);
 const share = (xs: readonly boolean[]) => xs.filter(Boolean).length / (xs.length || 1);
 
-const distinctBindings = eager.map((t) => new Set(t.bindings).size);
-const eagerFinal = eager.map((t) => t.finalHeads);
+const distinctBindings = thoughtful.map((t) => new Set(t.bindings).size);
+const thoughtfulFinal = thoughtful.map((t) => t.finalHeads);
 const passiveFinal = passive.map((t) => t.finalHeads);
 
 const report = {
@@ -122,42 +121,43 @@ const report = {
       pass: share(distinctBindings.map((n) => n >= 2)) > 0.9,
     },
     "E7/E20 — the trap bites and lets go": {
-      satietyLowMean: round(mean(eager.map((t) => t.satietyLow))),
-      recoveredShare: round(share(eager.map((t) => t.satietyRecovered))),
-      pass: mean(eager.map((t) => t.satietyLow)) < 0.6,
+      satietyLowMean: round(mean(thoughtful.map((t) => t.satietyLow))),
+      recoveredShare: round(share(thoughtful.map((t) => t.satietyRecovered))),
+      pass: mean(thoughtful.map((t) => t.satietyLow)) < 0.6,
     },
     "E6/E13 — intensification wins in the end": {
-      farmingShareEndMean: round(mean(eager.map((t) => t.farmingShareEnd))),
-      pass: mean(eager.map((t) => t.farmingShareEnd)) > 0.5,
+      farmingShareEndMean: round(mean(thoughtful.map((t) => t.farmingShareEnd))),
+      pass: mean(thoughtful.map((t) => t.farmingShareEnd)) > 0.5,
     },
-    "T4 — recklessness is punished": {
-      abandonedShareReckless: round(share(reckless.map((t) => t.abandoned))),
-      recklessFinalMean: round(mean(reckless.map((t) => t.finalHeads))),
-      pass: share(reckless.map((t) => t.abandoned)) > 0.5,
-    },
-    "T4 — decisions matter": {
-      eagerFinalMean: round(mean(eagerFinal)),
+    "T4 — acting beats sitting still": {
+      thoughtfulFinalMean: round(mean(thoughtfulFinal)),
       passiveFinalMean: round(mean(passiveFinal)),
-      ratio: round(mean(eagerFinal) / Math.max(1, mean(passiveFinal))),
-      pass: mean(eagerFinal) > mean(passiveFinal) * 1.5,
+      ratio: round(mean(thoughtfulFinal) / Math.max(1, mean(passiveFinal))),
+      pass: mean(thoughtfulFinal) > mean(passiveFinal) * 1.5,
+    },
+    "T4 — playing well beats playing badly": {
+      thoughtfulFinalMean: round(mean(thoughtfulFinal)),
+      poorFinalMean: round(mean(poor.map((t) => t.finalHeads))),
+      ratio: round(mean(thoughtfulFinal) / Math.max(1, mean(poor.map((t) => t.finalHeads)))),
+      pass: mean(thoughtfulFinal) > mean(poor.map((t) => t.finalHeads)) * 1.3,
     },
     "E20 — no state without a way back": {
-      abandonedShareEager: round(share(eager.map((t) => t.abandoned))),
-      pass: share(eager.map((t) => t.abandoned)) < 0.05,
+      abandonedShare: round(share(thoughtful.map((t) => t.abandoned))),
+      pass: share(thoughtful.map((t) => t.abandoned)) < 0.05,
     },
     "E10 — labour is not idle en masse": {
-      idleShareMean: round(mean(eager.map((t) => t.idleShare))),
-      pass: mean(eager.map((t) => t.idleShare)) < 0.35,
+      idleShareMean: round(mean(thoughtful.map((t) => t.idleShare))),
+      pass: mean(thoughtful.map((t) => t.idleShare)) < 0.35,
     },
     "pacing — stage one is short": {
-      sedentismAtMean: round(mean(eager.map((t) => t.sedentismAt ?? TICKS))),
-      neverSettled: round(share(eager.map((t) => t.sedentismAt === null))),
-      pass: mean(eager.map((t) => t.sedentismAt ?? TICKS)) < TICKS * 0.3,
+      sedentismAtMean: round(mean(thoughtful.map((t) => t.sedentismAt ?? TICKS))),
+      neverSettled: round(share(thoughtful.map((t) => t.sedentismAt === null))),
+      pass: mean(thoughtful.map((t) => t.sedentismAt ?? TICKS)) < TICKS * 0.3,
     },
     "scale — the population stays readable": {
-      finalMean: round(mean(eagerFinal)),
-      peakMax: round(Math.max(...eager.map((t) => t.peakHeads))),
-      pass: Math.max(...eager.map((t) => t.peakHeads)) < 5000,
+      finalMean: round(mean(thoughtfulFinal)),
+      peakMax: round(Math.max(...thoughtful.map((t) => t.peakHeads))),
+      pass: Math.max(...thoughtful.map((t) => t.peakHeads)) < 5000,
     },
   },
 };
