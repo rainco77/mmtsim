@@ -3,9 +3,6 @@
 Lebendes Dokument. Wird nach **jeder** Einigung fortgeschrieben, bevor der nächste
 Vorschlag kommt. Wer hier neu einsteigt, liest nur diese Datei.
 
-`DRAFT.md` ist ein früherer Entwurf und dient **nur als Inspiration** — nichts darin
-ist verbindlich, solange es nicht hier unten steht.
-
 ---
 
 ## Ziel
