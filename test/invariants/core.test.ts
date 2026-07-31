@@ -56,13 +56,24 @@ describe("invariants", () => {
     }
   });
 
-  it("allocated labour never exceeds the supply", () => {
+  /**
+   * Supply equals processes plus projects plus idle — the books have to close.
+   *
+   * The invariant that stood here before compared the supply with a figure
+   * derived from the supply itself, so it could not fail. It passed while the
+   * display said "labour binds" and "1.8 free" in the same tick, because the
+   * labour set aside for projects was counted as idle as well.
+   */
+  it("the labour books close: supply = processes + projects + idle", () => {
     for (const seed of SEEDS) {
       for (const state of walk(seed)) {
         const d = derive(state, index);
-        const used =
-          d.laborToProjects + (d.laborPerformance - d.laborUnused - d.laborToProjects);
-        expect(used).toBeLessThanOrEqual(d.laborPerformance + 1e-9);
+        expect(d.laborToProduction + d.laborToProjects + d.laborUnused).toBeCloseTo(
+          d.laborPerformance,
+          9,
+        );
+        expect(d.laborToProduction).toBeGreaterThanOrEqual(-1e-9);
+        expect(d.laborToProjects).toBeGreaterThanOrEqual(-1e-9);
         expect(d.laborUnused).toBeGreaterThanOrEqual(-1e-9);
       }
     }

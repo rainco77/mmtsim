@@ -192,7 +192,6 @@ export class ProductionPhase implements Phase {
       index,
       sectorId: HOUSEHOLDS,
       shocks: ctx.shocks,
-      laborToProjects: 0,
       unlockedBranches: ctx.unlocks.branches,
       unlockedProcesses: ctx.unlocks.processes,
     });

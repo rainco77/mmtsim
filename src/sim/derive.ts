@@ -1,7 +1,7 @@
 import { allocate, type AllocationResult } from "./allocation.ts";
 import { type ConfigIndex, tierEffectAt } from "./config.ts";
 import type { AreaTypeId, ProjectId, StockId } from "./ids.ts";
-import { HOUSEHOLDS, laborPerformance } from "./phases.ts";
+import { HOUSEHOLDS } from "./phases.ts";
 import { peek } from "./random.ts";
 import { type Area, type GameState } from "./state.ts";
 import {
@@ -35,6 +35,8 @@ export interface Derived {
   /** laborVolume × productivity — the quantity that is allocated (E16). */
   readonly laborPerformance: number;
   readonly laborToProjects: number;
+  /** What the processes consumed. */
+  readonly laborToProduction: number;
   readonly laborUnused: number;
 
   /** The peeked shock per stream — mean 1, below 1 is a bad draw (E24). */
@@ -107,15 +109,11 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     shocks[stream] = Math.pow(peek(state.random, stream), 1 / shape.exponent) * scale;
   }
 
-  const laborAvailable = laborPerformance(sector);
-  const laborToProjects = plannedProjectLabor(state, index, laborAvailable);
-
   const allocation = allocate({
     state,
     index,
     sectorId: HOUSEHOLDS,
     shocks,
-    laborToProjects,
     unlockedBranches: unlocks.branches,
     unlockedProcesses: unlocks.processes,
   });
@@ -166,8 +164,9 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     workAbility,
     productivity,
     laborVolume: heads * workAbility,
-    laborPerformance: laborAvailable,
-    laborToProjects,
+    laborPerformance: allocation.laborAvailable,
+    laborToProjects: allocation.laborToProjects,
+    laborToProduction: allocation.laborToProduction,
     laborUnused: allocation.laborUnused,
     shocks,
     ordering: [...Object.entries(allocation.orderingReason)].map(([branch, reason]) => {
@@ -206,37 +205,6 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
   };
 }
 
-/** What the running projects would draw this tick, in project order (E18). */
-function plannedProjectLabor(
-  state: GameState,
-  index: ConfigIndex,
-  laborAvailable: number,
-): number {
-  const sector = state.sectors[HOUSEHOLDS];
-  const stocks = { ...(sector?.stocks ?? {}) };
-  let left = laborAvailable;
-  let used = 0;
-
-  for (const active of [...state.activeProjects].sort((a, b) => a.order - b.order)) {
-    if (active.paused) continue;
-    const def = index.project.get(active.id);
-    if (def === undefined) continue;
-    const step = 1 / def.minTicks;
-    const labor = def.laborCost * step;
-    const affordable =
-      labor <= left + 1e-12 &&
-      Object.entries(def.stockCost).every(
-        ([id, total]) => total * step <= (stocks[id] ?? 0) + 1e-12,
-      );
-    if (!affordable) continue;
-    left -= labor;
-    used += labor;
-    for (const [id, total] of Object.entries(def.stockCost)) {
-      stocks[id] = (stocks[id] ?? 0) - total * step;
-    }
-  }
-  return used;
-}
 
 function describeEffect(effect: { type: string } & Record<string, unknown>): string {
   switch (effect.type) {

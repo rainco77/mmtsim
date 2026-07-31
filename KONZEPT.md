@@ -820,6 +820,23 @@ Arbeitsvolumen  ×  Produktivität  =  Arbeitsleistung
 
 Gespeichert werden nur die **drei Faktoren**, die beiden Produkte sind abgeleitet.
 
+**Die Arbeitsbilanz muss aufgehen — geprüft, nicht behauptet:**
+
+```
+Arbeitsleistung  =  Verfahren  +  Projekte  +  frei
+```
+
+Das ist eine Invariante und steht als Test. Der Test, der vorher dort stand, verglich
+die Arbeitsleistung mit einer Zahl, die aus ihr selbst abgeleitet war, und konnte
+deshalb gar nicht scheitern. Er hielt still, während die Anzeige im selben Tick
+„Arbeit bindet" und „1,8 frei" behauptete: Was der Plan für Projekte herstellte,
+verbrauchte kein Verfahren — also wurde es zusätzlich als frei gezählt. Auch das
+Kriterium für E10 (ungenutzte Arbeit verfällt, also darf sie nicht massenhaft
+brachliegen) misst genau diese Zahl und maß sie falsch.
+
+Eine Bilanz, die aufgehen muss, gehört als Invariante geprüft — sonst trägt eine
+Anzeige den Fehler über Sitzungen.
+
 | Faktor | Was er ist | Getrieben von |
 |---|---|---|
 | **Köpfe** | wer für Arbeit zur Verfügung steht — nicht einfach alle Menschen | Demographie; nach E7 am Anfang alle, mit der Altersstruktur später getrennt |

@@ -196,7 +196,7 @@ describe("projects (E18)", () => {
     const before = derive(state, index).laborToProjects;
     state = runTicks(state, 5);
     expect(state.activeProjects[0]?.progress).toBeCloseTo(progress, 12);
-    expect(before).toBe(0);
+    expect(before).toBeCloseTo(0, 9);
   });
 
   it("a missing resource pauses the project and consumes nothing (E18)", () => {
@@ -398,7 +398,6 @@ describe("allocation runs rank by rank (E21)", () => {
       index,
       sectorId: "households",
       shocks: {},
-      laborToProjects: 0,
       unlockedBranches: new Set(["food"]),
       unlockedProcesses: new Set(["gathering"]),
     });

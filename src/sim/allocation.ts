@@ -194,14 +194,12 @@ export interface AllocationInput {
   readonly index: ConfigIndex;
   readonly sectorId: SectorId;
   readonly shocks: Shocks;
-  /** Labour already committed to projects this tick — projects come first (E21). */
-  readonly laborToProjects: number;
   readonly unlockedBranches: ReadonlySet<string>;
   readonly unlockedProcesses: ReadonlySet<ProcessId>;
 }
 
 export function allocate(input: AllocationInput): AllocationResult {
-  const { state, index, sectorId, shocks, laborToProjects } = input;
+  const { state, index, sectorId, shocks } = input;
   const config = index.config;
   const sector = state.sectors[sectorId];
 
@@ -393,9 +391,14 @@ export function allocate(input: AllocationInput): AllocationResult {
 
   return {
     laborAvailable,
-    laborToProjects,
+    // The books have to balance: supply = processes + projects + idle. What
+    // the plan made is what it meant to use; the part no process consumed is
+    // what the projects claimed (they hold the top rank, so it is set aside for
+    // them). Counting that as idle said "labour binds" and "1.8 free" in the
+    // same breath — and E10's criterion reads exactly this number.
+    laborToProjects: Math.max(0, (produced[LABOR_STOCK] ?? 0) - (consumed[LABOR_STOCK] ?? 0)),
     laborToProduction: consumed[LABOR_STOCK] ?? 0,
-    laborUnused: Math.max(0, laborAvailable - (consumed[LABOR_STOCK] ?? 0)),
+    laborUnused: Math.max(0, laborAvailable - (produced[LABOR_STOCK] ?? 0)),
     tiers,
     produced,
     consumed,
