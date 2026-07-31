@@ -7,6 +7,15 @@ import type { Config } from "../sim/config.ts";
  * Content declares, the engine interprets (T3). Nothing here is a function.
  */
 
+/**
+ * Where a project's claim stands unless the player moves it: above every need
+ * (E18 — projects are financed first). Every project starts there because that
+ * is the rule; the player lowers it for anything he is not willing to go hungry
+ * for, and each project carries its own number, so a granary and a monument
+ * need not be equally urgent.
+ */
+const PROJECTS_FIRST = 0;
+
 export const STAGE1: Config = {
   // ------------------------------------------------------------------ stocks
   stocks: [
@@ -168,6 +177,11 @@ export const STAGE1: Config = {
       rank: 100,
       stock: "food",
       branch: "food",
+      // Most of what a subsistence society eats is not discretionary. With 1,0
+      // against 0,8 for satiety, 44 % of the food need could be given up in a
+      // bad year — measured, that made famine impossible: at tick 124 the worst
+      // draw of the whole run (0,39) still left hunger fully covered. A society
+      // with 44 % of its calories to spare is not a subsistence society.
       perHead: 1.0,
       consumedOnUse: 1,
       deathRate: { atZero: 0.08, atFull: 0 },
@@ -225,6 +239,7 @@ export const STAGE1: Config = {
       id: "sickle_blades",
       visibleWhen: [],
       availableWhen: [],
+      defaultRank: PROJECTS_FIRST,
       laborCost: 90,
       stockCost: {},
       minTicks: 12,
@@ -239,6 +254,7 @@ export const STAGE1: Config = {
       id: "grinding_stones",
       visibleWhen: [],
       availableWhen: [],
+      defaultRank: PROJECTS_FIRST,
       laborCost: 90,
       stockCost: {},
       minTicks: 12,
@@ -253,6 +269,7 @@ export const STAGE1: Config = {
       id: "storage_pits",
       visibleWhen: [],
       availableWhen: [],
+      defaultRank: PROJECTS_FIRST,
       laborCost: 90,
       stockCost: {},
       minTicks: 12,
@@ -276,6 +293,7 @@ export const STAGE1: Config = {
       id: "hunting_weapons",
       visibleWhen: [],
       availableWhen: [{ kind: "projectDone", id: "sickle_blades", min: 1 }],
+      defaultRank: PROJECTS_FIRST,
       laborCost: 90,
       stockCost: {},
       minTicks: 16,
@@ -297,6 +315,7 @@ export const STAGE1: Config = {
       // It also has to be this and not the held stock, because a held stock
       // moves with the weather: bad luck may delay a transition, never block it.
       availableWhen: [{ kind: "capacityPerHead", capacity: "storage", min: 2 }],
+      defaultRank: PROJECTS_FIRST,
       laborCost: 120,
       stockCost: {},
       minTicks: 40,
@@ -333,6 +352,7 @@ export const STAGE1: Config = {
         { kind: "rule", id: "settled", set: true },
         { kind: "unownedCapacity", capacity: "wilderness", min: 10 },
       ],
+      defaultRank: PROJECTS_FIRST,
       // Clearing is hard work and slow. That is what makes the fixed factor
       // bite: a growing population outruns what can be cleared (E7, E13).
       laborCost: 60,
@@ -363,6 +383,7 @@ export const STAGE1: Config = {
         { kind: "rule", id: "settled", set: true },
         { kind: "projectDone", id: "clearing", min: 4 },
       ],
+      defaultRank: PROJECTS_FIRST,
       laborCost: 6,
       stockCost: {},
       minTicks: 30,
@@ -379,6 +400,7 @@ export const STAGE1: Config = {
         // The cap of the epoch (E13). Beyond it only an institution helps.
         { kind: "landTakings", max: 6 },
       ],
+      defaultRank: PROJECTS_FIRST,
       laborCost: 70,
       stockCost: {},
       minTicks: 20,
@@ -403,7 +425,10 @@ export const STAGE1: Config = {
   population: {
     baseBirthRate: 0.01,
     baseDeathRate: 0.01,
-    minimumViableSize: 12,
+    // Birdsell's "magic numbers": a band of about 25 is the smallest that
+    // sustains itself — below it a group has to join another or it is gone.
+    // Twelve was too low to be honest, because nothing recovers from twelve.
+    minimumViableSize: 25,
   },
 
   shocks: { weather: { shape: "powerLeftSkewed", exponent: 4 } },

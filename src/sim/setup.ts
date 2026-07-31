@@ -18,7 +18,7 @@ export interface StartOptions {
  * regulated commons would be an institution, and there is none.
  */
 export function createState(config: Config, options: StartOptions): GameState {
-  const heads = options.heads ?? 30;
+  const heads = options.heads ?? 50;
   return {
     tick: 0,
     random: createRandomState(options.seed),
@@ -33,7 +33,18 @@ export function createState(config: Config, options: StartOptions): GameState {
       },
     },
     unownedCapacity: {
-      wilderness: { amount: options.wilderness ?? 900, quality: config.land.baseQuality },
+      wilderness: {
+        // A band sits *at* the carrying capacity of its range, not far below
+        // it. Fifty people need about 270 of this to feed themselves fully, so
+        // 900 meant they used a fifth of their territory and nothing ever
+        // pressed. At carrying capacity a bad year is a matter of life and
+        // death, which is what makes storing worth the work and land worth
+        // taking — and it has to be scaled with the starting band, since 180
+        // (right for thirty) left fifty people permanently below satiety, with
+        // no births, no projects and no way out.
+        amount: options.wilderness ?? 300,
+        quality: config.land.baseQuality,
+      },
     },
     landTakings: 0,
     completedProjects: {},

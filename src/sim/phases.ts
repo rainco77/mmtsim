@@ -136,23 +136,34 @@ export class ProjectPhase implements Phase {
         continue;
       }
 
-      const step = 1 / def.minTicks;
-      const laborNeeded = def.laborCost * step;
-      const affordable =
-        laborNeeded <= laborLeft + 1e-12 &&
-        Object.entries(def.stockCost).every(
-          ([id, total]) => total * step <= (stocks[id] ?? 0) + 1e-12,
-        );
+      // The minimum duration is the **fastest** pace, not a condition: it says
+      // how much may flow in per tick. Less available means slower, not
+      // nothing. All-or-nothing threw the difference away — measured, six of
+      // the 7.5 units a project could take were produced and lost, and the
+      // progress bar did not move.
+      const full = 1 / def.minTicks;
+      const laborWanted = def.laborCost * full;
 
-      if (!affordable) {
+      // Every resource in lockstep (E18): the pace is set by the scarcest of
+      // them, and exactly that fraction of each is taken.
+      let pace = 1;
+      if (laborWanted > 0) pace = Math.min(pace, laborLeft / laborWanted);
+      for (const [id, total] of Object.entries(def.stockCost)) {
+        const wanted = total * full;
+        if (wanted > 0) pace = Math.min(pace, (stocks[id] ?? 0) / wanted);
+      }
+      pace = Math.max(0, Math.min(1, pace));
+
+      if (pace <= 1e-12) {
         remaining.push(active);
         continue;
       }
 
-      laborLeft -= laborNeeded;
+      const step = full * pace;
+      laborLeft -= laborWanted * pace;
       stocks["labor"] = laborLeft;
       for (const [id, total] of Object.entries(def.stockCost)) {
-        stocks[id] = (stocks[id] ?? 0) - total * step;
+        stocks[id] = (stocks[id] ?? 0) - total * full * pace;
       }
 
       const progress = active.progress + step;

@@ -776,6 +776,19 @@ Buchführung über einzelne Parzellen, nur einen zweiten Typ.
 
 ### E14 — Startaufstellung
 
+**Fünfzig Menschen auf einem Revier, das sie gerade trägt.** Die Gruppe sitzt *an* der
+Tragfähigkeit ihres Landes, nicht weit darunter — das ist die Lage einer
+Wildbeutergruppe, und nur so ist ein schlechtes Jahr existentiell, lohnt Vorratshaltung
+und entsteht Druck zur Intensivierung. Mit einem Revier, das ein Vielfaches des Bedarfs
+hergibt, drückt jahrhundertelang nichts, und dann hat weder der Speicher noch die Rodung
+eine Aufgabe.
+
+Beides gehört deshalb zusammen austariert: Fünfzig Menschen brauchen rund 270 Fläche,
+und ein Revier von 300 lässt gerade so viel Luft, dass die Gruppe wachsen und ihre
+ersten Werkzeuge bauen kann. Gemessen: Bei 180 — richtig für eine Gruppe von dreißig —
+lag dieselbe Fünfzigergruppe dauerhaft unter der Sättigung, bekam keine Kinder, konnte
+kein Projekt mehr anfangen und stand hundertfünfzig Ticks lang still.
+
 **Drei Branchen**: Nahrung, Wohnraum, Holz. Alle teilen sich selbst zu (E10). Wohnraum
 braucht **Holz als Vorleistung**, also zieht das System von allein Arbeit in die
 Holzwirtschaft, wenn Rang 2 unterdeckt ist — der Spieler erlebt eine Lieferkette, ohne
@@ -898,20 +911,43 @@ Jahreszahlen.
 
 **Kosten sind ein Bündel beliebiger Ressourcen**, nicht nur Arbeitsleistung.
 
-**Ein Projekt hat eine Mindestdauer in Ticks.** Je Tick braucht es *Kosten geteilt
-durch diese Tickzahl* von **jeder** Ressource. Fehlt eine davon, **pausiert es und
-verbraucht gar nichts** — die Arbeit, die es dadurch nicht abnimmt, fließt nach E16
-weiter zum nächsten.
+**Die Mindestdauer ist das Höchsttempo, keine Bedingung.** Je Tick *kann* ein Projekt
+*Kosten geteilt durch diese Tickzahl* von jeder Ressource aufnehmen. Steht weniger zur
+Verfügung, nimmt es, was da ist, und kommt entsprechend langsamer voran — das Tempo
+setzt die knappste seiner Ressourcen, und genau dieser Anteil wird von **jeder**
+genommen. So laufen sie weiter im Gleichschritt, und ein Projekt kann **länger** dauern
+als seine Mindestdauer, nie kürzer.
 
-Damit ist der Fortschritt eine einzige Prozentzahl, alle Ressourcen laufen im
-Gleichschritt, und ein blockiertes Projekt frisst nichts. Ein Projekt kann **länger**
-dauern als seine Mindestdauer, nie kürzer.
+> *Befund aus der Umsetzung:* Vorher war es alles oder nichts — wer weniger als seinen
+> vollen Tickanteil bekam, nahm gar nichts. Beim Durchspielen wurden dadurch 6 von 7,5
+> Arbeitseinheiten hergestellt und **weggeworfen**, während der Fortschrittsbalken
+> stehenblieb.
 
 **„Projekte werden zuerst finanziert" ist ein Rang, keine Phase.** Ein Projekt ist ein
-Verbraucher von Arbeit und Beständen wie jeder andere; es steht nur über jedem
-Bedarfsrang aus E9 (der festen Rangfolge der Bedürfnisse). Also geht es als Nachfrage
-in dieselbe Planung wie die Bedürfnisse, mit einem Rang oberhalb von allen — nicht in
+Verbraucher von Arbeit und Beständen wie jeder andere; es geht als Nachfrage in
+dieselbe Planung wie die Bedürfnisse (E9 — die Rangfolge der Bedürfnisse), nicht in
 eine eigene Phase davor.
+
+**Und der Rang ist eine Zahl, die das Projekt trägt — vom Spieler gesetzt.** Jedes
+Projekt einzeln: Für einen Speicher geht man vielleicht hungern, für ein Denkmal nicht.
+Die Voreinstellung steht im Inhalt und liegt über allen Bedürfnissen, also bleibt die
+alte Regel der Normalfall; der Spieler senkt sie für alles, wofür er nicht hungern will.
+Im Kern ist es eine freie Zahl, damit jede Stellung ausdrückbar ist; was die Oberfläche
+davon anbietet — freie Wahl oder ein paar benannte Plätze —, entscheidet die Hülle (T1).
+
+Der Grund für diese Form ist gemessen. Steht ein Projekt **fest** über allem, ist es
+eine Falle statt einer Entscheidung: Seine Kosten sind absolut, also wächst ihr Anteil,
+während eine Siedlung schrumpft. Im Spiel gingen sechzig Ticks nach dem Start 8 von 9
+verbliebenen Arbeitseinheiten ins Projekt und 2 in die Nahrung; die Siedlung starb an
+einer Verpflichtung aus besseren Zeiten, ohne dass irgendetwas den Moment markiert
+hätte, an dem sie untragbar wurde. Steht es dagegen **fest** unter dem Überleben,
+verschwindet die Falle — aber mit ihr die Entscheidung: Der Zeitpunkt spielt dann kaum
+noch eine Rolle, weil das Modell den Spieler ohnehin schützt.
+
+Als Zahl am Projekt ist die Gefahr **gewählt** statt verborgen, und der Zeitpunkt zählt
+wieder. Gemessen: Wer die Voreinstellung stehen lässt, stirbt in 100 % der Läufe; wer
+seine Projekte knapp unter das Überleben setzt, stirbt nicht mehr an ihnen. Pausieren
+bleibt daneben das, was es sein soll — ein Mittel, kein Pflichtprogramm.
 
 Das war vorher anders und war ein Sonderweg, der nur deshalb nicht auffiel, weil
 Arbeit selbst einer war: Eine eigene Projektphase zog die Arbeit oben ab, und der Plan
@@ -1070,6 +1106,17 @@ Arbeitsteilung, kein Puffer gegen ein schlechtes Jahr, kein Ersatz für Ausfäll
 **Mindestlebensfähige Größe** ist ein etablierter Begriff, und historisch wurden zu
 klein gewordene Siedlungen aufgegeben oder gingen in anderen auf. Bis auf den letzten
 Menschen zu rechnen wäre die unrealistischere Variante.
+
+**Die Schwelle liegt bei 25, die Startgruppe bei 50.** Der Anker sind Birdsells „magic
+numbers": Eine Bande von rund 25 ist die kleinste, die sich selbst trägt — darunter muss
+eine Gruppe in einer anderen aufgehen oder sie verschwindet. Und aus einer zu kleinen
+Gruppe erholt sich nichts mehr, also muss der Lauf **davor** enden und nicht erst, wenn
+niemand mehr da ist.
+
+> *Noch offen:* Der Zustand meldet die Aufgabe, aber im Kern handelt niemand danach —
+> ein Lauf rechnet weiter, bis rechnerisch Bruchteile von Menschen übrig sind. Ob das
+> Beenden Sache der Hülle ist (T1) oder der Zustand es festhalten muss, ist nicht
+> entschieden.
 
 Zugleich verhindert es, dass der Spieler auf einer winzigen Zahl festhängt, wo
 prozentuales Wachstum quälend langsam ist. **Die Schwelle muss sichtbar sein** — als
@@ -1673,6 +1720,47 @@ etwas zu entscheiden geben.** Sonst wird Zuschauen zum Spiel.
 ---
 
 ## Technik
+
+### E30 — Durchspielen als Prüfung
+
+**Das Spiel wird regelmäßig Tick für Tick gespielt und jeder Tick angesehen.** Nicht
+laufen gelassen und am Ende ausgewertet — angesehen.
+
+**Aggregate genügen nicht, und das ist keine Vorsicht, sondern eine Erfahrung.** Über
+mehrere Runden haben Mittelwerte über ganze Läufe nacheinander zu diesen falschen
+Schlüssen geführt, jeder davon erst beim Ansehen einzelner Ticks widerlegt:
+
+| behauptet aus Aggregaten | tatsächlich |
+|---|---|
+| „Der Speicher tut nichts" | Er rettete 85–93 % der Ticks, in denen die Ernte den Hunger nicht deckte — die hungrigen Ticks im Mittelwert lagen *alle* vor dem Bau der Gruben |
+| „Die Wirtschaft ist strukturell defizitär" | Galt für die ersten 20 Ticks, nicht für den Lauf |
+| „Der Ertrag muss steigen" | Falsche Richtung: höherer Ertrag beseitigt die Gefahr, statt die gesuchte Phase zu erzeugen |
+| „Überleben schlechtestens 45 %, mit und ohne Gruben gleich" | Über alle Ticks gemessen, auch die vor den Gruben — ab Tick 60 steht es in beiden Fällen bei 100 % |
+
+Ein Mittelwert über einen Lauf mischt Phasen, die nichts miteinander zu tun haben. Wo
+eine Wirkung an eine Phase gebunden ist — und im Aufbau einer Wirtschaft ist fast jede
+das —, verschwindet sie im Mittel oder erscheint dort, wo sie nicht ist.
+
+**Angesehen wird jeder Tick auf drei Fragen:**
+
+1. **Ist das Ergebnis plausibel?** Passen die Zahlen zueinander, geht die Bilanz auf,
+   tut die Anzeige, was sie behauptet.
+2. **Ist es akademisch haltbar?** Nicht nur „kein Fehler im Modell", sondern: Entwickelt
+   sich das Spiel so, wie die Entwicklung menschlicher Gesellschaften wissenschaftlich
+   beschrieben wird. Sitzt eine Wildbeutergruppe an der Tragfähigkeit ihres Reviers?
+   Kommt das Lager vor der Sesshaftigkeit? Wird intensiviert, wenn das Land knapp wird?
+3. **Trägt es spieldynamisch?** Hat der Spieler an *diesem* Tick etwas zu entscheiden,
+   und hat eine frühere Entscheidung hier eine sichtbare Folge? Beides muss über den
+   ganzen Bogen gelten: Zu viele Hebel überfordern, zu wenige langweilen; zu früher
+   Erfolg macht satt, zu später frustriert.
+
+**Die Sicht dabei ist die des Spielers**, ergänzt um das, was aufgehen muss — die
+Arbeitsbilanz, die Flächennutzung, den bindenden Input. Was der Spieler nicht sähe,
+darf zur Beurteilung der Spieldynamik nicht herangezogen werden.
+
+**Jeder Befund wird mit dem Tick festgehalten, der ihn erzeugt hat.** „Bei Tick 124
+steht der schlechteste Wetterwurf des Laufs und der Hunger bleibt bei 100 %" ist eine
+Feststellung, die man prüfen kann; „die Schwankung wirkt zu schwach" ist eine Meinung.
 
 ### T1 — Functional Core, Imperative Shell
 

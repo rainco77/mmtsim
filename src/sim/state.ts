@@ -75,6 +75,16 @@ export interface Capacity {
 
 /** A project under way (E18). */
 export interface ActiveProject {
+  /**
+   * Where this project's claim stands in the ranking (E9), as a plain number,
+   * so every position is expressible. What the interface offers of it — free
+   * choice or a few named places — is the shell's business (T1).
+   *
+   * It is per project because projects differ in urgency: a granary may be
+   * worth going hungry for and a monument may not. And it is the player's, so
+   * the danger of committing is chosen rather than hidden.
+   */
+  readonly rank: number;
   readonly id: ProjectId;
   /** 0 … 1. Reaching 1 completes it. */
   readonly progress: number;

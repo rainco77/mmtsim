@@ -18,8 +18,6 @@ import {
  */
 const LABOR_STOCK: StockId = "labor";
 
-/** Above every need: projects are financed before the ranking starts (E18). */
-const PROJECT_RANK = -1;
 
 /** After every need: a store is filled from what is left over, never before. */
 const STORE_RANK = Number.MAX_SAFE_INTEGER;
@@ -276,7 +274,7 @@ export function allocate(input: AllocationInput): AllocationResult {
       demands.push({
         tier: {
           id: `project:${def.id}:${stockId}`,
-          rank: PROJECT_RANK,
+          rank: active.rank,
           stock: stockId,
           branch: index.config.branches.find((b) => b.produces === stockId)?.id ?? "",
           perHead: 0,

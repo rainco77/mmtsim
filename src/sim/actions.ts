@@ -7,7 +7,14 @@ import type { ActiveProject, GameState } from "./state.ts";
  * (T4) and can be handed over, compared and replayed.
  */
 export type Action =
-  | { readonly type: "startProject"; readonly id: ProjectId }
+  | {
+      readonly type: "startProject";
+      readonly id: ProjectId;
+      /** Omitted takes the project's declared default. */
+      readonly rank?: number;
+    }
+  /** Move a running project's claim, so a decision stays revisable. */
+  | { readonly type: "setProjectRank"; readonly id: ProjectId; readonly rank: number }
   | { readonly type: "pauseProject"; readonly id: ProjectId; readonly paused: boolean }
   | { readonly type: "reorderProject"; readonly id: ProjectId; readonly order: number }
   | { readonly type: "abandonProject"; readonly id: ProjectId };
@@ -25,7 +32,11 @@ export function apply(
 ): ActionResult {
   switch (action.type) {
     case "startProject":
-      return startProject(state, action.id, index);
+      return startProject(state, action.id, action.rank, index);
+    case "setProjectRank":
+      return {
+        state: mapProject(state, action.id, (p) => ({ ...p, rank: action.rank })),
+      };
     case "pauseProject":
       return {
         state: mapProject(state, action.id, (p) => ({ ...p, paused: action.paused })),
@@ -44,7 +55,12 @@ export function apply(
   }
 }
 
-function startProject(state: GameState, id: ProjectId, index: ConfigIndex): ActionResult {
+function startProject(
+  state: GameState,
+  id: ProjectId,
+  rank: number | undefined,
+  index: ConfigIndex,
+): ActionResult {
   const def = index.project.get(id);
   if (def === undefined) return { state, rejected: `unknown project "${id}"` };
   if (state.activeProjects.some((p) => p.id === id)) {
@@ -56,7 +72,13 @@ function startProject(state: GameState, id: ProjectId, index: ConfigIndex): Acti
 
   // The start time seeds the order; the player may reorder afterwards (E18).
   const order = state.activeProjects.reduce((max, p) => Math.max(max, p.order), 0) + 1;
-  const active: ActiveProject = { id, progress: 0, order, paused: false };
+  const active: ActiveProject = {
+    id,
+    progress: 0,
+    order,
+    paused: false,
+    rank: rank ?? def.defaultRank,
+  };
   return { state: { ...state, activeProjects: [...state.activeProjects, active] } };
 }
 

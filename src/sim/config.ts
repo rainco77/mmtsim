@@ -238,6 +238,9 @@ export interface ProjectDef {
   /** Can be started. */
   readonly availableWhen: readonly Condition[];
 
+  /** Where its claim stands unless the player says otherwise (E9, E18). */
+  readonly defaultRank: number;
+
   /** Labour performance in total, spread evenly over the minimum duration. */
   readonly laborCost: number;
   /** Stocks in total, likewise spread evenly (E18). */
