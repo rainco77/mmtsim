@@ -1872,6 +1872,75 @@ darf zur Beurteilung der Spieldynamik nicht herangezogen werden.
 steht der schlechteste Wetterwurf des Laufs und der Hunger bleibt bei 100 %" ist eine
 Feststellung, die man prüfen kann; „die Schwankung wirkt zu schwach" ist eine Meinung.
 
+### E31 — Wie der Projektbaum einer Epoche gebaut ist
+
+Vier Anforderungen, und keine darf der anderen geopfert werden: Der Baum muss **fesseln**,
+er muss **akademisch haltbar** sein, aus ihm muss sich eine **benennbare Lehre** ergeben,
+und er darf das Modell nicht komplizierter machen, als die Lehre es verlangt.
+
+**Ein benanntes Rückgrat, dazu wenige echte Alternativen.**
+
+Das Rückgrat sind die Projekte, ohne die es nicht weitergeht. Es wird **benannt, nicht
+gezählt**: „Um zu bleiben, brauchst du einen Vorrat; für einen Vorrat Überschuss; für
+Überschuss bessere Ernte." Das kann ein Spieler nachvollziehen und darauf hinarbeiten.
+Eine Schwelle wie „die Hälfte des Baums" kann er nicht — sie ist unlesbar, und sie macht
+aus allem, was nicht zählt, Füllmaterial.
+
+Daneben stehen Alternativen, die **das Wie ändern, nicht das Ob**: sich auf die Jagd
+stützen oder aufs Wasser, früh auf Vorrat gehen oder auf Ertrag. Sie verschieben das
+**Risikoprofil**, nicht den Ausgang. Daher kommt der Wiederspielwert, ohne dass jemand
+einen Ast verpasst, den er gebraucht hätte.
+
+**Warum nicht „man braucht eine Auswahl":** Bei uns kostet alles dieselbe knappe
+Ressource — Hände. Die interessante Entscheidung ist deshalb ohnehin selten *welches*
+Projekt, sondern **wann und in welcher Reihenfolge**, und das ist bereits gemessen tief:
+Drei Projekte gleichzeitig anzufangen tötet die Siedlung. Ein Baum zum Weglassen würde
+diese Tiefe nicht vergrößern, sondern verwässern — weggelassen würde, was man nicht
+versteht, und der Unterschied fiele nie auf.
+
+**Eine Wahl darf nur stehen, wo der Spieler sie beurteilen kann.** Sonst ist sie kein
+Abwägen, sondern ein Münzwurf mit Folgen. Gemessener Fall: Rodung gegen Aufforstung ist
+unentscheidbar, solange nirgends steht, was ein Stück Wald gegen ein Stück Acker wert
+ist — selbst ein Spieler, der beide Zahlen kennt, rechnet am Rand richtig und entwaldet
+sich zu Tode. Jede Alternative braucht also eine **ablesbare Grundlage**, oder sie gehört
+nicht in den Baum.
+
+**Der Umfang, an dem sich das misst:**
+
+| | |
+|---|---|
+| gleichzeitige Angebote | **drei bis fünf** — darunter keine Wahl, darüber eine Liste zum Überfliegen |
+| Entscheidungen über die Epoche | **zwölf bis achtzehn** |
+| davon Rückgrat | etwa die Hälfte, als *Ergebnis* und nicht als Regel |
+
+**Die erste Epoche ist kleiner als die späteren**, weil sie der versteckte Lehrgang ist:
+Ihre Aufgabe ist, die Schleife beizubringen — Bedarf, Knappheit, Projekt, neue
+Möglichkeit — mit so wenig verschiedenen Dingen, dass jedes haften bleibt. Wer dort
+dreißig Projekte sieht, lernt keine Schleife, sondern klickt sich durch. Spätere Epochen
+dürfen reicher werden, weil der Spieler dann weiß, worauf er achtet.
+
+**Und jede Epoche muss eine Lehre hergeben, die sich in einem Satz sagen lässt** — nicht
+als Textkasten, sondern als etwas, das der Spieler erlebt hat und das die Oberfläche
+hinterher benennen kann. Für die erste: *Ein Vorrat lässt eine Gesellschaft vom
+Durchschnitt leben statt vom schlechtesten Jahr.* Fällt einem für eine Epoche kein
+solcher Satz ein, fehlt ihr der Grund, und kein Umfang an Projekten ersetzt ihn.
+
+**Die Reihenfolge beim Entwerfen ist die umgekehrte der Technikgeschichte:**
+
+1. Welche **Bedarfe** hat die Epoche — und was passiert, wenn sie nicht gedeckt sind.
+   Ohne diese Folge ist ein Bedarf Zierrat, und die Rangfolge ergibt sich daraus.
+2. Woraus sie **gedeckt** werden können: Gut und Quelle. Hier entscheidet sich, welche
+   Kapazitäten es braucht und welche Güter zwischen Quelle und Bedarf stehen.
+3. **In welchen Stufen** — erst schlecht gedeckt, dann besser. Diese Stufen *sind* die
+   Projekte.
+4. **Was worauf aufbaut**, und zwar aus sachlichen Abhängigkeiten. Erst hier entsteht der
+   Baum.
+
+Von der Technik her zu denken führt dazu, dass man Bogen, Hund und Einbaum sammelt, weil
+sie bekannt sind. Von der Deckung her gedacht fragt man „wie kommt eine Gruppe an mehr
+Nahrung, wenn das Land voll ist" — und der Bogen fällt als *eine* Antwort ab, neben
+anderen.
+
 ### T1 — Functional Core, Imperative Shell
 
 **Daten sind unveränderliche Werte. Verhalten darf objektorientiert sein.** In
