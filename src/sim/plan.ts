@@ -197,6 +197,7 @@ const CACHE = new WeakMap<
     coef: Map<InputId, Map<ProcessId, number>>;
     supply: Map<InputId, number>;
     chain: Map<InputId, ReadonlyMap<ProcessId, number>>;
+    coverOrder?: readonly InputId[];
     /** Who makes the stock behind an input — the credit side of the net use. */
     makers: Map<InputId, ReadonlySet<ProcessId>>;
   }
@@ -208,6 +209,7 @@ function cacheOf(ctx: PlanContext): {
   coef: Map<InputId, Map<ProcessId, number>>;
   supply: Map<InputId, number>;
   chain: Map<InputId, ReadonlyMap<ProcessId, number>>;
+  coverOrder?: readonly InputId[];
   makers: Map<InputId, ReadonlySet<ProcessId>>;
 } {
   let entry = CACHE.get(ctx);
@@ -414,10 +416,14 @@ function cover(
   final: ReadonlyMap<StockId, number>,
   ctx: PlanContext,
 ): void {
-  for (let pass = 0; pass < ctx.available.length + 2; pass += 1) {
-    let raised = false;
-    for (const input of inputsOf(ctx)) {
-      if (!input.startsWith("stock:")) continue;
+  // One pass suffices, because the stocks are covered in dependency order:
+  // whoever consumes a stock has its own level fixed before that stock is
+  // covered. Housing before wood before labour. Repeating until nothing moves
+  // reaches the same fixed point but costs a factor of P, and that factor was
+  // measured as the difference between quadratic and cubic growth in the
+  // number of processes.
+  {
+    for (const input of coverOrder(ctx)) {
       const stock = input.slice(6);
       const gap = totalUse(levels, input, ctx, final) - available(input, ctx);
       if (Math.abs(gap) <= 1e-12) continue;
@@ -433,10 +439,47 @@ function cover(
       const next = Math.max(0, level + gap);
       if (Math.abs(next - level) <= 1e-12) continue;
       levels.set(maker.id, next);
-      raised = true;
     }
-    if (!raised) break;
   }
+}
+
+/**
+ * The stocks in the order they have to be covered: a stock comes before
+ * anything its own producer consumes.
+ */
+function coverOrder(ctx: PlanContext): readonly InputId[] {
+  const cache = cacheOf(ctx);
+  if (cache.coverOrder !== undefined) return cache.coverOrder;
+
+  const stocks = inputsOf(ctx).filter((input) => input.startsWith("stock:"));
+  const before = new Map<InputId, Set<InputId>>();
+  for (const input of stocks) {
+    const needs = new Set<InputId>();
+    const maker = producersOf(input.slice(6), ctx)[0];
+    if (maker !== undefined) {
+      for (const [used, per] of Object.entries(maker.intermediatesPerOutput)) {
+        if (per > 0 && stocks.includes(stockInput(used))) needs.add(stockInput(used));
+      }
+    }
+    before.set(input, needs);
+  }
+
+  const done = new Set<InputId>();
+  const order: InputId[] = [];
+  while (order.length < stocks.length) {
+    const ready = stocks.filter((one) => !done.has(one) && ![...stocks].some(
+      (other) => !done.has(other) && other !== one && (before.get(other)?.has(one) ?? false),
+    ));
+    // A cycle cannot arise from the content we have; if one ever did, the rest
+    // follows in declared order and the plan simply covers less precisely.
+    const batch = ready.length > 0 ? ready : stocks.filter((one) => !done.has(one));
+    for (const one of batch) {
+      done.add(one);
+      order.push(one);
+    }
+  }
+  cache.coverOrder = order;
+  return order;
 }
 
 /** Cuts the plan back to what the supplies actually carry, and reports why. */

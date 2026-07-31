@@ -1242,6 +1242,29 @@ Fortschritt 0.
 paarweiser Vergleich reicht bei zwei Stufen und ordnet bei drei — Arbeit → Holz →
 Haus — falsch.
 
+**Die Rechenzeit wächst mit der Zahl der Verfahren, und das ist die Größe, die
+wachsen soll.** Gemessen wurde deshalb nicht der heutige Wert, sondern die
+Wachstumsordnung: mit künstlichen Verfahren, die Fläche gegen Arbeit tauschen und
+einander daher nicht dominieren — der teure Fall, nicht der billige.
+
+| Verfahren | vorher | nachher |
+|---:|---:|---:|
+| 9 | 0,30 ms | 0,32 ms |
+| 30 | 3,32 ms | 1,18 ms |
+| 60 | 26,7 ms | 2,65 ms |
+| 110 | 226,7 ms | 6,43 ms |
+
+Vorher kostete eine Verdopplung der Verfahrenszahl etwa das Achtfache — kubisch. Der
+Grund lag **nicht** im Planer, sondern in der Reihenfolge nach Dominanz (E5): Aus den
+verbliebenen Verfahren in jeder Runde neu die nicht dominierten zu suchen sind *n*
+Runden mal *n²* Vergleiche, und jeder Vergleich baute seine Schlüsselmengen und die
+Risikobereinigung neu auf. Die Beziehung einmal aufzustellen und dann je Verfahren zu
+zählen, wie viele es noch dominieren, macht daraus *n²*; die Koeffizienten einmal je
+Verfahren zu rechnen nimmt den Rest. Gemessener Exponent danach rund 1,3.
+
+In der Zeit ist es linear und war es immer — 3200 Ticks kosten je Tick nicht mehr als
+200.
+
 **Die Welt steht still, während ein Plan gemacht wird.** Welche Inputs es gibt, wer was
 herstellen kann, wieviel ein Verfahren je Einheit braucht, wieviel von einem Input da
 ist: Das folgt aus den freigeschalteten Verfahren, der Flächenqualität und den Schocks

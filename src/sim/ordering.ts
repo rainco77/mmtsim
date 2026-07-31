@@ -86,29 +86,77 @@ export class DominanceOrdering implements ProcessOrdering {
   order(_branch: BranchDef, ctx: OrderingContext): OrderedProcesses {
     const riskWeight = ctx.index.config.risk.aversion * Math.max(0, 1 - ctx.buffer);
 
-    // Where dominance is silent: the less exposed process first while the store
-    // is thin, otherwise what the content declares — the routine (E5).
-    const preference = (a: ProcessDef, b: ProcessDef): number => {
-      const risk =
-        riskWeight * (exposureMagnitude(a) - exposureMagnitude(b));
+    // Every coefficient a comparison can ask for, computed once per process.
+    // Building them per comparison made the ordering cubic in the number of
+    // processes and was measured at 83 % of the whole run time with sixty of
+    // them.
+    const keys = new Set<string>();
+    for (const process of ctx.available) {
+      for (const type of Object.keys(process.areaPerOutput)) keys.add(`a:${type}`);
+      for (const id of Object.keys(process.intermediatesPerOutput)) keys.add(`s:${id}`);
+    }
+    const order = [...keys];
+
+    const costs = ctx.available.map((process) => {
+      const risk = 1 / Math.max(1e-12, 1 - riskWeight * exposureMagnitude(process));
+      return order.map((key) => {
+        if (key.startsWith("a:")) {
+          const type = key.slice(2);
+          const base = process.areaPerOutput[type] ?? 0;
+          if (base === 0) return 0;
+          const factor = 1 - process.qualityWeight + process.qualityWeight * ctx.quality(type);
+          return (base * risk) / Math.max(1e-12, factor);
+        }
+        return (process.intermediatesPerOutput[key.slice(2)] ?? 0) * risk;
+      });
+    });
+
+    // The relation once, then a count of dominators per process — quadratic
+    // instead of re-scanning everyone in every round.
+    const n = ctx.available.length;
+    const beaten: number[][] = Array.from({ length: n }, () => []);
+    const dominators = new Array<number>(n).fill(0);
+    for (let a = 0; a < n; a += 1) {
+      for (let b = 0; b < n; b += 1) {
+        if (a !== b && dominates(costs[a] ?? [], costs[b] ?? [])) {
+          beaten[a]?.push(b);
+          dominators[b] = (dominators[b] ?? 0) + 1;
+        }
+      }
+    }
+
+    const preference = (a: number, b: number): number => {
+      const pa = ctx.available[a];
+      const pb = ctx.available[b];
+      if (pa === undefined || pb === undefined) return 0;
+      const risk = riskWeight * (exposureMagnitude(pa) - exposureMagnitude(pb));
       if (Math.abs(risk) > 1e-12) return risk;
-      return b.priority - a.priority;
+      return pb.priority - pa.priority;
     };
 
-    const rest = [...ctx.available];
-    const effective = (process: ProcessDef): number =>
-      1 / Math.max(1e-12, 1 - riskWeight * exposureMagnitude(process));
+    const taken = new Array<boolean>(n).fill(false);
     const ordered: ProcessDef[] = [];
-    while (rest.length > 0) {
-      // Anything nothing else dominates may go next; among those, preference.
-      const free = rest.filter(
-        (one) => !rest.some((other) => dominates(other, one, effective, ctx)),
-      );
-      const pool = free.length > 0 ? free : rest;
-      const next = [...pool].sort(preference)[0];
-      if (next === undefined) break;
-      ordered.push(next);
-      rest.splice(rest.indexOf(next), 1);
+    for (let step = 0; step < n; step += 1) {
+      let best: number | undefined;
+      for (let i = 0; i < n; i += 1) {
+        if (taken[i] === true || (dominators[i] ?? 0) > 0) continue;
+        if (best === undefined || preference(i, best) < 0) best = i;
+      }
+      // Everything left is dominated by something left: a cycle cannot arise
+      // from a partial order, but take the rest by preference rather than stall.
+      if (best === undefined) {
+        for (let i = 0; i < n; i += 1) {
+          if (taken[i] === true) continue;
+          if (best === undefined || preference(i, best) < 0) best = i;
+        }
+      }
+      if (best === undefined) break;
+      taken[best] = true;
+      const process = ctx.available[best];
+      if (process !== undefined) ordered.push(process);
+      for (const other of beaten[best] ?? []) {
+        dominators[other] = (dominators[other] ?? 0) - 1;
+      }
     }
 
     // "Risk" only when the discount actually changed who leads — otherwise the
@@ -140,35 +188,11 @@ export class DominanceOrdering implements ProcessOrdering {
  * `1 - weight × exposure` is ordering by the labour coefficient divided by it.
  * Only now every input is treated that way, not labour alone.
  */
-function dominates(
-  a: ProcessDef,
-  b: ProcessDef,
-  effective: (process: ProcessDef) => number,
-  ctx: OrderingContext,
-): boolean {
-  const ra = effective(a);
-  const rb = effective(b);
+function dominates(a: readonly number[], b: readonly number[]): boolean {
   let strictly = false;
-  for (const type of new Set([
-    ...Object.keys(a.areaPerOutput),
-    ...Object.keys(b.areaPerOutput),
-  ])) {
-    const factor = ctx.quality(type);
-    const one =
-      ((a.areaPerOutput[type] ?? 0) * ra) /
-      Math.max(1e-12, 1 - a.qualityWeight + a.qualityWeight * factor);
-    const two =
-      ((b.areaPerOutput[type] ?? 0) * rb) /
-      Math.max(1e-12, 1 - b.qualityWeight + b.qualityWeight * factor);
-    if (one > two + 1e-12) return false;
-    if (one < two - 1e-12) strictly = true;
-  }
-  for (const id of new Set([
-    ...Object.keys(a.intermediatesPerOutput),
-    ...Object.keys(b.intermediatesPerOutput),
-  ])) {
-    const one = (a.intermediatesPerOutput[id] ?? 0) * ra;
-    const two = (b.intermediatesPerOutput[id] ?? 0) * rb;
+  for (let i = 0; i < a.length; i += 1) {
+    const one = a[i] ?? 0;
+    const two = b[i] ?? 0;
     if (one > two + 1e-12) return false;
     if (one < two - 1e-12) strictly = true;
   }
