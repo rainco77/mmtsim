@@ -612,6 +612,23 @@ Vorbedingung, aber es gibt zwei Sätze davon:
 Bedingungen sind immer Zustandsabfragen desselben Typs: *Projekt X fertig*,
 *Bevölkerung ≥ 200*, *Rang 3 gedeckt*, *Kapazität Mühle ≥ 4*.
 
+**Wie oft.** Ein Projekt trägt eine Obergrenze, wie oft es überhaupt ausgeführt werden
+darf; fehlt sie, ist es unbegrenzt. „Einmal", „sechsmal" und „beliebig oft" sind
+dieselbe Aussage bei verschiedenen Werten.
+
+> *Befund aus der Umsetzung:* Vorher gab es dafür einen Ja/Nein-Schalter, und wo eine
+> echte Zahl gebraucht wurde — der Deckel auf die Landnahmen (E13) —, stand sie als
+> **Bedingung**. Damit meldete ein verbrauchtes Kontingent eine „fehlende
+> Voraussetzung", obwohl nichts fehlte: Es war nur nichts mehr übrig. Drei Dinge waren
+> in zwei Feldern vermischt, die getrennt gehören und die der Spieler auch getrennt
+> liest:
+>
+> | | |
+> |---|---|
+> | **wie oft** es noch geht | ausgeführt 3 von 6 |
+> | **wie weit** ein laufendes ist | 42 % |
+> | **was fehlt**, um es zu starten | Speicher 1,8 von 2,0 |
+
 **Kosten.** Anfangs nur Arbeit, später zusätzlich Vorleistungen (E4).
 
 **Wirkung.** Vier Typen, ein Projekt kann mehrere haben — und **Wirkungen dürfen
@@ -1417,7 +1434,7 @@ dass zwei Stellen dasselbe behaupten und auseinanderlaufen.
 | **Zahl der Landnahmen** | daraus wird die Güte gerechnet (E13) |
 | **Produktivität** | mitgeführt |
 | **Arbeitsfähigkeit** | mitgeführt |
-| **Erledigte Projekte** | je Kennung, wie oft — deckt einmalige und wiederholbare gleichermaßen ab |
+| **Erledigte Projekte** | je Kennung, wie oft — und daran misst sich die Obergrenze aus E12 |
 | **Laufende Projekte** | je Projekt: Fortschritt, Position, pausiert ja/nein (E18) |
 
 **Warum Produktivität und Arbeitsfähigkeit gespeichert werden**, obwohl sie aus der

@@ -94,8 +94,6 @@ export function conditionHolds(condition: Condition, ctx: ConditionContext): boo
       return capacityOf(ctx.state.unownedCapacity, condition.capacity).amount >= condition.min;
     case "coverage":
       return (ctx.coverage[condition.tier] ?? 0) >= condition.min;
-    case "landTakings":
-      return ctx.state.landTakings < condition.max;
     case "ownedCapacity": {
       let held = 0;
       for (const sector of Object.values(ctx.state.sectors)) {
@@ -134,9 +132,70 @@ export function allHold(
  * What is missing, so the interface can name it instead of writing "locked"
  * (E12). Empty means: everything holds.
  */
+/**
+ * A condition that does not hold, with where you stand against what it takes.
+ *
+ * A rule alone — "storage capacity of two per head" — tells a player nothing
+ * about whether he is close or losing ground. Both numbers together do, and
+ * `progress` resolves the direction here rather than leaving every interface to
+ * know which conditions count up and which count down.
+ */
+export interface Unmet {
+  readonly condition: Condition;
+  readonly have: number;
+  readonly need: number;
+  /** Nought to one, one being met. */
+  readonly progress: number;
+}
+
 export function unmetConditions(
   conditions: readonly Condition[],
   ctx: ConditionContext,
-): readonly Condition[] {
-  return conditions.filter((condition) => !conditionHolds(condition, ctx));
+): readonly Unmet[] {
+  return conditions
+    .filter((condition) => !conditionHolds(condition, ctx))
+    .map((condition) => standing(condition, ctx));
+}
+
+/** Where you stand against one condition. */
+function standing(condition: Condition, ctx: ConditionContext): Unmet {
+  const at = (have: number, need: number): Unmet => ({
+    condition,
+    have,
+    need,
+    progress: need <= 0 ? 1 : Math.max(0, Math.min(1, have / need)),
+  });
+
+  switch (condition.kind) {
+    case "population":
+      return at(ctx.population, condition.min);
+    case "projectDone":
+      return at(completedCount(ctx.state, condition.id), condition.min);
+    case "rule":
+      return at(ctx.unlocks.rules.has(condition.id) === condition.set ? 1 : 0, 1);
+    case "unownedCapacity":
+      return at(capacityOf(ctx.state.unownedCapacity, condition.capacity).amount, condition.min);
+    case "ownedCapacity":
+      return at(held(ctx, condition.capacity), condition.min);
+    case "coverage":
+      return at(ctx.coverage[condition.tier] ?? 0, condition.min);
+    case "capacityPerHead":
+      return at(ctx.population <= 0 ? 0 : held(ctx, condition.capacity) / ctx.population, condition.min);
+    case "stockPerHead":
+      return at(ctx.population <= 0 ? 0 : stock(ctx, condition.stock) / ctx.population, condition.min);
+  }
+}
+
+function held(ctx: ConditionContext, capacity: string): number {
+  let total = 0;
+  for (const sector of Object.values(ctx.state.sectors)) {
+    total += capacityOf(sector?.capacityHeld ?? {}, capacity).amount;
+  }
+  return total;
+}
+
+function stock(ctx: ConditionContext, id: string): number {
+  let total = 0;
+  for (const sector of Object.values(ctx.state.sectors)) total += sector?.stocks[id] ?? 0;
+  return total;
 }

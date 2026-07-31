@@ -9,8 +9,8 @@ import {
   computeUnlocks,
   unmetConditions,
   type ConditionContext,
+  type Unmet,
 } from "./unlocks.ts";
-import type { Condition } from "./config.ts";
 import type { OrderingReason } from "./ordering.ts";
 
 /**
@@ -98,8 +98,10 @@ export interface ProjectView {
   readonly progress: number;
   readonly order?: number;
   readonly completed: number;
+  /** How often it may be run at all; absent means without limit (E12). */
+  readonly limit?: number;
   /** Named, not "locked" (E12). */
-  readonly missing: readonly Condition[];
+  readonly missing: readonly Unmet[];
   /** What this project opens up, so the horizon is local and always present. */
   readonly unlocks: readonly string[];
 }
@@ -153,7 +155,7 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     const done = state.completedProjects[def.id] ?? 0;
     // A finished one-off project is not available any more, and neither is one
     // already under way. Otherwise a strategy would keep reaching for it.
-    const startable = active === undefined && (def.repeatable || done === 0);
+    const startable = active === undefined && (def.limit === undefined || done < def.limit);
     return {
       id: def.id,
       visible: allHold(def.visibleWhen, ctx),
@@ -163,6 +165,7 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
       progress: active?.progress ?? 0,
       ...(active === undefined ? {} : { order: active.order }),
       completed: state.completedProjects[def.id] ?? 0,
+      ...(def.limit === undefined ? {} : { limit: def.limit }),
       missing: unmetConditions(def.availableWhen, ctx),
       unlocks: def.effects.map(describeEffect),
     };

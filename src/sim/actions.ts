@@ -66,8 +66,8 @@ function startProject(
   if (state.activeProjects.some((p) => p.id === id)) {
     return { state, rejected: `project "${id}" already running` };
   }
-  if (!def.repeatable && (state.completedProjects[id] ?? 0) > 0) {
-    return { state, rejected: `project "${id}" already finished` };
+  if (def.limit !== undefined && (state.completedProjects[id] ?? 0) >= def.limit) {
+    return { state, rejected: `project "${id}" cannot be run again` };
   }
 
   // The start time seeds the order; the player may reorder afterwards (E18).

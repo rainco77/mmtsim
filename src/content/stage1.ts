@@ -244,7 +244,7 @@ export const STAGE1: Config = {
       laborCost: 90,
       stockCost: {},
       minTicks: 12,
-      repeatable: false,
+      limit: 1,
       effects: [{ type: "process", id: "gathering_sickle" }],
       sector: "households",
     },
@@ -259,7 +259,7 @@ export const STAGE1: Config = {
       laborCost: 90,
       stockCost: {},
       minTicks: 12,
-      repeatable: false,
+      limit: 1,
       effects: [{ type: "tier", id: "food_survival", perHead: 1.02 }],
       sector: "households",
     },
@@ -274,7 +274,6 @@ export const STAGE1: Config = {
       laborCost: 90,
       stockCost: {},
       minTicks: 12,
-      repeatable: true,
       effects: [
         {
           type: "capacity",
@@ -298,7 +297,7 @@ export const STAGE1: Config = {
       laborCost: 90,
       stockCost: {},
       minTicks: 16,
-      repeatable: false,
+      limit: 1,
       effects: [{ type: "process", id: "hunting" }],
       sector: "households",
     },
@@ -320,7 +319,7 @@ export const STAGE1: Config = {
       laborCost: 120,
       stockCost: {},
       minTicks: 40,
-      repeatable: false,
+      limit: 1,
       effects: [
         { type: "rule", id: "settled", set: true },
         { type: "process", id: "farming" },
@@ -359,7 +358,6 @@ export const STAGE1: Config = {
       laborCost: 60,
       stockCost: {},
       minTicks: 15,
-      repeatable: true,
       effects: [
         { type: "capacity", capacity: "wilderness", amount: -10 },
         {
@@ -395,7 +393,6 @@ export const STAGE1: Config = {
       laborCost: 20,
       stockCost: {},
       minTicks: 40,
-      repeatable: true,
       effects: [
         { type: "capacity", capacity: "cleared", sector: "households", amount: -10 },
         {
@@ -423,7 +420,7 @@ export const STAGE1: Config = {
       laborCost: 6,
       stockCost: {},
       minTicks: 30,
-      repeatable: false,
+      limit: 1,
       effects: [{ type: "process", id: "farming_fallow" }],
       sector: "households",
     },
@@ -431,16 +428,15 @@ export const STAGE1: Config = {
     {
       id: "land_taking",
       visibleWhen: [{ kind: "rule", id: "settled", set: true }],
-      availableWhen: [
-        { kind: "rule", id: "settled", set: true },
-        // The cap of the epoch (E13). Beyond it only an institution helps.
-        { kind: "landTakings", max: 6 },
-      ],
+      availableWhen: [{ kind: "rule", id: "settled", set: true }],
+      // The cap of the epoch (E13). Beyond it only an institution helps — and
+      // it is a limit on the project, not a missing prerequisite: nothing is
+      // lacking once it is spent, there is simply nothing left.
+      limit: 6,
       defaultRank: PROJECTS_FIRST,
       laborCost: 70,
       stockCost: {},
       minTicks: 20,
-      repeatable: true,
       effects: [
         // New territory arrives as wilderness and belongs to nobody (E13).
         // Each taking is worse than the one before it — Ricardo.

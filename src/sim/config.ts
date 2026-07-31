@@ -178,12 +178,6 @@ export type Condition =
   | { readonly kind: "ownedCapacity"; readonly capacity: CapacityId; readonly min: number }
   | { readonly kind: "coverage"; readonly tier: NeedTierId; readonly min: number }
   /**
-   * The reachable territory is capped, and only an institution lifts the cap
-   * (E13). Each taking is a fixed parcel, so a maximum count *is* a maximum
-   * territory — the hard brake next to the soft one of falling quality.
-   */
-  | { readonly kind: "landTakings"; readonly max: number }
-  /**
    * A stock actually held, measured per head so it scales with the settlement.
    * Holding a store is what makes staying possible (Testart) — and it cannot be
    * waited for: it needs the capacity to keep it and the output to spare.
@@ -254,7 +248,17 @@ export interface ProjectDef {
    */
   readonly minTicks: number;
 
-  readonly repeatable: boolean;
+  /**
+   * How often it may be run at all. Omitted means without limit.
+   *
+   * One field rather than a flag plus a hidden condition: "once" and "as often
+   * as you like" and "six times" are the same statement at different values.
+   * The cap on taking land used to be an availability condition, which said a
+   * spent allowance was a missing prerequisite — but nothing is missing, there
+   * is simply nothing left. How often something may be done, how far a running
+   * one has got, and what it takes to start are three different things (E12).
+   */
+  readonly limit?: number;
 
   readonly effects: readonly Effect[];
 
