@@ -1122,10 +1122,17 @@ eine Gruppe in einer anderen aufgehen oder sie verschwindet. Und aus einer zu kl
 Gruppe erholt sich nichts mehr, also muss der Lauf **davor** enden und nicht erst, wenn
 niemand mehr da ist.
 
-> *Noch offen:* Der Zustand meldet die Aufgabe, aber im Kern handelt niemand danach —
-> ein Lauf rechnet weiter, bis rechnerisch Bruchteile von Menschen übrig sind. Ob das
-> Beenden Sache der Hülle ist (T1) oder der Zustand es festhalten muss, ist nicht
-> entschieden.
+**Die Aufgabe steht im Zustand, und danach steht die Uhr.** Der Tick, an dem es geschah,
+wird festgehalten; von da an gibt es keinen nächsten Tick mehr — auch keinen leeren, die
+Tickzahl bleibt stehen. Was daraus wird, entscheidet die Hülle: Abschlussbildschirm,
+Verlauf, neu anfangen. Das ist Darstellung und Steuerfluss und gehört nach T1 dorthin.
+
+Zwei Gründe, warum es nicht bei einer Ableitung bleiben konnte. Es ist **Geschichte** und
+kein Vergleich (E22): „bei Tick 340 aufgegeben" bleibt wahr, `Köpfe < Mindestgröße`
+könnte aufhören, es zu sein. Und eine Regel, die sich jeder Verbraucher selbst merken
+muss, wird vergessen — gemessen an uns selbst: Bots, Kriterien und Messskripte rechneten
+allesamt über die Grenze hinaus weiter, bis rechnerisch Zehntelmenschen übrig waren. Im
+Kern festgehalten hört die Welt für alle zugleich auf, ohne dass es irgendwer wissen muss.
 
 Zugleich verhindert es, dass der Spieler auf einer winzigen Zahl festhängt, wo
 prozentuales Wachstum quälend langsam ist. **Die Schwelle muss sichtbar sein** — als

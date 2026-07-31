@@ -40,6 +40,19 @@ export interface GameState {
   /** How often territory was taken; the quality of the next parcel follows (E13). */
   readonly landTakings: number;
 
+  /**
+   * The tick at which the settlement fell below the minimum viable size and was
+   * given up (E20). Absent while it is still going.
+   *
+   * This is history, not a comparison: once it has happened it stays true, and
+   * `heads < minimum` evaluated afresh could stop being. And it has to live
+   * here rather than being derived, because from here it stops the world for
+   * everybody at once. Left to each caller to notice, it was noticed by none —
+   * bots, criteria and measuring scripts all went on computing settlements down
+   * to a tenth of a person.
+   */
+  readonly abandonedAt?: number;
+
   /** How often each project was finished — covers one-off and repeatable alike. */
   readonly completedProjects: Readonly<Record<ProjectId, number>>;
 

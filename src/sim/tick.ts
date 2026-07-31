@@ -14,6 +14,11 @@ import type { GameState } from "./state.ts";
  * generator lives in the state.
  */
 export function tick(state: GameState, index: ConfigIndex): GameState {
+  // A settlement that has been given up has no next tick — not a quiet one
+  // either. The clock stops where it stopped, and the shell reads that off the
+  // state instead of being trusted to stop calling.
+  if (state.abandonedAt !== undefined) return state;
+
   const ctx: TickContext = {
     shocks: {},
     unlocks: computeUnlocks(state, index),

@@ -66,8 +66,10 @@ export interface Derived {
 
   readonly birthRate: number;
   readonly deathRate: number;
-  /** Below the minimum viable size the settlement is given up (E20). */
+  /** The settlement was given up and the run is over (E20). */
   readonly settlementAbandoned: boolean;
+  /** The tick it happened at; absent while it is still going. */
+  readonly abandonedAt?: number;
 
   /** What stops the lowest uncovered tier — the check on E6. */
   readonly binding: AllocationResult["binding"];
@@ -202,7 +204,8 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     produced: allocation.produced,
     birthRate,
     deathRate,
-    settlementAbandoned: heads < index.config.population.minimumViableSize,
+    settlementAbandoned: state.abandonedAt !== undefined,
+    ...(state.abandonedAt === undefined ? {} : { abandonedAt: state.abandonedAt }),
     binding: allocation.binding,
     ...(allocation.bindingTier === undefined
       ? {}

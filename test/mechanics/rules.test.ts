@@ -437,9 +437,20 @@ describe("population (E20)", () => {
     expect(derive(fed, index).birthRate).toBeGreaterThan(derive(fed, index).deathRate);
   });
 
-  it("reports the settlement as given up below the minimum viable size", () => {
+  it("gives the settlement up below the minimum viable size, and stops (E20)", () => {
     const tiny = createState(STAGE1, { seed: 7, heads: 5 });
-    expect(derive(tiny, index).settlementAbandoned).toBe(true);
+    // Nothing has happened yet at creation — being given up is an event in the
+    // run, not a comparison, and it is written into the state when it occurs.
+    expect(derive(tiny, index).settlementAbandoned).toBe(false);
+
+    const over = tick(tiny, index);
+    expect(derive(over, index).settlementAbandoned).toBe(true);
+    expect(over.abandonedAt).toBe(0);
+
+    // And from there nothing moves at all — not even the clock. A caller that
+    // forgets to stop cannot compute a settlement that no longer exists.
+    expect(tick(over, index)).toEqual(over);
+    expect(tick(tick(over, index), index).tick).toBe(over.tick);
   });
 });
 

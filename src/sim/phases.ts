@@ -279,10 +279,17 @@ export class PopulationPhase implements Phase {
     }
 
     const heads = Math.max(0, sector.heads * (1 + birthRate - deathRate));
-    return {
+    const next: GameState = {
       ...state,
       sectors: { ...state.sectors, [HOUSEHOLDS]: { ...sector, heads } },
     };
+
+    // Below the minimum viable size the settlement is given up (E20), and that
+    // is written down rather than left to be noticed: from the next tick on
+    // nothing moves any more.
+    return heads < index.config.population.minimumViableSize
+      ? { ...next, abandonedAt: state.tick }
+      : next;
   }
 }
 
