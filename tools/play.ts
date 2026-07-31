@@ -31,6 +31,9 @@ import type { GameState } from "../src/sim/state.ts";
  *   {"pause":"id"} {"resume":"id"} {"abandon":"id"}
  *   {"rank":"id","to":110}      move a running project's urgency
  *
+ * `--until` runs on until there is something to decide — a project offered or
+ * finished, a need failing, the settlement given up — with `--step` as the cap.
+ *
  * Stepping prints one line per tick and the full view of where you now stand.
  * `--full` prints every tick in full, `--quiet` only the final one, and `--log`
  * adds what has been done so far.
@@ -74,6 +77,42 @@ function line(d: Derived): string {
     ` | ${d.binding.kind === "none" ? "-" : `${d.binding.kind}:${d.binding.what ?? ""}`}` +
     (building === "" ? "" : ` | ${building}`) +
     (d.settlementAbandoned ? "  *** GIVEN UP ***" : "")
+  );
+}
+
+/** What a decision could hang on, so a change in it is worth waking up for. */
+interface Standing {
+  readonly offered: string;
+  readonly building: string;
+  readonly alive: boolean;
+  readonly fed: boolean;
+}
+
+function describe(d: Derived): Standing {
+  return {
+    offered: d.projects.filter((p) => p.available).map((p) => p.id).sort().join(","),
+    building: d.projects.filter((p) => p.running).map((p) => p.id).sort().join(","),
+    alive: !d.settlementAbandoned,
+    // Only the lowest rank counts as an alarm. Comfort dips with every other
+    // bad draw; going hungry does not.
+    fed: d.tiers
+      .filter((t) => t.rank === Math.min(...d.tiers.map((o) => o.rank)))
+      .every((t) => t.coverage > 0.95),
+  };
+}
+
+/**
+ * Something has happened that a player would answer: a new project is on offer,
+ * one has finished, the settlement is starving, or it is gone. Running on past
+ * these wastes the very moments the run is being played for.
+ */
+function worthDeciding(before: Standing, d: Derived): boolean {
+  const now = describe(d);
+  return (
+    now.offered !== before.offered ||
+    now.building !== before.building ||
+    now.alive !== before.alive ||
+    (before.fed && !now.fed)
   );
 }
 
@@ -188,10 +227,18 @@ if (file !== undefined) {
 
   const steps = Number(args.get("step") ?? 0);
   const full = args.get("full") === "true";
+  // `--until` runs on until there is something to decide, so a caller wakes up
+  // for decisions rather than on a count of ticks. A fixed step is arbitrary:
+  // too coarse when a choice is due, too fine when nothing happens for twenty
+  // ticks. `--step` stays the cap, so this always comes back.
+  const untilSomething = args.get("until") === "true";
+  const before = describe(derive(state, index));
+
   for (let i = 0; i < steps; i += 1) {
     const d = derive(state, index);
     lines.push(full ? view(state, d) : line(d));
     state = tick(state, index);
+    if (untilSomething && i > 0 && worthDeciding(before, derive(state, index))) break;
   }
   // The tick you are standing on always in full: it is the only one you can act
   // at, so it is the only one where the offers and the detail matter.

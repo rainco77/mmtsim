@@ -18,12 +18,20 @@ A run lives in a file and is **continued**, never replayed. Open it once:
 node tools/play.ts --new --seed <N> --into run.json
 ```
 
-Then play, one call at a time. Each call prints only the ticks it just played:
+Then play, one call at a time. Each call prints only the ticks it just played.
+Normally you run on **until there is something to decide** — a project offered,
+a project finished, hunger failing, the settlement given up — with a cap so it
+always comes back:
 
 ```
-node tools/play.ts --in run.json --step 20
-node tools/play.ts --in run.json --do '{"start":"sickle_blades","rank":110}' --step 20
+node tools/play.ts --in run.json --until --step 200
+node tools/play.ts --in run.json --do '{"start":"sickle_blades","rank":110}' --until --step 200
 ```
+
+Use a plain `--step N` only when you want to watch a particular stretch closely.
+Do not step in fixed chunks otherwise: a fixed number is too coarse when a
+choice is due and too fine when nothing happens for twenty ticks, and each call
+costs far more than the ticks it prints.
 
 Actions:
 
