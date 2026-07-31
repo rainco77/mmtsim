@@ -61,19 +61,115 @@ const scope = {
   },
   bots,
   config: () => session.cfg,
+
+  /**
+   * The short view — what a player would have on the overview, as JSON.
+   *
+   * It saves repeating the same projection on every step; it replaces nothing.
+   * Anything else is fetched from `derive(s)` or the state itself.
+   *
+   * Every key comes from the configuration, nothing is spelled out: no stock,
+   * no capacity, no need is named here. Naming one would be the same mistake
+   * the model spent so long undoing — labour is a stock like any other and a
+   * storage pit is a capacity like any other, and in a later epoch both are
+   * gone while the view stays the same.
+   */
+  overview: (state: GameState) => {
+    const d = derive(state, session.idx);
+    const round = (x: number) => Math.round(x * 1000) / 1000;
+    const from = <T>(ids: readonly string[], of: (id: string) => T) =>
+      Object.fromEntries(ids.map((id) => [id, of(id)]));
+
+    return {
+      tick: d.tick,
+      people: round(d.heads),
+      births: round(d.birthRate),
+      deaths: round(d.deathRate),
+      abandoned: d.settlementAbandoned,
+      needs: from(
+        d.tiers.map((t) => t.tier),
+        (id) => round(d.coverage[id] ?? 0),
+      ),
+      capacities: from(
+        session.cfg.capacities.map((c) => c.id),
+        (id) => ({ held: round(d.capacityTotal[id] ?? 0), used: round(d.utilization[id] ?? 0) }),
+      ),
+      stocks: from(
+        session.cfg.stocks.map((st) => st.id),
+        (id) => round(d.stocks[id] ?? 0),
+      ),
+      running: Object.fromEntries(
+        d.runs.filter((r) => r.output > 0).map((r) => [r.process, round(r.output)]),
+      ),
+      shocks: from(Object.keys(session.cfg.shocks), (id) => round(d.shocks[id] ?? 1)),
+      short: d.binding.kind === "none" ? null : `${d.binding.kind}:${d.binding.what ?? ""}`,
+      projects: {
+        building: Object.fromEntries(
+          d.projects.filter((p) => p.running).map((p) => [p.id, round(p.progress)]),
+        ),
+        available: d.projects.filter((p) => p.available && !p.running).map((p) => p.id),
+        locked: Object.fromEntries(
+          d.projects
+            .filter((p) => p.visible && !p.available && !p.running)
+            .map((p) => [p.id, p.missing]),
+        ),
+      },
+    };
+  },
 };
 
 /**
- * Evaluates an expression — or, if that does not parse, a block of statements
- * whose last expression is the result. Loops and declarations must work, or the
- * session is not a session but a calculator.
+ * Splits off the last top-level statement, so a block can end in a value the
+ * way an expression does.
+ *
+ * A statement ends at a semicolon **or at a closing brace** — `for (…) { … } n`
+ * has no semicolon before the value. Only at the top level: the ones inside
+ * brackets, strings and template literals belong to something else.
+ */
+function lastStatement(source: string): { head: string; tail: string } {
+  let depth = 0;
+  let quote: string | undefined;
+  let cut = -1;
+  for (let i = 0; i < source.length; i += 1) {
+    const c = source[i];
+    if (quote !== undefined) {
+      if (c === "\\") i += 1;
+      else if (c === quote) quote = undefined;
+      continue;
+    }
+    if (c === '"' || c === "'" || c === "`") quote = c;
+    else if (c === "(" || c === "[" || c === "{") depth += 1;
+    else if (c === ")" || c === "]" || c === "}") {
+      depth -= 1;
+      if (c === "}" && depth === 0) cut = i;
+    } else if (c === ";" && depth === 0) cut = i;
+  }
+  return cut < 0
+    ? { head: "", tail: source }
+    : { head: source.slice(0, cut + 1), tail: source.slice(cut + 1) };
+}
+
+/** Statements that are not values, so prefixing them with `return` is wrong. */
+const NOT_A_VALUE =
+  /^\s*(return|if|for|while|do|switch|try|throw|const|let|var|function|class|\{)\b/;
+
+/**
+ * Evaluates an expression, or a block of statements whose last statement is the
+ * result — with or without `return`.
+ *
+ * Requiring `return` was a trap: a block without it answered with an empty body
+ * and no error at all, which is the worst thing a tool can say. Loops and
+ * declarations still work, or the session is a calculator and not a session.
  */
 function evaluate(source: string): unknown {
   const names = ["s", "cfg", "idx", ...Object.keys(scope)];
   const values = [session.s, session.cfg, session.idx, ...Object.values(scope)];
 
+  const { head, tail } = lastStatement(source);
+  const body = NOT_A_VALUE.test(tail) ? source : `${head}\nreturn (${tail});`;
+
   const asExpression = `let __result = (${source});\nreturn { __result, __state: s };`;
-  const asStatements = `let __result = (function () {\n${source}\n})();\nreturn { __result, __state: s };`;
+  const asStatements = `let __result = (function () {\n${body}\n})();\nreturn { __result, __state: s };`;
 
   let fn: ((...args: unknown[]) => { __result: unknown; __state: GameState }) | undefined;
   try {

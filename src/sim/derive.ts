@@ -47,7 +47,14 @@ export interface Derived {
   readonly stocks: Readonly<Record<StockId, number>>;
   readonly unownedCapacity: Readonly<Record<CapacityId, Capacity>>;
   readonly ownedCapacity: Readonly<Record<CapacityId, Capacity>>;
-  /** Occupied over available, per area type — never above 1 (E5). */
+  /**
+   * What each capacity offered this tick, whatever its source — held land as
+   * well as the people, who are a capacity derived from the heads (E4). Only
+   * the allocation sees all of them, so it reports them rather than having them
+   * derived a second time somewhere else.
+   */
+  readonly capacityTotal: Readonly<Record<CapacityId, number>>;
+  /** Occupied over available, per capacity — never above 1 (E5). */
   readonly utilization: Readonly<Record<CapacityId, number>>;
   /** Quality the next taking would bring (E13), shown before the click. */
   readonly nextTakingQuality: number;
@@ -184,6 +191,7 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     stocks: sector?.stocks ?? {},
     unownedCapacity: state.unownedCapacity,
     ownedCapacity: sector?.capacityHeld ?? {},
+    capacityTotal: allocation.capacityTotal,
     utilization,
     nextTakingQuality:
       index.config.land.baseQuality *

@@ -1,6 +1,6 @@
 ---
 name: playtest
-description: Play mmtsim tick by tick as a thinking player and report what is implausible, academically wrong, or dull. Use when asked to playtest, to try a seed, or to check how a change feels in play.
+description: Play mmtsim tick by tick in a live session and report what is implausible, academically wrong, or dull. Use when asked to playtest, to try a seed, or to check how a change feels in play.
 ---
 
 # Playtesting mmtsim
@@ -10,92 +10,79 @@ you find. You are not measuring averages — averages have repeatedly produced
 false conclusions in this project, and every one of them was only caught by
 looking at single ticks. **Never draw a conclusion from a total or a mean.**
 
-## How to play
+## The session
 
-A run lives in a file and is **continued**, never replayed. Open it once:
-
-```
-node tools/play.ts --new --seed <N> --into run.json
-```
-
-Then play, one call at a time. Each call prints only the ticks it just played.
-Normally you run on **until there is something to decide** — a project offered,
-a project finished, hunger failing, the settlement given up — with a cap so it
-always comes back:
+A Node process holds the state in memory and evaluates JavaScript you send it.
+Start it on a port of your own, so several runs can go on at once:
 
 ```
-node tools/play.ts --in run.json --until --step 200
-node tools/play.ts --in run.json --do '{"start":"sickle_blades","rank":110}' --until --step 200
+MMTSIM_SESSION_PORT=7900 node tools/session.ts &
 ```
 
-Use a plain `--step N` only when you want to watch a particular stretch closely.
-Do not step in fixed chunks otherwise: a fixed number is too coarse when a
-choice is due and too fine when nothing happens for twenty ticks, and each call
-costs far more than the ticks it prints.
-
-Actions:
+Then send expressions to `http://127.0.0.1:7900/eval` by POST. The body is
+JavaScript. `s` is the state and is written back after every call, so the run
+carries on where you left it.
 
 ```
-{"start":"id"}                start a project at its declared urgency
-{"start":"id","rank":110}     start it at a chosen urgency (lower = earlier)
-{"pause":"id"}  {"resume":"id"}  {"abandon":"id"}
-{"rank":"id","to":110}        move a running project's urgency
+s = reset(42)                                    start over on a seed
+s = tick(s)                                      one tick
+s = run(s, 20)                                   twenty ticks, nothing printed
+s = act(s, {type:"startProject", id:"x"})        an action; throws if refused
+overview(s)                                      the short view, see below
+derive(s)                                        everything — see the warning
+config()                                         the content as data
 ```
 
-Stepping prints **one line per tick** and then the full view of where you now
-stand — the only tick you can act at, so the only one whose offers matter. That
-line carries what a decision hangs on: population, the weather that just fell,
-coverage of every need, birth and death rates in per mille, idle labour, the
-store, what is short, and what is being built.
+A block of statements works and answers with its last value, with or without
+`return`. Loops and declarations work.
 
-`--full` prints every tick in full — expensive, use it only for a short stretch
-you are examining closely. `--quiet` prints the final tick only, for bridging a
-stretch you do not need to read. `--log` lists what you have done so far.
+## Look narrowly
 
-Read every tick you print before deciding the next move.
+`derive(s)` is large. Asking for it whole on every step is the one way to make
+this expensive, and the cost of a run is dominated by how much comes back.
 
-**How far to play, in what steps, and when to stop comes from the instruction
-that started you.** It is not fixed here, because it changes with whatever is
-being tested. If you were given no bound, ask for one rather than playing on
-indefinitely.
+- `overview(s)` is the standard look: population, birth and death rates, coverage
+  of every need, every capacity with how much of it is in use, every stock,
+  what is running, the weather, what is short, and the projects — offered,
+  building, locked. It is derived entirely from the configuration, so it says
+  the same kind of thing in every epoch.
+- Beyond that, **project down to what you need**: `derive(s).tiers.map(t => [t.tier, t.coverage])`,
+  not `derive(s)`.
+- Advance with `run(s, n)` and look at the end of the stretch. Look at every
+  tick — `for (…) { s = tick(s); rows.push(overview(s).people) }` — only where
+  you are watching something closely.
 
-**Keep it cheap.** Never re-open a run to get back to a point you have already
-played — the file has it. Never print a stretch twice. If you only need to know
-where a long stretch ended, use `--quiet`.
+## What to look at
 
-## What to look at, every tick
-
-1. **Is it plausible?** Do the numbers fit together, does the labour line add
-   up (processes + projects + idle = total), does the display say what is
-   actually happening?
+1. **Is it plausible?** Do the numbers fit together, does the labour add up,
+   does what you are shown match what is happening?
 2. **Is it academically defensible?** Not only "no error in the model", but:
    does this develop the way the development of human societies is described in
    the literature? A foraging band sits *at* the carrying capacity of its range.
    Storage comes before settling. Intensification is forced by scarcity, not
    chosen. Population presses on a fixed factor.
-3. **Does it hold up as a game?** At *this* tick, does the player have anything
+3. **Does it hold up as a game?** At *this* point, does the player have anything
    to decide, and does an earlier decision show a visible consequence? Over the
    arc: too many levers overwhelm, too few bore; a reward that comes too early
    deflates, one that comes too late frustrates. Long stretches with nothing on
    offer and nothing changing are a defect, not a lull.
 
-## Write findings down as you go
+## How far to play
 
-Keep a `findings.md` next to the run file and append to it the moment you find
-something, rather than collecting everything until the end. It costs nothing and
-it means the work survives if you are stopped, run out of time, or fail — and
-whoever started you can look in while you are still playing.
+**From the instruction that started you** — not from this file, because it
+changes with whatever is being tested. Stop as soon as you have something worth
+reporting; a finding after ten ticks is worth more than three hundred ticks of
+confirmation. If you were given no bound and no goal, ask for one.
 
-## What to report
+## Findings
 
-A short written report, in English, repeating what is in `findings.md`:
+Keep a `findings.md` and append to it the moment you find something, rather than
+collecting until the end. It costs nothing, it survives being stopped, and
+whoever started you can read it while you are still playing.
 
-- **The course of the run** in a handful of lines: what you did and when, what
-  happened, where it turned.
-- **Findings**, each one anchored to the tick that produced it. "At tick 124 the
-  worst weather of the run leaves hunger fully covered" is checkable; "the
-  variance feels weak" is not. Say which of the three questions it fails.
-- **What you could not decide** — anything where you had no basis for choosing,
-  or where the interface did not tell you what you needed.
+Anchor every finding to the tick that produced it and say which of the three
+questions it fails. "At tick 124 the worst weather of the run leaves hunger
+fully covered" is checkable; "the variance feels weak" is not.
 
-Do not change any file. Do not run the criteria tool. Report only.
+Report in English. Change no file except your own notes. Do not run the criteria
+tool — it is the opposite of this exercise.
