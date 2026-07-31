@@ -1808,6 +1808,53 @@ sagen, *wieviel* gearbeitet werden konnte und *wie ergiebig* das war.
 so wie ein anderes aus Holz Wohnraum macht. Das ist die Form, die trägt, sobald eine
 zweite Quelle dazukommt — Kohle, Gas —, und sie kostet nichts, solange es nur eine gibt.
 
+**Woraus die Bedarfe gedeckt werden** — Schritt 2 aus E31:
+
+| Gut | Verfahren | Quelle |
+|---|---|---|
+| **Nahrung** | Sammeln, Jagd, Fischfang | Wildnis, **Wasser** |
+| **Holz** | Holzschlag | Wildnis |
+| **Wärme** | Feuerstelle | Holz |
+| **Felle** | Jagd auf Felle | Wildnis |
+| **Faser** | Bastgewinnung | Wildnis |
+| **Kleidung** | Gerben, Flechten | Felle *oder* Faser |
+
+Drei Kapazitäten: Köpfe, Wildnis, **Wasser**. Speicher entsteht aus den Gruben,
+Ackerland erst mit der Sesshaftigkeit.
+
+**Wasser ist die zweite Achse, und strukturell das Wichtigste an der Epoche.** Sonst
+konkurriert alles um dieselbe Wildnis — Nahrung, Holz, Felle, Faser —, die Gruppe sitzt
+an der Tragfähigkeitsgrenze, und jede Verbesserung verschiebt nur, wer die Fläche
+bekommt. Wasser nimmt der Wildnis nichts weg.
+
+Fachlich ist es die Hauptsache und nicht Beiwerk: Das europäische Mesolithikum ist
+wesentlich eine Anpassung an Küste und Fluss — Ertebølle, die Køkkenmøddinger, die
+Fischwehre von Friesack —, und die frühe Sesshaftigkeit sitzt fast überall dort, wo
+Wasser verlässlich Nahrung gab. Sesshaft wurde man am Fisch, bevor man am Korn sesshaft
+wurde.
+
+**Das Wasser liegt von Anfang an im Revier, und ein Verfahren darauf ist von Anfang an
+möglich** — Muscheln am Ufer sammeln braucht keine Technik, und Menschen tun es seit
+jeher. Nur ist der Ertrag mager. Der Reiz liegt deshalb nicht im Aufschließen, sondern
+im Lohnenderwerden, und das ist die ehrlichere Lehre: **Technik schafft eine Ressource
+nicht, sie erschließt sie.**
+
+**Zwei Wege zur Kleidung, und das ist die erste echte Alternative der Epoche** im Sinne
+von E31 — sie ändert das Risikoprofil, nicht den Ausgang. Felle brauchen **viel Fläche
+und wenig Arbeit**, Faser **wenig Fläche und viel Arbeit**. Ist das Land knapp, gewinnt
+die Faser; sind die Hände knapp, gewinnen die Felle. Beide Zahlen stehen dem Spieler vor
+Augen, also ist die Wahl beurteilbar. Und sie sagt etwas Wahres: Als das Land eng wurde,
+ging man von tierischen auf pflanzliche Rohstoffe über.
+
+> Zwei Verfahren auf derselben Kapazität **konkurrieren** — eine Kapazität wird zwar
+> nicht verbraucht, aber je Tick **belegt** (E4). Daran hängt der ganze Malthus-Druck
+> der Epoche.
+
+**Verfahren heißen nach Tätigkeiten**, durchgehend: Sammeln, Jagen, Fischen, Holzschlag,
+Gerben, Flechten — und auch die Arbeit selbst ist eine Tätigkeit. Der Bestand heißt nach
+der Sache, das Verfahren nach dem Tun; heute ist das noch gemischt (`forestry`, `labor`
+neben `gathering`, `hunting`).
+
 **Beim Durchspielen verworfen: die erste Fassung dieser Projekte.** Sie waren
 *Bessere Werkzeuge* → *Feuer nutzen* → *Jagdwaffen*, jedes das nächste freischaltend,
 und Sesshaftigkeit ab einer Bevölkerungszahl. Gemessen ergab das:
@@ -2351,7 +2398,8 @@ besprochen und vertagt, nicht vergessen:
 
 | | Punkt | |
 |---|---|---|
-| 1 | **Technologiebaum der ersten Epoche**, Schritte 2 bis 4 aus E31 | Schritt 1 steht in E29 |
+| 1 | **Technologiebaum der ersten Epoche**, Schritte 3 und 4 aus E31 — die Stufen je Bedarf, und was worauf aufbaut | Schritte 1 und 2 stehen in E29 |
+| 1a | Verfahren auf Tätigkeitsnamen vereinheitlichen, Wasser als Kapazität, Wärme und Kleidung als eigene Güter | folgt aus Schritt 2 |
 | 2 | **Einmal austarieren**, danach | |
 | 3 | Speicher bleibt an der Tragfähigkeitsgrenze leer, Gruben verfallen ungenutzt | nach dem Baum |
 | 4 | Verfallsraten fein justieren (Gruben, Wohnraum) | nach dem Baum |
