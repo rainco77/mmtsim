@@ -150,6 +150,26 @@ Zu Spielbeginn gibt es **null Vorleistungen**: Nahrung braucht Land und Arbeit,
 fertig. Die Lieferkettenmaschinerie schaltet sich erst mit der ersten Maschine ein —
 und bringt dann sofort ihre eigene Verwundbarkeit mit.
 
+**Arbeit ist eine Vorleistung wie jede andere, Köpfe sind eine Kapazität wie jede
+andere.** Arbeit ist ein Bestand mit `decayPerTick: 1` — hergestellt vom Verfahren
+`labor` aus der Kapazität `people`, deren Qualität Arbeitsfähigkeit × Produktivität
+ist, und bis zum nächsten Tick vollständig verfallen. Ein Verfahren deklariert seinen
+Arbeitsbedarf als `intermediatesPerOutput: { labor: … }`, nicht anders als seinen
+Holzbedarf.
+
+Damit hat **kein Input mehr einen Sonderweg**. Vorher hatte Arbeit ein eigenes Feld im
+Vorrat, eigene Zweige in jeder Abfrage, eine eigene Wertrechnung über die Kette und —
+das war der Schaden — ein eigenes Entscheidungskriterium. Die Nichtlagerbarkeit
+zeichnet sie nicht aus: Sie ist eine Eigenschaft, die über den Verfall gesteuert wird,
+und Pflege oder Betreuung bekommen später schlicht denselben Wert.
+
+Auch die Köpfe stehen richtig: Ein Mensch wird durch Arbeit nicht aufgebraucht, er ist
+für einen Tick belegt und danach wieder frei — genau die Definition von Kapazität
+oben. **Auslastung** gilt damit auch für ihn, und was eine Kapazität hergibt, meldet
+die Zuteilung, statt es andernorts ein zweites Mal abzuleiten: Beim Bauen las die
+Auslastung der Köpfe null, während sie zu 87 % arbeiteten, weil die zweite Ableitung
+sie im Zustand suchte — wo sie nicht steht, weil sie aus den Köpfen folgt.
+
 ### E5 — Verfahren mit Rückfallebene
 
 Jede Branche hat mehrere **Verfahren**, jedes mit eigenen Inputs und eigener
@@ -824,6 +844,19 @@ Damit ist der Fortschritt eine einzige Prozentzahl, alle Ressourcen laufen im
 Gleichschritt, und ein blockiertes Projekt frisst nichts. Ein Projekt kann **länger**
 dauern als seine Mindestdauer, nie kürzer.
 
+**„Projekte werden zuerst finanziert" ist ein Rang, keine Phase.** Ein Projekt ist ein
+Verbraucher von Arbeit und Beständen wie jeder andere; es steht nur über jedem
+Bedarfsrang aus E9 (der festen Rangfolge der Bedürfnisse). Also geht es als Nachfrage
+in dieselbe Planung wie die Bedürfnisse, mit einem Rang oberhalb von allen — nicht in
+eine eigene Phase davor.
+
+Das war vorher anders und war ein Sonderweg, der nur deshalb nicht auffiel, weil
+Arbeit selbst einer war: Eine eigene Projektphase zog die Arbeit oben ab, und der Plan
+sah diesen Anspruch nie. Als Rang gewinnt man zweierlei: Der Spieler kann der
+Bedarfsdeckung weiterhin Arbeit entziehen (E10 — Arbeit fließt in Bedarf oder in
+Projekte), und ein Projekt, das Holz kostet, funktioniert von selbst richtig, weil der
+Plan die Holzbeschaffung mitplant. Vorher hätte man das eigens bauen müssen.
+
 Die Mindestdauer ist unmittelbar die **Trägheit aus E3**: Sie verhindert, dass ein
 Vorhaben durch Aufwerfen aller Hände in einem Tick durchgedrückt wird. Neun Frauen
 bekommen kein Kind in einem Monat.
@@ -1139,6 +1172,48 @@ verbaut wird — also war Wohnraum bei jedem Anteil unmöglich, und es wurde nie
 gebaut. Ein Bestand wird nicht nur entnommen, er wird auch hergestellt: Ein Input, den
 der Plan selbst erzeugt, zählt **netto** (E4). Beim Ausführen folgt daraus die
 Reihenfolge — wer herstellt, läuft vor dem, der verbraucht.
+
+**Schritt 4 stand da und war nicht gebaut.** „Eine Verlagerung erzeugt Bedarf auf einem
+anderen Input → dieser wird in derselben Runde erneut geprüft" — ich hatte den *Input*
+erneut geprüft, aber den **abgeleiteten Bedarf** nur einmal zu Beginn gerechnet.
+
+Die Folge war messbar und groß: Verlagert der Plan Nahrung von der Jagd auf den
+Ackerbau, kostet das mehr Arbeit je Einheit. Diese Mehrarbeit galt dann als Fehlbetrag
+statt als einzuplanende Arbeit, und weil eine Nachfrage nicht zur Jagd zurückkehren
+darf, fand die Verlagerung keinen Ausweg und der ganze Rang fiel. Gemessen bei Tick
+300: Wildnis zu 100 % genutzt, **490 ha Ackerland zu 0,003 %**, 173 von 355
+Arbeitseinheiten frei, Sättigung 0.
+
+Richtig ist **eine** Schleife: den eigenen Bedarf decken, einen Input suchen, der nicht
+passt, Nachfrage von ihm wegschieben — und von vorn, weil das Schieben anderswo Bedarf
+erzeugt hat.
+
+**Abgeleiteter Bedarf gehört in den Planer, gegen die Niveaus selbst.** Außerhalb
+geschätzt verfehlt er sie um einen Rundungsfehler, und ein Rundungsfehler liest sich
+als Fehlbetrag — E26 (Tests prüfen Mechanik, keine Toleranzen) verbietet, ihn
+wegzuglätten. Gemessen: 0,07 Arbeitseinheiten Abweichung schnitten den Plan auf null
+zusammen, und *alle* Siedlungen starben.
+
+**Eine Endnachfrage zählt im Nettoverbrauch mit.** Der Nettoverbrauch eines Bestands
+ist Verbrauch durch Verfahren **plus Endnachfrage** minus Herstellung. Fehlt der
+mittlere Teil, wird die für einen Anspruch geplante Produktion ein zweites Mal
+vergeben. Das war der Grund, warum Projekte nie Arbeit bekamen: Die für sie geplante
+Arbeit deckte den Bedarf des Sammelns, und `better_tools` stand nach 900 Ticks bei
+Fortschritt 0.
+
+**Hersteller vor Verbrauchern braucht eine echte topologische Sortierung.** Ein
+paarweiser Vergleich reicht bei zwei Stufen und ordnet bei drei — Arbeit → Holz →
+Haus — falsch.
+
+**Die Welt steht still, während ein Plan gemacht wird.** Welche Inputs es gibt, wer was
+herstellen kann, wieviel ein Verfahren je Einheit braucht, wieviel von einem Input da
+ist: Das folgt aus den freigeschalteten Verfahren, der Flächenqualität und den Schocks
+dieses Ticks, und keines davon ändert sich beim Planen. Es einmal statt zehntausendfach
+je Tick zu rechnen ist deshalb keine Näherung, sondern dieselbe Zahl — belegt durch ein
+bitgleiches Ergebnis über alle Kriterien. Gemessen 3,70 → 0,73 ms je Tick, Faktor 5,1.
+Wichtiger als der Faktor ist die Wachstumsordnung: Die quadratische Stelle (Filtern der
+Reihenfolge mit verschachtelter Suche) und die multiplikative (Koeffizient je Frage neu)
+sind draußen, es bleibt eine Schleife über die laufenden Verfahren.
 
 **Der gemessene Defekt ist behoben.** Derselbe Lauf nach 900 Ticks: Ackerland **11 % →
 100 %** genutzt, Wohnraum **0,00 → 0,84**, Bevölkerung **213 → 1707**. Alle acht

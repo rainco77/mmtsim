@@ -99,8 +99,11 @@ export class ProjectPhase implements Phase {
     const sector = state.sectors[HOUSEHOLDS];
     ctx.laborAvailable = laborPerformance(sector);
 
-    let laborLeft = ctx.laborAvailable;
+    // Labour is a stock now, so a project spends it like it spends wood. The
+    // plan has already produced for it — projects hold the top rank — so this
+    // phase only books what was set aside.
     const stocks: Record<StockId, number> = { ...(sector?.stocks ?? {}) };
+    let laborLeft = stocks["labor"] ?? 0;
 
     const ordered = [...state.activeProjects].sort((a, b) => a.order - b.order);
     const remaining: ActiveProject[] = [];
@@ -128,6 +131,7 @@ export class ProjectPhase implements Phase {
       }
 
       laborLeft -= laborNeeded;
+      stocks["labor"] = laborLeft;
       for (const [id, total] of Object.entries(def.stockCost)) {
         stocks[id] = (stocks[id] ?? 0) - total * step;
       }
@@ -144,7 +148,7 @@ export class ProjectPhase implements Phase {
       }
     }
 
-    ctx.laborToProjects = ctx.laborAvailable - laborLeft;
+    ctx.laborToProjects = (sector?.stocks["labor"] ?? 0) - laborLeft;
 
     const current = next.sectors[HOUSEHOLDS];
     return {
@@ -190,7 +194,7 @@ export class ProductionPhase implements Phase {
       index,
       sectorId: HOUSEHOLDS,
       shocks: ctx.shocks,
-      laborToProjects: ctx.laborToProjects,
+      laborToProjects: 0,
       unlockedBranches: ctx.unlocks.branches,
       unlockedProcesses: ctx.unlocks.processes,
       manualAllowed: ctx.unlocks.rules.has(MANUAL_PROCESS_CHOICE),
@@ -300,8 +304,9 @@ export class CarryPhase implements Phase {
 export const PIPELINE: readonly Phase[] = [
   new ShockPhase(),
   new DecayPhase(),
-  new ProjectPhase(),
+
   new ProductionPhase(),
+  new ProjectPhase(),
   new PopulationPhase(),
   new CarryPhase(),
   // new MoneyPhase(),  ← later, one line, nothing above is touched

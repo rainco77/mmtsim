@@ -5,7 +5,24 @@ import {
   type OrderingContext,
   type OrderingReason,
 } from "./ordering.ts";
-import { makePlan, type Demand, type Plan, type PlanContext } from "./plan.ts";
+/**
+ * Labour is an ordinary stock: made every tick out of the capacity "people",
+ * gone by the next one. This name is the one place the engine still says the
+ * word — the ordering below asks for the content of *this* stock, and that is
+ * exactly the choice still to be settled.
+ */
+const LABOR_STOCK: StockId = "labor";
+
+/** Above every need: projects are financed before the ranking starts (E18). */
+const PROJECT_RANK = -1;
+
+import {
+  makePlan,
+  stockInput,
+  type Demand,
+  type Plan,
+  type PlanContext,
+} from "./plan.ts";
 import { shockFactor, type Shocks } from "./risk.ts";
 import { areaOf, type GameState } from "./state.ts";
 
@@ -62,6 +79,13 @@ export interface AllocationResult {
 
   /** Occupied area per type; utilisation follows from it (E4). */
   readonly areaUsed: Readonly<Record<AreaTypeId, number>>;
+  /**
+   * What each capacity offered this tick. Reported rather than recomputed
+   * elsewhere: a capacity need not be land held in the state — the people are
+   * one, and they are derived from the heads. Deriving it a second time made
+   * the utilisation of the people read zero while they were fully at work.
+   */
+  readonly areaTotal: Readonly<Record<AreaTypeId, number>>;
 
   /** The lowest tier that is not fully covered, and what stopped it (E6). */
   readonly binding: Binding;
@@ -75,7 +99,6 @@ export interface AllocationResult {
 type NeedTierId = string;
 
 interface Pools {
-  labor: number;
   area: Record<AreaTypeId, { available: number; quality: number }>;
   stock: Record<StockId, number>;
 }
@@ -89,6 +112,14 @@ function poolAreas(
   const sector = state.sectors[sectorId];
   const pools: Record<AreaTypeId, { available: number; quality: number }> = {};
   for (const type of config.areaTypes) {
+    if (type.fromPopulation === true) {
+      // People are a capacity, and their quality is what one of them can do.
+      pools[type.id] = {
+        available: sector?.heads ?? 0,
+        quality: (sector?.workAbility ?? 0) * (sector?.productivity ?? 0),
+      };
+      continue;
+    }
     const owned = sector ? areaOf(sector.areas, type.id) : { area: 0, quality: 1 };
     const unowned = areaOf(state.unownedAreas, type.id);
     const total = owned.area + unowned.area;
@@ -99,14 +130,6 @@ function poolAreas(
     pools[type.id] = { available: total, quality };
   }
   return pools;
-}
-
-function effectiveOutputPerLabor(
-  process: ProcessDef,
-  _quality: number,
-  shocks: Shocks,
-): number {
-  return process.outputPerLabor * shockFactor(process, shocks);
 }
 
 /**
@@ -125,11 +148,6 @@ function effectiveAreaPerOutput(
   return factor > 0 ? base / factor : Infinity;
 }
 
-/** The quality of the land this process works on. */
-function qualityFor(process: ProcessDef, pools: Pools): number {
-  const first = Object.keys(process.areaPerOutput)[0];
-  return first === undefined ? 1 : (pools.area[first]?.quality ?? 1);
-}
 
 
 
@@ -148,10 +166,11 @@ function consume(
         ? (pools.area[areaEntries[0][0]]?.quality ?? 1)
         : 1
       : 1;
-  const perLabor = effectiveOutputPerLabor(process, quality, shocks);
-  const labor = perLabor > 0 ? output / perLabor : 0;
+  // The shock reaches the labour only — see the note where `shockFor` is set.
+  const shock = shockFactor(process, shocks);
+  const laborScale = shock > 0 ? 1 / shock : 0;
+  let labor = 0;
 
-  pools.labor -= labor;
   for (const [areaType] of areaEntries) {
     const pool = pools.area[areaType];
     if (pool === undefined) continue;
@@ -160,9 +179,10 @@ function consume(
     areaUsed[areaType] = (areaUsed[areaType] ?? 0) + used;
   }
   for (const [stockId, perOutput] of Object.entries(process.intermediatesPerOutput)) {
-    const used = output * perOutput;
+    const used = output * perOutput * (stockId === LABOR_STOCK ? laborScale : 1);
     pools.stock[stockId] = (pools.stock[stockId] ?? 0) - used;
     consumed[stockId] = (consumed[stockId] ?? 0) + used;
+    if (stockId === LABOR_STOCK) labor += used;
   }
   return labor;
 }
@@ -189,10 +209,8 @@ export function allocate(input: AllocationInput): AllocationResult {
 
   const heads = sector?.heads ?? 0;
   const laborAvailable = heads * (sector?.workAbility ?? 0) * (sector?.productivity ?? 0);
-  const laborForProduction = Math.max(0, laborAvailable - laborToProjects);
 
   const pools: Pools = {
-    labor: laborForProduction,
     area: poolAreas(state, sectorId, config),
     stock: { ...(sector?.stocks ?? {}) },
   };
@@ -217,7 +235,7 @@ export function allocate(input: AllocationInput): AllocationResult {
       available: forBranch,
       buffer,
       manual: state.manualOrder[branch.id],
-      yieldPerLabor: (process) => yieldPerLabor(process, index, pools, shocks, input),
+      yieldPerLabor: (process: ProcessDef) => yieldPerLabor(process, index, pools, shocks, input),
     };
     const resolved = ORDERING_RESOLVER.resolve(branch, orderCtx, input.manualAllowed);
     ordering.set(branch.id, resolved.processes);
@@ -226,11 +244,42 @@ export function allocate(input: AllocationInput): AllocationResult {
     if (first !== undefined) leadProcess.set(branch.id, first.id);
   }
 
+  // Projects claim first (E18: the player may starve the needs to build). That
+  // is a **rank**, not a phase of its own: a project is a consumer of labour
+  // and stocks like any other, it just stands above every need.
+  const demands: Demand[] = [];
+  for (const active of state.activeProjects) {
+    if (active.paused) continue;
+    const def = index.project.get(active.id);
+    if (def === undefined) continue;
+    const step = 1 / def.minTicks;
+    const costs: Record<StockId, number> = {
+      [LABOR_STOCK]: def.laborCost * step,
+      ...Object.fromEntries(
+        Object.entries(def.stockCost).map(([id, total]) => [id, total * step]),
+      ),
+    };
+    for (const [stockId, amount] of Object.entries(costs)) {
+      if (amount <= 0) continue;
+      demands.push({
+        tier: {
+          id: `project:${def.id}:${stockId}`,
+          rank: PROJECT_RANK,
+          stock: stockId,
+          branch: index.config.branches.find((b) => b.produces === stockId)?.id ?? "",
+          perHead: 0,
+          consumedOnUse: 1,
+        },
+        stock: stockId,
+        amount,
+      });
+    }
+  }
+
   // Ranks eat from the store first, lowest rank first (E9). What is left over
   // is the demand the plan has to cover.
   const consumed: Record<StockId, number> = {};
   const fromStock = new Map<string, number>();
-  const demands: Demand[] = [];
   const tierList = index.tiersByRank.filter((tier) => input.unlockedBranches.has(tier.branch));
 
   for (const tier of tierList) {
@@ -247,7 +296,6 @@ export function allocate(input: AllocationInput): AllocationResult {
   const planCtx: PlanContext = {
     index,
     supplies: {
-      labor: pools.labor,
       areas: Object.fromEntries(
         Object.entries(pools.area).map(([id, pool]) => [
           id,
@@ -257,16 +305,27 @@ export function allocate(input: AllocationInput): AllocationResult {
       stocks: { ...pools.stock },
     },
     available: availableProcesses,
-    yieldPerLabor: (process) => yieldPerLabor(process, index, pools, shocks, input),
+    // Where a shock lands (E24/E25 — risk as named random streams): today only
+    // on the labour a process needs, exactly as before labour became an
+    // ordinary stock. That a shock reaches one input and not another is a
+    // property of the exposure, and the exposure is declared per process, not
+    // per input — so this is the single place that decides, and the only place
+    // to change once that is settled.
+    shockFor: (process: ProcessDef, input: string) =>
+      input === stockInput(LABOR_STOCK) ? shockFactor(process, shocks) : 1,
     order: (stock, processes) => {
       const branch = config.branches.find((b) => b.produces === stock);
       const wanted = branch === undefined ? undefined : ordering.get(branch.id);
       if (wanted === undefined) return processes;
-      return wanted.filter((process) => processes.some((p) => p.id === process.id));
+      // A set, not a nested scan: this used to be quadratic in the number of
+      // processes, which is the one thing that must not be when many of them
+      // arrive.
+      const allowed = new Set(processes.map((p) => p.id));
+      return wanted.filter((process) => allowed.has(process.id));
     },
   };
 
-  const plan = makePlan(expandDemands(demands, planCtx), planCtx);
+  const plan = makePlan(demands, planCtx);
 
   // Carry the plan out: consume inputs, book output.
   const produced: Record<StockId, number> = {};
@@ -275,18 +334,11 @@ export function allocate(input: AllocationInput): AllocationResult {
   let totalOutput = 0;
 
   // Producers before consumers: a house cannot be built from wood that is only
-  // cut later in the loop. `consume` draws intermediates from the pool, so what
-  // is made has to be in it first (E4).
-  const inDependencyOrder = [...plan.levels.keys()].sort((a, b) => {
-    const pa = index.process.get(a);
-    const pb = index.process.get(b);
-    if (pa === undefined || pb === undefined) return 0;
-    const outA = index.branch.get(pa.branch)?.produces;
-    const outB = index.branch.get(pb.branch)?.produces;
-    const aFeedsB = outA !== undefined && (pb.intermediatesPerOutput[outA] ?? 0) > 0;
-    const bFeedsA = outB !== undefined && (pa.intermediatesPerOutput[outB] ?? 0) > 0;
-    return aFeedsB ? -1 : bFeedsA ? 1 : 0;
-  });
+  // cut later in the loop, and nothing can be made from labour before the
+  // people have worked. A pairwise comparison is not enough — with three
+  // levels (labour, wood, house) it can order them wrongly — so this is a real
+  // topological sort over "produces what another needs".
+  const inDependencyOrder = topological([...plan.levels.keys()], index);
 
   for (const id of inDependencyOrder) {
     const level = plan.levels.get(id) ?? 0;
@@ -345,13 +397,19 @@ export function allocate(input: AllocationInput): AllocationResult {
   return {
     laborAvailable,
     laborToProjects,
-    laborToProduction: laborForProduction - pools.labor,
-    laborUnused: Math.max(0, pools.labor),
+    laborToProduction: consumed[LABOR_STOCK] ?? 0,
+    laborUnused: Math.max(0, laborAvailable - (consumed[LABOR_STOCK] ?? 0)),
     tiers,
     produced,
     consumed,
     runs: withShares,
     areaUsed,
+    areaTotal: Object.fromEntries(
+      Object.entries(poolAreas(state, sectorId, config)).map(([id, pool]) => [
+        id,
+        pool.available,
+      ]),
+    ),
     binding: overallBinding,
     ...(bindingTier === undefined ? {} : { bindingTier }),
     leadProcess: Object.fromEntries(leadProcess),
@@ -367,7 +425,8 @@ function yieldPerLabor(
   shocks: Shocks,
   input: AllocationInput,
 ): number {
-  const content = laborContentOf(
+  const content = contentOf(
+    LABOR_STOCK,
     process,
     index,
     pools,
@@ -380,30 +439,42 @@ function yieldPerLabor(
 }
 
 /**
- * Derived demand (E4): a house needs wood, so planning for houses means
- * planning for the wood as well. Without this a stock nobody needs directly
- * would never be made.
+ * Orders processes so that everything a process needs has been made before it
+ * runs. A pairwise comparison is not enough: with three levels — labour, wood,
+ * house — it can order them wrongly.
  */
-function expandDemands(demands: readonly Demand[], ctx: PlanContext): readonly Demand[] {
-  const all = [...demands];
-  for (let i = 0; i < all.length && i < 200; i += 1) {
-    const demand = all[i];
-    if (demand === undefined) continue;
-    const branch = ctx.index.config.branches.find((b) => b.produces === demand.stock);
-    if (branch === undefined) continue;
-    const process = ctx.order(
-      demand.stock,
-      ctx.available.filter((p) => p.branch === branch.id),
-    )[0];
-    if (process === undefined) continue;
-    for (const [needed, per] of Object.entries(process.intermediatesPerOutput)) {
-      if (per <= 0) continue;
-      const have = ctx.supplies.stocks[needed] ?? 0;
-      const wanted = demand.amount * per - have;
-      if (wanted > 1e-9) all.push({ tier: demand.tier, stock: needed, amount: wanted });
+function topological(ids: readonly ProcessId[], index: ConfigIndex): readonly ProcessId[] {
+  const needs = new Map<ProcessId, Set<ProcessId>>();
+  for (const id of ids) {
+    const process = index.process.get(id);
+    const set = new Set<ProcessId>();
+    if (process !== undefined) {
+      for (const [stockId, per] of Object.entries(process.intermediatesPerOutput)) {
+        if (per <= 0) continue;
+        for (const other of ids) {
+          const maker = index.process.get(other);
+          if (maker === undefined || other === id) continue;
+          if (index.branch.get(maker.branch)?.produces === stockId) set.add(other);
+        }
+      }
+    }
+    needs.set(id, set);
+  }
+
+  const done = new Set<ProcessId>();
+  const order: ProcessId[] = [];
+  while (order.length < ids.length) {
+    const ready = ids.filter(
+      (id) => !done.has(id) && [...(needs.get(id) ?? [])].every((n) => done.has(n)),
+    );
+    // Nothing ready means a cycle: take the rest as they come.
+    const batch = ready.length > 0 ? ready : ids.filter((id) => !done.has(id));
+    for (const id of batch) {
+      done.add(id);
+      order.push(id);
     }
   }
-  return all;
+  return order;
 }
 
 /** Which input stopped the plan — the check on E6. */
@@ -427,7 +498,8 @@ function bindingFromPlan(plan: Plan): Binding {
  * Includes everything up the chain (E4): a house costs its own labour plus the
  * labour in the wood it is built of.
  */
-function laborContentOf(
+function contentOf(
+  target: StockId,
   process: ProcessDef,
   index: ConfigIndex,
   pools: Pools,
@@ -436,13 +508,15 @@ function laborContentOf(
   unlockedProcesses: ReadonlySet<ProcessId>,
   seen: Set<StockId>,
 ): number {
-  const perLabor = effectiveOutputPerLabor(process, qualityFor(process, pools), shocks);
-  let total = perLabor > 0 ? 1 / perLabor : Infinity;
+  const shock = shockFactor(process, shocks);
+  let total = 0;
   for (const [needed, per] of Object.entries(process.intermediatesPerOutput)) {
     if (per <= 0) continue;
+    const scaled = needed === LABOR_STOCK ? per / (shock > 0 ? shock : Infinity) : per;
     total +=
-      per *
-      stockLaborContent(
+      scaled *
+      stockContent(
+        target,
         needed,
         index,
         pools,
@@ -456,7 +530,8 @@ function laborContentOf(
 }
 
 /** Labour content of a *stock*: the cheapest unlocked way to make one unit. */
-function stockLaborContent(
+function stockContent(
+  target: StockId,
   stockId: StockId,
   index: ConfigIndex,
   pools: Pools,
@@ -465,6 +540,8 @@ function stockLaborContent(
   unlockedProcesses: ReadonlySet<ProcessId>,
   seen: Set<StockId>,
 ): number {
+  // One unit of the thing we are measuring contains exactly one of itself.
+  if (stockId === target) return 1;
   if (seen.has(stockId)) return Infinity;
   const branch = index.config.branches.find((b) => b.produces === stockId);
   if (branch === undefined || !unlockedBranches.has(branch.id)) return Infinity;
@@ -475,7 +552,8 @@ function stockLaborContent(
     if (!unlockedProcesses.has(process.id)) continue;
     best = Math.min(
       best,
-      laborContentOf(
+      contentOf(
+        target,
         process,
         index,
         pools,

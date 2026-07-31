@@ -41,6 +41,13 @@ export interface StockDef {
 
 export interface AreaTypeDef {
   readonly id: AreaTypeId;
+  /**
+   * A capacity supplied by the population itself: available equals the heads,
+   * and its quality is work ability times productivity. That is how labour
+   * becomes an ordinary input — a stock made by a process out of a capacity,
+   * like wood is made out of forest.
+   */
+  readonly fromPopulation?: boolean;
 }
 
 // ---------------------------------------------------------------- branches
@@ -72,13 +79,14 @@ export interface ProcessDef {
    */
   readonly priority: number;
 
-  /** Output per unit of labour performance, on land of quality 1. */
-  readonly outputPerLabor: number;
-
   /** Area occupied per unit of output, by type. Occupied, not consumed (E4). */
   readonly areaPerOutput: Readonly<Record<AreaTypeId, number>>;
 
-  /** Stocks used up per unit of output (E4). Empty at the start. */
+  /**
+   * Stocks used up per unit of output (E4). Labour is one of them: it is a
+   * stock that decays completely each tick, so it cannot be stored, and it has
+   * no privileged place in any decision.
+   */
   readonly intermediatesPerOutput: Readonly<Record<StockId, number>>;
 
   /**

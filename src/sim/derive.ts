@@ -3,7 +3,7 @@ import { type ConfigIndex, tierEffectAt } from "./config.ts";
 import type { AreaTypeId, ProjectId, StockId } from "./ids.ts";
 import { HOUSEHOLDS, laborPerformance, MANUAL_PROCESS_CHOICE } from "./phases.ts";
 import { peek } from "./random.ts";
-import { areaOf, type Area, type GameState } from "./state.ts";
+import { type Area, type GameState } from "./state.ts";
 import {
   allHold,
   computeUnlocks,
@@ -135,8 +135,7 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
 
   const utilization: Record<AreaTypeId, number> = {};
   for (const type of index.config.areaTypes) {
-    const owned = sector ? areaOf(sector.areas, type.id) : { area: 0, quality: 1 };
-    const total = owned.area + areaOf(state.unownedAreas, type.id).area;
+    const total = allocation.areaTotal[type.id] ?? 0;
     utilization[type.id] = total > 0 ? (allocation.areaUsed[type.id] ?? 0) / total : 0;
   }
 

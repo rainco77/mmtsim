@@ -21,7 +21,6 @@ import type { AreaTypeId, ProcessId, StockId } from "./ids.ts";
 
 /** What a plan may draw on. Each entry is an absolute amount. */
 export interface Supplies {
-  readonly labor: number;
   readonly areas: Readonly<Record<AreaTypeId, { area: number; quality: number }>>;
   readonly stocks: Readonly<Record<StockId, number>>;
 }
@@ -47,7 +46,6 @@ export interface Plan {
 /** An input, named so that labour, area and stock can be handled alike. */
 type InputId = string;
 
-export const LABOR: InputId = "labor";
 export const areaInput = (id: AreaTypeId): InputId => `area:${id}`;
 export const stockInput = (id: StockId): InputId => `stock:${id}`;
 
@@ -56,49 +54,150 @@ export interface PlanContext {
   readonly supplies: Supplies;
   /** Processes that may run, already filtered by what is unlocked. */
   readonly available: readonly ProcessDef[];
-  /** Output per unit of labour for a process, chain included (E4). */
-  yieldPerLabor(process: ProcessDef): number;
+  /**
+   * How much this tick's shocks cut this process back **for this input** — 1
+   * means untouched. Which inputs a shock reaches is not the plan's business
+   * to know: it asks, the caller decides.
+   */
+  shockFor(process: ProcessDef, input: InputId): number;
   /** Ordering within one stock, best first — see E5. */
   order(stock: StockId, processes: readonly ProcessDef[]): readonly ProcessDef[];
 }
 
-/** How much of one input a process needs for one unit of its output. */
-function inputPerOutput(
+/**
+ * How much of one input a process needs for one unit of its output — looked up,
+ * not recomputed.
+ *
+ * The coefficient stands still for the whole allocation: it follows from the
+ * process, the land quality and this tick's shocks, and none of those move
+ * while a plan is being made. Computing it per question was measured at 42 % of
+ * the whole run time.
+ */
+function inputPerOutput(process: ProcessDef, input: InputId, ctx: PlanContext): number {
+  return coefRow(input, ctx).get(process.id) ?? 0;
+}
+
+/** The processes whose output *is* the stock behind this input — built once. */
+function makersOf(input: InputId, ctx: PlanContext): ReadonlySet<ProcessId> {
+  const cache = cacheOf(ctx);
+  const known = cache.makers.get(input);
+  if (known !== undefined) return known;
+
+  const made = input.startsWith("stock:") ? input.slice(6) : undefined;
+  const set = new Set<ProcessId>();
+  if (made !== undefined) {
+    for (const process of ctx.available) {
+      if (ctx.index.branch.get(process.branch)?.produces === made) set.add(process.id);
+    }
+  }
+  cache.makers.set(input, set);
+  return set;
+}
+
+/** All coefficients for one input, keyed by process — built once. */
+function coefRow(input: InputId, ctx: PlanContext): ReadonlyMap<ProcessId, number> {
+  const cache = cacheOf(ctx);
+  const known = cache.coef.get(input);
+  if (known !== undefined) return known;
+
+  const row = new Map<ProcessId, number>();
+  for (const process of ctx.available) {
+    row.set(process.id, computeInputPerOutput(process, input, ctx));
+  }
+  cache.coef.set(input, row);
+  return row;
+}
+
+function computeInputPerOutput(
   process: ProcessDef,
   input: InputId,
   ctx: PlanContext,
 ): number {
-  if (input === LABOR) {
-    const perLabor = ctx.yieldPerLabor(process);
-    return perLabor > 0 ? 1 / perLabor : Infinity;
-  }
+  const shock = ctx.shockFor(process, input);
+  if (shock <= 0) return Infinity;
+
   if (input.startsWith("area:")) {
     const type = input.slice(5);
     const base = process.areaPerOutput[type] ?? 0;
     if (base <= 0) return 0;
     const quality = ctx.supplies.areas[type]?.quality ?? 1;
     const factor = 1 - process.qualityWeight + process.qualityWeight * quality;
-    return factor > 0 ? base / factor : Infinity;
+    return factor > 0 ? base / factor / shock : Infinity;
   }
-  if (input.startsWith("stock:")) return process.intermediatesPerOutput[input.slice(6)] ?? 0;
+  if (input.startsWith("stock:")) {
+    return (process.intermediatesPerOutput[input.slice(6)] ?? 0) / shock;
+  }
   return 0;
 }
 
 function available(input: InputId, ctx: PlanContext): number {
-  if (input === LABOR) return ctx.supplies.labor;
+  const cache = cacheOf(ctx);
+  const known = cache.supply.get(input);
+  if (known !== undefined) return known;
+  const value = computeAvailable(input, ctx);
+  cache.supply.set(input, value);
+  return value;
+}
+
+function computeAvailable(input: InputId, ctx: PlanContext): number {
   if (input.startsWith("area:")) return ctx.supplies.areas[input.slice(5)]?.area ?? 0;
   if (input.startsWith("stock:")) return ctx.supplies.stocks[input.slice(6)] ?? 0;
   return 0;
 }
 
+/**
+ * Answers that cannot change while one plan is being made.
+ *
+ * Which inputs exist and who can make what follow from the unlocked processes
+ * alone, and those stand still for the whole allocation. Rebuilding them per
+ * question cost more than the planning itself: measured at 1090 set builds and
+ * 1326 filter runs per tick, for at most a handful of distinct answers.
+ */
+const CACHE = new WeakMap<
+  PlanContext,
+  {
+    inputs?: readonly InputId[];
+    producers: Map<StockId, readonly ProcessDef[]>;
+    /** Input first, then process: a sum runs over one input at a time. */
+    coef: Map<InputId, Map<ProcessId, number>>;
+    supply: Map<InputId, number>;
+    /** Who makes the stock behind an input — the credit side of the net use. */
+    makers: Map<InputId, ReadonlySet<ProcessId>>;
+  }
+>();
+
+function cacheOf(ctx: PlanContext): {
+  inputs?: readonly InputId[];
+  producers: Map<StockId, readonly ProcessDef[]>;
+  coef: Map<InputId, Map<ProcessId, number>>;
+  supply: Map<InputId, number>;
+  makers: Map<InputId, ReadonlySet<ProcessId>>;
+} {
+  let entry = CACHE.get(ctx);
+  if (entry === undefined) {
+    entry = {
+      producers: new Map(),
+      coef: new Map(),
+      supply: new Map(),
+      makers: new Map(),
+    };
+    CACHE.set(ctx, entry);
+  }
+  return entry;
+}
+
 /** Every input any available process touches, in a fixed order. */
 function inputsOf(ctx: PlanContext): readonly InputId[] {
-  const inputs = new Set<InputId>([LABOR]);
+  const cache = cacheOf(ctx);
+  if (cache.inputs !== undefined) return cache.inputs;
+
+  const inputs = new Set<InputId>();
   for (const process of ctx.available) {
     for (const type of Object.keys(process.areaPerOutput)) inputs.add(areaInput(type));
     for (const id of Object.keys(process.intermediatesPerOutput)) inputs.add(stockInput(id));
   }
-  return [...inputs].sort();
+  cache.inputs = [...inputs].sort();
+  return cache.inputs;
 }
 
 /**
@@ -116,32 +215,63 @@ function planFor(demands: readonly Demand[], ctx: PlanContext): Plan {
   // makes the pass terminate.
   const abandoned = new Map<StockId, Set<ProcessId>>();
 
+  // What the ranks claim outright, per stock — the final demand.
+  const final = new Map<StockId, number>();
+  for (const demand of demands) {
+    final.set(demand.stock, (final.get(demand.stock) ?? 0) + demand.amount);
+  }
+
   // Start: every demand on the best process for its stock.
   for (const demand of demands) {
-    const chain = ctx.order(demand.stock, producersOf(demand.stock, ctx));
+    const chain = producersOf(demand.stock, ctx);
     const first = chain[0];
     if (first === undefined) continue;
     levels.set(first.id, (levels.get(first.id) ?? 0) + demand.amount);
   }
 
-  for (const input of inputsOf(ctx)) {
-    for (let pass = 0; pass < ctx.available.length + 1; pass += 1) {
-      const used = totalUse(levels, input, ctx);
-      const cap = available(input, ctx);
-      if (used <= cap + 1e-9) break;
+  // Steps 3 and 4 of E21 in one loop: cover what the plan needs of its own
+  // making, find an input that does not fit, move demand off it — and then
+  // start over, because a move creates demand somewhere else. Moving food from
+  // hunting to farming frees wilderness and costs labour, and that labour has
+  // to be planned for before the next input is judged. Doing it once up front
+  // makes the extra labour look like a shortfall instead of like work to do.
+  const limit = (ctx.available.length + 2) * (inputsOf(ctx).length + 1);
+  for (let pass = 0; pass < limit; pass += 1) {
+    cover(levels, final, ctx);
 
-      const excess = used - cap;
-      if (!shift(excess, input, levels, abandoned, ctx)) break;
+    let tight: InputId | undefined;
+    let excess = 0;
+    for (const input of inputsOf(ctx)) {
+      const over = totalUse(levels, input, ctx, final) - available(input, ctx);
+      if (over > 1e-9) {
+        tight = input;
+        excess = over;
+        break;
+      }
     }
+    if (tight === undefined) break;
+    if (!shift(excess, tight, levels, abandoned, ctx)) break;
   }
 
-  return finish(levels, ctx);
+  return finish(levels, final, ctx);
 }
 
+/** Who can make this stock, best first — the order included, so it is asked once. */
 function producersOf(stock: StockId, ctx: PlanContext): readonly ProcessDef[] {
+  const cache = cacheOf(ctx);
+  const known = cache.producers.get(stock);
+  if (known !== undefined) return known;
+
   const branch = ctx.index.config.branches.find((b) => b.produces === stock);
-  if (branch === undefined) return [];
-  return ctx.available.filter((process) => process.branch === branch.id);
+  const found =
+    branch === undefined
+      ? []
+      : ctx.order(
+          stock,
+          ctx.available.filter((process) => process.branch === branch.id),
+        );
+  cache.producers.set(stock, found);
+  return found;
 }
 
 /**
@@ -156,16 +286,17 @@ function totalUse(
   levels: ReadonlyMap<ProcessId, number>,
   input: InputId,
   ctx: PlanContext,
+  final: ReadonlyMap<StockId, number> = new Map(),
 ): number {
-  const made = input.startsWith("stock:") ? input.slice(6) : undefined;
-  let sum = 0;
+  const row = coefRow(input, ctx);
+  const makers = makersOf(input, ctx);
+  // A claim that no process makes as an input is still a claim: a project that
+  // costs labour takes it out of the same pot as the gathering does. Leaving it
+  // out means the production planned for it gets counted twice.
+  let sum = input.startsWith("stock:") ? (final.get(input.slice(6)) ?? 0) : 0;
   for (const [id, level] of levels) {
-    const process = ctx.index.process.get(id);
-    if (process === undefined) continue;
-    sum += level * inputPerOutput(process, input, ctx);
-    if (made !== undefined && ctx.index.branch.get(process.branch)?.produces === made) {
-      sum -= level;
-    }
+    sum += level * (row.get(id) ?? 0);
+    if (makers.has(id)) sum -= level;
   }
   return sum;
 }
@@ -201,7 +332,7 @@ function shift(
     if (stock === undefined) continue;
     const gone = abandoned.get(stock) ?? new Set<ProcessId>();
 
-    for (const to of ctx.order(stock, producersOf(stock, ctx))) {
+    for (const to of producersOf(stock, ctx)) {
       if (to.id === from.id || gone.has(to.id)) continue;
       const freed = cost - inputPerOutput(to, input, ctx);
       if (freed > 1e-12) moves.push({ from, to, stock, freedPerUnit: freed });
@@ -230,8 +361,42 @@ function shift(
   return left < excess - 1e-9;
 }
 
+/**
+ * Derived demand (E4): what a process needs and cannot take from the store has
+ * to be made, and making it needs inputs in turn.
+ *
+ * This is computed **against the levels themselves**, inside the plan. An
+ * estimate made outside would miss them by a rounding error, and a rounding
+ * error reads as a shortfall — which E26 forbids papering over with a
+ * tolerance.
+ */
+function cover(
+  levels: Map<ProcessId, number>,
+  final: ReadonlyMap<StockId, number>,
+  ctx: PlanContext,
+): void {
+  for (let pass = 0; pass < ctx.available.length + 2; pass += 1) {
+    let raised = false;
+    for (const input of inputsOf(ctx)) {
+      if (!input.startsWith("stock:")) continue;
+      const stock = input.slice(6);
+      const missing = totalUse(levels, input, ctx, final) - available(input, ctx);
+      if (missing <= 1e-12) continue;
+      const maker = producersOf(stock, ctx)[0];
+      if (maker === undefined) continue;
+      levels.set(maker.id, (levels.get(maker.id) ?? 0) + missing);
+      raised = true;
+    }
+    if (!raised) break;
+  }
+}
+
 /** Cuts the plan back to what the supplies actually carry, and reports why. */
-function finish(levels: Map<ProcessId, number>, ctx: PlanContext): Plan {
+function finish(
+  levels: Map<ProcessId, number>,
+  final: ReadonlyMap<StockId, number>,
+  ctx: PlanContext,
+): Plan {
   // Report what does not fit; do **not** scale here. Cutting every process back
   // proportionally would ration the lowest rank along with the highest, and the
   // ranking exists precisely so that does not happen (E9). Dropping a rank is
@@ -240,7 +405,7 @@ function finish(levels: Map<ProcessId, number>, ctx: PlanContext): Plan {
   const scale = 1;
 
   for (const input of inputsOf(ctx)) {
-    const used = totalUse(levels, input, ctx);
+    const used = totalUse(levels, input, ctx, final);
     const cap = available(input, ctx);
     if (used > cap + 1e-9 && used > 0) shortfall.set(input, used - cap);
   }

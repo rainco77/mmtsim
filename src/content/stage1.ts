@@ -23,6 +23,8 @@ export const STAGE1: Config = {
       // the buffer against a bad year a trade-off rather than a formality (E19).
       decayWhenRule: [{ rule: "settled", decayPerTick: 0.12 }],
     },
+    // Labour: made every tick out of the people, gone by the next one.
+    { id: "labor", decayPerTick: 1 },
     { id: "wood", decayPerTick: 0.02 },
     // Buildings need upkeep: maintenance is simply rebuilding what fell apart,
     // and it keeps absorbing labour instead of being a one-off (E19).
@@ -30,10 +32,16 @@ export const STAGE1: Config = {
   ],
 
   // ------------------------------------------------------------------- areas
-  areaTypes: [{ id: "wilderness" }, { id: "cleared" }],
+  areaTypes: [
+    { id: "wilderness" },
+    { id: "cleared" },
+    // People are a capacity like land: occupied for a tick, not used up.
+    { id: "people", fromPopulation: true },
+  ],
 
   // ---------------------------------------------------------------- branches
   branches: [
+    { id: "labor", produces: "labor", unlockedFromStart: true },
     { id: "food", produces: "food", unlockedFromStart: true },
     { id: "wood", produces: "wood", unlockedFromStart: false },
     { id: "housing", produces: "housing", unlockedFromStart: false },
@@ -41,15 +49,28 @@ export const STAGE1: Config = {
 
   // --------------------------------------------------------------- processes
   processes: [
+    // Labour is produced like anything else: out of the capacity "people".
+    // Quality carries work ability and productivity, so one head yields exactly
+    // its performance.
+    {
+      id: "labor",
+      branch: "labor",
+      priority: 999,
+      areaPerOutput: { people: 1 },
+      intermediatesPerOutput: {},
+      exposure: {},
+      qualityWeight: 1,
+      unlockedFromStart: true,
+    },
+
     // The gathering chain: techniques without a capacity input, so each
     // replaces its predecessor entirely and no fallback is ever needed (E5).
     {
       id: "gathering",
       branch: "food",
       priority: 100,
-      outputPerLabor: 1.3,
       areaPerOutput: { wilderness: 3.0 },
-      intermediatesPerOutput: {},
+      intermediatesPerOutput: { labor: 0.769231 },
       exposure: { weather: 0.7 },
       qualityWeight: 0.5,
       unlockedFromStart: true,
@@ -58,9 +79,8 @@ export const STAGE1: Config = {
       id: "gathering_tools",
       branch: "food",
       priority: 110,
-      outputPerLabor: 1.6,
       areaPerOutput: { wilderness: 3.0 },
-      intermediatesPerOutput: {},
+      intermediatesPerOutput: { labor: 0.625 },
       exposure: { weather: 0.7 },
       qualityWeight: 0.5,
       unlockedFromStart: false,
@@ -69,9 +89,8 @@ export const STAGE1: Config = {
       id: "gathering_cooked",
       branch: "food",
       priority: 120,
-      outputPerLabor: 1.95,
       areaPerOutput: { wilderness: 3.0 },
-      intermediatesPerOutput: {},
+      intermediatesPerOutput: { labor: 0.512821 },
       exposure: { weather: 0.7 },
       qualityWeight: 0.5,
       unlockedFromStart: false,
@@ -80,9 +99,8 @@ export const STAGE1: Config = {
       id: "hunting",
       branch: "food",
       priority: 130,
-      outputPerLabor: 2.3,
       areaPerOutput: { wilderness: 2.6 },
-      intermediatesPerOutput: {},
+      intermediatesPerOutput: { labor: 0.434783 },
       exposure: { weather: 0.8 },
       qualityWeight: 0.5,
       unlockedFromStart: false,
@@ -95,9 +113,8 @@ export const STAGE1: Config = {
       id: "farming",
       branch: "food",
       priority: 200,
-      outputPerLabor: 1.6,
       areaPerOutput: { cleared: 0.35 },
-      intermediatesPerOutput: {},
+      intermediatesPerOutput: { labor: 0.625 },
       exposure: { weather: 0.6 },
       qualityWeight: 0.9,
       unlockedFromStart: false,
@@ -110,9 +127,8 @@ export const STAGE1: Config = {
       id: "farming_fallow",
       branch: "food",
       priority: 210,
-      outputPerLabor: 1.35,
       areaPerOutput: { cleared: 0.2 },
-      intermediatesPerOutput: {},
+      intermediatesPerOutput: { labor: 0.740741 },
       exposure: { weather: 0.5 },
       qualityWeight: 0.9,
       unlockedFromStart: false,
@@ -122,9 +138,8 @@ export const STAGE1: Config = {
       id: "forestry",
       branch: "wood",
       priority: 100,
-      outputPerLabor: 0.9,
       areaPerOutput: { wilderness: 1.2 },
-      intermediatesPerOutput: {},
+      intermediatesPerOutput: { labor: 1.111111 },
       exposure: { weather: 0.2 },
       qualityWeight: 0.4,
       unlockedFromStart: false,
@@ -133,9 +148,8 @@ export const STAGE1: Config = {
       id: "building",
       branch: "housing",
       priority: 100,
-      outputPerLabor: 0.35,
       areaPerOutput: { cleared: 0.05 },
-      intermediatesPerOutput: { wood: 1.4 },
+      intermediatesPerOutput: { labor: 2.857143, wood: 1.4 },
       exposure: { weather: 0.0 },
       qualityWeight: 0.0,
       unlockedFromStart: false,

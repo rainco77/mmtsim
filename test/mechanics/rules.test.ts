@@ -241,8 +241,14 @@ describe("processes and the fallback level (E5)", () => {
     const before = withScarcity(createState(STAGE1, { seed: 7 }));
     const after = withScarcity(finish(createState(STAGE1, { seed: 7 }), "better_tools"));
 
-    expect(derive(before, index).runs.map((r) => r.process)).toEqual(["gathering"]);
-    expect(derive(after, index).runs.map((r) => r.process)).toEqual(["gathering_tools"]);
+    // Labour is a process of its own now, so it shows up in every run list.
+    const food = (state: GameState): readonly string[] =>
+      derive(state, index)
+        .runs.map((r) => r.process)
+        .filter((id) => id !== "labor");
+
+    expect(food(before)).toEqual(["gathering"]);
+    expect(food(after)).toEqual(["gathering_tools"]);
   });
 
   it("what a higher priority cannot carry falls to the next one", () => {
@@ -266,7 +272,7 @@ describe("processes and the fallback level (E5)", () => {
       // Wilderness is what binds, so farming leads — but three hectares of
     };
 
-    const processes = derive(state, index).runs.map((r) => r.process);
+    const processes = derive(state, index).runs.map((r) => r.process).filter((p) => p !== "labor");
     expect(processes).toContain("farming");
     expect(processes).toContain("gathering_tools");
   });
@@ -274,7 +280,9 @@ describe("processes and the fallback level (E5)", () => {
   it("the declared priority applies while nothing has bound yet (E5)", () => {
     // First tick: scarcity is empty, so the content's order holds.
     const state = createState(STAGE1, { seed: 7 });
-    expect(derive(state, index).runs[0]?.process).toBe("gathering");
+    // Labour itself is a process now, so ask the food branch.
+    const food = derive(state, index).runs.filter((r) => r.process !== "labor");
+    expect(food[0]?.process).toBe("gathering");
   });
 
   it("when labour binds, the process with the better yield per labour leads", () => {
@@ -337,9 +345,8 @@ describe("processes and the fallback level (E5)", () => {
           id: "gathering_safe",
           branch: "food",
           priority: 5,
-          outputPerLabor: 0.9,
+          intermediatesPerOutput: { labor: 1.111111 },
           areaPerOutput: { wilderness: 3.0 },
-          intermediatesPerOutput: {},
           exposure: { weather: 0.05 },
           qualityWeight: 0.5,
           unlockedFromStart: true,
