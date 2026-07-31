@@ -136,16 +136,18 @@ export function allHold(
  * A condition that does not hold, with where you stand against what it takes.
  *
  * A rule alone — "storage capacity of two per head" — tells a player nothing
- * about whether he is close or losing ground. Both numbers together do, and
- * `progress` resolves the direction here rather than leaving every interface to
- * know which conditions count up and which count down.
+ * about whether he is close or losing ground. The two numbers do. More is
+ * always better in every condition there is, so a share is a division the shell
+ * can do and is not carried here.
+ *
+ * A yes-or-no condition is 0 of 1 and jumps to 1 of 1; that is not a defect of
+ * the shape but the truth about it, there is nothing in between. "Three
+ * clearings done" is 2 of 3 and has real steps. One shape carries both.
  */
 export interface Unmet {
   readonly condition: Condition;
   readonly have: number;
   readonly need: number;
-  /** Nought to one, one being met. */
-  readonly progress: number;
 }
 
 export function unmetConditions(
@@ -159,12 +161,7 @@ export function unmetConditions(
 
 /** Where you stand against one condition. */
 function standing(condition: Condition, ctx: ConditionContext): Unmet {
-  const at = (have: number, need: number): Unmet => ({
-    condition,
-    have,
-    need,
-    progress: need <= 0 ? 1 : Math.max(0, Math.min(1, have / need)),
-  });
+  const at = (have: number, need: number): Unmet => ({ condition, have, need });
 
   switch (condition.kind) {
     case "population":

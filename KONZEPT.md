@@ -612,6 +612,17 @@ Vorbedingung, aber es gibt zwei Sätze davon:
 Bedingungen sind immer Zustandsabfragen desselben Typs: *Projekt X fertig*,
 *Bevölkerung ≥ 200*, *Rang 3 gedeckt*, *Kapazität Mühle ≥ 4*.
 
+**Und eine unerfüllte Bedingung meldet, wo man steht** — nicht nur ihre Regel. „Speicher
+1,8 von 2,0" ist ein Antrieb, „Speicher ≥ 2 je Kopf" ist eine Auskunft, und „gesperrt"
+ist keines von beidem. Ohne den Stand kann der Spieler nicht erkennen, ob er näher kommt
+oder zurückfällt — beim Durchspielen grub er neunzig Ticks lang Gruben und sah nur ein
+graues Ziel mit einer Regel daneben.
+
+Zwei Zahlen genügen dafür, ein Anteil wird nicht mitgeliefert: Bei jeder Bedingung ist
+mehr besser, also ist der Anteil eine Division, die die Oberfläche selbst machen kann.
+Und eine Ja/Nein-Bedingung steht bei 0 von 1 und springt auf 1 von 1 — dazwischen gibt
+es nichts, und die Form sagt genau das.
+
 **Wie oft.** Ein Projekt trägt eine Obergrenze, wie oft es überhaupt ausgeführt werden
 darf; fehlt sie, ist es unbegrenzt. „Einmal", „sechsmal" und „beliebig oft" sind
 dieselbe Aussage bei verschiedenen Werten.
