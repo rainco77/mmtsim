@@ -201,6 +201,9 @@ interface Trace {
   readonly hideShare: number;
   readonly fibreShare: number;
   readonly waterFoodShare: number;
+  readonly headsAtStart: number;
+  readonly foodPerHeadFirst: number;
+  readonly foodPerHeadLast: number;
 }
 
 const IDLE_LIMIT = 0.15;
@@ -240,6 +243,9 @@ function play(seed: number, policy: Policy): Trace {
   let waterFood = 0;
   let allFood = 0;
   let ticks = 0;
+  let foodPerHeadFirst: number | null = null;
+  let foodPerHeadLast = 0;
+  const headsAtStart = state.sectors["households"]?.heads ?? 0;
 
   for (let i = 0; i < CAP; i += 1) {
     if ((state.completedProjects["sedentism"] ?? 0) > 0) {
@@ -269,12 +275,22 @@ function play(seed: number, policy: Policy): Trace {
     hide += (clothing.get("hide_dressing") ?? 0) + (clothing.get("tanning") ?? 0);
     fibre += clothing.get("plaiting") ?? 0;
 
+    let foodNow = 0;
     for (const run of d.runs) {
       const process = index.process.get(run.process);
       if (process === undefined) continue;
       if (index.branch.get(process.branch)?.produces !== FOOD) continue;
       allFood += run.output;
+      foodNow += run.output;
       if ((process.capacityPerOutput["water"] ?? 0) > 0) waterFood += run.output;
+    }
+    // Not from tick zero: the settlement starts with a store, so the first few
+    // ticks produce less than they can and the series would rise for a reason
+    // that has nothing to do with the standard of living. Food decays at 0.9,
+    // so by tick five the store is gone.
+    if (d.heads > 0 && state.tick >= 5) {
+      if (foodPerHeadFirst === null) foodPerHeadFirst = foodNow / d.heads;
+      foodPerHeadLast = foodNow / d.heads;
     }
 
     for (const action of policy.decide(state, d, index)) {
@@ -299,6 +315,9 @@ function play(seed: number, policy: Policy): Trace {
     hideShare: both > 0 ? hide / both : 0,
     fibreShare: both > 0 ? fibre / both : 0,
     waterFoodShare: allFood > 0 ? waterFood / allFood : 0,
+    headsAtStart,
+    foodPerHeadFirst: foodPerHeadFirst ?? 0,
+    foodPerHeadLast,
   };
 }
 
@@ -333,10 +352,28 @@ const report = {
   cap: CAP,
   // Measured with no player at all, so a failure can only be the model's.
   experiments: {
-    "no decisions, no sedentism (E29)": {
-      settledShare: round(share(passive.map((t) => t.sedentismAt !== null))),
-      seeds: failedSeeds(passive, (t) => t.sedentismAt !== null),
-      pass: share(passive.map((t) => t.sedentismAt !== null)) < 0.02,
+    // "Without decisions nobody settles" used to stand here and was worthless:
+    // the passive bot digs no pits, sedentism wants pits, done. It tested the
+    // configuration, not the economy, and could not fail. What the claim is
+    // really about is that **time alone gives nothing** — and that is a
+    // statement about the land, which can fail and does.
+    "the band starts at the carrying capacity of its range (E14)": {
+      startHeads: round(mean(passive.map((t) => t.headsAtStart))),
+      plateauHeads: round(mean(passive.map((t) => t.headsAtEnd))),
+      factor: round(
+        mean(passive.map((t) => t.headsAtEnd)) /
+          Math.max(1, mean(passive.map((t) => t.headsAtStart))),
+      ),
+      pass:
+        mean(passive.map((t) => t.headsAtEnd)) <
+        mean(passive.map((t) => t.headsAtStart)) * 1.25,
+    },
+    "waiting does not raise the standard of living": {
+      foodPerHeadFirst: round(mean(passive.map((t) => t.foodPerHeadFirst))),
+      foodPerHeadLast: round(mean(passive.map((t) => t.foodPerHeadLast))),
+      pass:
+        mean(passive.map((t) => t.foodPerHeadLast)) <=
+        mean(passive.map((t) => t.foodPerHeadFirst)),
     },
     "Boserup — the same ground yields more as density rises": {
       ...risesEverywhere((c) => c.foodPerWilderness),

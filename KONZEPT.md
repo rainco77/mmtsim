@@ -825,11 +825,35 @@ und entsteht Druck zur Intensivierung. Mit einem Revier, das ein Vielfaches des 
 hergibt, drückt jahrhundertelang nichts, und dann hat weder der Speicher noch die Rodung
 eine Aufgabe.
 
-Beides gehört deshalb zusammen austariert: Fünfzig Menschen brauchen rund 270 Fläche,
-und ein Revier von 300 lässt gerade so viel Luft, dass die Gruppe wachsen und ihre
-ersten Werkzeuge bauen kann. Gemessen: Bei 180 — richtig für eine Gruppe von dreißig —
-lag dieselbe Fünfzigergruppe dauerhaft unter der Sättigung, bekam keine Kinder, konnte
-kein Projekt mehr anfangen und stand hundertfünfzig Ticks lang still.
+Beides gehört deshalb zusammen austariert, und die Zahl folgt aus den Koeffizienten der
+Epoche — sie muss jedes Mal neu gemessen werden, wenn die sich ändern. Gemessen wird sie
+an einer Siedlung, die **nichts entscheidet**: Wo deren Bevölkerung stehen bleibt, das
+ist die Tragfähigkeit des Reviers, und sie soll nahe bei fünfzig liegen.
+
+| Revier | Plateau ohne Entscheidungen | ungenutzte Arbeit |
+|---|---|---|
+| 300 | 179 | 32 % |
+| 200 | 139 | 29 % |
+| 150 | 119 | 21 % |
+| **100** | **99** | **3 %** |
+| 80 | 91 | 1 % |
+| 60 | 83 | fünf von acht Läufen aufgegeben |
+
+**Der Leerlauf ist der eigentliche Befund.** Bei 300 lag ein Drittel aller Hände brach,
+weil das Land nie knapp wurde; bei 100 sind es drei Prozent. Die Tickzahl bis zur
+Sesshaftigkeit bewegt sich dabei fast nicht (39 bis 46) — die Fläche macht den *Druck*,
+nicht das *Tempo*. Was das Tempo macht, sind die Projektkosten und -wirkungen.
+
+Ein Restbetrag bleibt: Auch bei 60 Wildnis liegt das Plateau bei 83, denn das **Wasser
+trägt unabhängig davon** rund fünfundvierzig Köpfe. Die Tragfähigkeit hängt an beiden
+Achsen, und die zweite ist mit dem Land allein nicht zu erreichen.
+
+*Historisch war die alte Begründung übrigens richtig und nur an die falschen Zahlen
+gebunden: Bei 180 — passend für eine Gruppe von dreißig — lag eine Fünfzigergruppe unter
+der alten Kostenlage dauerhaft unter der Sättigung und stand hundertfünfzig Ticks still.
+Dieselbe Fläche ist mit den heutigen Koeffizienten zu groß. Die Regel „gerade so viel
+Luft, dass die Gruppe wachsen und ihre ersten Werkzeuge bauen kann" gilt weiter; nur die
+Zahl darunter ist eine Messung und kein Beschluss (E27).*
 
 **Drei Branchen**: Nahrung, Wohnraum, Holz. Alle teilen sich selbst zu (E10). Wohnraum
 braucht **Holz als Vorleistung**, also zieht das System von allein Arbeit in die
@@ -2554,6 +2578,7 @@ besprochen und vertagt, nicht vergessen:
 | 1 | **Austarieren.** Gemessen wird die Amortisationszeit je Projekt gegen das Zielband aus E29. Erster Befund: über die Hälfte der Arbeit liegt brach, Sesshaftigkeit bei Tick 45 statt 150–200, Ackerbauanteil 44 % — die zwölf Wirkungen sind einzeln vertretbar, ihr **Produkt** nicht | der Baum ist gebaut |
 | 1a | Vorleistungen eines Projekts **als Bedingung anzeigen**, gerechnet als Vorleistung ÷ Mindestdauer | ohne das ist der Baum nicht lesbar; noch nicht gebaut |
 | 1b | **Fischen führt die Eröffnung an** und kostet dabei das Vierfache an Händen je Einheit Nahrung. E5 erklärt es (dünner Vorrat, sicheres Verfahren führt) — ob es in dieser Höhe richtig ist, ist ungeprüft | beim Austarieren nachsehen |
+| 1e | **Agenten als Spieler**, nicht als Ersatz für die Bots: Bots messen (reproduzierbar, gleicher Seed gleiche Zahl), Agenten prüfen, was kein Bot kann — ist das Spiel **lesbar**, ist es **plausibel**, hält es **akademisch**, und **trägt die Spieldynamik**. Ein Bot bekommt die Antwort von dem, der ihn geschrieben hat. Kostenfalle des letzten Versuchs war ein Aufruf je Tick; geweckt wird stattdessen nur an Entscheidungspunkten — Projekt fertig, neues möglich, Deckung bricht | einzeln, mit benannter Frage |
 | 1d | Die Versuche auch auf **Momentaufnahmen aus echten Läufen** wiederholen — deckt Kombinationen ab, auf die beim Bauen niemand kommt. Hält der gesetzte Stand und der gespielte nicht, liegt der Unterschied im Pfad oder im Bot | erst wenn die vier gesetzten Stände einmal gelaufen sind |
 | 1c | **Zwei Verbesserer auf einem Verfahren verbinden sich nicht** (Sichel und Mörser stehen nebeneinander). Freischaltung ist eine Menge, „beides fertig" ist darin nicht ausdrückbar. Drei Wege: so lassen; Verfahren Bedingungen geben statt Freischaltung; Projekte Koeffizienten ändern lassen | betrifft heute genau ein Paar |
 | 3 | Speicher bleibt an der Tragfähigkeitsgrenze leer, Gruben verfallen ungenutzt | mit dem Austarieren |

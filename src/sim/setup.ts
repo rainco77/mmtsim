@@ -36,14 +36,16 @@ export function createState(config: Config, options: StartOptions): GameState {
     unownedCapacity: {
       wilderness: {
         // A band sits *at* the carrying capacity of its range, not far below
-        // it. Fifty people need about 270 of this to feed themselves fully, so
-        // 900 meant they used a fifth of their territory and nothing ever
-        // pressed. At carrying capacity a bad year is a matter of life and
+        // it (E14). At carrying capacity a bad year is a matter of life and
         // death, which is what makes storing worth the work and land worth
-        // taking — and it has to be scaled with the starting band, since 180
-        // (right for thirty) left fifty people permanently below satiety, with
-        // no births, no projects and no way out.
-        amount: options.wilderness ?? 300,
+        // taking.
+        //
+        // The number is a measurement and follows the coefficients: it is
+        // where a settlement that decides *nothing* stops growing. With the
+        // stage's twelve techniques, 300 left a third of every hand idle and
+        // carried 179 people — three and a half times the band. At 100 the
+        // idle share is three per cent.
+        amount: options.wilderness ?? 100,
         quality: config.land.baseQuality,
       },
       // A stretch of shore. Small on purpose: from the bank one reaches a few
