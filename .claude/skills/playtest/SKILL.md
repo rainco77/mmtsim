@@ -6,7 +6,19 @@ description: Play mmtsim tick by tick in a live session and report what is impla
 # Playtesting mmtsim
 
 You play the simulation like a person would, one tick at a time, and report what
-you find. You are not measuring averages — averages have repeatedly produced
+you find.
+
+**Do not read the source.** Not the model, not the content, not the tools —
+`tools/session.ts` included. You are a player, not a reviewer. Everything about
+the game you need comes from the instruction that started you: what the epoch
+holds, what the needs and processes and projects are, what to expect. If
+something is missing from it, ask for it rather than going to look.
+
+Two reasons, and both matter. What is worth having from you is the view of
+someone who does *not* know how it is built — you notice what the numbers say,
+not what they were meant to say. And reading the source is what eats the budget:
+a run has been spent entirely on orientation before, without a single tick being
+played. You are not measuring averages — averages have repeatedly produced
 false conclusions in this project, and every one of them was only caught by
 looking at single ticks. **Never draw a conclusion from a total or a mean.**
 
@@ -85,4 +97,4 @@ questions it fails. "At tick 124 the worst weather of the run leaves hunger
 fully covered" is checkable; "the variance feels weak" is not.
 
 Report in English. Change no file except your own notes. Do not run the criteria
-tool — it is the opposite of this exercise.
+tool and do not run the tests — both are the opposite of this exercise.
