@@ -1546,6 +1546,31 @@ Inputkoeffizienten steigen gemeinsam.
 > Es ist zugleich ein Sonderfall weniger: Vorher stand im Modell, dass Arbeit anders
 > getroffen wird als jeder andere Input.
 
+**Zufall trifft Angebot oder Nachfrage — beides.** Ein schlechter Wurf senkt den Ertrag
+eines Verfahrens *und* hebt den Bedarf, der am selben Wetter hängt: Ein kaltes Jahr
+bringt weniger Holz und verlangt zugleich mehr davon. Deshalb erklärt auch eine
+**Bedarfsstufe** ihre Empfindlichkeit je Strom, so wie ein Verfahren es tut.
+
+**Die Richtung ist dabei umgekehrt**, und das muss dastehen, damit niemand später über
+das Vorzeichen stolpert: Beim Verfahren *senkt* ein schlechter Wurf den Ertrag, beim
+Bedarf *hebt* er ihn.
+
+Das ist es, was ein schlechtes Jahr gefährlich macht: Not addiert sich nicht, sie
+verstärkt sich. Historisch ist genau das der Zusammenhang — Kältejahre brachten
+Hungersnot und Brennstoffnot zugleich, und die Arbeit fürs Holz fehlte dann bei der
+Nahrung.
+
+**Die vollständige Übersicht, wo Zufall angreifen kann**, damit nicht in zwei Runden ein
+weiterer Fall auftaucht:
+
+| Angriffspunkt | Beispiel | |
+|---|---|---|
+| Ertrag eines Verfahrens | schlechte Ernte | gebaut |
+| Bedarf je Kopf | kaltes Jahr braucht mehr Holz | gebaut |
+| Verfall eines Bestands | nasses Jahr lässt Korn verderben | zweitrangig; die Vorratsgeschichte trägt ohne |
+| Kapazität, Geburten, Tode | Hochwasser, Seuche | anderer Mechanismus, siehe unten |
+| Projekte, Bodengüte | Einsturz, Schwemmland | kein überzeugender Fall |
+
 **Was ausdrücklich nicht gebaut ist:** ein Strom, der einen einzelnen Input trifft und
 einen anderen nicht. Es fand sich kein Fall, der es verlangt — misslingt die Ernte, ist
 alles vergeudet, was in sie ging. Und **Angebotsschocks** — eine Seuche, die Köpfe
@@ -1743,6 +1768,45 @@ Verfahrenskette der Branche Nahrung über das ganze Spiel:
 Sammeln braucht **Wildnis**, kein erschlossenes Land: guter Ertrag je Arbeitsleistung,
 sehr geringer je Fläche, hohe Empfindlichkeit gegen die Jahresgüte. Nahrung hat eine
 sehr hohe Verfallsrate — **kein Vorrat möglich** (E19).
+
+**Die Bedarfe dieser Epoche.** Von der Physiologie her bestimmt, nicht von der Technik:
+Was braucht ein Mensch, damit er nicht stirbt, Kinder bekommt und arbeiten kann.
+
+| Rang | Bedarf | Gut | Art der Folge, wenn unterdeckt |
+|---|---|---|---|
+| 100 | **Hunger** | Nahrung | tötet |
+| 200 | **Wärme** | Wärme, aus Holz | tötet |
+| 300 | **Kleidung** | Kleidung, aus Fell oder Faser | kostet **Arbeitsfähigkeit** |
+| 400 | **Sättigung** | Nahrung | kostet Geburten und Produktivität |
+
+Die Ränge stehen in Hunderterschritten, weil die **Projektränge im selben Zahlenraum
+liegen** (E18) — dazwischen bleiben neunundneunzig Plätze für sie und für später
+eingeschobene Bedarfe. Wohnraum kommt mit der Sesshaftigkeit dazu; dann wird die Liste
+neu durchnummeriert.
+
+**Warum nur diese vier.** *Wasser* ist lebensnotwendig, aber für eine wandernde Gruppe
+nie knapp — man lagert daran; ein Bedarf, der immer gedeckt ist, ist Rauschen.
+*Wohnraum* gehört nicht hierher, denn ein dauerhaftes Haus **ist** die Sesshaftigkeit;
+was eine Gruppe unterwegs braucht, ist Fell und Faser. *Werkzeuge* sind kein Bedarf,
+sondern ein Mittel, und stecken in den Verfahren. *Schmuck und Ritual* sind
+archäologisch auffällig, aber nach E9 muss jede Stufe in eine reale Größe zurückzahlen,
+und für Ritual fällt keine ein, die nicht behauptet wäre.
+
+**Warum Wärme und Kleidung getrennt**, obwohl beides gegen Kälte hilft: Sie sind nicht
+austauschbar — man kann kein Feuer mittragen, und ein Fell ersetzt keine Nacht am Feuer.
+Und sie verhalten sich als Bestände verschieden, was die Epoche gerade nützlich macht:
+**Feuer wird verbraucht**, **Kleidung nutzt sich langsam ab**, **Nahrung wird gegessen
+und verdirbt zugleich**. Drei Beispiele für die Unterscheidung aus E19.
+
+**Kleidung wirkt auf die Arbeitsfähigkeit**, nicht auf Sterbe- oder Geburtenrate. Die
+ehrliche Wirkung ist nicht „man stirbt ohne Mantel", sondern „man kann weniger Tage
+draußen arbeiten" — und das ist nach E16 die Arbeitsfähigkeit, nicht die Produktivität.
+Rechnerisch ist es dieselbe Multiplikation; getrennt geführt kann die Oberfläche später
+sagen, *wieviel* gearbeitet werden konnte und *wie ergiebig* das war.
+
+**Wärme ist ein eigenes Gut, kein Bedarf auf Holz.** Ein Verfahren macht aus Holz Wärme,
+so wie ein anderes aus Holz Wohnraum macht. Das ist die Form, die trägt, sobald eine
+zweite Quelle dazukommt — Kohle, Gas —, und sie kostet nichts, solange es nur eine gibt.
 
 **Beim Durchspielen verworfen: die erste Fassung dieser Projekte.** Sie waren
 *Bessere Werkzeuge* → *Feuer nutzen* → *Jagdwaffen*, jedes das nächste freischaltend,
@@ -2282,16 +2346,49 @@ nächste Schritt. Für eine einzige Regel lohnt er nicht.
 
 ## Offen
 
+**Der Arbeitsstand, in der Reihenfolge, in der es drankommt.** Was hier steht, ist
+besprochen und vertagt, nicht vergessen:
+
+| | Punkt | |
+|---|---|---|
+| 1 | **Zufall auf der Bedarfsseite bauen** — Empfindlichkeit einer Bedarfsstufe je Strom (E24) | abgestimmt, ungebaut |
+| 2 | **Technologiebaum der ersten Epoche**, Schritte 2 bis 4 aus E31 | Schritt 1 steht in E29 |
+| 3 | **Einmal austarieren**, danach | |
+| 4 | Speicher bleibt an der Tragfähigkeitsgrenze leer, Gruben verfallen ungenutzt | nach dem Baum |
+| 5 | Verfallsraten fein justieren (Gruben, Wohnraum) | nach dem Baum |
+| 6 | Meldungen an den Spieler; Motorbegriffe in der Sicht; i18n. Dazu gehört, dass ein aufgefangenes schlechtes Jahr **lautlos** bleibt — der lehrreichste Moment der Epoche wird nicht benannt | unabhängig |
+| 7 | Heterogenität in einem Sektor: jetzt oder später | unabhängig |
+| 8 | GitHub: public, privat oder noch nicht — Issues gäbe es auch privat | unabhängig |
+| 9 | Rechenzeit-Reserven: inkrementelles Planen statt Neuplanung je Rangbisektion, `totalUse` fortschreiben | derzeit nicht nötig |
+| 10 | Die Zahl der Landnahmen steht an zwei Stellen: als Zähler im Zustand für die fallende Güte, als Obergrenze am Projekt | Kleinigkeit |
+
+Dazu die unentschiedenen Ideen weiter unten und die vertagte Kuppelproduktion.
+
 Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es drankommt:
 
-- **Ein Bedarf, mehrere Güter, je mit eigenem Faktor.** *Idee, nicht entschieden.* Heute
-  deckt genau ein Bestand eine Bedarfsstufe: Nahrung ist Nahrung, egal ob sie aus Fisch,
-  Fleisch oder Körnern kommt. Das trägt, solange der Nährwert das Maß ist (E5) und die
-  Unterschiede im Verfahren stecken — andere Fläche, andere Exposition, andere Arbeit.
-  Es geht aber verloren, was am Gut selbst hängt: Fisch verdirbt schneller als Korn.
-  Mehrere Güter für einen Bedarf, jedes mit einem eigenen Beitrag je Einheit, würden das
-  ausdrücken — und wären die Voraussetzung dafür, aus der Verbreiterung des Nahrungs­
-  spektrums mehr zu machen als verschiedene Wege zum selben Bestand.
+- ~~**Ein Bedarf, mehrere Güter.**~~ **Erledigt: dafür braucht es nichts.** Wo mehrere
+  Güter einen Bedarf decken könnten, ist der Bedarf in Wahrheit auf ein Gut *eine Stufe
+  höher* gerichtet, und die Güter sind Eingänge verschiedener **Verfahren**, die es
+  herstellen. Wärme ist das Beispiel: nicht „Holz oder Kohle deckt den Wärmebedarf",
+  sondern „Wärme wird aus Holz oder aus Kohle gemacht". Damit erledigt die
+  Verfahrensebene die Substitution, und die Zuteilung wählt ohnehin nach Knappheit — der
+  Umstieg auf Kohle geschieht, wenn das Holz knapp wird.
+
+  Ein Sammelgut „Energie" wäre dagegen falsch: Wärme, Antrieb und Schmelzhitze sind
+  verschiedene Dinge mit verschiedenen Quellen, und ein gemeinsamer Bestand behauptete
+  eine Austauschbarkeit, die es nicht gibt.
+- **Kuppelproduktion — ein Verfahren, mehrere Erzeugnisse.** *Vertagt bis zu den Preisen.*
+  Ein erlegtes Tier gibt Fleisch und Fell, Getreide gibt Korn und Stroh, die Raffinerie
+  gibt alles zugleich. Heute stellt eine Branche genau einen Bestand her. Bis dahin wird
+  aufgeteilt — zwei Verfahren auf derselben Fläche, eines auf Fleisch, eines auf Felle —,
+  und das ist keine Notlösung, sondern was die Volkswirtschaftliche Gesamtrechnung selbst
+  tut, wenn sie Kuppelproduktion in eine Input-Output-Tabelle bringt (*commodity* und
+  *industry technology assumption*).
+
+  Die Aufteilung behauptet, man könne Felle ohne Fleisch bekommen. Folgenlos ist das,
+  solange es **keine Preise** gibt: Der ganze Gehalt von „ein Nebenprodukt ist billig"
+  steckt in einem Preis. Erst dort sagt die Kupplung etwas, was sich sonst nicht sagen
+  lässt — und dort ist sie auch fachlich schwierig (Sraffa).
 - **Natürlicher Nachwuchs auf Brachland.** *Idee, nicht entschieden.* Ungenutztes
   Ackerland fiele langsam an die Wildnis zurück — ökologisch die Sukzession, und
   genutztes Land bliebe unangetastet, es träfe also nur, wer Land hält, ohne es zu
