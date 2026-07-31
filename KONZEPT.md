@@ -2113,6 +2113,43 @@ darf zur Beurteilung der Spieldynamik nicht herangezogen werden.
 steht der schlechteste Wetterwurf des Laufs und der Hunger bleibt bei 100 %" ist eine
 Feststellung, die man prüfen kann; „die Schwankung wirkt zu schwach" ist eine Meinung.
 
+**Woraus folgt, was ein Kriterium überhaupt wert ist.** Ein rotes Kriterium hat immer
+zwei mögliche Ursachen — das Modell oder der Bot — und ein Mittelwert sagt nie, welche.
+Daraus nicht „weglassen", sondern **zwei Sorten trennen**:
+
+| | | |
+|---|---|---|
+| **Versuche** | ohne Spieler: Zustand setzen, eine Größe variieren, den Mechanismus ablesen | ein Ausfall ist eindeutig der des Modells — **sie beweisen etwas** |
+| **Stolperdrähte** | gespielt, also nicht vom Bot trennbar | sie sagen, dass sich etwas *bewegt* hat, und widerlegen absolute Behauptungen — **sie zeigen nur hin** |
+
+Die Versuche sind ausgerechnet die, die aus der Literatur kommen: Boserup, broad
+spectrum, sinkender Grenzertrag. Sie werden an **mehreren gesetzten Technikständen**
+gemessen und nicht nur am rohen Zustand — ein Mechanismus, der nur unberührt hält, ist
+wenig wert, und ein Ausfall sagt dann gleich, *welche* Technik ihn gekippt hat. Gesetzt,
+nicht gespielt: Sonst weiß man hinterher wieder nicht, ob die Technik oder die Laune des
+Bots die Verschiebung gemacht hat.
+
+> **Keine Balancing-Änderung auf einen Mittelwert hin.** Das Aggregat zeigt hin,
+> entschieden wird am einzelnen Tick.
+
+Damit das keine Ermahnung bleibt, **nennt jeder gerissene Stolperdraht Seed und Tick**,
+an dem er zuerst gerissen ist. „51,8 % Leerlauf" ist keine Auskunft, mit der man
+irgendwohin gehen kann; „Leerlauf über 15 % ab Tick 14, Seed 231" ist eine Adresse.
+
+**Zwei Messfehler, die dabei aufgefallen sind, und beide waren Fehler im Maß, nicht im
+Modell:**
+
+- *Fläche* je Einheit Nahrung addierte Hektar Wald und Hektar Wasser. Bei fünfzig Köpfen
+  trägt das kleine Gewässer viel, also fiel die Zahl, ohne dass irgendetwas
+  intensiviert worden wäre. Boserup gehört auf **eine** Kapazität gemessen — und mit
+  beiden Hälften: Der Ertrag je Fläche steigt *und* es kostet mehr Hände je Einheit.
+  Ohne die zweite Hälfte misst man gewöhnliche Effizienz.
+- *Bevölkerung am Ende* verglich Läufe verschiedener Länge. Eine Epoche, die an einem
+  Meilenstein endet, dauert für den schlechteren Spieler länger — seine Siedlung hat
+  mehr Ticks zum Wachsen und sieht größer aus. So gemessen lag schlechtes Spiel um den
+  Faktor fünf vorn. Innerhalb einer Epoche heißt „schlechter": **man braucht länger
+  hinaus.**
+
 ### E31 — Wie der Projektbaum einer Epoche gebaut ist
 
 Vier Anforderungen, und keine darf der anderen geopfert werden: Der Baum muss **fesseln**,
@@ -2514,15 +2551,17 @@ besprochen und vertagt, nicht vergessen:
 
 | | Punkt | |
 |---|---|---|
-| 1 | **Den Baum der ersten Epoche bauen** — zwölf Projekte, fünf Achsen, Vorleistungen als Voraussetzung. Dazu: Verfahren auf Tätigkeitsnamen, Wasser als Kapazität, Wärme und Kleidung als eigene Güter | Entwurf steht vollständig in E29 |
-| 1a | Vorleistungen eines Projekts **als Bedingung anzeigen**, gerechnet als Vorleistung ÷ Mindestdauer | ohne das ist der Baum nicht lesbar |
-| 2 | **Einmal austarieren** — gemessen wird die Amortisationszeit je Projekt gegen das Zielband aus E29 | |
-| 3 | Speicher bleibt an der Tragfähigkeitsgrenze leer, Gruben verfallen ungenutzt | nach dem Baum |
-| 4 | Verfallsraten fein justieren (Gruben, Wohnraum) | nach dem Baum |
+| 1 | **Austarieren.** Gemessen wird die Amortisationszeit je Projekt gegen das Zielband aus E29. Erster Befund: über die Hälfte der Arbeit liegt brach, Sesshaftigkeit bei Tick 45 statt 150–200, Ackerbauanteil 44 % — die zwölf Wirkungen sind einzeln vertretbar, ihr **Produkt** nicht | der Baum ist gebaut |
+| 1a | Vorleistungen eines Projekts **als Bedingung anzeigen**, gerechnet als Vorleistung ÷ Mindestdauer | ohne das ist der Baum nicht lesbar; noch nicht gebaut |
+| 1b | **Fischen führt die Eröffnung an** und kostet dabei das Vierfache an Händen je Einheit Nahrung. E5 erklärt es (dünner Vorrat, sicheres Verfahren führt) — ob es in dieser Höhe richtig ist, ist ungeprüft | beim Austarieren nachsehen |
+| 1d | Die Versuche auch auf **Momentaufnahmen aus echten Läufen** wiederholen — deckt Kombinationen ab, auf die beim Bauen niemand kommt. Hält der gesetzte Stand und der gespielte nicht, liegt der Unterschied im Pfad oder im Bot | erst wenn die vier gesetzten Stände einmal gelaufen sind |
+| 1c | **Zwei Verbesserer auf einem Verfahren verbinden sich nicht** (Sichel und Mörser stehen nebeneinander). Freischaltung ist eine Menge, „beides fertig" ist darin nicht ausdrückbar. Drei Wege: so lassen; Verfahren Bedingungen geben statt Freischaltung; Projekte Koeffizienten ändern lassen | betrifft heute genau ein Paar |
+| 3 | Speicher bleibt an der Tragfähigkeitsgrenze leer, Gruben verfallen ungenutzt | mit dem Austarieren |
+| 4 | Verfallsraten fein justieren (Gruben, Wohnraum) | mit dem Austarieren |
 | 5 | Meldungen an den Spieler; Motorbegriffe in der Sicht; i18n. Dazu gehört, dass ein aufgefangenes schlechtes Jahr **lautlos** bleibt — der lehrreichste Moment der Epoche wird nicht benannt | unabhängig |
 | 6 | Heterogenität in einem Sektor: jetzt oder später | unabhängig |
 | 7 | GitHub: public, privat oder noch nicht — Issues gäbe es auch privat | unabhängig |
-| 8 | Rechenzeit-Reserven: inkrementelles Planen statt Neuplanung je Rangbisektion, `totalUse` fortschreiben | derzeit nicht nötig |
+| 8 | Rechenzeit-Reserven: inkrementelles Planen statt Neuplanung je Rangbisektion, `totalUse` fortschreiben. Gemessen: `tick` 0,18 ms, `derive` 0,60 ms, Botentscheidung 0,003 ms — die volle Kriterienmessung (40 Seeds × 600 Ticks × 3 Spielweisen) dauert rund drei Minuten. Der größte einzelne Posten ist, dass jedes Werkzeug **zusätzlich** zum Tick noch einmal ableitet, also doppelt plant | derzeit nicht nötig: zum Iterieren reichen 5 Seeds × 400 Ticks in acht Sekunden |
 | 9 | Die Zahl der Landnahmen steht an zwei Stellen: als Zähler im Zustand für die fallende Güte, als Obergrenze am Projekt | Kleinigkeit |
 
 Dazu die unentschiedenen Ideen weiter unten und die vertagte Kuppelproduktion.
