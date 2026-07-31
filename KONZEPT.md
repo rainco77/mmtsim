@@ -1590,6 +1590,22 @@ Lauf, keine Eindrücke:
 | **Kommt schlechtes Spiel genauso weit wie gutes?** | T4 |
 | Gibt es Zustände ohne Weg zurück? | E20 |
 
+**Der Komfort ist der Puffer, und er muss der richtige sein.** Hunger 1,2 und Sättigung
+0,6 je Kopf heißt: Ein Drittel des Nahrungsbedarfs ist entbehrlich. Ein schlechtes Jahr
+frisst zuerst diesen Teil, und erst wenn es mehr nimmt, sterben Menschen.
+
+Gemessen bei 1,0 gegen 0,8 — also 44 % entbehrlich — war eine Hungersnot **unmöglich**:
+Der schlechteste Wurf über 2000 Ticks nahm 40 % des Ertrags, blieb also unter dem
+Polster. Bei 1,4 gegen 0,4 stirbt der bedachte Spieler dagegen in 60 % der Läufe, was
+gegen die Regel verstößt, dass gutes Spiel praktisch nie scheitern darf.
+
+Bei 1,2 gegen 0,6 stimmt der Bogen, und zwar im Durchspielen sichtbar: In der dünnen
+Frühphase heben schlechte Jahre die Sterberate von 1,0 % auf 3,1 % und die Gruppe
+schrumpft; in der gefestigten Siedlung frisst derselbe Wurf (0,39, der schlechteste des
+Laufs) die Sättigung auf 2 % herunter, halbiert die Geburtenrate und tötet niemanden.
+Genau die Ordnung, die eine Rangfolge leisten soll — erst fällt der Komfort, dann das
+Leben.
+
 **Beide Hälften von T4 werden gebraucht.** Handeln muss besser sein als Nichtstun —
 sonst sind die Projekte Zierrat. Und *gut* zu handeln muss besser sein als schlecht zu
 handeln — sonst ist es kein Spiel, sondern ein Klickwettlauf.

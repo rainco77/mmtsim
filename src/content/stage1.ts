@@ -181,8 +181,9 @@ export const STAGE1: Config = {
       // against 0,8 for satiety, 44 % of the food need could be given up in a
       // bad year — measured, that made famine impossible: at tick 124 the worst
       // draw of the whole run (0,39) still left hunger fully covered. A society
-      // with 44 % of its calories to spare is not a subsistence society.
-      perHead: 1.0,
+      // with 44 % of its calories to spare is not a subsistence society. At
+      // 1,4 against 0,4 the cushion is 22 %, and a bad year reaches through it.
+      perHead: 1.2,
       consumedOnUse: 1,
       deathRate: { atZero: 0.08, atFull: 0 },
     },
@@ -215,7 +216,7 @@ export const STAGE1: Config = {
       rank: 300,
       stock: "food",
       branch: "food",
-      perHead: 0.8,
+      perHead: 0.6,
       consumedOnUse: 1,
       birthRate: { atZero: 0, atFull: 0.011 },
       productivity: { atZero: 0, atFull: 0.2 },
@@ -259,7 +260,7 @@ export const STAGE1: Config = {
       stockCost: {},
       minTicks: 12,
       repeatable: false,
-      effects: [{ type: "tier", id: "food_survival", perHead: 0.85 }],
+      effects: [{ type: "tier", id: "food_survival", perHead: 1.02 }],
       sector: "households",
     },
     {
