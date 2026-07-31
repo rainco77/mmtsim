@@ -255,28 +255,42 @@ einzugehen.** Wer nichts hat, muss sicher gehen und bleibt deshalb ärmer — di
 Risikotragfähigkeit steigt mit dem Vermögen. Die Armutsfalle wird sichtbar, ohne dass
 wir sie einbauen.
 
-**Von Hand (die Übersteuerung).** Der Spieler kann die Ordnung je Branche selbst setzen
-und wieder freigeben. Eine Branche, die er nicht angefasst hat, folgt der Automatik —
-**auch wenn sich die Ordnung dabei ändert.** Wer den Hebel ignoriert, darf nicht
-verhungern, und eine im ersten Tick eingefrorene Ordnung wäre ohnehin willkürlich, weil
-dann noch nichts bindet.
-
-Damit erleidet der Spieler die Regel **an der eigenen Übersteuerung**: Die Wirtschaft
-schaltet auf die sichere Sorte, er hält das für Kleinmut, erzwingt die Ertragssorte, und
-im nächsten schlechten Jahr sterben Menschen. Sein Fehler, nicht ein schlechter Standard
-— und daraus lernt man ungleich mehr.
-
 **Die Begründung ist immer sichtbar.** `derive` rechnet die Ordnung ohnehin, also liefert
-es den Grund mit: *„Jagd läuft ← Arbeit bindet"*, *„sichere Sorte läuft ← Vorrat dünn"*.
-Ein Wechsel ist damit keine Zauberei, sondern eine Meldung mit Grund.
+es den Grund mit: *„sichere Sorte läuft ← Vorrat dünn"*. Ein Wechsel ist damit keine
+Zauberei, sondern eine Meldung mit Grund.
 
-**Der Hebel hängt an einer Regel (E23), und beide Wege existieren von Anfang an im
-Code** — nur einer ist aktiv. Wird die Regel später abgeschaltet, ist das eine Zeile
-Konfiguration und kein Neubau. Die gesetzte Ordnung bleibt dann im Zustand liegen und
-wird ignoriert statt gelöscht, also braucht es keine Migration nach T7.
+**Die Reihenfolge von Hand zu setzen gibt es nicht — ausgemessen und entfernt.**
 
-Was der Spieler dabei verliert, ist genau benennbar: **das Recht, es besser wissen zu
-wollen.**
+Der Hebel war gebaut: Der Spieler konnte die Ordnung je Branche setzen und wieder
+freigeben. Die Messung über fünf Seeds und 900 Ticks, gegen die Automatik nach Dominanz:
+
+| gesetzte Reihenfolge | Bevölkerung |
+|---|---:|
+| Automatik | 2818 |
+| Jagd zuerst | 2818 |
+| Ackerbau zuerst | 2818 |
+| Sammeln zuerst | 1721 |
+
+Je Seed **bitgleich**, nicht nur im Mittel. Wo die Hand zwischen Verfahren wählt, die
+einander nicht dominieren — Jagd gegen Ackerbau, jedes auf eigenem Boden —, ändert sie
+**nichts**: Der Plan läuft in dieselbe Zuteilung, ganz gleich, wo er beginnt. Wo sie ein
+**dominiertes** Verfahren nach vorn zwingt, kostet das 39 %.
+
+Der Hebel kann also nur schaden. Er hat keinen Zustand, in dem er nützt. Seine früher
+gemessenen 66 % waren kein Nutzen, sondern das Ausgleichen eines Fehlers der Automatik,
+die damals nach Arbeitsertrag ordnete.
+
+Und er verfehlt beide Ziele des Spiels: Ein Knopf, dessen richtige Einstellung „nicht
+anfassen" lautet, belohnt nie und bestraft nur — kein Spielspaß. Und als *Wahl* zwischen
+Jagd und Ackerbau lehrt er, die neolithische Revolution sei eine Menüauswahl gewesen —
+die Gegenlehre zu Boserup, auf den sich dieses Modell beruft.
+
+**Die Schnittstelle bleibt.** `ProcessOrdering` hat weiter mehr als eine Implementierung
+dahinter, also ist ein späteres Wiedereinführen eine Zeile Konfiguration und kein Neubau
+(E23 — Regeln sind Schalter, die die Phasen lesen). Der Platz dafür ist da, falls der
+Spieler später wirklich zwischen Gleichwertigem wählen soll — welche Feldfrucht, welcher
+Handelspartner. Nur zwischen Verfahren derselben Branche gibt es nichts zu wählen, was
+die Knappheit nicht besser entscheidet.
 
 **Zwei Arten von Verfahren:**
 
@@ -1931,23 +1945,15 @@ Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es dranko
   muss jede Bedarfsstufe in eine reale Größe zurückzahlen. Für Kultur ist unklar,
   worin. Bloße Legitimität reicht als Begründung nicht; wird bei den Politikfeldern
   geklärt.
-- **Wodurch die Verfahrensordnung aus der Hand des Spielers gleitet** (E5). Der
-  Mechanismus steht — ein Projekt setzt die Regel auf `false`, und E23 erlaubt das
-  Abschalten —, offen ist nur, welches. Kandidaten, alle mechanisch identisch:
-  *Verkoppelung*, also der Wegfall des Flurzwangs, weil verzahnte Felder gemeinsam
-  bestellt werden müssen und zusammengelegte nicht mehr · **die Aufteilung des
-  Haushaltssektors**, weil *eine* Wahl je Branche sinnlos wird, sobald jeder Halter
-  andere Güte und anderen Puffer hat — dasselbe Projekt, das die Halter erzeugt, setzt
-  die Regel mit ab, also braucht es kein eigenes · *Preise*, weil der Markt die Frage
-  beantwortet · *Spezialisierung*, weil die Entscheidung dorthin wandert, wo das Wissen
-  ist · und schlicht die *Zahl der Branchen*, weil aus einer Entscheidung irgendwann
-  Fleißarbeit wird. Der zweite Kandidat wirkt am stärksten, weil er den Hebel nicht
-  wegnimmt, sondern **von selbst sinnlos macht**.
+- ~~**Wodurch die Verfahrensordnung aus der Hand des Spielers gleitet** (E5).~~
+  **Erledigt:** Sie war nie in seiner Hand, ohne zu schaden. Die Messung in E5 zeigt,
+  dass die Handreihenfolge zwischen nicht dominierten Verfahren nichts bewirkt und bei
+  einem dominierten 39 % kostet; sie ist entfernt. Die Frage nach dem auslösenden
+  Projekt entfällt damit.
 - **Preise.** Der Engpass steht (E21): Sobald der Haushaltssektor sich aufteilt, gibt es
   keinen gemeinsamen Plan mehr. Offen bleibt, ob der Spieler Preise durch ein Projekt
-  einführt und was dabei mit der manuellen Steuerung der Zuteilung geschieht — die
-  vermutlich ohnehin ersatzlos entfallen kann, weil die Ordnung nach Arbeitsertrag zu
-  schlicht ist, um daran etwas zu lernen.
+  einführt. Die manuelle Steuerung der Zuteilung ist inzwischen ausgemessen und
+  entfernt (E5); die Frage nach ihrem Verbleib stellt sich also nicht mehr.
 - **Geldeinführung.** Der wichtigste Moment des Spiels. Merkposten für später, **keine
   Entscheidung**: Die amerikanischen Kolonien sind der bestdokumentierte Fall für
   „ausgeben vor besteuern" — Massachusetts 1690 druckt Papierscheine, um heimkehrende

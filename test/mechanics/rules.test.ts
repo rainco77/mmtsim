@@ -388,24 +388,6 @@ describe("processes and the fallback level (E5)", () => {
     expect(leadFat).not.toBe("gathering_safe");
   });
 
-  it("the player's order wins while the rule holds, and is ignored once it falls", () => {
-    let state = finish(createState(STAGE1, { seed: 7 }), "better_tools");
-    state = apply(
-      state,
-      { type: "setProcessOrder", branch: "food", order: ["gathering"] },
-      index,
-    ).state;
-    expect(
-      derive(state, index).ordering.find((o) => o.branch === "food")?.reason.kind,
-    ).toBe("manual");
-
-    const withoutRule: Config = { ...STAGE1, rulesFromStart: [] };
-    const local = indexConfig(withoutRule);
-    const reason = derive(state, local).ordering.find((o) => o.branch === "food")?.reason;
-    expect(reason?.kind).not.toBe("manual");
-    // The setting stays in the state, it is only ignored — no migration (T7).
-    expect(state.manualOrder["food"]).toEqual(["gathering"]);
-  });
 });
 
 describe("allocation runs rank by rank (E21)", () => {
@@ -417,7 +399,6 @@ describe("allocation runs rank by rank (E21)", () => {
       sectorId: "households",
       shocks: {},
       laborToProjects: 0,
-      manualAllowed: false,
       unlockedBranches: new Set(["food"]),
       unlockedProcesses: new Set(["gathering"]),
     });

@@ -47,13 +47,6 @@ export interface GameState {
 
   /** Which process led per branch last tick — shown, not used to decide (E5). */
   readonly leadProcess: Readonly<Record<BranchId, ProcessId>>;
-
-  /**
-   * The order the player set per branch (E5). A branch he has not touched
-   * follows the computation. When the rule falls away later, this is ignored
-   * rather than deleted — so no migration is needed (T7).
-   */
-  readonly manualOrder: Readonly<Record<BranchId, readonly ProcessId[]>>;
 }
 
 export interface SectorState {

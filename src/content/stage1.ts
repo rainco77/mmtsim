@@ -364,7 +364,7 @@ export const STAGE1: Config = {
 
   // The player may set the order by hand from the start; a later institution
   // unsets this rule (E23) and the economy decides alone from then on.
-  rulesFromStart: ["manualProcessChoice"],
+  rulesFromStart: [],
 
   land: { baseQuality: 1.0, qualityDecayPerTaking: 0.05 },
 

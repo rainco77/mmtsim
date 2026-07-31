@@ -1,7 +1,7 @@
 import { allocate, type AllocationResult } from "./allocation.ts";
 import { type ConfigIndex, tierEffectAt } from "./config.ts";
 import type { AreaTypeId, ProjectId, StockId } from "./ids.ts";
-import { HOUSEHOLDS, laborPerformance, MANUAL_PROCESS_CHOICE } from "./phases.ts";
+import { HOUSEHOLDS, laborPerformance } from "./phases.ts";
 import { peek } from "./random.ts";
 import { type Area, type GameState } from "./state.ts";
 import {
@@ -118,7 +118,6 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     laborToProjects,
     unlockedBranches: unlocks.branches,
     unlockedProcesses: unlocks.processes,
-    manualAllowed: unlocks.rules.has(MANUAL_PROCESS_CHOICE),
   });
 
   const coverage: Record<string, number> = {};

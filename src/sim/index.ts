@@ -38,7 +38,6 @@ export type {
 } from "./ordering.ts";
 export {
   DeclaredOrdering,
-  ManualOrdering,
   ORDERING_RESOLVER,
   OrderingResolver,
   DominanceOrdering,
@@ -62,7 +61,6 @@ export type { Phase, TickContext } from "./phases.ts";
 export {
   HOUSEHOLDS,
   laborPerformance,
-  MANUAL_PROCESS_CHOICE,
   PIPELINE,
 } from "./phases.ts";
 export type { RandomState } from "./random.ts";

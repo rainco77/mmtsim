@@ -1,5 +1,5 @@
 import type { BranchDef, Config, ConfigIndex, ProcessDef } from "./config.ts";
-import type { BranchId, ProcessId } from "./ids.ts";
+import type { BranchId } from "./ids.ts";
 import { exposureMagnitude } from "./risk.ts";
 
 /**
@@ -30,7 +30,6 @@ export interface OrderedProcesses {
 
 export type OrderingReason =
   | { readonly kind: "declared" }
-  | { readonly kind: "manual" }
   | { readonly kind: "labor" }
   | { readonly kind: "risk"; readonly buffer: number };
 
@@ -41,7 +40,6 @@ export interface OrderingContext {
   readonly buffer: number;
   /** Land quality of one area type — poor ground means more acres (E13). */
   quality(areaType: string): number;
-  readonly manual: readonly ProcessId[] | undefined;
 }
 
 /** The order stated in the content. Fallback only (E5). */
@@ -56,21 +54,6 @@ export class DeclaredOrdering implements ProcessOrdering {
   }
 }
 
-/** What the player set for this branch. Absent means: let it be computed. */
-export class ManualOrdering implements ProcessOrdering {
-  readonly id = "manual";
-
-  order(_branch: BranchDef, ctx: OrderingContext): OrderedProcesses {
-    const wanted = ctx.manual ?? [];
-    const rank = new Map(wanted.map((id, i) => [id, i]));
-    const processes = [...ctx.available].sort((a, b) => {
-      const ra = rank.get(a.id) ?? Number.MAX_SAFE_INTEGER;
-      const rb = rank.get(b.id) ?? Number.MAX_SAFE_INTEGER;
-      return ra === rb ? b.priority - a.priority : ra - rb;
-    });
-    return { processes, reason: { kind: "manual" } };
-  }
-}
 
 /**
  * Ordered by **dominance** (E4: labour is an input like any other).
@@ -193,27 +176,26 @@ function dominates(
 }
 
 /**
- * Picks the source (E5): the player's hand if he set this branch **and** the
- * rule still allows it, otherwise the computation.
+ * Picks the source (E5).
  *
- * Both paths exist from the first day; only one is active. Switching later is
- * therefore a line of configuration (E23).
+ * The interface stays, with more than one implementation behind it, so that
+ * switching later is a line of configuration and not a rebuild (E23).
+ *
+ * Setting the order by hand used to be one of the sources and was measured out:
+ * where it chose between processes that do not dominate each other it changed
+ * **nothing** — the plan converges on the same allocation whatever it starts
+ * from — and where it put a dominated process first it cost 39 % of the
+ * population. A lever that can only do harm is neither playable nor
+ * instructive, and as a *choice* between hunting and farming it would teach the
+ * opposite of Boserup, on whom the model rests.
  */
 export class OrderingResolver {
-  readonly #manual = new ManualOrdering();
   readonly #computed = new DominanceOrdering();
   readonly #declared = new DeclaredOrdering();
 
-  resolve(
-    branch: BranchDef,
-    ctx: OrderingContext,
-    manualAllowed: boolean,
-  ): OrderedProcesses {
+  resolve(branch: BranchDef, ctx: OrderingContext): OrderedProcesses {
     if (ctx.available.length === 0) {
       return { processes: [], reason: { kind: "declared" } };
-    }
-    if (manualAllowed && ctx.manual !== undefined && ctx.manual.length > 0) {
-      return this.#manual.order(branch, ctx);
     }
     if (ctx.index.config.risk.aversion < 0) {
       return this.#declared.order(branch, ctx);

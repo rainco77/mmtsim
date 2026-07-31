@@ -191,8 +191,6 @@ function consume(
 
 export interface AllocationInput {
   readonly state: GameState;
-  /** Whether the player may still set the order himself (E5, E23). */
-  readonly manualAllowed: boolean;
   readonly index: ConfigIndex;
   readonly sectorId: SectorId;
   readonly shocks: Shocks;
@@ -234,10 +232,9 @@ export function allocate(input: AllocationInput): AllocationResult {
       index,
       available: forBranch,
       buffer,
-      manual: state.manualOrder[branch.id],
       quality: (areaType: string) => pools.area[areaType]?.quality ?? 1,
     };
-    const resolved = ORDERING_RESOLVER.resolve(branch, orderCtx, input.manualAllowed);
+    const resolved = ORDERING_RESOLVER.resolve(branch, orderCtx);
     ordering.set(branch.id, resolved.processes);
     orderingReason.set(branch.id, resolved.reason);
     const first = resolved.processes[0];

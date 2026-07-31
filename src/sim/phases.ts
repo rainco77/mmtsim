@@ -36,8 +36,6 @@ export interface Phase {
 /** Until property exists there is exactly one sector (E22). */
 export const HOUSEHOLDS: SectorId = "households";
 
-/** While this rule holds, the player may set the process order himself (E5). */
-export const MANUAL_PROCESS_CHOICE = "manualProcessChoice";
 
 export function laborPerformance(sector: SectorState | undefined): number {
   if (sector === undefined) return 0;
@@ -197,7 +195,6 @@ export class ProductionPhase implements Phase {
       laborToProjects: 0,
       unlockedBranches: ctx.unlocks.branches,
       unlockedProcesses: ctx.unlocks.processes,
-      manualAllowed: ctx.unlocks.rules.has(MANUAL_PROCESS_CHOICE),
     });
     ctx.allocation = result;
 
