@@ -1,5 +1,5 @@
 import type {
-  AreaTypeId,
+  CapacityId,
   BranchId,
   NeedTierId,
   ProcessId,
@@ -38,7 +38,7 @@ export interface StockDef {
    * ordinary rate, so the limit is economic and not arbitrary.
    */
   readonly protectedBy?: {
-    readonly capacity: AreaTypeId;
+    readonly capacity: CapacityId;
     readonly decayPerTick: number;
     /** A rule may improve the sheltered rate, as it may the ordinary one. */
     readonly decayWhenRule?: readonly {
@@ -52,10 +52,10 @@ export interface StockDef {
   }[];
 }
 
-// ---------------------------------------------------------------- areas
+// ---------------------------------------------------------------- capacityHeld
 
-export interface AreaTypeDef {
-  readonly id: AreaTypeId;
+export interface CapacityDef {
+  readonly id: CapacityId;
   /**
    * Capacity decays too (E19). Land does not — it is not worn out by use — but
    * a storage pit collapses and a mill wears down, and E19 has no separate
@@ -100,8 +100,8 @@ export interface ProcessDef {
    */
   readonly priority: number;
 
-  /** Area occupied per unit of output, by type. Occupied, not consumed (E4). */
-  readonly areaPerOutput: Readonly<Record<AreaTypeId, number>>;
+  /** Capacity occupied per unit of output, by type. Occupied, not consumed (E4). */
+  readonly capacityPerOutput: Readonly<Record<CapacityId, number>>;
 
   /**
    * Stocks used up per unit of output (E4). Labour is one of them: it is a
@@ -173,7 +173,7 @@ export type Condition =
   | { readonly kind: "population"; readonly min: number }
   | { readonly kind: "projectDone"; readonly id: ProjectId; readonly min: number }
   | { readonly kind: "rule"; readonly id: RuleId; readonly set: boolean }
-  | { readonly kind: "unownedArea"; readonly areaType: AreaTypeId; readonly min: number }
+  | { readonly kind: "unownedCapacity"; readonly capacity: CapacityId; readonly min: number }
   | { readonly kind: "coverage"; readonly tier: NeedTierId; readonly min: number }
   /**
    * The reachable territory is capped, and only an institution lifts the cap
@@ -194,7 +194,7 @@ export type Condition =
    */
   | {
       readonly kind: "capacityPerHead";
-      readonly areaType: AreaTypeId;
+      readonly capacity: CapacityId;
       readonly min: number;
     };
 
@@ -206,14 +206,14 @@ export type Condition =
  */
 export type QualitySource =
   | { readonly kind: "fixed"; readonly value: number }
-  | { readonly kind: "from"; readonly areaType: AreaTypeId }
+  | { readonly kind: "from"; readonly capacity: CapacityId }
   | { readonly kind: "nextTaking" };
 
 /** The four effect types from E12. Amounts may be negative. */
 export type Effect =
   | {
       readonly type: "capacity";
-      readonly areaType: AreaTypeId;
+      readonly capacity: CapacityId;
       /** Omitted means unowned land (E13). */
       readonly sector?: SectorId;
       readonly amount: number;
@@ -325,7 +325,7 @@ export interface CarriedConfig {
 
 export interface Config {
   readonly stocks: readonly StockDef[];
-  readonly areaTypes: readonly AreaTypeDef[];
+  readonly capacities: readonly CapacityDef[];
   readonly branches: readonly BranchDef[];
   readonly processes: readonly ProcessDef[];
   readonly needTiers: readonly NeedTierDef[];

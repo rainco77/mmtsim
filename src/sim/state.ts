@@ -1,5 +1,5 @@
 import type {
-  AreaTypeId,
+  CapacityId,
   BranchId,
   ProcessId,
   ProjectId,
@@ -35,7 +35,7 @@ export interface GameState {
    * Land that belongs to nobody (E13). Wilderness is unowned, not commonly
    * owned: a regulated commons would be an institution, and there is none.
    */
-  readonly unownedAreas: Readonly<Record<AreaTypeId, Area>>;
+  readonly unownedCapacity: Readonly<Record<CapacityId, Capacity>>;
 
   /** How often territory was taken; the quality of the next parcel follows (E13). */
   readonly landTakings: number;
@@ -56,7 +56,7 @@ export interface SectorState {
   readonly stocks: Readonly<Record<StockId, number>>;
 
   /** Owned land, per area type. Empty until property exists. */
-  readonly areas: Readonly<Record<AreaTypeId, Area>>;
+  readonly capacityHeld: Readonly<Record<CapacityId, Capacity>>;
 
   /**
    * Carried factors (E16). They follow from coverage, but coverage follows from
@@ -67,9 +67,9 @@ export interface SectorState {
   readonly workAbility: number;
 }
 
-/** Area always travels with its quality, because each holder has its own (E13). */
-export interface Area {
-  readonly area: number;
+/** Capacity always travels with its quality, because each holder has its own (E13). */
+export interface Capacity {
+  readonly amount: number;
   readonly quality: number;
 }
 
@@ -83,10 +83,10 @@ export interface ActiveProject {
   readonly paused: boolean;
 }
 
-export const EMPTY_AREA: Area = { area: 0, quality: 1 };
+export const EMPTY_AREA: Capacity = { amount: 0, quality: 1 };
 
-export function areaOf(areas: Readonly<Record<AreaTypeId, Area>>, id: AreaTypeId): Area {
-  return areas[id] ?? EMPTY_AREA;
+export function capacityOf(capacityHeld: Readonly<Record<CapacityId, Capacity>>, id: CapacityId): Capacity {
+  return capacityHeld[id] ?? EMPTY_AREA;
 }
 
 export function stockOf(stocks: Readonly<Record<StockId, number>>, id: StockId): number {

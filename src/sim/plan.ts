@@ -1,5 +1,5 @@
 import type { ConfigIndex, NeedTierDef, ProcessDef } from "./config.ts";
-import type { AreaTypeId, ProcessId, StockId } from "./ids.ts";
+import type { CapacityId, ProcessId, StockId } from "./ids.ts";
 
 /**
  * The production plan (E21).
@@ -21,7 +21,7 @@ import type { AreaTypeId, ProcessId, StockId } from "./ids.ts";
 
 /** What a plan may draw on. Each entry is an absolute amount. */
 export interface Supplies {
-  readonly areas: Readonly<Record<AreaTypeId, { area: number; quality: number }>>;
+  readonly capacityHeld: Readonly<Record<CapacityId, { amount: number; quality: number }>>;
   readonly stocks: Readonly<Record<StockId, number>>;
 }
 
@@ -46,7 +46,7 @@ export interface Plan {
 /** An input, named so that labour, area and stock can be handled alike. */
 type InputId = string;
 
-export const areaInput = (id: AreaTypeId): InputId => `area:${id}`;
+export const capacityInput = (id: CapacityId): InputId => `capacity:${id}`;
 export const stockInput = (id: StockId): InputId => `stock:${id}`;
 
 export interface PlanContext {
@@ -151,11 +151,11 @@ function computeInputPerOutput(
   const shock = ctx.shockFor(process, input);
   if (shock <= 0) return Infinity;
 
-  if (input.startsWith("area:")) {
-    const type = input.slice(5);
-    const base = process.areaPerOutput[type] ?? 0;
+  if (input.startsWith("capacity:")) {
+    const type = input.slice("capacity:".length);
+    const base = process.capacityPerOutput[type] ?? 0;
     if (base <= 0) return 0;
-    const quality = ctx.supplies.areas[type]?.quality ?? 1;
+    const quality = ctx.supplies.capacityHeld[type]?.quality ?? 1;
     const factor = 1 - process.qualityWeight + process.qualityWeight * quality;
     return factor > 0 ? base / factor / shock : Infinity;
   }
@@ -175,7 +175,7 @@ function available(input: InputId, ctx: PlanContext): number {
 }
 
 function computeAvailable(input: InputId, ctx: PlanContext): number {
-  if (input.startsWith("area:")) return ctx.supplies.areas[input.slice(5)]?.area ?? 0;
+  if (input.startsWith("capacity:")) return ctx.supplies.capacityHeld[input.slice("capacity:".length)]?.amount ?? 0;
   if (input.startsWith("stock:")) return ctx.supplies.stocks[input.slice(6)] ?? 0;
   return 0;
 }
@@ -233,7 +233,7 @@ function inputsOf(ctx: PlanContext): readonly InputId[] {
 
   const inputs = new Set<InputId>();
   for (const process of ctx.available) {
-    for (const type of Object.keys(process.areaPerOutput)) inputs.add(areaInput(type));
+    for (const type of Object.keys(process.capacityPerOutput)) inputs.add(capacityInput(type));
     for (const id of Object.keys(process.intermediatesPerOutput)) inputs.add(stockInput(id));
   }
   cache.inputs = [...inputs].sort();
@@ -245,7 +245,7 @@ function inputsOf(ctx: PlanContext): readonly InputId[] {
  *
  * Comparison happens **within one input**: the conflict arises there — the
  * wilderness is short — so the only question is who gives way, and that is
- * measurable in hectares of wilderness. No measure across inputs, no weights,
+ * measurable in units of wilderness. No measure across inputs, no weights,
  * no shadow prices. Labour is no special case.
  */
 function planFor(demands: readonly Demand[], ctx: PlanContext): Plan {

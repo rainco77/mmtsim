@@ -38,8 +38,8 @@ export interface OrderingContext {
   readonly available: readonly ProcessDef[];
   /** Stock over need at the lowest rank; thin means risk hurts (E5). */
   readonly buffer: number;
-  /** Land quality of one area type — poor ground means more acres (E13). */
-  quality(areaType: string): number;
+  /** Land quality of one capacity — poor ground means more of it (E13). */
+  quality(capacity: string): number;
 }
 
 /** The order stated in the content. Fallback only (E5). */
@@ -65,7 +65,7 @@ export class DeclaredOrdering implements ProcessOrdering {
  * The plan is therefore not supposed to decide it, and does not.
  *
  * No input is a criterion of its own. Ordering by output per unit of labour was
- * measured to pick the technique that produced 43 % less from the same hectare,
+ * measured to pick the technique that produced 43 % less from the same ground,
  * because labour was the one input in surplus — it saved what was being thrown
  * away anyway (E10: unused labour decays). Ordering by whichever input happens
  * to bind was tried before that and oscillated.
@@ -92,7 +92,7 @@ export class DominanceOrdering implements ProcessOrdering {
     // them.
     const keys = new Set<string>();
     for (const process of ctx.available) {
-      for (const type of Object.keys(process.areaPerOutput)) keys.add(`a:${type}`);
+      for (const type of Object.keys(process.capacityPerOutput)) keys.add(`a:${type}`);
       for (const id of Object.keys(process.intermediatesPerOutput)) keys.add(`s:${id}`);
     }
     const order = [...keys];
@@ -102,7 +102,7 @@ export class DominanceOrdering implements ProcessOrdering {
       return order.map((key) => {
         if (key.startsWith("a:")) {
           const type = key.slice(2);
-          const base = process.areaPerOutput[type] ?? 0;
+          const base = process.capacityPerOutput[type] ?? 0;
           if (base === 0) return 0;
           const factor = 1 - process.qualityWeight + process.qualityWeight * ctx.quality(type);
           return (base * risk) / Math.max(1e-12, factor);
@@ -181,7 +181,7 @@ export class DominanceOrdering implements ProcessOrdering {
  * each other, which is what lets both of them run.
  *
  * Compared on **risk-adjusted** coefficients: a process that fails often costs
- * more per unit *delivered*, because the acres and the labour are spent in the
+ * more per unit *delivered*, because the ground and the labour are spent in the
  * failed years too. That is the same reasoning as a shock (E24 — risk as named
  * random streams), taken as an expectation instead of as a draw. And it is what
  * the old rule already did to labour: ordering by yield per labour times

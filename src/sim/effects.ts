@@ -1,6 +1,6 @@
 import type { Config, Effect, QualitySource } from "./config.ts";
-import type { AreaTypeId, SectorId } from "./ids.ts";
-import { areaOf, type Area, type GameState } from "./state.ts";
+import type { CapacityId, SectorId } from "./ids.ts";
+import { capacityOf, type Capacity, type GameState } from "./state.ts";
 
 /**
  * Effect handlers as a registry (T2). A new effect type is a new class plus one
@@ -16,7 +16,7 @@ export interface EffectHandler<T extends Effect = Effect> {
 
 type CapacityEffect = Extract<Effect, { type: "capacity" }>;
 
-/** Area moves between types and holders; amounts may be negative (E12, E13). */
+/** Capacity moves between types and holders; amounts may be negative (E12, E13). */
 class CapacityEffectHandler implements EffectHandler<CapacityEffect> {
   readonly type = "capacity" as const;
 
@@ -30,12 +30,12 @@ class CapacityEffectHandler implements EffectHandler<CapacityEffect> {
     const next = advanceTaking ? { ...state, landTakings: state.landTakings + 1 } : state;
 
     if (effect.sector === undefined) {
-      const current = areaOf(next.unownedAreas, effect.areaType);
+      const current = capacityOf(next.unownedCapacity, effect.capacity);
       return {
         ...next,
-        unownedAreas: {
-          ...next.unownedAreas,
-          [effect.areaType]: blend(current, effect.amount, quality),
+        unownedCapacity: {
+          ...next.unownedCapacity,
+          [effect.capacity]: blend(current, effect.amount, quality),
         },
       };
     }
@@ -43,16 +43,16 @@ class CapacityEffectHandler implements EffectHandler<CapacityEffect> {
     const target = effect.sector === "self" ? sector : effect.sector;
     const holder = next.sectors[target];
     if (holder === undefined) return next;
-    const current = areaOf(holder.areas, effect.areaType);
+    const current = capacityOf(holder.capacityHeld, effect.capacity);
     return {
       ...next,
       sectors: {
         ...next.sectors,
         [target]: {
           ...holder,
-          areas: {
-            ...holder.areas,
-            [effect.areaType]: blend(current, effect.amount, quality),
+          capacityHeld: {
+            ...holder.capacityHeld,
+            [effect.capacity]: blend(current, effect.amount, quality),
           },
         },
       },
@@ -73,7 +73,7 @@ function resolveQuality(
     case "fixed":
       return { quality: source.value, advanceTaking: false };
     case "from":
-      return { quality: averageQuality(state, source.areaType), advanceTaking: false };
+      return { quality: averageQuality(state, source.capacity), advanceTaking: false };
     case "nextTaking":
       return {
         quality:
@@ -85,30 +85,30 @@ function resolveQuality(
 }
 
 /** Quality of an area type over all holders and the unowned pool. */
-function averageQuality(state: GameState, areaType: AreaTypeId): number {
+function averageQuality(state: GameState, capacity: CapacityId): number {
   let area = 0;
   let weighted = 0;
-  const unowned = areaOf(state.unownedAreas, areaType);
-  area += unowned.area;
-  weighted += unowned.area * unowned.quality;
+  const unowned = capacityOf(state.unownedCapacity, capacity);
+  area += unowned.amount;
+  weighted += unowned.amount * unowned.quality;
   for (const sector of Object.values(state.sectors)) {
-    const owned = areaOf(sector.areas, areaType);
-    area += owned.area;
-    weighted += owned.area * owned.quality;
+    const owned = capacityOf(sector.capacityHeld, capacity);
+    area += owned.amount;
+    weighted += owned.amount * owned.quality;
   }
   return area > 0 ? weighted / area : 1;
 }
 
 /** Adding area of a stated quality shifts the holder's average (E13). */
-function blend(current: Area, amount: number, quality: number | undefined): Area {
-  const next = Math.max(0, current.area + amount);
+function blend(current: Capacity, amount: number, quality: number | undefined): Capacity {
+  const next = Math.max(0, current.amount + amount);
   if (amount <= 0 || quality === undefined) {
-    return { area: next, quality: current.quality };
+    return { amount: next, quality: current.quality };
   }
-  const total = current.area + amount;
+  const total = current.amount + amount;
   const blended =
-    total > 0 ? (current.area * current.quality + amount * quality) / total : quality;
-  return { area: next, quality: blended };
+    total > 0 ? (current.amount * current.quality + amount * quality) / total : quality;
+  return { amount: next, quality: blended };
 }
 
 /**

@@ -189,7 +189,7 @@ zwischen ihnen umschalten, ohne dass die Rückfallebene neu gebaut werden muss.
 anderen, wenn es von **jedem** Input, den beide benutzen, nicht mehr je Einheit braucht
 und von mindestens einem weniger. Verglichen wird auf **risikobereinigten**
 Koeffizienten: Ein Verfahren, das oft misslingt, kostet je *gelieferter* Einheit mehr,
-weil Hektar und Arbeit auch in den Fehljahren verbraucht sind. Das Gewicht hängt daran,
+weil Fläche und Arbeit auch in den Fehljahren verbraucht sind. Das Gewicht hängt daran,
 wie dünn der Puffer ist — wer einen vollen Speicher hat, kann sich Streuung leisten; wer
 auf Kante lebt, nimmt das Verlässliche.
 
@@ -216,7 +216,7 @@ nicht als Sprung.
 
 > *Verworfen: die Ordnung nach dem **Ertrag je Arbeitsleistung**.* Sie hat Arbeit zum
 > einzigen Input mit einem Entscheidungskriterium gemacht und deshalb messbar das
-> schlechtere Verfahren gewählt: Dreifelderwirtschaft bringt 5,0 Einheiten je Hektar
+> schlechtere Verfahren gewählt: Dreifelderwirtschaft bringt 5,0 Einheiten je Flächeneinheit
 > gegen 2,9 beim einfachen Ackerbau, kostet aber 18 % mehr Arbeit je Einheit. Die Regel
 > lehnte sie ab — und sparte damit einen Input, der zu 27 % ungenutzt verfiel (E10 —
 > ungenutzte Arbeit ist am Tickende weg). Gemessen: 1704 Menschen statt 2822, wenn man
@@ -719,8 +719,8 @@ Intensivierung oder eine neue Institution. Die weiche Bremse macht die Entscheid
 interessant, die harte macht sie alternativlos. Zusammen erzeugen sie den Kipppunkt aus
 E6 verlässlich, statt darauf zu hoffen.
 
-**Güte wirkt über die Branchen, nicht über die Fläche.** Ein Hektar ist für Wohnraum
-ein Hektar; Bodenqualität beeinflusst den **Ertrag**, und Wohnraum hat keinen. Also
+**Güte wirkt über die Branchen, nicht über die Fläche.** Für Wohnraum ist eine Fläche
+eine Fläche; Bodenqualität beeinflusst den **Ertrag**, und Wohnraum hat keinen. Also
 erklärt jede Branche, wie stark die Güte in ihren Ertrag eingeht:
 
 | Branche | Güte wirkt |
@@ -734,9 +734,18 @@ Differentialrente handelt von **Ertragsunterschieden**, nicht von einer allgemei
 Landgüte. Die Güte selbst hängt am **Flächentyp**; werden Typen später gesplittet,
 bekommt jeder seine eigene Kurve.
 
-**Sie wirkt auf die Fläche, nicht auf die Arbeit** — `Ertrag = Hektar × Güte ×
-Verfahrensertrag`. Schlechter Boden heißt *mehr Hektar für dieselbe Ernte*, nicht mehr
-Arbeit je Hektar.
+**Sie wirkt auf die Fläche, nicht auf die Arbeit** — `Ertrag = Fläche × Güte ×
+Verfahrensertrag`. Schlechter Boden heißt *mehr Fläche für dieselbe Ernte*, nicht mehr
+Arbeit je Fläche.
+
+**Es wird keine Einheit behauptet.** Wie bei der Tickdauer (E17) steht nirgends, wieviel
+eine Flächeneinheit in der Wirklichkeit ist — und aus demselben Grund: Eine einzige
+Größe kann nicht gleichzeitig zum Streifgebiet einer Jägergruppe und zum Ackerbau einer
+Industriegesellschaft passen. Beim Durchspielen fiel auf, dass dreißig Sammler rund 165
+Einheiten nutzten; als Hektar gelesen wären das 1,65 km² für eine Gruppe, ein bis zwei
+Größenordnungen zu dicht. Als Zahl ohne Einheit ist es keine Aussage und damit auch kein
+Fehler. Was trägt, sind die **Verhältnisse**. Falls die Oberfläche je eine Einheit
+anzeigen will, gehört sie dorthin und nicht in den Kern.
 
 > *Befund aus der Umsetzung:* Andersherum gerechnet macht schlechter Boden die Arbeit
 > teurer statt die Fläche knapper — dann wirkt der feste Faktor nicht, und die
@@ -753,7 +762,7 @@ harte.
 **Die Grenzgüte steht vor dem Klick da, nicht danach:**
 
 > **Landnahme** — 60 Arbeit
-> +20 ha Wildnis, Güte **0,77** *(dein Durchschnitt: 0,94)*
+> +20 Wildnis, Güte **0,77** *(dein Durchschnitt: 0,94)*
 
 Der Spieler sieht den abnehmenden Ertrag **am Rand**, bevor er ihn bezahlt — gute
 Bedienung und zugleich das ökonomische Konzept: Entscheidungen fallen am Rand, nicht im
@@ -1180,7 +1189,7 @@ Aktivitätsanalyse, auf die sich E5 ohnehin beruft.
 
 **Verglichen wird immer nur innerhalb eines Inputs.** Der Konflikt entsteht dort — die
 Wildnis reicht nicht —, also muss auch nur entschieden werden, wer von der Wildnis
-weicht, und das ist in Hektar Wildnis messbar. **Kein Maßstab über Inputs hinweg, keine
+weicht, und das ist in Einheiten Wildnis messbar. **Kein Maßstab über Inputs hinweg, keine
 Gewichte, keine Schattenpreise.** Arbeit ist dabei kein Sonderfall, sondern ein Input wie
 jeder andere.
 
@@ -1235,7 +1244,7 @@ Die Folge war messbar und groß: Verlagert der Plan Nahrung von der Jagd auf den
 Ackerbau, kostet das mehr Arbeit je Einheit. Diese Mehrarbeit galt dann als Fehlbetrag
 statt als einzuplanende Arbeit, und weil eine Nachfrage nicht zur Jagd zurückkehren
 darf, fand die Verlagerung keinen Ausweg und der ganze Rang fiel. Gemessen bei Tick
-300: Wildnis zu 100 % genutzt, **490 ha Ackerland zu 0,003 %**, 173 von 355
+300: Wildnis zu 100 % genutzt, **490 Ackerland zu 0,003 %**, 173 von 355
 Arbeitseinheiten frei, Sättigung 0.
 
 Richtig ist **eine** Schleife: den eigenen Bedarf decken, einen Input suchen, der nicht
@@ -2082,7 +2091,7 @@ Technisch noch offen:
 - **Rechnungseinheit als eigener Übergang.** Kein Engpass. Der kirchliche Zehnte war eine
   Naturalabgabe und kam ohne gemeinsamen Maßstab aus.
 - **„Arbeit gegen Anteil" als früher Übergang.** Der Engpass dafür entsteht nicht:
-  Güteunterschiede ändern den **Ertrag** je Hektar, nicht die **Arbeit** je Hektar. Bei
+  Güteunterschiede ändern den **Ertrag** je Fläche, nicht die **Arbeit** je Fläche. Bei
   gleicher Fläche je Kopf gibt es weder brachliegendes Land noch freie Hände.
 - **Hundert Haushaltseinheiten mit Gewicht**, Mobilitätsschwellen zwischen Schichten,
   Verteilungsschlüssel für Projektinputs, freiwillige Beiträge im Verhältnis des Nutzens,

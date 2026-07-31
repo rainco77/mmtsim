@@ -27,13 +27,13 @@ export function createState(config: Config, options: StartOptions): GameState {
         heads,
         // Enough for the first tick, so the settlement does not start starving.
         stocks: { food: options.food ?? heads },
-        areas: {},
+        capacityHeld: {},
         productivity: config.carried.baseProductivity,
         workAbility: config.carried.baseWorkAbility,
       },
     },
-    unownedAreas: {
-      wilderness: { area: options.wilderness ?? 900, quality: config.land.baseQuality },
+    unownedCapacity: {
+      wilderness: { amount: options.wilderness ?? 900, quality: config.land.baseQuality },
     },
     landTakings: 0,
     completedProjects: {},

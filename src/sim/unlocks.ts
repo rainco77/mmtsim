@@ -1,6 +1,6 @@
 import type { Condition, ConfigIndex } from "./config.ts";
 import type { BranchId, ProcessId, RuleId } from "./ids.ts";
-import { areaOf, completedCount, type GameState } from "./state.ts";
+import { capacityOf, completedCount, type GameState } from "./state.ts";
 
 /**
  * What is unlocked follows from the finished projects (E23). Nothing of this is
@@ -90,8 +90,8 @@ export function conditionHolds(condition: Condition, ctx: ConditionContext): boo
       return completedCount(ctx.state, condition.id) >= condition.min;
     case "rule":
       return ctx.unlocks.rules.has(condition.id) === condition.set;
-    case "unownedArea":
-      return areaOf(ctx.state.unownedAreas, condition.areaType).area >= condition.min;
+    case "unownedCapacity":
+      return capacityOf(ctx.state.unownedCapacity, condition.capacity).amount >= condition.min;
     case "coverage":
       return (ctx.coverage[condition.tier] ?? 0) >= condition.min;
     case "landTakings":
@@ -100,7 +100,7 @@ export function conditionHolds(condition: Condition, ctx: ConditionContext): boo
       if (ctx.population <= 0) return false;
       let built = 0;
       for (const sector of Object.values(ctx.state.sectors)) {
-        built += areaOf(sector?.areas ?? {}, condition.areaType).area;
+        built += capacityOf(sector?.capacityHeld ?? {}, condition.capacity).amount;
       }
       return built / ctx.population >= condition.min;
     }

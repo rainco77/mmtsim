@@ -10,7 +10,7 @@ export type {
 } from "./allocation.ts";
 export { allocate } from "./allocation.ts";
 export type {
-  AreaTypeDef,
+  CapacityDef,
   BranchDef,
   CarriedConfig,
   Condition,
@@ -47,7 +47,7 @@ export { drawShocks, exposureMagnitude, shockFactor } from "./risk.ts";
 export { derive } from "./derive.ts";
 export { applyEffect, effectTypesWithHandler } from "./effects.ts";
 export type {
-  AreaTypeId,
+  CapacityId,
   BranchId,
   NeedTierId,
   ProcessId,
@@ -67,8 +67,8 @@ export type { RandomState } from "./random.ts";
 export { counterOf, createRandomState, draw, peek, uniformAt } from "./random.ts";
 export type { StartOptions } from "./setup.ts";
 export { createState } from "./setup.ts";
-export type { ActiveProject, Area, GameState, SectorState } from "./state.ts";
-export { areaOf, completedCount, stockOf, withSector } from "./state.ts";
+export type { ActiveProject, Capacity, GameState, SectorState } from "./state.ts";
+export { capacityOf, completedCount, stockOf, withSector } from "./state.ts";
 export { tick } from "./tick.ts";
 export type { ConditionContext, Unlocks } from "./unlocks.ts";
 export { allHold, computeUnlocks, conditionHolds, unmetConditions } from "./unlocks.ts";

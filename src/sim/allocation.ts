@@ -4,7 +4,7 @@ import {
   type NeedTierDef,
   type ProcessDef,
 } from "./config.ts";
-import type { AreaTypeId, BranchId, ProcessId, SectorId, StockId } from "./ids.ts";
+import type { CapacityId, BranchId, ProcessId, SectorId, StockId } from "./ids.ts";
 import {
   ORDERING_RESOLVER,
   type OrderingContext,
@@ -32,7 +32,7 @@ import {
   type PlanContext,
 } from "./plan.ts";
 import { shockFactor, type Shocks } from "./risk.ts";
-import { areaOf, type GameState } from "./state.ts";
+import { capacityOf, type GameState } from "./state.ts";
 
 /**
  * Allocation and production for one tick (E21, E5).
@@ -46,13 +46,20 @@ import { areaOf, type GameState } from "./state.ts";
  * and `derive`, so what the player sees is what was computed.
  */
 
-/** Why a tier could not be covered further. */
-export type BindingKind = "labor" | "area" | "intermediate" | "none";
+/**
+ * Why a tier could not be covered further.
+ *
+ * Two kinds, because the model knows two kinds of input (E4): capacity, which
+ * is occupied and given back, and a stock, which is used up. Labour used to be
+ * a third and is not any more — a shortage of hands shows up as the capacity
+ * "people" running out, like any other.
+ */
+export type BindingKind = "capacity" | "stock" | "none";
 
 export interface Binding {
   readonly kind: BindingKind;
-  /** Which area type or stock ran out; absent for labour. */
-  readonly what?: AreaTypeId | StockId;
+  /** Which capacity or stock ran out. */
+  readonly what?: CapacityId | StockId;
 }
 
 export interface TierOutcome {
@@ -86,14 +93,14 @@ export interface AllocationResult {
   readonly runs: readonly ProcessRun[];
 
   /** Occupied area per type; utilisation follows from it (E4). */
-  readonly areaUsed: Readonly<Record<AreaTypeId, number>>;
+  readonly capacityUsed: Readonly<Record<CapacityId, number>>;
   /**
    * What each capacity offered this tick. Reported rather than recomputed
    * elsewhere: a capacity need not be land held in the state — the people are
    * one, and they are derived from the heads. Deriving it a second time made
    * the utilisation of the people read zero while they were fully at work.
    */
-  readonly areaTotal: Readonly<Record<AreaTypeId, number>>;
+  readonly capacityTotal: Readonly<Record<CapacityId, number>>;
 
   /** The lowest tier that is not fully covered, and what stopped it (E6). */
   readonly binding: Binding;
@@ -107,19 +114,19 @@ export interface AllocationResult {
 type NeedTierId = string;
 
 interface Pools {
-  area: Record<AreaTypeId, { available: number; quality: number }>;
+  amount: Record<CapacityId, { available: number; quality: number }>;
   stock: Record<StockId, number>;
 }
 
 /** Land of one type, pooled over the sector's own holdings and unowned land. */
-function poolAreas(
+function poolCapacities(
   state: GameState,
   sectorId: SectorId,
   config: Config,
-): Record<AreaTypeId, { available: number; quality: number }> {
+): Record<CapacityId, { available: number; quality: number }> {
   const sector = state.sectors[sectorId];
-  const pools: Record<AreaTypeId, { available: number; quality: number }> = {};
-  for (const type of config.areaTypes) {
+  const pools: Record<CapacityId, { available: number; quality: number }> = {};
+  for (const type of config.capacities) {
     if (type.fromPopulation === true) {
       // People are a capacity, and their quality is what one of them can do.
       pools[type.id] = {
@@ -128,12 +135,12 @@ function poolAreas(
       };
       continue;
     }
-    const owned = sector ? areaOf(sector.areas, type.id) : { area: 0, quality: 1 };
-    const unowned = areaOf(state.unownedAreas, type.id);
-    const total = owned.area + unowned.area;
+    const owned = sector ? capacityOf(sector.capacityHeld, type.id) : { amount: 0, quality: 1 };
+    const unowned = capacityOf(state.unownedCapacity, type.id);
+    const total = owned.amount + unowned.amount;
     const quality =
       total > 0
-        ? (owned.area * owned.quality + unowned.area * unowned.quality) / total
+        ? (owned.amount * owned.quality + unowned.amount * unowned.quality) / total
         : 1;
     pools[type.id] = { available: total, quality };
   }
@@ -142,16 +149,16 @@ function poolAreas(
 
 /**
  * Land quality works on the **area**, not on the labour: E13 puts it as
- * `yield = hectares × quality × process yield`. Poor ground means more acres
+ * `yield = area × quality × process yield`. Poor ground means more ground
  * for the same harvest — that is Ricardo's differential rent, and it is what
  * makes the fixed factor bite.
  */
-function effectiveAreaPerOutput(
+function effectiveCapacityPerOutput(
   process: ProcessDef,
-  areaType: AreaTypeId,
+  capacity: CapacityId,
   quality: number,
 ): number {
-  const base = process.areaPerOutput[areaType] ?? 0;
+  const base = process.capacityPerOutput[capacity] ?? 0;
   const factor = 1 - process.qualityWeight + process.qualityWeight * quality;
   return factor > 0 ? base / factor : Infinity;
 }
@@ -164,14 +171,14 @@ function consume(
   output: number,
   pools: Pools,
   shocks: Shocks,
-  areaUsed: Record<AreaTypeId, number>,
+  capacityUsed: Record<CapacityId, number>,
   consumed: Record<StockId, number>,
 ): number {
-  const areaEntries = Object.entries(process.areaPerOutput);
+  const capacityEntries = Object.entries(process.capacityPerOutput);
   const quality =
-    areaEntries.length > 0
-      ? areaEntries[0]
-        ? (pools.area[areaEntries[0][0]]?.quality ?? 1)
+    capacityEntries.length > 0
+      ? capacityEntries[0]
+        ? (pools.amount[capacityEntries[0][0]]?.quality ?? 1)
         : 1
       : 1;
   // The shock reaches the labour only — see the note where `shockFor` is set.
@@ -179,12 +186,12 @@ function consume(
   const laborScale = shock > 0 ? 1 / shock : 0;
   let labor = 0;
 
-  for (const [areaType] of areaEntries) {
-    const pool = pools.area[areaType];
+  for (const [capacity] of capacityEntries) {
+    const pool = pools.amount[capacity];
     if (pool === undefined) continue;
-    const used = output * effectiveAreaPerOutput(process, areaType, quality);
+    const used = output * effectiveCapacityPerOutput(process, capacity, quality);
     pool.available -= used;
-    areaUsed[areaType] = (areaUsed[areaType] ?? 0) + used;
+    capacityUsed[capacity] = (capacityUsed[capacity] ?? 0) + used;
   }
   for (const [stockId, perOutput] of Object.entries(process.intermediatesPerOutput)) {
     const used = output * perOutput * (stockId === LABOR_STOCK ? laborScale : 1);
@@ -217,7 +224,7 @@ export function allocate(input: AllocationInput): AllocationResult {
   const laborAvailable = heads * (sector?.workAbility ?? 0) * (sector?.productivity ?? 0);
 
   const pools: Pools = {
-    area: poolAreas(state, sectorId, config),
+    amount: poolCapacities(state, sectorId, config),
     stock: { ...(sector?.stocks ?? {}) },
   };
 
@@ -240,7 +247,7 @@ export function allocate(input: AllocationInput): AllocationResult {
       index,
       available: forBranch,
       buffer,
-      quality: (areaType: string) => pools.area[areaType]?.quality ?? 1,
+      quality: (capacity: string) => pools.amount[capacity]?.quality ?? 1,
     };
     const resolved = ORDERING_RESOLVER.resolve(branch, orderCtx);
     ordering.set(branch.id, resolved.processes);
@@ -310,7 +317,7 @@ export function allocate(input: AllocationInput): AllocationResult {
   for (const stockDef of config.stocks) {
     const shelter = stockDef.protectedBy;
     if (shelter === undefined) continue;
-    const capacity = pools.area[shelter.capacity]?.available ?? 0;
+    const capacity = pools.amount[shelter.capacity]?.available ?? 0;
     const gap = capacity - (pools.stock[stockDef.id] ?? 0);
     if (gap <= 1e-9) continue;
     demands.push({
@@ -330,10 +337,10 @@ export function allocate(input: AllocationInput): AllocationResult {
   const planCtx: PlanContext = {
     index,
     supplies: {
-      areas: Object.fromEntries(
-        Object.entries(pools.area).map(([id, pool]) => [
+      capacityHeld: Object.fromEntries(
+        Object.entries(pools.amount).map(([id, pool]) => [
           id,
-          { area: pool.available, quality: pool.quality },
+          { amount: pool.available, quality: pool.quality },
         ]),
       ),
       stocks: { ...pools.stock },
@@ -363,7 +370,7 @@ export function allocate(input: AllocationInput): AllocationResult {
 
   // Carry the plan out: consume inputs, book output.
   const produced: Record<StockId, number> = {};
-  const areaUsed: Record<AreaTypeId, number> = {};
+  const capacityUsed: Record<CapacityId, number> = {};
   const runs: ProcessRun[] = [];
   let totalOutput = 0;
 
@@ -378,7 +385,7 @@ export function allocate(input: AllocationInput): AllocationResult {
     const level = plan.levels.get(id) ?? 0;
     const process = index.process.get(id);
     if (process === undefined || level <= 1e-12) continue;
-    const labor = consume(process, level, pools, shocks, areaUsed, consumed);
+    const labor = consume(process, level, pools, shocks, capacityUsed, consumed);
     const stock = index.branch.get(process.branch)?.produces;
     if (stock !== undefined) {
       produced[stock] = (produced[stock] ?? 0) + level;
@@ -442,9 +449,9 @@ export function allocate(input: AllocationInput): AllocationResult {
     produced,
     consumed,
     runs: withShares,
-    areaUsed,
-    areaTotal: Object.fromEntries(
-      Object.entries(poolAreas(state, sectorId, config)).map(([id, pool]) => [
+    capacityUsed,
+    capacityTotal: Object.fromEntries(
+      Object.entries(poolCapacities(state, sectorId, config)).map(([id, pool]) => [
         id,
         pool.available,
       ]),
@@ -507,9 +514,10 @@ function bindingFromPlan(plan: Plan): Binding {
     }
   }
   if (worst === undefined) return { kind: "none" };
-  if (worst === "labor") return { kind: "labor" };
-  if (worst.startsWith("area:")) return { kind: "area", what: worst.slice(5) };
-  return { kind: "intermediate", what: worst.slice(6) };
+  if (worst.startsWith("capacity:")) {
+    return { kind: "capacity", what: worst.slice("capacity:".length) };
+  }
+  return { kind: "stock", what: worst.slice("stock:".length) };
 }
 
 

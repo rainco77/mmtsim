@@ -9,7 +9,7 @@ export type NeedTierId = string;
 export type SectorId = string;
 
 /** An area type is a kind of land: wilderness, cleared land, … (E13). */
-export type AreaTypeId = string;
+export type CapacityId = string;
 
 /** A rule is a switch set by a project effect and read by the phases (E23). */
 export type RuleId = string;

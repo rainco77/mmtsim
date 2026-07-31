@@ -40,8 +40,8 @@ export const STAGE1: Config = {
     { id: "housing", decayPerTick: 0.02 },
   ],
 
-  // ------------------------------------------------------------------- areas
-  areaTypes: [
+  // ------------------------------------------------------------------- capacityHeld
+  capacities: [
     { id: "wilderness" },
     { id: "cleared" },
     // People are a capacity like land: occupied for a tick, not used up.
@@ -69,7 +69,7 @@ export const STAGE1: Config = {
       id: "labor",
       branch: "labor",
       priority: 999,
-      areaPerOutput: { people: 1 },
+      capacityPerOutput: { people: 1 },
       intermediatesPerOutput: {},
       exposure: {},
       qualityWeight: 1,
@@ -82,7 +82,7 @@ export const STAGE1: Config = {
       id: "gathering",
       branch: "food",
       priority: 100,
-      areaPerOutput: { wilderness: 3.0 },
+      capacityPerOutput: { wilderness: 3.0 },
       intermediatesPerOutput: { labor: 0.769231 },
       exposure: { weather: 1.0 },
       qualityWeight: 0.5,
@@ -92,7 +92,7 @@ export const STAGE1: Config = {
       id: "gathering_sickle",
       branch: "food",
       priority: 110,
-      areaPerOutput: { wilderness: 3.0 },
+      capacityPerOutput: { wilderness: 3.0 },
       intermediatesPerOutput: { labor: 0.625 },
       exposure: { weather: 1.0 },
       qualityWeight: 0.5,
@@ -102,7 +102,7 @@ export const STAGE1: Config = {
       id: "hunting",
       branch: "food",
       priority: 130,
-      areaPerOutput: { wilderness: 2.6 },
+      capacityPerOutput: { wilderness: 2.6 },
       intermediatesPerOutput: { labor: 0.434783 },
       exposure: { weather: 0.8 },
       qualityWeight: 0.5,
@@ -116,21 +116,21 @@ export const STAGE1: Config = {
       id: "farming",
       branch: "food",
       priority: 200,
-      areaPerOutput: { cleared: 0.35 },
+      capacityPerOutput: { cleared: 0.35 },
       intermediatesPerOutput: { labor: 0.625 },
       exposure: { weather: 0.6 },
       qualityWeight: 0.9,
       unlockedFromStart: false,
     },
 
-    // Intensification: more per hectare, at the price of more labour per unit.
+    // Intensification: more per unit of ground, at the price of more labour per unit.
     // This is the way out of the trap — expansion runs into the fixed factor,
     // and only working the same land harder gets past it (E6, E13).
     {
       id: "farming_fallow",
       branch: "food",
       priority: 210,
-      areaPerOutput: { cleared: 0.2 },
+      capacityPerOutput: { cleared: 0.2 },
       intermediatesPerOutput: { labor: 0.740741 },
       exposure: { weather: 0.5 },
       qualityWeight: 0.9,
@@ -141,7 +141,7 @@ export const STAGE1: Config = {
       id: "forestry",
       branch: "wood",
       priority: 100,
-      areaPerOutput: { wilderness: 1.2 },
+      capacityPerOutput: { wilderness: 1.2 },
       intermediatesPerOutput: { labor: 1.111111 },
       exposure: { weather: 0.2 },
       qualityWeight: 0.4,
@@ -151,7 +151,7 @@ export const STAGE1: Config = {
       id: "building",
       branch: "housing",
       priority: 100,
-      areaPerOutput: { cleared: 0.05 },
+      capacityPerOutput: { cleared: 0.05 },
       intermediatesPerOutput: { labor: 2.857143, wood: 1.4 },
       exposure: { weather: 0.0 },
       qualityWeight: 0.0,
@@ -260,7 +260,7 @@ export const STAGE1: Config = {
       effects: [
         {
           type: "capacity",
-          areaType: "storage",
+          capacity: "storage",
           sector: "households",
           amount: 40,
           quality: { kind: "fixed", value: 1 },
@@ -296,7 +296,7 @@ export const STAGE1: Config = {
       //
       // It also has to be this and not the held stock, because a held stock
       // moves with the weather: bad luck may delay a transition, never block it.
-      availableWhen: [{ kind: "capacityPerHead", areaType: "storage", min: 2 }],
+      availableWhen: [{ kind: "capacityPerHead", capacity: "storage", min: 2 }],
       laborCost: 120,
       stockCost: {},
       minTicks: 40,
@@ -312,15 +312,15 @@ export const STAGE1: Config = {
         // quality (E13).
         {
           type: "capacity",
-          areaType: "wilderness",
+          capacity: "wilderness",
           amount: -20,
         },
         {
           type: "capacity",
-          areaType: "cleared",
+          capacity: "cleared",
           sector: "households",
           amount: 20,
-          quality: { kind: "from", areaType: "wilderness" },
+          quality: { kind: "from", capacity: "wilderness" },
         },
       ],
       sector: "households",
@@ -331,7 +331,7 @@ export const STAGE1: Config = {
       visibleWhen: [{ kind: "rule", id: "settled", set: true }],
       availableWhen: [
         { kind: "rule", id: "settled", set: true },
-        { kind: "unownedArea", areaType: "wilderness", min: 10 },
+        { kind: "unownedCapacity", capacity: "wilderness", min: 10 },
       ],
       // Clearing is hard work and slow. That is what makes the fixed factor
       // bite: a growing population outruns what can be cleared (E7, E13).
@@ -340,13 +340,13 @@ export const STAGE1: Config = {
       minTicks: 15,
       repeatable: true,
       effects: [
-        { type: "capacity", areaType: "wilderness", amount: -10 },
+        { type: "capacity", capacity: "wilderness", amount: -10 },
         {
           type: "capacity",
-          areaType: "cleared",
+          capacity: "cleared",
           sector: "households",
           amount: 10,
-          quality: { kind: "from", areaType: "wilderness" },
+          quality: { kind: "from", capacity: "wilderness" },
         },
       ],
       sector: "households",
@@ -388,7 +388,7 @@ export const STAGE1: Config = {
         // Each taking is worse than the one before it — Ricardo.
         {
           type: "capacity",
-          areaType: "wilderness",
+          capacity: "wilderness",
           amount: 40,
           quality: { kind: "nextTaking" },
         },

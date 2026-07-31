@@ -66,14 +66,14 @@ describe("content is well formed (T3)", () => {
 
   it("every referenced id exists", () => {
     const stocks = new Set(STAGE1.stocks.map((s) => s.id));
-    const areas = new Set(STAGE1.areaTypes.map((a) => a.id));
+    const capacityHeld = new Set(STAGE1.capacities.map((a) => a.id));
     const branches = new Set(STAGE1.branches.map((b) => b.id));
     const processes = new Set(STAGE1.processes.map((p) => p.id));
 
     for (const process of STAGE1.processes) {
       expect(branches.has(process.branch)).toBe(true);
-      for (const id of Object.keys(process.areaPerOutput))
-        expect(areas.has(id)).toBe(true);
+      for (const id of Object.keys(process.capacityPerOutput))
+        expect(capacityHeld.has(id)).toBe(true);
       for (const id of Object.keys(process.intermediatesPerOutput)) {
         expect(stocks.has(id)).toBe(true);
       }
@@ -86,7 +86,7 @@ describe("content is well formed (T3)", () => {
       for (const effect of project.effects) {
         if (effect.type === "process") expect(processes.has(effect.id)).toBe(true);
         if (effect.type === "branch") expect(branches.has(effect.id)).toBe(true);
-        if (effect.type === "capacity") expect(areas.has(effect.areaType)).toBe(true);
+        if (effect.type === "capacity") expect(capacityHeld.has(effect.capacity)).toBe(true);
       }
     }
   });
@@ -262,7 +262,7 @@ describe("processes and the fallback level (E5)", () => {
         households: {
           ...state.sectors["households"]!,
           heads: 200,
-          areas: { cleared: { area: 3, quality: 1 } },
+          capacityHeld: { cleared: { amount: 3, quality: 1 } },
         },
       },
     };
@@ -294,14 +294,14 @@ describe("processes and the fallback level (E5)", () => {
       return {
         ...base,
         completedProjects: { sickle_blades: 1, sedentism: 1, fallowing: 1 },
-        unownedAreas: {},
+        unownedCapacity: {},
         sectors: {
           ...base.sectors,
           households: {
             ...base.sectors["households"]!,
             heads,
             stocks: {},
-            areas: { cleared: { area: cleared, quality: 1 } },
+            capacityHeld: { cleared: { amount: cleared, quality: 1 } },
           },
         },
       };
@@ -326,14 +326,14 @@ describe("processes and the fallback level (E5)", () => {
     state = {
       ...state,
       completedProjects: { ...state.completedProjects, sedentism: 1 },
-      unownedAreas: { wilderness: { area: 30, quality: 1 } },
+      unownedCapacity: { wilderness: { amount: 30, quality: 1 } },
       sectors: {
         ...state.sectors,
         households: {
           ...state.sectors["households"]!,
           heads: 200,
           stocks: { food: 0 },
-          areas: { cleared: { area: 400, quality: 1 } },
+          capacityHeld: { cleared: { amount: 400, quality: 1 } },
         },
       },
     };
@@ -357,7 +357,7 @@ describe("processes and the fallback level (E5)", () => {
           branch: "food",
           priority: 5,
           intermediatesPerOutput: { labor: 1.111111 },
-          areaPerOutput: { wilderness: 3.0 },
+          capacityPerOutput: { wilderness: 3.0 },
           exposure: { weather: 0.05 },
           qualityWeight: 0.5,
           unlockedFromStart: true,
@@ -411,7 +411,7 @@ describe("allocation runs rank by rank (E21)", () => {
     // Far too little wilderness for the population: area binds, not labour.
     const state = createState(STAGE1, { seed: 7, heads: 200, wilderness: 30, food: 0 });
     const d = derive(state, index);
-    expect(d.binding.kind).toBe("area");
+    expect(d.binding.kind).toBe("capacity");
     expect(d.binding.what).toBe("wilderness");
     expect(d.bindingTier).toBe("food_survival");
   });
@@ -462,7 +462,7 @@ describe("sedentism (E29)", () => {
     expect(unlocks.rules.has("settled")).toBe(true);
     expect(unlocks.branches.has("housing")).toBe(true);
     expect(unlocks.processes.has("farming")).toBe(true);
-    expect(state.sectors["households"]?.areas["cleared"]?.area).toBeCloseTo(20, 9);
+    expect(state.sectors["households"]?.capacityHeld["cleared"]?.amount).toBeCloseTo(20, 9);
   });
 
   it("storage pits keep what they cover, and only that (E19)", () => {
@@ -477,7 +477,7 @@ describe("sedentism (E29)", () => {
           ...base.sectors["households"]!,
           heads: 0,
           stocks: { food: 100 },
-          areas: { storage: { area: capacity, quality: 1 } },
+          capacityHeld: { storage: { amount: capacity, quality: 1 } },
         },
       },
     });
@@ -516,16 +516,16 @@ describe("sedentism (E29)", () => {
     state = finish(state, "sedentism");
 
     const before =
-      (state.unownedAreas["wilderness"]?.area ?? 0) +
-      (state.sectors["households"]?.areas["cleared"]?.area ?? 0);
+      (state.unownedCapacity["wilderness"]?.amount ?? 0) +
+      (state.sectors["households"]?.capacityHeld["cleared"]?.amount ?? 0);
     const after = finish(state, "clearing");
     const total =
-      (after.unownedAreas["wilderness"]?.area ?? 0) +
-      (after.sectors["households"]?.areas["cleared"]?.area ?? 0);
+      (after.unownedCapacity["wilderness"]?.amount ?? 0) +
+      (after.sectors["households"]?.capacityHeld["cleared"]?.amount ?? 0);
 
     expect(total).toBeCloseTo(before, 6);
-    expect(after.sectors["households"]?.areas["cleared"]?.area ?? 0).toBeGreaterThan(
-      state.sectors["households"]?.areas["cleared"]?.area ?? 0,
+    expect(after.sectors["households"]?.capacityHeld["cleared"]?.amount ?? 0).toBeGreaterThan(
+      state.sectors["households"]?.capacityHeld["cleared"]?.amount ?? 0,
     );
   });
 
@@ -572,7 +572,7 @@ describe("supply chains (E4)", () => {
         ...state.sectors,
         households: {
           ...state.sectors["households"]!,
-          areas: { cleared: { area: 300, quality: 1 } },
+          capacityHeld: { cleared: { amount: 300, quality: 1 } },
         },
       },
     };
@@ -594,21 +594,21 @@ describe("supply chains (E4)", () => {
     let state = finish(createState(STAGE1, { seed: 7 }), "sickle_blades");
     state = {
       ...state,
-      unownedAreas: { wilderness: { area: 0.01, quality: 1 } },
+      unownedCapacity: { wilderness: { amount: 0.01, quality: 1 } },
       sectors: {
         ...state.sectors,
         households: {
           ...state.sectors["households"]!,
           heads: 200,
           stocks: { food: 400 },
-          areas: { cleared: { area: 400, quality: 1 } },
+          capacityHeld: { cleared: { amount: 400, quality: 1 } },
         },
       },
       completedProjects: { sickle_blades: 1, sedentism: 1 },
     };
     const d = derive(state, index);
     expect(d.coverage["shelter_roof"] ?? 1).toBeLessThan(1);
-    expect(d.binding.kind).toBe("area");
+    expect(d.binding.kind).toBe("capacity");
     expect(d.binding.what).toBe("wilderness");
   });
 });

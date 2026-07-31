@@ -1,9 +1,9 @@
 import { allocate, type AllocationResult } from "./allocation.ts";
 import { type ConfigIndex, tierEffectAt } from "./config.ts";
-import type { AreaTypeId, ProjectId, StockId } from "./ids.ts";
+import type { CapacityId, ProjectId, StockId } from "./ids.ts";
 import { HOUSEHOLDS } from "./phases.ts";
 import { peek } from "./random.ts";
-import { type Area, type GameState } from "./state.ts";
+import { type Capacity, type GameState } from "./state.ts";
 import {
   allHold,
   computeUnlocks,
@@ -45,10 +45,10 @@ export interface Derived {
   readonly ordering: readonly BranchOrdering[];
 
   readonly stocks: Readonly<Record<StockId, number>>;
-  readonly unownedAreas: Readonly<Record<AreaTypeId, Area>>;
-  readonly ownedAreas: Readonly<Record<AreaTypeId, Area>>;
+  readonly unownedCapacity: Readonly<Record<CapacityId, Capacity>>;
+  readonly ownedCapacity: Readonly<Record<CapacityId, Capacity>>;
   /** Occupied over available, per area type — never above 1 (E5). */
-  readonly utilization: Readonly<Record<AreaTypeId, number>>;
+  readonly utilization: Readonly<Record<CapacityId, number>>;
   /** Quality the next taking would bring (E13), shown before the click. */
   readonly nextTakingQuality: number;
 
@@ -131,10 +131,10 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     deathRate += tierEffectAt(tier.deathRate, outcome.coverage);
   }
 
-  const utilization: Record<AreaTypeId, number> = {};
-  for (const type of index.config.areaTypes) {
-    const total = allocation.areaTotal[type.id] ?? 0;
-    utilization[type.id] = total > 0 ? (allocation.areaUsed[type.id] ?? 0) / total : 0;
+  const utilization: Record<CapacityId, number> = {};
+  for (const type of index.config.capacities) {
+    const total = allocation.capacityTotal[type.id] ?? 0;
+    utilization[type.id] = total > 0 ? (allocation.capacityUsed[type.id] ?? 0) / total : 0;
   }
 
   const ctx: ConditionContext = { state, index, unlocks, coverage, population: heads };
@@ -182,8 +182,8 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
       };
     }),
     stocks: sector?.stocks ?? {},
-    unownedAreas: state.unownedAreas,
-    ownedAreas: sector?.areas ?? {},
+    unownedCapacity: state.unownedCapacity,
+    ownedCapacity: sector?.capacityHeld ?? {},
     utilization,
     nextTakingQuality:
       index.config.land.baseQuality *
@@ -216,7 +216,7 @@ function describeEffect(effect: { type: string } & Record<string, unknown>): str
     case "rule":
       return `rule:${String(effect["id"])}=${String(effect["set"])}`;
     case "capacity":
-      return `area:${String(effect["areaType"])}${
+      return `capacity:${String(effect["capacity"])}${
         Number(effect["amount"]) >= 0 ? "+" : ""
       }${String(effect["amount"])}`;
     default:

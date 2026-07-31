@@ -44,12 +44,12 @@ describe("invariants", () => {
   it("no area ever turns negative", () => {
     for (const seed of SEEDS) {
       for (const state of walk(seed)) {
-        for (const area of Object.values(state.unownedAreas)) {
-          expect(area.area).toBeGreaterThanOrEqual(-1e-9);
+        for (const area of Object.values(state.unownedCapacity)) {
+          expect(area.amount).toBeGreaterThanOrEqual(-1e-9);
         }
         for (const sector of Object.values(state.sectors)) {
-          for (const area of Object.values(sector.areas)) {
-            expect(area.area).toBeGreaterThanOrEqual(-1e-9);
+          for (const area of Object.values(sector.capacityHeld)) {
+            expect(area.amount).toBeGreaterThanOrEqual(-1e-9);
           }
         }
       }

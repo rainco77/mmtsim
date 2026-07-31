@@ -1,13 +1,13 @@
 import { allocate, type AllocationResult } from "./allocation.ts";
 import { type ConfigIndex, tierEffectAt } from "./config.ts";
 import { applyEffect } from "./effects.ts";
-import type { AreaTypeId, SectorId, StockId } from "./ids.ts";
+import type { CapacityId, SectorId, StockId } from "./ids.ts";
 import { drawShocks, type Shocks } from "./risk.ts";
 import {
-  areaOf,
+  capacityOf,
   stockOf,
   type ActiveProject,
-  type Area,
+  type Capacity,
   type GameState,
   type SectorState,
 } from "./state.ts";
@@ -85,19 +85,19 @@ export class DecayPhase implements Phase {
         }
         // A store is capacity, not a container (E19): what it covers keeps, the
         // rest spoils at the ordinary rate. There is no "store full".
-        const covered = Math.min(amount, areaOf(sector.areas, shelter.capacity).area);
+        const covered = Math.min(amount, capacityOf(sector.capacityHeld, shelter.capacity).amount);
         const sheltered =
           shelter.decayWhenRule?.find((entry) => ctx.unlocks.rules.has(entry.rule))
             ?.decayPerTick ?? shelter.decayPerTick;
         stocks[stockId] = covered * (1 - sheltered) + (amount - covered) * (1 - ordinary);
       }
       // Capacity decays too, and keeping it means building it again (E19).
-      const areas: Record<AreaTypeId, Area> = {};
-      for (const [areaId, area] of Object.entries(sector.areas)) {
-        const rate = index.config.areaTypes.find((t) => t.id === areaId)?.decayPerTick ?? 0;
-        areas[areaId] = { ...area, area: area.area * (1 - rate) };
+      const capacityHeld: Record<CapacityId, Capacity> = {};
+      for (const [id, held] of Object.entries(sector.capacityHeld)) {
+        const rate = index.config.capacities.find((c) => c.id === id)?.decayPerTick ?? 0;
+        capacityHeld[id] = { ...held, amount: held.amount * (1 - rate) };
       }
-      sectors[id] = { ...sector, stocks, areas };
+      sectors[id] = { ...sector, stocks, capacityHeld };
     }
     return { ...state, sectors };
   }
