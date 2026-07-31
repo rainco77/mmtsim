@@ -7,6 +7,7 @@ export interface StartOptions {
   readonly seed: number;
   readonly heads?: number;
   readonly wilderness?: number;
+  readonly water?: number;
   readonly food?: number;
 }
 
@@ -43,6 +44,13 @@ export function createState(config: Config, options: StartOptions): GameState {
         // (right for thirty) left fifty people permanently below satiety, with
         // no births, no projects and no way out.
         amount: options.wilderness ?? 300,
+        quality: config.land.baseQuality,
+      },
+      // A stretch of shore. Small on purpose: from the bank one reaches a few
+      // metres, and it is the boat that opens the rest (E29). Unowned like the
+      // wilderness — nobody owns the water before there is property.
+      water: {
+        amount: options.water ?? 40,
         quality: config.land.baseQuality,
       },
     },
