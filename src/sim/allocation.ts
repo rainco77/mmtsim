@@ -292,8 +292,14 @@ export function allocate(input: AllocationInput): AllocationResult {
   const fromStock = new Map<string, number>();
   const tierList = index.tiersByRank.filter((tier) => input.unlockedBranches.has(tier.branch));
 
-  const perHead = (tier: NeedTierDef): number =>
-    input.tierPerHead.get(tier.id) ?? tier.perHead;
+  const perHead = (tier: NeedTierDef): number => {
+    const base = input.tierPerHead.get(tier.id) ?? tier.perHead;
+    if (tier.exposure === undefined) return base;
+    // The demand side of a shock (E24): a bad year asks for more, where a
+    // process would deliver less. Same draw, opposite direction.
+    const factor = shockFactor({ exposure: tier.exposure }, shocks);
+    return factor > 0 ? base / factor : base;
+  };
 
   for (const tier of tierList) {
     const need = heads * perHead(tier);

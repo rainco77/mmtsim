@@ -142,6 +142,16 @@ export interface TierEffect {
  */
 export interface NeedTierDef {
   readonly id: NeedTierId;
+
+  /**
+   * How strongly this need moves with a random stream (E24) — the demand side
+   * of a shock. A cold year yields less firewood *and* calls for more of it, so
+   * hardship compounds instead of adding up.
+   *
+   * The direction is the opposite of a process's: there a bad draw lowers the
+   * output, here it raises what is needed per head.
+   */
+  readonly exposure?: Readonly<Record<RandomStreamId, number>>;
   readonly rank: number;
   readonly stock: StockId;
   readonly branch: BranchId;

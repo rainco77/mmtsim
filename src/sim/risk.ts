@@ -57,10 +57,20 @@ function shapeValue(
   return Math.pow(uniform, 1 / shape.exponent) * scale;
 }
 
-/** How this tick's shocks strike one process: the product over its exposures. */
-export function shockFactor(process: ProcessDef, shocks: Shocks): number {
+/**
+ * How this tick's shocks strike whatever declares an exposure — the product
+ * over its streams.
+ *
+ * Both a process and a need may declare one, because a draw reaches supply and
+ * demand alike. What differs is the direction, and that is settled where it is
+ * used: a process gets *less* out of a bad year, a need asks for *more*.
+ */
+export function shockFactor(
+  exposed: { readonly exposure: Readonly<Record<RandomStreamId, number>> },
+  shocks: Shocks,
+): number {
   let factor = 1;
-  for (const [stream, exposure] of Object.entries(process.exposure)) {
+  for (const [stream, exposure] of Object.entries(exposed.exposure)) {
     if (exposure <= 0) continue;
     factor *= 1 + exposure * ((shocks[stream] ?? 1) - 1);
   }

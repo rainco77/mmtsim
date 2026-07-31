@@ -195,6 +195,10 @@ export const STAGE1: Config = {
     {
       id: "warmth_fire",
       rank: 150,
+      // A cold year takes the harvest and calls for more firewood at the same
+      // time (E24). Less exposed than the harvest itself: one heats against the
+      // winter one has, and a poor summer is not a hard winter.
+      exposure: { weather: 0.4 },
       stock: "wood",
       branch: "wood",
       perHead: 0.1,

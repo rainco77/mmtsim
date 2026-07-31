@@ -2351,16 +2351,15 @@ besprochen und vertagt, nicht vergessen:
 
 | | Punkt | |
 |---|---|---|
-| 1 | **Zufall auf der Bedarfsseite bauen** — Empfindlichkeit einer Bedarfsstufe je Strom (E24) | abgestimmt, ungebaut |
-| 2 | **Technologiebaum der ersten Epoche**, Schritte 2 bis 4 aus E31 | Schritt 1 steht in E29 |
-| 3 | **Einmal austarieren**, danach | |
-| 4 | Speicher bleibt an der Tragfähigkeitsgrenze leer, Gruben verfallen ungenutzt | nach dem Baum |
-| 5 | Verfallsraten fein justieren (Gruben, Wohnraum) | nach dem Baum |
-| 6 | Meldungen an den Spieler; Motorbegriffe in der Sicht; i18n. Dazu gehört, dass ein aufgefangenes schlechtes Jahr **lautlos** bleibt — der lehrreichste Moment der Epoche wird nicht benannt | unabhängig |
-| 7 | Heterogenität in einem Sektor: jetzt oder später | unabhängig |
-| 8 | GitHub: public, privat oder noch nicht — Issues gäbe es auch privat | unabhängig |
-| 9 | Rechenzeit-Reserven: inkrementelles Planen statt Neuplanung je Rangbisektion, `totalUse` fortschreiben | derzeit nicht nötig |
-| 10 | Die Zahl der Landnahmen steht an zwei Stellen: als Zähler im Zustand für die fallende Güte, als Obergrenze am Projekt | Kleinigkeit |
+| 1 | **Technologiebaum der ersten Epoche**, Schritte 2 bis 4 aus E31 | Schritt 1 steht in E29 |
+| 2 | **Einmal austarieren**, danach | |
+| 3 | Speicher bleibt an der Tragfähigkeitsgrenze leer, Gruben verfallen ungenutzt | nach dem Baum |
+| 4 | Verfallsraten fein justieren (Gruben, Wohnraum) | nach dem Baum |
+| 5 | Meldungen an den Spieler; Motorbegriffe in der Sicht; i18n. Dazu gehört, dass ein aufgefangenes schlechtes Jahr **lautlos** bleibt — der lehrreichste Moment der Epoche wird nicht benannt | unabhängig |
+| 6 | Heterogenität in einem Sektor: jetzt oder später | unabhängig |
+| 7 | GitHub: public, privat oder noch nicht — Issues gäbe es auch privat | unabhängig |
+| 8 | Rechenzeit-Reserven: inkrementelles Planen statt Neuplanung je Rangbisektion, `totalUse` fortschreiben | derzeit nicht nötig |
+| 9 | Die Zahl der Landnahmen steht an zwei Stellen: als Zähler im Zustand für die fallende Güte, als Obergrenze am Projekt | Kleinigkeit |
 
 Dazu die unentschiedenen Ideen weiter unten und die vertagte Kuppelproduktion.
 
