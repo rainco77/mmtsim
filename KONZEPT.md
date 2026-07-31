@@ -15,7 +15,17 @@ Drei gleichrangige Anforderungen:
 1. **Es muss Spaß machen und süchtig machen.**
 2. **Es muss die volkswirtschaftliche Lehre so genau wie möglich wiedergeben** — das
    Spiel soll wirklich dazu dienen, Volkswirtschaft zu verstehen, und mit verbreiteten
-   Mythen aufräumen (Geld sei knapp, Staaten könnten in eigener Währung pleitegehen).
+   Mythen aufräumen. Eine **offene Liste**, die wächst; bisher benannt:
+
+   | Mythos | woran er scheitern soll |
+   |---|---|
+   | Geld ist knapp | die Umlaufmenge ist das kumulierte Defizit, vom Spieler gesetzt |
+   | Ein Staat in eigener Währung kann pleitegehen | er kann es nicht; die Grenze ist eine andere |
+   | Inflation kommt aus der Geldmenge | sie kommt aus der Auslastung realer Ressourcen |
+   | Ein Staat wirtschaftet wie ein Privathaushalt | der Haushalt braucht Einnahmen vor Ausgaben, der Währungsherausgeber nicht |
+
+   Jeder braucht eine **Mechanik**, an der er zerbricht, keine Textbox. Und die Liste ist
+   ausdrücklich unvollständig — sie ist der Zweck des Spiels, nicht seine Verzierung.
 3. **Es muss gegen wissenschaftliche Kritik möglichst immun sein.** Ein VWL-Professor
    soll es empfehlen können; jemand wie Maurice Höfgen soll es als lehrreich und nicht
    als falsch einordnen. Vereinfachungen sind erlaubt — besonders am Anfang —, aber
@@ -26,8 +36,12 @@ Drei gleichrangige Anforderungen:
 Buchhaltungsidentitäten sind hart. Umstrittene Verhaltensannahmen gehören in die
 Konfiguration, nicht in den Code.
 
-**Politisch neutral.** Progressive und konservative Spielweisen müssen beide
-gewinnbar sein und unterschiedlich scheitern. Das Spiel sagt, was *möglich* ist,
+**Politisch neutral.** Progressive und konservative Spielweisen müssen **ähnlich
+wahrscheinlich gewinnen und ähnlich wahrscheinlich scheitern** — aber auf verschiedene
+Weise. Das ist eine messbare Forderung, keine Absichtserklärung, und es ist zugleich die
+neutrale Fassung dessen, was sonst eine politische Zuschreibung wäre: Wer erlebt, dass
+beide Wege tragen und beide auf ihre eigene Art zusammenbrechen, braucht keine Aussage
+darüber, welche Seite wirtschaften kann. Das Spiel sagt, was *möglich* ist,
 nicht was *wünschenswert* ist.
 
 ---
@@ -1919,11 +1933,15 @@ Möglichkeit — mit so wenig verschiedenen Dingen, dass jedes haften bleibt. We
 dreißig Projekte sieht, lernt keine Schleife, sondern klickt sich durch. Spätere Epochen
 dürfen reicher werden, weil der Spieler dann weiß, worauf er achtet.
 
-**Und jede Epoche muss eine Lehre hergeben, die sich in einem Satz sagen lässt** — nicht
-als Textkasten, sondern als etwas, das der Spieler erlebt hat und das die Oberfläche
-hinterher benennen kann. Für die erste: *Ein Vorrat lässt eine Gesellschaft vom
-Durchschnitt leben statt vom schlechtesten Jahr.* Fällt einem für eine Epoche kein
-solcher Satz ein, fehlt ihr der Grund, und kein Umfang an Projekten ersetzt ihn.
+**Lehren fallen auf allen Größen an, nicht eine je Epoche.** An einem einzelnen Tick
+(„der Speicher hat das schlechte Jahr aufgefangen"), an einer Mechanik („Arbeit, die
+niemand nutzt, ist am Tickende weg"), an einem Bogen über hunderte Ticks („ein Vorrat
+lässt eine Gesellschaft vom Durchschnitt leben statt vom schlechtesten Jahr"). Alle
+zusammen tragen den Zweck aus dem Ziel: die Mythenliste, an Mechanik zerbrochen statt
+an Text.
+
+Der Satz je Epoche ist deshalb ein **Prüfstein und kein Behälter**: Fällt einem für eine
+Epoche keiner ein, fehlt ihr der Grund, und kein Umfang an Projekten ersetzt ihn.
 
 **Die Reihenfolge beim Entwerfen ist die umgekehrte der Technikgeschichte:**
 
