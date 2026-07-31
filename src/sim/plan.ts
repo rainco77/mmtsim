@@ -64,17 +64,52 @@ export interface PlanContext {
   order(stock: StockId, processes: readonly ProcessDef[]): readonly ProcessDef[];
 }
 
+
 /**
- * How much of one input a process needs for one unit of its output — looked up,
- * not recomputed.
+ * How much of one input a process needs **all told** — its own use plus what
+ * everything it consumes needs of it, down the chain (Leontief).
  *
- * The coefficient stands still for the whole allocation: it follows from the
- * process, the land quality and this tick's shocks, and none of those move
- * while a plan is being made. Computing it per question was measured at 42 % of
- * the whole run time.
+ * A comparison has to be made on this and not on the direct coefficient. Since
+ * labour became an ordinary input (E4), a field does not use the people
+ * directly any more; it uses labour, and labour uses the people. Asked for its
+ * direct cost in people, farming answers zero — so a shortage of labour
+ * produced no move at all, while a shortage of land did. Measured: with labour
+ * fully taken and land lying idle, the labour-sparing technique never came in.
+ *
+ * The quantities already run through the chain — that is what derived demand
+ * does. The decision over those quantities has to see the same chain.
  */
-function inputPerOutput(process: ProcessDef, input: InputId, ctx: PlanContext): number {
-  return coefRow(input, ctx).get(process.id) ?? 0;
+function chainRow(input: InputId, ctx: PlanContext): ReadonlyMap<ProcessId, number> {
+  const cache = cacheOf(ctx);
+  const known = cache.chain.get(input);
+  if (known !== undefined) return known;
+
+  const row = new Map<ProcessId, number>();
+  const direct = coefRow(input, ctx);
+
+  const costOf = (process: ProcessDef, seen: Set<ProcessId>): number => {
+    const ready = row.get(process.id);
+    if (ready !== undefined) return ready;
+    // A cycle cannot arise from the content we have; if one ever did, the
+    // chain stops at what is directly visible rather than running away.
+    if (seen.has(process.id)) return direct.get(process.id) ?? 0;
+    seen.add(process.id);
+
+    let total = direct.get(process.id) ?? 0;
+    for (const [stock, per] of Object.entries(process.intermediatesPerOutput)) {
+      if (per <= 0) continue;
+      const maker = producersOf(stock, ctx)[0];
+      if (maker === undefined) continue;
+      total += per * costOf(maker, seen);
+    }
+    seen.delete(process.id);
+    row.set(process.id, total);
+    return total;
+  };
+
+  for (const process of ctx.available) costOf(process, new Set());
+  cache.chain.set(input, row);
+  return row;
 }
 
 /** The processes whose output *is* the stock behind this input — built once. */
@@ -161,6 +196,7 @@ const CACHE = new WeakMap<
     /** Input first, then process: a sum runs over one input at a time. */
     coef: Map<InputId, Map<ProcessId, number>>;
     supply: Map<InputId, number>;
+    chain: Map<InputId, ReadonlyMap<ProcessId, number>>;
     /** Who makes the stock behind an input — the credit side of the net use. */
     makers: Map<InputId, ReadonlySet<ProcessId>>;
   }
@@ -171,6 +207,7 @@ function cacheOf(ctx: PlanContext): {
   producers: Map<StockId, readonly ProcessDef[]>;
   coef: Map<InputId, Map<ProcessId, number>>;
   supply: Map<InputId, number>;
+  chain: Map<InputId, ReadonlyMap<ProcessId, number>>;
   makers: Map<InputId, ReadonlySet<ProcessId>>;
 } {
   let entry = CACHE.get(ctx);
@@ -179,6 +216,7 @@ function cacheOf(ctx: PlanContext): {
       producers: new Map(),
       coef: new Map(),
       supply: new Map(),
+      chain: new Map(),
       makers: new Map(),
     };
     CACHE.set(ctx, entry);
@@ -320,12 +358,13 @@ function shift(
     readonly freedPerUnit: number;
   }
   const moves: Move[] = [];
+  const chain = chainRow(input, ctx);
 
   for (const [id, level] of levels) {
     if (level <= 1e-12) continue;
     const from = ctx.index.process.get(id);
     if (from === undefined) continue;
-    const cost = inputPerOutput(from, input, ctx);
+    const cost = chain.get(id) ?? 0;
     if (cost <= 0) continue;
 
     const stock = ctx.index.branch.get(from.branch)?.produces;
@@ -334,7 +373,7 @@ function shift(
 
     for (const to of producersOf(stock, ctx)) {
       if (to.id === from.id || gone.has(to.id)) continue;
-      const freed = cost - inputPerOutput(to, input, ctx);
+      const freed = cost - (chain.get(to.id) ?? 0);
       if (freed > 1e-12) moves.push({ from, to, stock, freedPerUnit: freed });
     }
   }
@@ -380,11 +419,20 @@ function cover(
     for (const input of inputsOf(ctx)) {
       if (!input.startsWith("stock:")) continue;
       const stock = input.slice(6);
-      const missing = totalUse(levels, input, ctx, final) - available(input, ctx);
-      if (missing <= 1e-12) continue;
+      const gap = totalUse(levels, input, ctx, final) - available(input, ctx);
+      if (Math.abs(gap) <= 1e-12) continue;
       const maker = producersOf(stock, ctx)[0];
       if (maker === undefined) continue;
-      levels.set(maker.id, (levels.get(maker.id) ?? 0) + missing);
+
+      // Exactly what is needed, in both directions. Raising only would leave
+      // the production of a demand that has since moved elsewhere standing:
+      // after a shift to a technique that needs less labour, the labour
+      // already planned for stayed, so the shortage never went away, the shift
+      // counted as fruitless and the whole rank fell.
+      const level = levels.get(maker.id) ?? 0;
+      const next = Math.max(0, level + gap);
+      if (Math.abs(next - level) <= 1e-12) continue;
+      levels.set(maker.id, next);
       raised = true;
     }
     if (!raised) break;

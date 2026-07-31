@@ -41,7 +41,7 @@ export {
   ManualOrdering,
   ORDERING_RESOLVER,
   OrderingResolver,
-  LaborYieldOrdering,
+  DominanceOrdering,
 } from "./ordering.ts";
 export type { Shocks } from "./risk.ts";
 export { drawShocks, exposureMagnitude, shockFactor } from "./risk.ts";

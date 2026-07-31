@@ -235,7 +235,7 @@ export function allocate(input: AllocationInput): AllocationResult {
       available: forBranch,
       buffer,
       manual: state.manualOrder[branch.id],
-      yieldPerLabor: (process: ProcessDef) => yieldPerLabor(process, index, pools, shocks, input),
+      quality: (areaType: string) => pools.area[areaType]?.quality ?? 1,
     };
     const resolved = ORDERING_RESOLVER.resolve(branch, orderCtx, input.manualAllowed);
     ordering.set(branch.id, resolved.processes);
@@ -417,26 +417,6 @@ export function allocate(input: AllocationInput): AllocationResult {
   };
 }
 
-/** Output per unit of labour, chain included (E4). */
-function yieldPerLabor(
-  process: ProcessDef,
-  index: ConfigIndex,
-  pools: Pools,
-  shocks: Shocks,
-  input: AllocationInput,
-): number {
-  const content = contentOf(
-    LABOR_STOCK,
-    process,
-    index,
-    pools,
-    shocks,
-    input.unlockedBranches,
-    input.unlockedProcesses,
-    new Set(),
-  );
-  return Number.isFinite(content) && content > 0 ? 1 / content : 0;
-}
 
 /**
  * Orders processes so that everything a process needs has been made before it
@@ -493,80 +473,7 @@ function bindingFromPlan(plan: Plan): Binding {
   return { kind: "intermediate", what: worst.slice(6) };
 }
 
-/**
- * Labour content, standalone — the ordering needs it before anything has run.
- * Includes everything up the chain (E4): a house costs its own labour plus the
- * labour in the wood it is built of.
- */
-function contentOf(
-  target: StockId,
-  process: ProcessDef,
-  index: ConfigIndex,
-  pools: Pools,
-  shocks: Shocks,
-  unlockedBranches: ReadonlySet<string>,
-  unlockedProcesses: ReadonlySet<ProcessId>,
-  seen: Set<StockId>,
-): number {
-  const shock = shockFactor(process, shocks);
-  let total = 0;
-  for (const [needed, per] of Object.entries(process.intermediatesPerOutput)) {
-    if (per <= 0) continue;
-    const scaled = needed === LABOR_STOCK ? per / (shock > 0 ? shock : Infinity) : per;
-    total +=
-      scaled *
-      stockContent(
-        target,
-        needed,
-        index,
-        pools,
-        shocks,
-        unlockedBranches,
-        unlockedProcesses,
-        seen,
-      );
-  }
-  return total;
-}
 
-/** Labour content of a *stock*: the cheapest unlocked way to make one unit. */
-function stockContent(
-  target: StockId,
-  stockId: StockId,
-  index: ConfigIndex,
-  pools: Pools,
-  shocks: Shocks,
-  unlockedBranches: ReadonlySet<string>,
-  unlockedProcesses: ReadonlySet<ProcessId>,
-  seen: Set<StockId>,
-): number {
-  // One unit of the thing we are measuring contains exactly one of itself.
-  if (stockId === target) return 1;
-  if (seen.has(stockId)) return Infinity;
-  const branch = index.config.branches.find((b) => b.produces === stockId);
-  if (branch === undefined || !unlockedBranches.has(branch.id)) return Infinity;
-
-  seen.add(stockId);
-  let best = Infinity;
-  for (const process of index.processesOfBranch.get(branch.id) ?? []) {
-    if (!unlockedProcesses.has(process.id)) continue;
-    best = Math.min(
-      best,
-      contentOf(
-        target,
-        process,
-        index,
-        pools,
-        shocks,
-        unlockedBranches,
-        unlockedProcesses,
-        seen,
-      ),
-    );
-  }
-  seen.delete(stockId);
-  return best;
-}
 
 /**
  * How thin the store is at the lowest rank (E5). One means comfortable, zero

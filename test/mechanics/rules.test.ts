@@ -285,26 +285,37 @@ describe("processes and the fallback level (E5)", () => {
     expect(food[0]?.process).toBe("gathering");
   });
 
-  it("when labour binds, the process with the better yield per labour leads", () => {
-    let state = finish(createState(STAGE1, { seed: 7 }), "better_tools");
-    state = {
-      ...state,
-      completedProjects: { ...state.completedProjects, sedentism: 1 },
-      sectors: {
-        ...state.sectors,
-        households: {
-          ...state.sectors["households"]!,
-          heads: 60,
-          // A full store, so the risk discount is switched off and scarcity
-          // alone explains the order.
-          stocks: { food: 500 },
-          areas: { cleared: { area: 500, quality: 1 } },
+  it("no input is a criterion of its own: scarcity decides, both ways (E4, E21)", () => {
+    // farming needs less labour per unit, farming_fallow less land. Neither
+    // dominates the other, so the ordering must not pick between them — what is
+    // actually short must, and it must work in both directions.
+    const settled = (cleared: number, heads: number): GameState => {
+      const base = createState(STAGE1, { seed: 7 });
+      return {
+        ...base,
+        completedProjects: { better_tools: 1, sedentism: 1, fallowing: 1 },
+        unownedAreas: {},
+        sectors: {
+          ...base.sectors,
+          households: {
+            ...base.sectors["households"]!,
+            heads,
+            stocks: {},
+            areas: { cleared: { area: cleared, quality: 1 } },
+          },
         },
-      },
+      };
     };
-    // Farming has the higher declared priority but the worse yield per labour.
-    const lead = derive(state, index).ordering.find((o) => o.branch === "food");
-    expect(lead?.lead).not.toBe("farming");
+    const output = (state: GameState, id: string): number =>
+      derive(state, index).runs.find((r) => r.process === id)?.output ?? 0;
+
+    // Land short, hands to spare: the technique that spares land carries it.
+    const tightLand = settled(60, 400);
+    expect(output(tightLand, "farming_fallow")).toBeGreaterThan(output(tightLand, "farming"));
+
+    // Hands short, land to spare: the other way round, by the same rule.
+    const tightLabor = settled(5000, 40);
+    expect(output(tightLabor, "farming")).toBeGreaterThan(output(tightLabor, "farming_fallow"));
   });
 
   it("when the forest runs out, farming absorbs the rest — Boserup (E6, E13)", () => {

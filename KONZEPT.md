@@ -188,22 +188,48 @@ seiner Inputs ausgeht. Der Rest fällt auf das nächste zurück.**
 Ordnung der Verfahren, nie ein einzelnes ausgewähltes.** Nur so lässt sich später
 zwischen ihnen umschalten, ohne dass die Rückfallebene neu gebaut werden muss.
 
-**Gerechnet (die Voreinstellung).** Die Ordnung folgt dem **Ertrag je
-Arbeitsleistung**, vermindert um einen Risikoabschlag, der danach gewichtet wird, wie
-dünn der Puffer ist. Wer satt ist und einen vollen Speicher hat, kann sich Streuung
-leisten; wer auf Kante lebt, nimmt das Verlässliche.
+**Gerechnet (die Voreinstellung): nach Dominanz.** Ein Verfahren geht vor einem
+anderen, wenn es von **jedem** Input, den beide benutzen, nicht mehr je Einheit braucht
+und von mindestens einem weniger. Verglichen wird auf **risikobereinigten**
+Koeffizienten: Ein Verfahren, das oft misslingt, kostet je *gelieferter* Einheit mehr,
+weil Hektar und Arbeit auch in den Fehljahren verbraucht sind. Das Gewicht hängt daran,
+wie dünn der Puffer ist — wer einen vollen Speicher hat, kann sich Streuung leisten; wer
+auf Kante lebt, nimmt das Verlässliche.
+
+**Kein Input ist ein Kriterium für sich.** Dominanz ist der Standardbegriff der
+Aktivitätsanalyse (Koopmans): Was übrig bleibt, ist die effiziente Grenze — und welches
+der nicht dominierten Verfahren man nimmt, ist mit Mengen gar nicht entscheidbar. Dafür
+braucht es Preise. Der Plan soll es also nicht entscheiden, und er tut es nicht.
+
+**Wo Dominanz schweigt, entscheidet die Knappheit** — und zwar später: Der Plan beginnt
+mit der Routine (dem im Inhalt erklärten Verfahren) und schiebt Nachfrage von dem weg,
+was nicht reicht (E21 — wie die Zuteilung rechnet). Ist das Land knapp, gewinnt das
+flächensparende Verfahren; ist die Arbeit knapp, das arbeitssparende. Vollkommen
+symmetrisch, ohne vorab genanntes Kriterium. Das ist zugleich Simons
+Anspruchsniveau-Suche und Nelson/Winters **Routinen**: Man macht weiter wie bisher und
+weicht ab, wenn eine Schranke drückt — nicht: man rechnet jeden Tick neu, was optimal
+wäre.
 
 **Das ist eine Zuteilung, keine Wahl.** In der Geschichte gab es keinen Umstieg von
 Jagd auf Ackerbau — beide liefen jahrtausendelang nebeneinander, und die Anteile
-verschoben sich mit der Bevölkerungsdichte. Arbeit ist der einzige Input, den jedes
-Verfahren braucht; alles andere ist eine eigene Kapazität. Also läuft das
-arbeitsergiebigste Verfahren, bis **seine** Kapazität erschöpft ist, und das nächste
-nimmt den Rest. Die Jagd läuft, bis die Wildnis aufgebraucht ist, der Ackerbau nimmt
-auf, was übrig bleibt — beide gleichzeitig, mit monoton wandernden Anteilen. Boserup
-als verschiebende Mischung, nicht als Sprung.
+verschoben sich mit der Bevölkerungsdichte. Zwei Verfahren auf verschiedenem Boden
+dominieren einander nie, weil jedes einen Input braucht, den das andere nicht braucht;
+also laufen beide bis an ihre je eigene Kapazität. Boserup als verschiebende Mischung,
+nicht als Sprung.
 
-Und es ist **stabil**, weil die Ordnung von nichts abhängt, was die Zuteilung selbst
-verändert: Ertrag je Arbeitsleistung ist eine Eigenschaft des Verfahrens.
+> *Verworfen: die Ordnung nach dem **Ertrag je Arbeitsleistung**.* Sie hat Arbeit zum
+> einzigen Input mit einem Entscheidungskriterium gemacht und deshalb messbar das
+> schlechtere Verfahren gewählt: Dreifelderwirtschaft bringt 5,0 Einheiten je Hektar
+> gegen 2,9 beim einfachen Ackerbau, kostet aber 18 % mehr Arbeit je Einheit. Die Regel
+> lehnte sie ab — und sparte damit einen Input, der zu 27 % ungenutzt verfiel (E10 —
+> ungenutzte Arbeit ist am Tickende weg). Gemessen: 1704 Menschen statt 2822, wenn man
+> die Reihenfolge von Hand richtig stellte.
+
+**Belegt, dass die Reihenfolge nicht tragend ist.** Der Austausch des Kriteriums —
+Arbeitsertrag gegen Dominanz — hat das Ergebnis über 25 Seeds und 1200 Ticks um
+**0,007 %** verändert (3179,475 → 3179,451 Menschen). Die Arbeit macht die Verlagerung
+nach Knappheit, nicht die Rangliste. Genau das behauptet der Absatz oben, und genau so
+soll es sein: Eine Reihenfolge, an der das Ergebnis hinge, wäre eine Wahl.
 
 > *Verworfen auf dem Weg dorthin:* eine Ordnung nach dem **bindenden Input**. Sie war
 > als Rangfrage gestellt, wo eine Zuteilungsfrage stand — und schwang deshalb: Jede
@@ -1214,6 +1240,23 @@ bitgleiches Ergebnis über alle Kriterien. Gemessen 3,70 → 0,73 ms je Tick, Fa
 Wichtiger als der Faktor ist die Wachstumsordnung: Die quadratische Stelle (Filtern der
 Reihenfolge mit verschachtelter Suche) und die multiplikative (Koeffizient je Frage neu)
 sind draußen, es bleibt eine Schleife über die laufenden Verfahren.
+
+**Verglichen wird auf Kettenkoeffizienten, nicht auf direkten.** Wieviel von einem
+Input ein Verfahren kostet, heißt: sein eigener Verbrauch **plus** das, was seine
+Vorleistungen davon verbrauchen (Leontief). Auf direkten Koeffizienten zu vergleichen
+war falsch und fiel erst auf, seit Arbeit ein gewöhnlicher Input ist (E4): Ein Feld
+benutzt die Köpfe nicht mehr direkt, es benutzt Arbeit, und Arbeit benutzt die Köpfe.
+Nach den direkten Kosten gefragt, antwortete der Ackerbau „null Köpfe" — also erzeugte
+Arbeitsknappheit **gar keinen** Verlagerungszug, während Landknappheit einen erzeugte.
+Gemessen: Arbeit voll ausgelastet, Land brach, und das arbeitssparende Verfahren kam
+nie zum Zug. Die Mengen laufen durch die Kette, seit es abgeleitete Nachfrage gibt; die
+Entscheidung über diese Mengen muss dieselbe Kette sehen.
+
+**Der eigene Bedarf wird genau gedeckt, in beide Richtungen.** Nur zu erhöhen genügt
+nicht: Nach einer Verlagerung auf ein Verfahren, das weniger Arbeit braucht, blieb die
+schon eingeplante Arbeitsproduktion stehen. Der Überhang verschwand dadurch nie, die
+Verlagerung galt als fruchtlos, und der ganze Rang fiel — gemessen blieb er über
+mehrere Durchgänge bei exakt demselben Wert stehen.
 
 **Der gemessene Defekt ist behoben.** Derselbe Lauf nach 900 Ticks: Ackerland **11 % →
 100 %** genutzt, Wohnraum **0,00 → 0,84**, Bevölkerung **213 → 1707**. Alle acht
