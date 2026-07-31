@@ -1870,26 +1870,142 @@ und Sesshaftigkeit ab einer Bevölkerungszahl. Gemessen ergab das:
 - **Die Namen waren zu allgemein.** Werkzeuge gibt es in jeder Epoche, und Feuer
   beherrschte der Mensch schon eine Million Jahre vorher.
 
-**Verfügbare Projekte, alle drei ab dem ersten Tick, keines ein anderes voraussetzend:**
-
-| Projekt | Wirkung | zahlt sich aus |
-|---|---|---|
-| **Sichelklingen** | Ernte je Hand (Arbeit je Einheit 0,769 → 0,625) | sofort, klein, sicher |
-| **Mahlsteine** | dieselbe Ernte ernährt mehr (`food_survival` 1,0 → 0,85 je Kopf) | sofort, auf der **Verbrauchsseite** |
-| **Vorratsgruben** | Kapazität, die den gedeckten Vorrat langsamer verderben lässt | **gar nicht sofort** — erst im schlechten Jahr |
-| *Jagdwaffen* (zweite Welle) | Verfahren `Jagd` | öffnet ein zweites Verfahren auf derselben Wildnis |
+#### Schritt 3 — die Stufen je Bedarf
 
 Der Zuschnitt folgt nicht der Vielfalt, sondern dem **Auszahlungsprofil**: sicher und
 klein, sofort aber auf der anderen Seite der Rechnung, später aber groß. Drei Knöpfe,
 die alle „Zahl wird größer" bedeuten, sind keine Entscheidung, wie viele es auch sind.
 
-Alle drei sind natufisch und gehören damit **einer** Welt an statt drei Epochen:
-Sichelklingen mit Glanzspuren und Mörser sind ihre Leitfunde (Flannerys *broad spectrum
-revolution*), die Speicherbauten von Dhra' gehen der Domestizierung um rund tausend
-Jahre voraus (Kuijt & Finlayson 2009).
+Deckung kann auf **fünf Achsen** besser werden, und kein Projekt der Epoche doppelt eine
+andere:
 
-**Die Kosten beißen: 90 Arbeitsleistung über mindestens 12 Ticks, also ein Viertel aller
-Hände einer Gruppe von dreißig.** Vorher waren es 6 %, und deshalb gab es nie eine
+| Achse | was besser wird |
+|---|---|
+| **je Hand** | dieselbe Fläche, weniger Arbeit |
+| **je Fläche** | dieselbe Arbeit, mehr aus dem Land — Boserups Intensivierung |
+| **je Vorleistung** | dieselbe Einheit, weniger Material — der Urahn jeder Energieeffizienz |
+| **gegen das Jahr** | dieselbe Menge, geringere Schwankung |
+| **gegen den Verfall** | dieselbe Ernte, länger haltbar |
+
+**Verfahren ab Tick 0**, keines freizuschalten. Der Anfang ist damit nicht leer, und die
+Konkurrenz zwischen Sammeln und Jagen auf derselben Wildnis ist von der ersten Sekunde
+an der Malthus-Druck der Epoche:
+
+| Gut | Verfahren | Eigenart |
+|---|---|---|
+| Nahrung | **Sammeln** | Wildnis; gut je Hand, mager je Fläche, ganz dem Jahr ausgeliefert |
+| Nahrung | **Jagen** | Wildnis; mager je Hand, sehr mager je Fläche, schwankt stark |
+| Nahrung | **Fischen** | Wasser; mager je Hand, aber vom Wetter kaum berührt |
+| Holz | **Holz sammeln** | Totholz auflesen: viel Laufen, wenig Holz |
+| Wärme | **Feuer machen** | offenes Feuer, verschwenderisch |
+| Felle | **Jagen** (auf Felle) | viel Fläche, wenig Arbeit |
+| Faser | **Bast sammeln** | wenig Fläche, viel Arbeit |
+| Kleidung | **Felle zurichten** *oder* **Flechten** | zwei Verfahren, ein Bestand, verschiedene Eingänge |
+
+Die Jagd ist ausdrücklich **nicht** freizuschalten: Der Mensch jagt Großwild seit
+hunderttausenden Jahren (Schöninger Speere). Ein Spiel, in dem man sie erfinden muss,
+behauptet Unsinn.
+
+**Die zwölf Projekte der Epoche:**
+
+| Projekt | wirkt auf | Achse | Anker |
+|---|---|---|---|
+| **Sichel** | Sammeln | je Hand | Natufien, Klingen mit Sichelglanz; Harlans Erntversuch |
+| **Mörser und Stößel** | Sammeln | je Fläche | Natufien, Wadi Hammeh; Flannerys *broad spectrum revolution* |
+| **Pfeil und Bogen** | Jagen | je Hand | Stellmoor ~10.000 v. Chr., Bögen von Holmegaard |
+| **Fischernetz** | Fischen | je Hand | Netz von Antrea ~8300 v. Chr., aus Bastfaser |
+| **Boot** | Fischen | **mehr Fläche** — nutzbares Wasser | Einbaum von Pesse ~8000 v. Chr. |
+| **Vorratsgrube** | Speicher | gegen den Verfall | Dhra' ~9500 v. Chr. (Kuijt & Finlayson 2009) |
+| **Steinaxt** | Holz sammeln → **Bäume fällen** | je Hand, größter Sprung der Epoche | mesolithische Kernbeile |
+| **Erdofen** | Feuer machen | **je Vorleistung** | Kochgruben und Brandhügel, mesolithischer Massenbefund |
+| **Gerben** | Felle zurichten | je Hand | Rinden- und Hirngerbung |
+| **Knochennadel** | **beide** Kleidungswege | je Hand **und** gegen den Verfall | Öhrnadeln seit dem Jungpaläolithikum |
+| **Landnahme** | Revier | mehr Fläche, mit fallender Güte | Ricardos Differentialrente |
+| **Sesshaftigkeit** | der Übergang selbst | — | Testart |
+
+Drei Entscheidungen daran sind begründungsbedürftig:
+
+- **Die Steinaxt ist der einzige Verfahrenswechsel** statt einer Verbesserung — von
+  „auflesen, was liegt" zu „nehmen, was steht". Totholz ist eine Restgröße, ein
+  stehender Wald ein Vorrat. Derselbe Satz wie beim Boot: **Technik schafft die
+  Ressource nicht, sie erschließt sie.**
+- **Die Knochennadel wirkt auf beide Kleidungswege**, sonst macht sie die Alternative
+  kaputt. Das Gerben stärkt den Fellweg — das ist gewollt und gibt der Wahl Gewicht.
+  Bevorzugte aber *jedes* Kleidungsprojekt einen Weg, wäre der andere nach zwei
+  Projekten nur noch schlechter, und die Alternative war eine Falle.
+- **Wärme braucht kein Projekt „gegen das Jahr"**, weil der Wärmebedarf selbst am Wetter
+  hängt: Ein kalter Winter verlangt mehr. Das ist die Nachfrageseite des Zufalls (E24).
+
+> **Ein Projekt heißt, wie ein Laie die Sache nennt** — der Fachbegriff steht im Anker,
+> nicht auf dem Knopf. „Sichelklinge" ist das archäologische Wort für das Ding, das
+> jeder als Sichel kennt; es kostet Verständlichkeit und bringt keine Genauigkeit.
+> Deshalb auch *Steinaxt* statt *Beil*: kein Fachwort, sagt nebenbei, in welcher Welt
+> der Spieler ist, und lässt später Platz für die Eisenaxt.
+
+#### Schritt 4 — was worauf aufbaut
+
+**Es gibt fast keine Projektketten.** Nur eine, und die ist materiell zwingend. Alles
+andere baut nicht auf Projekten auf, sondern auf **Vorleistungen** — und das ist der
+Unterschied zwischen einem Baum und einer Sperre.
+
+| Projekt | Voraussetzung | warum sachlich |
+|---|---|---|
+| Mörser und Stößel, Erdofen, Landnahme | — | Stein auf Stein; eine Grube; man geht weiter |
+| Sichel, Steinaxt, Vorratsgrube | Holz | Schaft, Schaft, Auskleidung |
+| Gerben | Felle | offensichtlich |
+| Fischernetz, Knochennadel | Faser | ein Netz ist Bast, eine Nadel ohne Faden nichts |
+| Pfeil und Bogen | Holz **und** Faser | Stave und Sehne |
+| **Boot** | **Steinaxt**, viel Holz | einen Stamm höhlt man nicht mit der Hand aus |
+| Sesshaftigkeit | gebaute Speicherkapazität, 2 je Kopf | siehe unten |
+
+**Warum das trotzdem ein Baum ist.** Auf dem Papier sind zehn der zwölf ab Tick 0
+freigeschaltet — in der Wirtschaft sind sie es nicht. Am Anfang geht **alles Holz in die
+Wärme**: Wärme steht auf Rang 200 und tötet, Projekte rangieren darunter (E18). Es gibt
+kein Holz übrig, also ist kein Holzprojekt machbar. Und **Faser gibt es nur, wenn jemand
+Bast sammelt** — das kostet Hände, die dann nicht sammeln oder jagen.
+
+Tatsächlich anfangbar sind am ersten Tick genau **drei**: Mörser, Erdofen, Landnahme.
+Das ist der untere Rand der drei bis fünf aus E31, und es sind drei wirklich
+verschiedene Antworten auf dieselbe Enge — mehr aus der Fläche holen, weniger
+verschwenden, mehr Fläche nehmen.
+
+> **Das Rückgrat der Epoche, in einem Satz:** Um zu bleiben, brauchst du Gruben. Für
+> Gruben brauchst du Holz übrig. Für Holz übrig brauchst du entweder eine Axt oder ein
+> Feuer, das weniger verschwendet.
+
+Danach öffnet sich der Rest von selbst: Die Axt gibt so viel Holz, dass das Boot möglich
+wird; wer Hände in den Bast steckt, bekommt Netz, Bogen und Nadel dazu. **Was du als
+Nächstes tun kannst, hängt daran, was deine Wirtschaft gerade herstellt** — das ist die
+Lehre, für die diese Epoche da ist.
+
+**Die Bedingung wird aus den Kosten gerechnet, nicht hingeschrieben:**
+
+> Ein Projekt ist ausführbar, sobald der Bestand reicht, es **einen Tick lang im
+> schnellstmöglichen Tempo** zu speisen — also Vorleistung ÷ Mindestdauer.
+
+Keine neue Zahl, sondern eine Division zweier ohnehin vorhandener; damit können die
+beiden auch nicht auseinanderlaufen. Angezeigt als „Faser: 0 von 3", und der Spieler
+liest die richtige Antwort daran ab: *jemand muss Bast sammeln.* Der volle Vorrat vorab
+wäre die schlechtere Regel — man dreht die Schnur, während man das Netz knüpft, und ein
+Vorrat, den man nur für eine Schwelle anlegt, verdirbt unterwegs. Läuft das Projekt,
+übernimmt die laufende Produktion, und stockt sie, greift das Teiltempo (E18):
+Schwankung verzögert, sie blockiert nicht.
+
+**Wo die Zahlen stehen.** Kosten, Wirkungsgrößen und Amortisationsziele sind
+**Hypothesen und keine Beschlüsse** — sie stehen in der Inhaltsdatei, damit gemessen
+werden kann, und kommen erst hierher, wenn sie gemessen sind (E27). Der eine Wert, der
+schon feststeht, ist das Zielband der Amortisation: **klein 10–15, mittel 20–30, groß
+40–60 Ticks**, also innerhalb eines Fünftels bis Drittels der Epoche. Wer länger
+braucht, trifft eine Entscheidung, deren Nutzen er nie erlebt.
+
+Dass die Entscheidung dadurch nicht wertlos wird, liegt nicht an der Rechnung, sondern
+am **Zeitpunkt**: Ein Fünftel der Hände zwölf Ticks lang heißt, die Nahrung fällt
+*jetzt* und der Gewinn kommt *später* — und dazwischen liegt ein Jahr, das schlecht sein
+kann. Die Disziplin kommt aus dem Risiko, nicht aus der Amortisationsdauer.
+
+**An der ersten Fassung gemessen, und darum steht es hier: Die Kosten beißen bei 90
+Arbeitsleistung über mindestens 12 Ticks, also einem Viertel aller Hände einer Gruppe
+von dreißig.** Vorher waren es 6 %, und deshalb gab es nie eine
 Konkurrenz. Zwei Projekte gleichzeitig kosten die Hälfte, drei drei Viertel — gemessen
 stirbt eine Siedlung, die alle drei sofort anfängt, in **100 %** der Läufe. „Sofort
 alles nehmen" ist damit keine entschlossenere Spielweise, sondern eine schlechtere.
@@ -2398,9 +2514,9 @@ besprochen und vertagt, nicht vergessen:
 
 | | Punkt | |
 |---|---|---|
-| 1 | **Technologiebaum der ersten Epoche**, Schritte 3 und 4 aus E31 — die Stufen je Bedarf, und was worauf aufbaut | Schritte 1 und 2 stehen in E29 |
-| 1a | Verfahren auf Tätigkeitsnamen vereinheitlichen, Wasser als Kapazität, Wärme und Kleidung als eigene Güter | folgt aus Schritt 2 |
-| 2 | **Einmal austarieren**, danach | |
+| 1 | **Den Baum der ersten Epoche bauen** — zwölf Projekte, fünf Achsen, Vorleistungen als Voraussetzung. Dazu: Verfahren auf Tätigkeitsnamen, Wasser als Kapazität, Wärme und Kleidung als eigene Güter | Entwurf steht vollständig in E29 |
+| 1a | Vorleistungen eines Projekts **als Bedingung anzeigen**, gerechnet als Vorleistung ÷ Mindestdauer | ohne das ist der Baum nicht lesbar |
+| 2 | **Einmal austarieren** — gemessen wird die Amortisationszeit je Projekt gegen das Zielband aus E29 | |
 | 3 | Speicher bleibt an der Tragfähigkeitsgrenze leer, Gruben verfallen ungenutzt | nach dem Baum |
 | 4 | Verfallsraten fein justieren (Gruben, Wohnraum) | nach dem Baum |
 | 5 | Meldungen an den Spieler; Motorbegriffe in der Sicht; i18n. Dazu gehört, dass ein aufgefangenes schlechtes Jahr **lautlos** bleibt — der lehrreichste Moment der Epoche wird nicht benannt | unabhängig |
