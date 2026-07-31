@@ -1279,6 +1279,19 @@ Siedlung starb in **100 %** der Läufe.
   Rationieren heißt einen kleineren Anteil, nicht keinen. Der größte Anteil, der noch
   passt, wird durch Halbieren gesucht; da der Anteil in [0, 1] liegt, genügt eine feste
   Zahl Schritte, und es ist keine Toleranz zu stellen (E26).
+- **Und dass ein Rang *teilweise* bedient wird, ist ein Aggregationsbehelf.** Es bildet
+  nicht die Entscheidung eines Haushalts nach, sondern die **Verteilung vieler**. In
+  Wirklichkeit wurde der Übergang von der Jagd zum Ackerbau allmählich, weil viele
+  Haushalte zu verschiedenen Zeitpunkten umstellten — die auf dem schlechtesten Boden
+  zuerst. Die sanfte Aggregatkurve ist die Verteilung vieler Umschaltzeitpunkte, nicht
+  die sanfte Umstellung irgendeines Einzelnen; niemand hat je „zu 37 % Dreifelderwirtschaft"
+  betrieben.
+
+  Wir haben **einen** Haushaltssektor, der keine Verteilung hat. Also muss jede
+  Allmählichkeit von der Regel hergestellt werden. Das ist vertretbar, solange es hier
+  steht — und es ist die Stelle, an der eine spätere Aufteilung in Schichten oder
+  Halter den Behelf ersetzen würde, weil die Verteilung dann aus dem Modell käme statt
+  aus der Zuteilung.
 - **Ein gescheiterter Rang stoppt die niedrigeren nicht.** Ein Rang, den der Wald
   aufhält, hält keinen Rang auf, der an der Wildnis hängt. Die Rangfolge entscheidet,
   wer einen *umstrittenen* Input zuerst bekommt — nicht, dass darunter alles leer
@@ -2127,6 +2140,14 @@ nächste Schritt. Für eine einzige Regel lohnt er nicht.
 
 Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es drankommt:
 
+- **Ein Bedarf, mehrere Güter, je mit eigenem Faktor.** *Idee, nicht entschieden.* Heute
+  deckt genau ein Bestand eine Bedarfsstufe: Nahrung ist Nahrung, egal ob sie aus Fisch,
+  Fleisch oder Körnern kommt. Das trägt, solange der Nährwert das Maß ist (E5) und die
+  Unterschiede im Verfahren stecken — andere Fläche, andere Exposition, andere Arbeit.
+  Es geht aber verloren, was am Gut selbst hängt: Fisch verdirbt schneller als Korn.
+  Mehrere Güter für einen Bedarf, jedes mit einem eigenen Beitrag je Einheit, würden das
+  ausdrücken — und wären die Voraussetzung dafür, aus der Verbreiterung des Nahrungs­
+  spektrums mehr zu machen als verschiedene Wege zum selben Bestand.
 - **Natürlicher Nachwuchs auf Brachland.** *Idee, nicht entschieden.* Ungenutztes
   Ackerland fiele langsam an die Wildnis zurück — ökologisch die Sukzession, und
   genutztes Land bliebe unangetastet, es träfe also nur, wer Land hält, ohne es zu
