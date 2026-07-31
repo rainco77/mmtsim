@@ -114,6 +114,7 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     index,
     sectorId: HOUSEHOLDS,
     shocks,
+    tierPerHead: unlocks.tierPerHead,
     unlockedBranches: unlocks.branches,
     unlockedProcesses: unlocks.processes,
   });

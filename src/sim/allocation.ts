@@ -1,4 +1,9 @@
-import { type Config, type ConfigIndex, type ProcessDef } from "./config.ts";
+import {
+  type Config,
+  type ConfigIndex,
+  type NeedTierDef,
+  type ProcessDef,
+} from "./config.ts";
 import type { AreaTypeId, BranchId, ProcessId, SectorId, StockId } from "./ids.ts";
 import {
   ORDERING_RESOLVER,
@@ -15,6 +20,9 @@ const LABOR_STOCK: StockId = "labor";
 
 /** Above every need: projects are financed before the ranking starts (E18). */
 const PROJECT_RANK = -1;
+
+/** After every need: a store is filled from what is left over, never before. */
+const STORE_RANK = Number.MAX_SAFE_INTEGER;
 
 import {
   makePlan,
@@ -195,6 +203,8 @@ export interface AllocationInput {
   readonly sectorId: SectorId;
   readonly shocks: Shocks;
   readonly unlockedBranches: ReadonlySet<string>;
+  /** Per-head cost of a need where a project changed it (E9, E23). */
+  readonly tierPerHead: ReadonlyMap<string, number>;
   readonly unlockedProcesses: ReadonlySet<ProcessId>;
 }
 
@@ -277,8 +287,11 @@ export function allocate(input: AllocationInput): AllocationResult {
   const fromStock = new Map<string, number>();
   const tierList = index.tiersByRank.filter((tier) => input.unlockedBranches.has(tier.branch));
 
+  const perHead = (tier: NeedTierDef): number =>
+    input.tierPerHead.get(tier.id) ?? tier.perHead;
+
   for (const tier of tierList) {
-    const need = heads * tier.perHead;
+    const need = heads * perHead(tier);
     const inStock = pools.stock[tier.stock] ?? 0;
     const taken = Math.min(need, Math.max(0, inStock));
     pools.stock[tier.stock] = inStock - taken;
@@ -286,6 +299,32 @@ export function allocate(input: AllocationInput): AllocationResult {
     if (need - taken > 1e-9) {
       demands.push({ tier, stock: tier.stock, amount: need - taken });
     }
+  }
+
+  // Filling the store (E19: a store is capacity that lowers decay for what it
+  // covers). The claim is exactly the gap up to that capacity: gathering more
+  // than the pits protect would spoil at once and be wasted effort. So the
+  // size of the claim comes from what the player built, not from a number in
+  // the content and not from a setting — and it stands last, so it is served
+  // only from what the needs leave behind.
+  for (const stockDef of config.stocks) {
+    const shelter = stockDef.protectedBy;
+    if (shelter === undefined) continue;
+    const capacity = pools.area[shelter.capacity]?.available ?? 0;
+    const gap = capacity - (pools.stock[stockDef.id] ?? 0);
+    if (gap <= 1e-9) continue;
+    demands.push({
+      tier: {
+        id: `store:${stockDef.id}`,
+        rank: STORE_RANK,
+        stock: stockDef.id,
+        branch: config.branches.find((b) => b.produces === stockDef.id)?.id ?? "",
+        perHead: 0,
+        consumedOnUse: 0,
+      },
+      stock: stockDef.id,
+      amount: gap,
+    });
   }
 
   const planCtx: PlanContext = {
@@ -362,7 +401,7 @@ export function allocate(input: AllocationInput): AllocationResult {
   let bindingTier: string | undefined;
 
   for (const tier of tierList) {
-    const need = heads * tier.perHead;
+    const need = heads * perHead(tier);
     const taken = fromStock.get(tier.id) ?? 0;
     const wanted = Math.max(0, need - taken);
     const got = Math.min(wanted, left[tier.stock] ?? 0);

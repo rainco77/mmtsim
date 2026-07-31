@@ -31,6 +31,21 @@ export interface StockDef {
    * That is how food becomes storable with sedentism without a fifth effect
    * type. The first matching active rule wins.
    */
+  /**
+   * A capacity that protects this stock (E19): a store is not a container with
+   * a maximum but capacity that lowers the decay of the amount it covers.
+   * There is never a "store full" — what is held beyond it simply spoils at the
+   * ordinary rate, so the limit is economic and not arbitrary.
+   */
+  readonly protectedBy?: {
+    readonly capacity: AreaTypeId;
+    readonly decayPerTick: number;
+    /** A rule may improve the sheltered rate, as it may the ordinary one. */
+    readonly decayWhenRule?: readonly {
+      readonly rule: RuleId;
+      readonly decayPerTick: number;
+    }[];
+  };
   readonly decayWhenRule?: readonly {
     readonly rule: RuleId;
     readonly decayPerTick: number;
@@ -41,6 +56,12 @@ export interface StockDef {
 
 export interface AreaTypeDef {
   readonly id: AreaTypeId;
+  /**
+   * Capacity decays too (E19). Land does not — it is not worn out by use — but
+   * a storage pit collapses and a mill wears down, and E19 has no separate
+   * upkeep: keeping a capacity means building it again.
+   */
+  readonly decayPerTick?: number;
   /**
    * A capacity supplied by the population itself: available equals the heads,
    * and its quality is work ability times productivity. That is how labour
@@ -159,7 +180,23 @@ export type Condition =
    * (E13). Each taking is a fixed parcel, so a maximum count *is* a maximum
    * territory — the hard brake next to the soft one of falling quality.
    */
-  | { readonly kind: "landTakings"; readonly max: number };
+  | { readonly kind: "landTakings"; readonly max: number }
+  /**
+   * A stock actually held, measured per head so it scales with the settlement.
+   * Holding a store is what makes staying possible (Testart) — and it cannot be
+   * waited for: it needs the capacity to keep it and the output to spare.
+   */
+  | { readonly kind: "stockPerHead"; readonly stock: StockId; readonly min: number }
+  /**
+   * Capacity built, per head. Unlike a stock it does not move with the weather,
+   * so a run of bad years delays a transition but can never block it — and it
+   * is exactly what the player decided, not what luck left in the store.
+   */
+  | {
+      readonly kind: "capacityPerHead";
+      readonly areaType: AreaTypeId;
+      readonly min: number;
+    };
 
 /**
  * Where the quality of added area comes from — declarative, never a function
@@ -185,7 +222,13 @@ export type Effect =
     }
   | { readonly type: "process"; readonly id: ProcessId }
   | { readonly type: "branch"; readonly id: BranchId }
-  | { readonly type: "rule"; readonly id: RuleId; readonly set: boolean };
+  | { readonly type: "rule"; readonly id: RuleId; readonly set: boolean }
+  /**
+   * Changes what one unit of a need costs per head (E9). Grinding stones do not
+   * grow more grain — they get more out of the same grain, so they act on the
+   * consumption side, which no process can reach.
+   */
+  | { readonly type: "tier"; readonly id: NeedTierId; readonly perHead: number };
 
 export interface ProjectDef {
   readonly id: ProjectId;

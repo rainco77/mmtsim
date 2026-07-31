@@ -136,6 +136,7 @@ const HANDLERS: readonly EffectHandler[] = [
   new NoStateChangeHandler("process"),
   new NoStateChangeHandler("branch"),
   new NoStateChangeHandler("rule"),
+  new NoStateChangeHandler("tier"),
 ];
 
 const REGISTRY: ReadonlyMap<Effect["type"], EffectHandler> = new Map(

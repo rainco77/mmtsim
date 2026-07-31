@@ -10,6 +10,14 @@ export interface Unlocks {
   readonly branches: ReadonlySet<BranchId>;
   readonly processes: ReadonlySet<ProcessId>;
   readonly rules: ReadonlySet<RuleId>;
+  /**
+   * What one unit of a need costs per head, where a project changed it.
+   * Derived like everything else here, never stored (E22): it follows from the
+   * finished projects, so it cannot drift from them. The lowest value wins —
+   * a technique that gets more out of the same grain is not undone by a later
+   * one that gets less.
+   */
+  readonly tierPerHead: ReadonlyMap<string, number>;
 }
 
 export function computeUnlocks(state: GameState, index: ConfigIndex): Unlocks {
@@ -17,6 +25,7 @@ export function computeUnlocks(state: GameState, index: ConfigIndex): Unlocks {
   const processes = new Set<ProcessId>();
   const setRules = new Set<RuleId>();
   const unsetRules = new Set<RuleId>();
+  const tierPerHead = new Map<string, number>();
 
   for (const branch of index.config.branches) {
     if (branch.unlockedFromStart) branches.add(branch.id);
@@ -42,6 +51,13 @@ export function computeUnlocks(state: GameState, index: ConfigIndex): Unlocks {
           if (effect.set) setRules.add(effect.id);
           else unsetRules.add(effect.id);
           break;
+        case "tier": {
+          const known = tierPerHead.get(effect.id);
+          if (known === undefined || effect.perHead < known) {
+            tierPerHead.set(effect.id, effect.perHead);
+          }
+          break;
+        }
         case "capacity":
           break;
       }
@@ -54,7 +70,7 @@ export function computeUnlocks(state: GameState, index: ConfigIndex): Unlocks {
   for (const rule of index.config.rulesFromStart) setRules.add(rule);
   for (const rule of setRules) if (!unsetRules.has(rule)) rules.add(rule);
 
-  return { branches, processes, rules };
+  return { branches, processes, rules, tierPerHead };
 }
 
 export interface ConditionContext {
@@ -80,6 +96,23 @@ export function conditionHolds(condition: Condition, ctx: ConditionContext): boo
       return (ctx.coverage[condition.tier] ?? 0) >= condition.min;
     case "landTakings":
       return ctx.state.landTakings < condition.max;
+    case "capacityPerHead": {
+      if (ctx.population <= 0) return false;
+      let built = 0;
+      for (const sector of Object.values(ctx.state.sectors)) {
+        built += areaOf(sector?.areas ?? {}, condition.areaType).area;
+      }
+      return built / ctx.population >= condition.min;
+    }
+    case "stockPerHead": {
+      if (ctx.population <= 0) return false;
+      // Over every sector: what the economy holds, not what one holder does.
+      let held = 0;
+      for (const sector of Object.values(ctx.state.sectors)) {
+        held += sector?.stocks[condition.stock] ?? 0;
+      }
+      return held / ctx.population >= condition.min;
+    }
   }
 }
 

@@ -1,11 +1,13 @@
 import { allocate, type AllocationResult } from "./allocation.ts";
 import { type ConfigIndex, tierEffectAt } from "./config.ts";
 import { applyEffect } from "./effects.ts";
-import type { SectorId, StockId } from "./ids.ts";
+import type { AreaTypeId, SectorId, StockId } from "./ids.ts";
 import { drawShocks, type Shocks } from "./risk.ts";
 import {
+  areaOf,
   stockOf,
   type ActiveProject,
+  type Area,
   type GameState,
   type SectorState,
 } from "./state.ts";
@@ -74,9 +76,28 @@ export class DecayPhase implements Phase {
     for (const [id, sector] of Object.entries(state.sectors)) {
       const stocks: Record<StockId, number> = {};
       for (const [stockId, amount] of Object.entries(sector.stocks)) {
-        stocks[stockId] = amount * (1 - decayRate(index, stockId, ctx));
+        const def = index.stock.get(stockId);
+        const ordinary = decayRate(index, stockId, ctx);
+        const shelter = def?.protectedBy;
+        if (shelter === undefined) {
+          stocks[stockId] = amount * (1 - ordinary);
+          continue;
+        }
+        // A store is capacity, not a container (E19): what it covers keeps, the
+        // rest spoils at the ordinary rate. There is no "store full".
+        const covered = Math.min(amount, areaOf(sector.areas, shelter.capacity).area);
+        const sheltered =
+          shelter.decayWhenRule?.find((entry) => ctx.unlocks.rules.has(entry.rule))
+            ?.decayPerTick ?? shelter.decayPerTick;
+        stocks[stockId] = covered * (1 - sheltered) + (amount - covered) * (1 - ordinary);
       }
-      sectors[id] = { ...sector, stocks };
+      // Capacity decays too, and keeping it means building it again (E19).
+      const areas: Record<AreaTypeId, Area> = {};
+      for (const [areaId, area] of Object.entries(sector.areas)) {
+        const rate = index.config.areaTypes.find((t) => t.id === areaId)?.decayPerTick ?? 0;
+        areas[areaId] = { ...area, area: area.area * (1 - rate) };
+      }
+      sectors[id] = { ...sector, stocks, areas };
     }
     return { ...state, sectors };
   }
@@ -192,6 +213,7 @@ export class ProductionPhase implements Phase {
       index,
       sectorId: HOUSEHOLDS,
       shocks: ctx.shocks,
+      tierPerHead: ctx.unlocks.tierPerHead,
       unlockedBranches: ctx.unlocks.branches,
       unlockedProcesses: ctx.unlocks.processes,
     });

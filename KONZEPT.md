@@ -1564,64 +1564,80 @@ Sammeln braucht **Wildnis**, kein erschlossenes Land: guter Ertrag je Arbeitslei
 sehr geringer je Fläche, hohe Empfindlichkeit gegen die Jahresgüte. Nahrung hat eine
 sehr hohe Verfallsrate — **kein Vorrat möglich** (E19).
 
-Verfügbare Projekte:
+**Beim Durchspielen verworfen: die erste Fassung dieser Projekte.** Sie waren
+*Bessere Werkzeuge* → *Feuer nutzen* → *Jagdwaffen*, jedes das nächste freischaltend,
+und Sesshaftigkeit ab einer Bevölkerungszahl. Gemessen ergab das:
 
-| Projekt | Voraussetzung | Wirkung |
+- **Drei Klicks in 89 Ticks, und keiner davon eine Entscheidung.** Es gab nie mehr als
+  ein Angebot, und nie einen Grund, es nicht zu nehmen. Dazwischen sechs Ticks mit
+  vollkommen leerem Bildschirm, weil die Bevölkerung erst wachsen musste.
+- **Die Projekte waren nicht nötig.** Ohne jedes Projekt wurde die Schwelle von 45
+  Menschen bei Tick 65 erreicht statt bei 44 — ein Beschleuniger um zwanzig Ticks, keine
+  Voraussetzung. Die Siedlung wuchs auch ohne alles auf 268 Menschen weiter.
+- **Die Kette war künstlich.** Feuer hat sachlich nichts mit Werkzeugen zu tun und
+  Jagdwaffen nichts mit Feuer; die Reihenfolge war reine Sperre.
+- **Die Namen waren zu allgemein.** Werkzeuge gibt es in jeder Epoche, und Feuer
+  beherrschte der Mensch schon eine Million Jahre vorher.
+
+**Verfügbare Projekte, alle drei ab dem ersten Tick, keines ein anderes voraussetzend:**
+
+| Projekt | Wirkung | zahlt sich aus |
 |---|---|---|
-| **Bessere Werkzeuge** | keine | Verfahren `Sammeln mit Werkzeugen` — mehr Ertrag je Arbeitsleistung |
-| **Feuer nutzen** | Bessere Werkzeuge | Verfahren `Sammeln, gekocht` — dasselbe Sammelgut ernährt mehr Menschen (Einheit ist Nährwert, E5) |
-| **Jagdwaffen** | Feuer nutzen | Verfahren `Jagd und Sammeln` |
-| **Sesshaftigkeit** | Bevölkerung ≥ Schwelle | die ganze folgende Epoche |
+| **Sichelklingen** | Ernte je Hand (Arbeit je Einheit 0,769 → 0,625) | sofort, klein, sicher |
+| **Mahlsteine** | dieselbe Ernte ernährt mehr (`food_survival` 1,0 → 0,85 je Kopf) | sofort, auf der **Verbrauchsseite** |
+| **Vorratsgruben** | Kapazität, die den gedeckten Vorrat langsamer verderben lässt | **gar nicht sofort** — erst im schlechten Jahr |
+| *Jagdwaffen* (zweite Welle) | Verfahren `Jagd` | öffnet ein zweites Verfahren auf derselben Wildnis |
 
-Alle drei Verfahrensprojekte sind **Techniken ohne Kapazitätsinput** und ersetzen ihre
-Vorgängerin vollständig (E5). Sie liegen auf einer Achse und bilden eine Kette.
+Der Zuschnitt folgt nicht der Vielfalt, sondern dem **Auszahlungsprofil**: sicher und
+klein, sofort aber auf der anderen Seite der Rechnung, später aber groß. Drei Knöpfe,
+die alle „Zahl wird größer" bedeuten, sind keine Entscheidung, wie viele es auch sind.
 
-Der Ablauf ist damit eine kurze, verständliche Kette: **Werkzeuge → Rang 300 wird
-teilweise gedeckt → Bevölkerung wächst → Sesshaftigkeit wird machbar.** Ohne die
-Verfahrensprojekte steht die Bevölkerung, weil Rang 100 gerade gedeckt ist und dort nach
-E20 Geburten = Tode gilt. Der Spieler muss also erst die Produktivität heben, um
-überhaupt an die Voraussetzung zu kommen.
+Alle drei sind natufisch und gehören damit **einer** Welt an statt drei Epochen:
+Sichelklingen mit Glanzspuren und Mörser sind ihre Leitfunde (Flannerys *broad spectrum
+revolution*), die Speicherbauten von Dhra' gehen der Domestizierung um rund tausend
+Jahre voraus (Kuijt & Finlayson 2009).
 
-**Schwankung gibt es ab Tick 1** — die Jahresgüte wirkt in der Produktionsphase (E24),
-und Sammeln ist Produktion. Was sich später ändert, ist nicht die Schwankung, sondern
-was man gegen sie tun kann:
+**Die Kosten beißen: 90 Arbeitsleistung über mindestens 12 Ticks, also ein Viertel aller
+Hände einer Gruppe von dreißig.** Vorher waren es 6 %, und deshalb gab es nie eine
+Konkurrenz. Zwei Projekte gleichzeitig kosten die Hälfte, drei drei Viertel — gemessen
+stirbt eine Siedlung, die alle drei sofort anfängt, in **100 %** der Läufe. „Sofort
+alles nehmen" ist damit keine entschlossenere Spielweise, sondern eine schlechtere.
 
-| | Schwankung ist |
-|---|---|
-| Jäger und Sammler | **Schicksal.** Kein Vorrat möglich, also keine Abwehr. Ein schlechtes Jahr tötet. |
-| Siedlung | **eine Entscheidung.** Lagerfähigkeit gibt es, ein Puffer kostet etwas (E19), also ist die Frage, wieviel man vorhält. |
+**Der Schmerz, gegen den der Vorrat hilft.** Vorher konnte das Überleben gar nicht
+ausfallen: Die Sättigung machte 44 % des Nahrungsbedarfs aus und das schlechteste Jahr
+in 2000 Ticks nahm 40 % des Ertrags — der Puffer war größer als der schlimmste Sturm,
+und die Schwankung war Rauschen. Jetzt ist das Sammeln ganz dem Jahr ausgeliefert
+(Exposition 1,0 statt 0,7) und die Verteilung hat einen echten Schwanz (Exponent 4 statt
+8). Eine Bevölkerung ohne Speicher hängt damit nicht an der **mittleren** Tragfähigkeit,
+sondern an der **schlechtesten** — jedes gute Jahr bringt Kinder, die das nächste
+schlechte tötet. Genau deshalb ist ein Speicher umwälzend: Er lässt eine Gesellschaft am
+Mittelwert leben statt am Minimum.
 
-**Das Institutionsprojekt heißt Sesshaftigkeit, das Verfahren heißt Ackerbau.** Die
-Trennung folgt E12: Eine Institution ändert Regeln, ein Verfahren ist eine Art zu
-produzieren. Sesshaftigkeit bringt Ackerbau mit, aber auch den Flächentyp, die
-Lagerfähigkeit und den Anspruch auf Land — hieße das Projekt „Ackerbau", wäre unklar,
-warum es all das andere tut.
+**Die Bedingung für Sesshaftigkeit ist gebaute Speicherkapazität, nicht Bevölkerung und
+nicht gehaltener Vorrat** (2 je Kopf). Was an einen Ort bindet, ist Kapital, das man
+nicht mittragen kann (Testart) — ein nach guter Ernte voller Speicher macht niemanden
+sesshaft, eine Grube schon.
 
-Nach dem Muster aus E28:
+Der gehaltene *Vorrat* taugt als Bedingung zudem nicht, und das war eine Messung: Ein
+Bestand schwankt mit dem Wetter, und die Schwelle wurde in nur 93 % der Läufe erreicht,
+egal wie großzügig der Verfall gesetzt wurde. Daraus die Regel:
 
-| Feld | |
-|---|---|
-| **Engpass** | Die Bevölkerung stößt an die Decke, die Sammeln trägt. Ohne erschlossene Fläche und ohne Vorrat stagniert sie. |
-| **Alte Mittel reichen nicht** | Mehr Hände bringen beim Sammeln kaum mehr Ertrag; die genutzte Fläche ist nicht vermehrbar, Vorrat nicht bildbar. Intensivierung gibt es dort nicht. |
-| **Institution eröffnet** | Flächentyp *erschlossene Fläche* · Verfahren *Ackerbau* · Nahrung wird lagerfähig · Projekte *Rodung* und *Landnahme* · Branchen *Holz* und *Wohnraum* · Rang 200 „Dach" |
-| **Kosten** | Ackerbau bringt **mehr je Fläche, aber weniger je Arbeitsleistung** (Boserup). Der einzelne Mensch arbeitet mehr für dasselbe, und die Gemeinschaft ist an ihr Land gebunden. |
-| **Voraussetzung im Modell** | Nichts Neues: Flächentypen (E13), Verfahren (E5), Verfallsraten je Bestand (E19). |
+> **Schwankung darf verzögern, nie blockieren.** Ein Pechlauf braucht länger bis zum
+> Übergang — er erreicht ihn trotzdem.
 
-**Sesshaftigkeit bringt eine Regel mit, die später alles trägt: Wer ein Feld bestellt,
-hat einen Anspruch darauf.** Besitz wird nicht gewählt, er entsteht mit der
-Sesshaftigkeit — ein Nomade besitzt kein Land, ein Bauer schon.
+Mit der Kapazität als Bedingung wird der Übergang im Mittel bei Tick 88 erreicht,
+**spätestens bei 100**: Pech kostet höchstens zwölf Ticks.
 
-Der Sprung ist absichtlich groß: von zwei Projekten und einer Branche auf drei Branchen,
-zwei konkurrierende Flächentypen, drei Bedarfsränge und ein halbes Dutzend Projekte.
-Genau das soll ein Institutionsprojekt nach E1 leisten.
+**Gemessen gegen die abgestimmten Zielwerte:**
 
-**Bemerkenswert:** Der Übergang verschlechtert die Lage des Einzelnen und passiert
-trotzdem. Das ist der Befund über die neolithische Revolution — im Spiel nicht
-behauptet, sondern gerechnet.
+| | Ziel | gemessen |
+|---|---|---|
+| ohne Projekte: erreicht Sesshaftigkeit | unter 2 % | **0 %** |
+| ohne Projekte: Siedlung scheitert | unter 5 % | **0 %** |
+| mit guten Entscheidungen: erreicht Sesshaftigkeit | über 99 %, seedunabhängig | **100 %** |
+| mit guten Entscheidungen: scheitert | praktisch nie | **0 %** |
+| sichtbarer Rückschlag vor der Sesshaftigkeit | über 80 % der Läufe | **100 %** |
 
----
-
-## Vorläufig
 
 ### V1 — Start im Überschuss
 

@@ -18,10 +18,19 @@ export const STAGE1: Config = {
       // Decay is spoilage, nothing else — eating is consumption and sits on the
       // need tier. Without a store almost nothing survives the tick.
       decayPerTick: 0.9,
-      // Sedentism makes food storable — a rule the phase reads (E23). Not
-      // storable *for free*: holding a store still costs, which is what makes
-      // the buffer against a bad year a trade-off rather than a formality (E19).
-      decayWhenRule: [{ rule: "settled", decayPerTick: 0.12 }],
+      // Three rates, and they have to stand in this order: unsheltered, a pit
+      // dug by people who move on, and a store in a place someone lives in and
+      // guards. A wanderer's pit must never keep better than a village.
+      //
+      // Storing comes first and is what makes staying possible (Testart), not
+      // the other way round — so the pits work before sedentism. Settling then
+      // makes the *same* pits keep far better, which is what a permanent place
+      // buys: maintenance and a guard.
+      protectedBy: {
+        capacity: "storage",
+        decayPerTick: 0.4,
+        decayWhenRule: [{ rule: "settled", decayPerTick: 0.12 }],
+      },
     },
     // Labour: made every tick out of the people, gone by the next one.
     { id: "labor", decayPerTick: 1 },
@@ -37,6 +46,10 @@ export const STAGE1: Config = {
     { id: "cleared" },
     // People are a capacity like land: occupied for a tick, not used up.
     { id: "people", fromPopulation: true },
+    // The first capacity that is neither land nor people — and the first that
+    // decays: a pit collapses and lets the damp in. Keeping it means digging
+    // again (E19), there is no separate upkeep.
+    { id: "storage", decayPerTick: 0.01 },
   ],
 
   // ---------------------------------------------------------------- branches
@@ -71,27 +84,17 @@ export const STAGE1: Config = {
       priority: 100,
       areaPerOutput: { wilderness: 3.0 },
       intermediatesPerOutput: { labor: 0.769231 },
-      exposure: { weather: 0.7 },
+      exposure: { weather: 1.0 },
       qualityWeight: 0.5,
       unlockedFromStart: true,
     },
     {
-      id: "gathering_tools",
+      id: "gathering_sickle",
       branch: "food",
       priority: 110,
       areaPerOutput: { wilderness: 3.0 },
       intermediatesPerOutput: { labor: 0.625 },
-      exposure: { weather: 0.7 },
-      qualityWeight: 0.5,
-      unlockedFromStart: false,
-    },
-    {
-      id: "gathering_cooked",
-      branch: "food",
-      priority: 120,
-      areaPerOutput: { wilderness: 3.0 },
-      intermediatesPerOutput: { labor: 0.512821 },
-      exposure: { weather: 0.7 },
+      exposure: { weather: 1.0 },
       qualityWeight: 0.5,
       unlockedFromStart: false,
     },
@@ -207,33 +210,73 @@ export const STAGE1: Config = {
 
   // ---------------------------------------------------------------- projects
   projects: [
+    // Three at once from the first tick, none needing another, each with a
+    // different payoff profile — sure and small, delayed and large, immediate
+    // but on the other side of the ledger. Three buttons that all mean "number
+    // goes up" would be no choice however many there are.
+    //
+    // All three are Natufian, so they belong to one world rather than to three
+    // epochs: sickle blades with gloss and mortars are its type fossils
+    // (Flannery's broad spectrum revolution), and the storage structures of
+    // Dhra' precede domestication by about a thousand years (Kuijt & Finlayson
+    // 2009). "Tools" and "fire" were both too general — fire had been mastered
+    // a million years earlier.
     {
-      id: "better_tools",
+      id: "sickle_blades",
       visibleWhen: [],
       availableWhen: [],
-      laborCost: 14,
-      stockCost: {},
-      minTicks: 8,
-      repeatable: false,
-      effects: [{ type: "process", id: "gathering_tools" }],
-      sector: "households",
-    },
-    {
-      id: "use_fire",
-      visibleWhen: [],
-      availableWhen: [{ kind: "projectDone", id: "better_tools", min: 1 }],
-      laborCost: 24,
+      laborCost: 90,
       stockCost: {},
       minTicks: 12,
       repeatable: false,
-      effects: [{ type: "process", id: "gathering_cooked" }],
+      effects: [{ type: "process", id: "gathering_sickle" }],
       sector: "households",
     },
     {
+      // Acts on consumption, not on production: grinding makes hard seeds
+      // digestible, so the same harvest feeds more. No process can reach that —
+      // it is the per-head cost of the need itself.
+      id: "grinding_stones",
+      visibleWhen: [],
+      availableWhen: [],
+      laborCost: 90,
+      stockCost: {},
+      minTicks: 12,
+      repeatable: false,
+      effects: [{ type: "tier", id: "food_survival", perHead: 0.85 }],
+      sector: "households",
+    },
+    {
+      // Repeatable, because the pits fall in: keeping a capacity is building it
+      // again (E19). It is also the only one that pays nothing at all today —
+      // it pays in the years that would otherwise have killed people.
+      id: "storage_pits",
+      visibleWhen: [],
+      availableWhen: [],
+      laborCost: 90,
+      stockCost: {},
+      minTicks: 12,
+      repeatable: true,
+      effects: [
+        {
+          type: "capacity",
+          areaType: "storage",
+          sector: "households",
+          amount: 40,
+          quality: { kind: "fixed", value: 1 },
+        },
+      ],
+      sector: "households",
+    },
+    {
+      // Second wave: it does something the first three do not — it opens a
+      // *second* process on the same wilderness, so the ground becomes
+      // contested and the player sees for the first time that the allocation
+      // mixes rather than switches.
       id: "hunting_weapons",
-      visibleWhen: [{ kind: "projectDone", id: "better_tools", min: 1 }],
-      availableWhen: [{ kind: "projectDone", id: "use_fire", min: 1 }],
-      laborCost: 40,
+      visibleWhen: [],
+      availableWhen: [{ kind: "projectDone", id: "sickle_blades", min: 1 }],
+      laborCost: 90,
       stockCost: {},
       minTicks: 16,
       repeatable: false,
@@ -245,8 +288,15 @@ export const STAGE1: Config = {
     // process is only one of the things it brings (E12, E29).
     {
       id: "sedentism",
-      visibleWhen: [{ kind: "projectDone", id: "better_tools", min: 1 }],
-      availableWhen: [{ kind: "population", min: 45 }],
+      visibleWhen: [{ kind: "projectDone", id: "storage_pits", min: 1 }],
+      // Not a population that arrives by itself, and not a store that happens
+      // to be full after a good year — but pits actually dug. What ties people
+      // to a place is capital they cannot carry (Testart): a full granary after
+      // a good harvest makes nobody sedentary, a pit does.
+      //
+      // It also has to be this and not the held stock, because a held stock
+      // moves with the weather: bad luck may delay a transition, never block it.
+      availableWhen: [{ kind: "capacityPerHead", areaType: "storage", min: 2 }],
       laborCost: 120,
       stockCost: {},
       minTicks: 40,
@@ -356,7 +406,7 @@ export const STAGE1: Config = {
     minimumViableSize: 12,
   },
 
-  shocks: { weather: { shape: "powerLeftSkewed", exponent: 8 } },
+  shocks: { weather: { shape: "powerLeftSkewed", exponent: 4 } },
 
   // Risk aversion: how strongly a thin store pushes towards the reliable
   // process (E5).

@@ -160,19 +160,19 @@ describe("the year's quality (E24)", () => {
 
 describe("projects (E18)", () => {
   it("never finish faster than the minimum duration", () => {
-    const def = index.project.get("better_tools");
+    const def = index.project.get("sickle_blades");
     if (def === undefined) throw new Error("missing");
     let state = apply(
       createState(STAGE1, { seed: 7 }),
       {
         type: "startProject",
-        id: "better_tools",
+        id: "sickle_blades",
       },
       index,
     ).state;
 
     for (let i = 0; i < def.minTicks - 1; i += 1) state = tick(state, index);
-    expect(completedCount(state, "better_tools")).toBe(0);
+    expect(completedCount(state, "sickle_blades")).toBe(0);
   });
 
   it("a paused project takes nothing and keeps its progress", () => {
@@ -180,7 +180,7 @@ describe("projects (E18)", () => {
       createState(STAGE1, { seed: 7 }),
       {
         type: "startProject",
-        id: "better_tools",
+        id: "sickle_blades",
       },
       index,
     ).state;
@@ -190,7 +190,7 @@ describe("projects (E18)", () => {
 
     state = apply(
       state,
-      { type: "pauseProject", id: "better_tools", paused: true },
+      { type: "pauseProject", id: "sickle_blades", paused: true },
       index,
     ).state;
     const before = derive(state, index).laborToProjects;
@@ -204,7 +204,7 @@ describe("projects (E18)", () => {
     const withWoodCost: Config = {
       ...STAGE1,
       projects: STAGE1.projects.map((p) =>
-        p.id === "better_tools" ? { ...p, stockCost: { wood: 40 } } : p,
+        p.id === "sickle_blades" ? { ...p, stockCost: { wood: 40 } } : p,
       ),
     };
     const local = indexConfig(withWoodCost);
@@ -212,7 +212,7 @@ describe("projects (E18)", () => {
       createState(withWoodCost, { seed: 7 }),
       {
         type: "startProject",
-        id: "better_tools",
+        id: "sickle_blades",
       },
       local,
     ).state;
@@ -225,10 +225,10 @@ describe("projects (E18)", () => {
   });
 
   it("effects apply exactly once, on completion", () => {
-    const state = finish(createState(STAGE1, { seed: 7 }), "better_tools");
-    expect(completedCount(state, "better_tools")).toBe(1);
-    expect(computeUnlocks(state, index).processes.has("gathering_tools")).toBe(true);
-    expect(state.activeProjects.some((p) => p.id === "better_tools")).toBe(false);
+    const state = finish(createState(STAGE1, { seed: 7 }), "sickle_blades");
+    expect(completedCount(state, "sickle_blades")).toBe(1);
+    expect(computeUnlocks(state, index).processes.has("gathering_sickle")).toBe(true);
+    expect(state.activeProjects.some((p) => p.id === "sickle_blades")).toBe(false);
   });
 });
 
@@ -239,7 +239,7 @@ describe("processes and the fallback level (E5)", () => {
       // Labour is what binds, and both techniques use the same land — so the
     });
     const before = withScarcity(createState(STAGE1, { seed: 7 }));
-    const after = withScarcity(finish(createState(STAGE1, { seed: 7 }), "better_tools"));
+    const after = withScarcity(finish(createState(STAGE1, { seed: 7 }), "sickle_blades"));
 
     // Labour is a process of its own now, so it shows up in every run list.
     const food = (state: GameState): readonly string[] =>
@@ -248,13 +248,13 @@ describe("processes and the fallback level (E5)", () => {
         .filter((id) => id !== "labor");
 
     expect(food(before)).toEqual(["gathering"]);
-    expect(food(after)).toEqual(["gathering_tools"]);
+    expect(food(after)).toEqual(["gathering_sickle"]);
   });
 
   it("what a higher priority cannot carry falls to the next one", () => {
     // Farming has priority over gathering but only a little cleared land, so
     // both must run at once.
-    let state = finish(createState(STAGE1, { seed: 7 }), "better_tools");
+    let state = finish(createState(STAGE1, { seed: 7 }), "sickle_blades");
     state = {
       ...state,
       sectors: {
@@ -274,7 +274,7 @@ describe("processes and the fallback level (E5)", () => {
 
     const processes = derive(state, index).runs.map((r) => r.process).filter((p) => p !== "labor");
     expect(processes).toContain("farming");
-    expect(processes).toContain("gathering_tools");
+    expect(processes).toContain("gathering_sickle");
   });
 
   it("the declared priority applies while nothing has bound yet (E5)", () => {
@@ -293,7 +293,7 @@ describe("processes and the fallback level (E5)", () => {
       const base = createState(STAGE1, { seed: 7 });
       return {
         ...base,
-        completedProjects: { better_tools: 1, sedentism: 1, fallowing: 1 },
+        completedProjects: { sickle_blades: 1, sedentism: 1, fallowing: 1 },
         unownedAreas: {},
         sectors: {
           ...base.sectors,
@@ -322,7 +322,7 @@ describe("processes and the fallback level (E5)", () => {
     // Not a switch but a mix: the labour-richest process runs until *its own*
     // capacity is used up, and the next takes what is left. With no wilderness
     // to speak of, gathering cannot carry the settlement and farming must.
-    let state = finish(createState(STAGE1, { seed: 7 }), "better_tools");
+    let state = finish(createState(STAGE1, { seed: 7 }), "sickle_blades");
     state = {
       ...state,
       completedProjects: { ...state.completedProjects, sedentism: 1 },
@@ -398,6 +398,7 @@ describe("allocation runs rank by rank (E21)", () => {
       index,
       sectorId: "households",
       shocks: {},
+      tierPerHead: new Map(),
       unlockedBranches: new Set(["food"]),
       unlockedProcesses: new Set(["gathering"]),
     });
@@ -444,7 +445,7 @@ describe("population (E20)", () => {
 
 describe("sedentism (E29)", () => {
   it("opens branches, processes, the rule and the first fields", () => {
-    let state = finish(createState(STAGE1, { seed: 7 }), "better_tools");
+    let state = finish(createState(STAGE1, { seed: 7 }), "sickle_blades");
     state = {
       ...state,
       sectors: {
@@ -464,39 +465,44 @@ describe("sedentism (E29)", () => {
     expect(state.sectors["households"]?.areas["cleared"]?.area).toBeCloseTo(20, 9);
   });
 
-  it("makes food storable — a rule the decay phase reads (E23)", () => {
-    const nomadic = createState(STAGE1, { seed: 7 });
-    const settled: GameState = {
-      ...nomadic,
-      completedProjects: { sedentism: 1 },
+  it("storage pits keep what they cover, and only that (E19)", () => {
+    // A store is capacity, not a container: what fits under it spoils slowly,
+    // what sticks out spoils at the ordinary rate, and there is no "full".
+    const base = createState(STAGE1, { seed: 7 });
+    const withPits = (capacity: number): GameState => ({
+      ...base,
       sectors: {
-        ...nomadic.sectors,
+        ...base.sectors,
         households: {
-          ...nomadic.sectors["households"]!,
-          stocks: { food: 100 },
+          ...base.sectors["households"]!,
           heads: 0,
+          stocks: { food: 100 },
+          areas: { storage: { area: capacity, quality: 1 } },
         },
       },
-    };
-    const nomadicState: GameState = {
-      ...nomadic,
-      sectors: {
-        ...nomadic.sectors,
-        households: {
-          ...nomadic.sectors["households"]!,
-          stocks: { food: 100 },
-          heads: 0,
-        },
-      },
-    };
-    const settledFood = tick(settled, index).sectors["households"]?.stocks["food"] ?? 0;
-    const nomadicFood =
-      tick(nomadicState, index).sectors["households"]?.stocks["food"] ?? 0;
-    expect(settledFood).toBeGreaterThan(nomadicFood);
+    });
+
+    const bare = tick(withPits(0), index).sectors["households"]?.stocks["food"] ?? 0;
+    const half = tick(withPits(50), index).sectors["households"]?.stocks["food"] ?? 0;
+    const full = tick(withPits(100), index).sectors["households"]?.stocks["food"] ?? 0;
+
+    expect(bare).toBeCloseTo(100 * (1 - 0.9), 6);
+    expect(full).toBeCloseTo(100 * (1 - 0.4), 6);
+    // Half covered: half at the sheltered rate, half at the ordinary one.
+    expect(half).toBeCloseTo(50 * (1 - 0.4) + 50 * (1 - 0.9), 6);
+    expect(half).toBeGreaterThan(bare);
+    expect(full).toBeGreaterThan(half);
+
+    // And a village keeps the same pits far better than wanderers do — a pit
+    // dug by people who move on must never beat a place someone lives in.
+    const settled: GameState = { ...withPits(100), completedProjects: { sedentism: 1 } };
+    const kept = tick(settled, index).sectors["households"]?.stocks["food"] ?? 0;
+    expect(kept).toBeCloseTo(100 * (1 - 0.12), 6);
+    expect(kept).toBeGreaterThan(full);
   });
 
   it("clearing turns wilderness into cleared land, keeping the total (E13)", () => {
-    let state = finish(createState(STAGE1, { seed: 7 }), "better_tools");
+    let state = finish(createState(STAGE1, { seed: 7 }), "sickle_blades");
     state = {
       ...state,
       sectors: {
@@ -524,7 +530,7 @@ describe("sedentism (E29)", () => {
   });
 
   it("each taking brings worse land than the one before (E13, Ricardo)", () => {
-    let state = finish(createState(STAGE1, { seed: 7 }), "better_tools");
+    let state = finish(createState(STAGE1, { seed: 7 }), "sickle_blades");
     state = {
       ...state,
       sectors: {
@@ -549,7 +555,7 @@ describe("supply chains (E4)", () => {
   it("produces an intermediate nobody needs directly", () => {
     // Housing needs wood; nothing needs wood for its own sake. Without derived
     // demand no wood would ever be made and the roof would stay uncovered.
-    let state = finish(createState(STAGE1, { seed: 7 }), "better_tools");
+    let state = finish(createState(STAGE1, { seed: 7 }), "sickle_blades");
     state = {
       ...state,
       sectors: {
@@ -585,7 +591,7 @@ describe("supply chains (E4)", () => {
   it("names the upstream bottleneck, not the missing intermediate", () => {
     // Wood is short because there is no wilderness left — that is what should
     // be reported, not "wood is missing".
-    let state = finish(createState(STAGE1, { seed: 7 }), "better_tools");
+    let state = finish(createState(STAGE1, { seed: 7 }), "sickle_blades");
     state = {
       ...state,
       unownedAreas: { wilderness: { area: 0.01, quality: 1 } },
@@ -598,7 +604,7 @@ describe("supply chains (E4)", () => {
           areas: { cleared: { area: 400, quality: 1 } },
         },
       },
-      completedProjects: { better_tools: 1, sedentism: 1 },
+      completedProjects: { sickle_blades: 1, sedentism: 1 },
     };
     const d = derive(state, index);
     expect(d.coverage["shelter_roof"] ?? 1).toBeLessThan(1);

@@ -1,5 +1,5 @@
 import { STAGE1 } from "../src/content/stage1.ts";
-import { EagerPolicy, PassivePolicy } from "../src/policy/bots/index.ts";
+import { EagerPolicy, PassivePolicy, SensiblePolicy } from "../src/policy/bots/index.ts";
 import type { Policy } from "../src/policy/policy.ts";
 import { apply, createState, derive, indexConfig, tick } from "../src/sim/index.ts";
 
@@ -88,11 +88,21 @@ function play(seed: number, policy: Policy): Trace {
   };
 }
 
+// The yardstick for "played thoughtfully" is the sensible bot, not the eager
+// one: since the projects cost enough to bite, starting everything at once
+// starves the settlement, and that is a result and not a flaw.
 const eager = Array.from({ length: SEEDS }, (_, i) =>
-  play(101 + i * 13, new EagerPolicy()),
+  play(101 + i * 13, new SensiblePolicy()),
 );
 const passive = Array.from({ length: SEEDS }, (_, i) =>
   play(101 + i * 13, new PassivePolicy()),
+);
+// The negative control: starting everything the moment it is offered. Since the
+// projects compete for the same hands, this is not a bolder way to play but a
+// worse one, and the measurement has to say so — otherwise the costs do not
+// bite and the choice is not a choice.
+const reckless = Array.from({ length: SEEDS }, (_, i) =>
+  play(101 + i * 13, new EagerPolicy()),
 );
 
 const mean = (xs: readonly number[]) => xs.reduce((a, b) => a + b, 0) / (xs.length || 1);
@@ -119,6 +129,11 @@ const report = {
     "E6/E13 — intensification wins in the end": {
       farmingShareEndMean: round(mean(eager.map((t) => t.farmingShareEnd))),
       pass: mean(eager.map((t) => t.farmingShareEnd)) > 0.5,
+    },
+    "T4 — recklessness is punished": {
+      abandonedShareReckless: round(share(reckless.map((t) => t.abandoned))),
+      recklessFinalMean: round(mean(reckless.map((t) => t.finalHeads))),
+      pass: share(reckless.map((t) => t.abandoned)) > 0.5,
     },
     "T4 — decisions matter": {
       eagerFinalMean: round(mean(eagerFinal)),
