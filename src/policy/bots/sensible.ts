@@ -62,6 +62,9 @@ function soleSource(capacity: string, stock: string, index: ConfigIndex): boolea
 /** Below this the most basic need is not met and nothing else matters. */
 const FED = 0.95;
 
+/** Below this share of what the range carries, a stock counts as spent (E29). */
+const SPENT = 0.25;
+
 /**
  * Builds out of surplus: starts something while the people are well fed, and
  * stops while they are not.
@@ -159,6 +162,25 @@ export class SensiblePolicy implements Policy {
         const inputs = index.process.get(effect.id)?.intermediatesPerOutput ?? {};
         return Object.keys(inputs).some((stock) => overdrawn.has(stock));
       });
+
+    // A range that has been hunted or fished out is not mended by working
+    // harder in it — a band that can still move, moves (E29). The cost takes
+    // care of itself: what is in the ground stays there, so a settlement with
+    // many pits will not do this lightly.
+    const spent = Object.values(derived.renewable).some(
+      (renewal) => renewal.ceiling > 0 && renewal.held < renewal.ceiling * SPENT,
+    );
+    if (spent) {
+      const move = derived.projects.find(
+        (project) =>
+          project.available &&
+          !project.running &&
+          (index.project.get(project.id)?.effects ?? []).some(
+            (effect) => effect.type === "stock" && effect.to.kind === "ceiling",
+          ),
+      );
+      if (move !== undefined) return [{ type: "startProject", id: move.id, rank: lowest + 1 }];
+    }
 
     const open = derived.projects.filter((project) => {
       if (!project.available || project.running) return false;

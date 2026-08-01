@@ -280,6 +280,20 @@ export type QualitySource =
   | { readonly kind: "from"; readonly capacity: CapacityId }
   | { readonly kind: "nextTaking" };
 
+/**
+ * Where a *level* comes from when an effect sets one — same idea as
+ * `QualitySource`, and for the same reason: content states where the number
+ * comes from, the engine works it out (T3).
+ *
+ * `ceiling` is what a range carries of a renewable stock — the herd of a fresh
+ * country, full. Writing that as a figure in the content would be wrong twice
+ * over: it moves with the size of the range, and it would have to be kept in
+ * step by hand with the density that already stands at the stock.
+ */
+export type LevelSource =
+  | { readonly kind: "fixed"; readonly value: number }
+  | { readonly kind: "ceiling" };
+
 /** The four effect types from E12. Amounts may be negative. */
 export type Effect =
   | {
@@ -299,7 +313,42 @@ export type Effect =
    * grow more grain — they get more out of the same grain, so they act on the
    * consumption side, which no process can reach.
    */
-  | { readonly type: "tier"; readonly id: NeedTierId; readonly perHead: number };
+  | { readonly type: "tier"; readonly id: NeedTierId; readonly perHead: number }
+  /**
+   * Sets a stock outright, rather than adding to it (E29).
+   *
+   * What a moving band leaves behind and what it finds in a fresh country are
+   * both of this shape: food to nothing, game to what the range carries. It is
+   * stated in the content and not in the engine, because *what one can carry*
+   * is a claim about the world that will want changing — and changing it must
+   * mean editing a list, not the allocation.
+   */
+  | { readonly type: "stock"; readonly id: StockId; readonly to: LevelSource }
+  /**
+   * Sets what a capacity *is*, rather than adding to it: how much of it there
+   * is, or how good it is, or both.
+   *
+   * The pits stay in the ground when a band moves on — that is the amount going
+   * to nothing. And the country it moves into is the same size but a little
+   * poorer — that is the quality, taken from the falling margin of E13. Omitting
+   * either leaves it as it was. Without a sector it works on the land that
+   * belongs to nobody, exactly as the adding form does.
+   */
+  | {
+      readonly type: "setCapacity";
+      readonly capacity: CapacityId;
+      readonly sector?: SectorId;
+      readonly to?: LevelSource;
+      readonly quality?: QualitySource;
+    }
+  /**
+   * Forgets how much fresh country has been used up (E29).
+   *
+   * Settling resets it: otherwise a decision from the first fifty ticks would
+   * tax every later epoch, and an option would be a trap. One settles at a
+   * chosen place, and whoever wandered widely has seen a great deal of land.
+   */
+  | { readonly type: "takings"; readonly set: number };
 
 export interface ProjectDef {
   readonly id: ProjectId;

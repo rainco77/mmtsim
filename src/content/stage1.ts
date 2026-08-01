@@ -548,25 +548,34 @@ export const STAGE1: Config = {
       sector: "households",
     },
     {
-      // A band under pressure widens its range. Repeatable, each time worse —
-      // Ricardo's differential rent. The cap is a limit on the project, not a
-      // missing prerequisite: nothing is lacking once it is spent, there is
-      // simply nothing left (E12).
-      id: "land_taking",
+      // The spatial answer of a band that can still move (E29). Overuse is
+      // met by going somewhere else, not by a catch limit — a group of fifty
+      // needs no fishing ordinance, it walks.
+      //
+      // What it costs is stated here and not in the engine, because *what one
+      // can carry* is a claim about the world that will want changing: what is
+      // in the ground and stacked stays behind, what is worn and held comes
+      // along. And the price rises of itself — a band that has dug nothing
+      // moves for nothing, a band with many pits is settled in fact long
+      // before it settles by decision (Testart).
+      id: "range_change",
       visibleWhen: [],
-      availableWhen: [],
-      limit: 6,
+      availableWhen: [{ kind: "rule", id: "settled", set: false }],
       defaultRank: PROJECTS_FIRST,
-      laborCost: 120,
+      laborCost: 60,
       stockCost: {},
-      minTicks: 12,
+      minTicks: 6,
       effects: [
-        {
-          type: "capacity",
-          capacity: "wilderness",
-          amount: 40,
-          quality: { kind: "nextTaking" },
-        },
+        // Left behind: what is in the ground and what is stacked.
+        { type: "setCapacity", capacity: "storage", sector: "households", to: { kind: "fixed", value: 0 } },
+        { type: "stock", id: "food", to: { kind: "fixed", value: 0 } },
+        { type: "stock", id: "wood", to: { kind: "fixed", value: 0 } },
+        // Found: a country that has not been hunted over.
+        { type: "stock", id: "game", to: { kind: "ceiling" } },
+        { type: "stock", id: "fish", to: { kind: "ceiling" } },
+        // Same size, a little poorer — and the good ranges of the world are
+        // there but once (E13).
+        { type: "setCapacity", capacity: "wilderness", quality: { kind: "nextTaking" } },
       ],
       sector: "households",
     },
@@ -751,6 +760,10 @@ export const STAGE1: Config = {
       limit: 1,
       effects: [
         { type: "rule", id: "settled", set: true },
+        // One settles at a chosen place, and whoever wandered widely has seen
+        // a great deal of land — so the wandering is not carried as a tax into
+        // every later epoch (E29).
+        { type: "takings", set: 0 },
         { type: "process", id: "farming" },
         { type: "process", id: "building" },
         { type: "branch", id: "housing" },
@@ -774,6 +787,31 @@ export const STAGE1: Config = {
 
     // ---- epoch two: they all presuppose farmland, which arrives with
     // sedentism, so they belong where that exists (E29) ----
+    {
+      // Epoch two's spatial answer: keep the old ground and take more beside
+      // it — which means pressing into somebody else's country and holding it,
+      // and that presupposes having something to defend. For a band that can
+      // simply move on it would be almost the same act as a range change, so
+      // the two only come apart once staying is a choice (E29).
+      id: "land_taking",
+      visibleWhen: [{ kind: "rule", id: "settled", set: true }],
+      availableWhen: [{ kind: "rule", id: "settled", set: true }],
+      limit: 6,
+      defaultRank: PROJECTS_FIRST,
+      laborCost: 120,
+      stockCost: {},
+      minTicks: 12,
+      effects: [
+        {
+          type: "capacity",
+          capacity: "wilderness",
+          amount: 40,
+          quality: { kind: "nextTaking" },
+        },
+      ],
+      sector: "households",
+    },
+
     {
       id: "clearing",
       visibleWhen: [{ kind: "rule", id: "settled", set: true }],

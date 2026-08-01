@@ -1,5 +1,11 @@
 import { allocate, type AllocationResult } from "./allocation.ts";
-import { type ConfigIndex, type Effect, type QualitySource, tierEffectAt } from "./config.ts";
+import {
+  type ConfigIndex,
+  type Effect,
+  type LevelSource,
+  type QualitySource,
+  tierEffectAt,
+} from "./config.ts";
 import type { CapacityId, ProjectId, StockId } from "./ids.ts";
 import { decayed, HOUSEHOLDS, regrown, renewals, type Renewal } from "./phases.ts";
 import { peek } from "./random.ts";
@@ -252,6 +258,7 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
 /** One consequence of starting a project, in numbers (T6). */
 export type Consequence =
   | { readonly kind: "capacity"; readonly capacity: CapacityId; readonly from: number; readonly to: number }
+  | { readonly kind: "stock"; readonly stock: StockId; readonly from: number; readonly to: number }
   | { readonly kind: "quality"; readonly capacity: CapacityId; readonly from: number; readonly to: number }
   /** What one head needs of a good, before and after (E9). */
   | { readonly kind: "need"; readonly tier: string; readonly from: number; readonly to: number }
@@ -321,6 +328,36 @@ function consequencesOf(
         });
         break;
       }
+      case "stock": {
+        const from = sector?.stocks[effect.id] ?? 0;
+        out.push({ kind: "stock", stock: effect.id, from, to: levelOf(effect.to, state, index, effect.id) });
+        break;
+      }
+      case "setCapacity": {
+        const held =
+          effect.sector === undefined
+            ? capacityOf(state.unownedCapacity, effect.capacity)
+            : capacityOf(sector?.capacityHeld ?? {}, effect.capacity);
+        if (effect.to !== undefined) {
+          out.push({
+            kind: "capacity",
+            capacity: effect.capacity,
+            from: held.amount,
+            to: levelOf(effect.to, state, index, ""),
+          });
+        }
+        if (effect.quality !== undefined) {
+          out.push({
+            kind: "quality",
+            capacity: effect.capacity,
+            from: held.quality,
+            to: qualityOf(effect.quality, state, index, held.quality),
+          });
+        }
+        break;
+      }
+      case "takings":
+        break;
       case "branch":
         out.push({ kind: "branch", branch: effect.id });
         break;
@@ -330,6 +367,23 @@ function consequencesOf(
     }
   }
   return out;
+}
+
+/** What a level source comes to (T3), as a number. */
+function levelOf(
+  source: LevelSource,
+  state: GameState,
+  index: ConfigIndex,
+  stockId: StockId,
+): number {
+  if (source.kind === "fixed") return source.value;
+  const rule = index.stock.get(stockId)?.regrowth;
+  if (rule === undefined) return 0;
+  let area = capacityOf(state.unownedCapacity, rule.capacity).amount;
+  for (const holder of Object.values(state.sectors)) {
+    area += capacityOf(holder.capacityHeld, rule.capacity).amount;
+  }
+  return area * rule.densityPerArea;
 }
 
 /** Where the quality of added area would come from (E13), as a number. */
