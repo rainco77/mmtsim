@@ -38,16 +38,9 @@ const CAP = Number(args.get("cap") ?? 600);
 const SEEDS = Number(args.get("seeds") ?? 20);
 
 const index = indexConfig(STAGE1);
-/**
- * The experiments run without planning caution (E24). It is a temperament, not
- * a property of a technique: it inflates every committed input by a margin, and
- * by more where a process is more exposed — which showed up as labour per unit
- * being *highest* at the lowest density and made Boserup's second half read
- * backwards. The law is about what intensifying costs, so the forecast margin
- * has to be held at zero while it is measured.
- */
-const plain = indexConfig({ ...STAGE1, risk: { ...STAGE1.risk, caution: 0 } });
 const FOOD = "food";
+/** The two natural capacities food is won from, measured apart (see `Cell`). */
+const AXES = ["wilderness", "water"] as const;
 
 const mean = (xs: readonly number[]): number =>
   xs.reduce((a, b) => a + b, 0) / (xs.length || 1);
@@ -85,26 +78,25 @@ interface Cell {
   /** Food produced per head — Ricardo and Malthus: must fall as heads rise. */
   readonly foodPerHead: number;
   /**
-   * Food out of one unit of wilderness — Boserup: must **rise** as heads rise.
+   * Boserup, **per capacity** and in both halves.
    *
-   * Wilderness alone, not "area": adding hectares of forest to hectares of
-   * water gives a number that means nothing, and it was measured to move for
-   * the wrong reason — at fifty heads the little water carries a lot of the
-   * food, so the mixed figure fell without any intensification happening.
+   * His claim is about one fixed resource being worked harder, so it has to be
+   * measured on one: yield out of a unit of *this* capacity, and labour per
+   * unit of what was won *on* it. Measured over all food together it says
+   * nothing — it then follows the mix between wilderness and water, which is
+   * substitution between two resources and not intensification of either.
+   * Measured that way the criterion passed for years for the wrong reason: the
+   * number rose because the settlement fished more, not because anyone worked
+   * the ground harder.
    */
-  readonly foodPerWilderness: number;
-  /**
-   * Labour per unit of food — the other half of Boserup, and the half that
-   * distinguishes it from ordinary efficiency: working the same ground harder
-   * costs *more* hands per unit, not fewer. Must rise as heads rise.
-   */
-  readonly laborPerFood: number;
+  readonly yieldPer: Readonly<Record<string, number>>;
+  readonly laborPer: Readonly<Record<string, number>>;
   /** How many food processes actually carry something — the broad spectrum. */
   readonly foodProcesses: number;
 }
 
 function at(stand: readonly string[], heads: number, seed: number): Cell {
-  const base = createState(plain.config, { seed, food: 0 });
+  const base = createState(STAGE1, { seed, food: 0 });
   const state: GameState = {
     ...base,
     sectors: {
@@ -113,43 +105,52 @@ function at(stand: readonly string[], heads: number, seed: number): Cell {
     },
     completedProjects: Object.fromEntries(stand.map((id) => [id, 1])),
   };
-  const d = derive(state, plain);
+  const d = derive(state, index);
 
   let food = 0;
-  let wilderness = 0;
-  let onWilderness = 0;
-  let labor = 0;
+  const output: Record<string, number> = {};
+  const occupied: Record<string, number> = {};
+  const labor: Record<string, number> = {};
   const carrying: number[] = [];
   for (const run of d.runs) {
-    const process = plain.process.get(run.process);
+    const process = index.process.get(run.process);
     if (process === undefined) continue;
-    if (plain.branch.get(process.branch)?.produces !== FOOD) continue;
+    if (index.branch.get(process.branch)?.produces !== FOOD) continue;
     food += run.output;
-    labor += run.labor;
     carrying.push(run.output);
-    const per = process.capacityPerOutput["wilderness"] ?? 0;
-    if (per > 0) {
-      wilderness += run.output * per;
-      onWilderness += run.output;
+    for (const axis of AXES) {
+      const per = process.capacityPerOutput[axis] ?? 0;
+      if (per <= 0) continue;
+      output[axis] = (output[axis] ?? 0) + run.output;
+      occupied[axis] = (occupied[axis] ?? 0) + run.output * per;
+      labor[axis] = (labor[axis] ?? 0) + run.labor;
     }
+  }
+  const yieldPer: Record<string, number> = {};
+  const laborPer: Record<string, number> = {};
+  for (const axis of AXES) {
+    yieldPer[axis] = (occupied[axis] ?? 0) > 0 ? (output[axis] ?? 0) / (occupied[axis] ?? 1) : 0;
+    laborPer[axis] = (output[axis] ?? 0) > 0 ? (labor[axis] ?? 0) / (output[axis] ?? 1) : 0;
   }
   return {
     foodPerHead: heads > 0 ? food / heads : 0,
-    foodPerWilderness: wilderness > 0 ? onWilderness / wilderness : 0,
-    laborPerFood: food > 0 ? labor / food : 0,
+    yieldPer,
+    laborPer,
     // One per cent of the food or more: below that a process is rounding, not
     // a part of the diet.
-    foodProcesses: carrying.filter((output) => output > food * 0.01).length,
+    foodProcesses: carrying.filter((o) => o > food * 0.01).length,
   };
 }
 
 /** Averaged over a few draws, so one bad year does not decide a law. */
 function cell(stand: readonly string[], heads: number): Cell {
   const runs = Array.from({ length: 8 }, (_, i) => at(stand, heads, seedOf(i)));
+  const perAxis = (pick: (c: Cell) => Readonly<Record<string, number>>) =>
+    Object.fromEntries(AXES.map((axis) => [axis, mean(runs.map((r) => pick(r)[axis] ?? 0))]));
   return {
     foodPerHead: mean(runs.map((r) => r.foodPerHead)),
-    foodPerWilderness: mean(runs.map((r) => r.foodPerWilderness)),
-    laborPerFood: mean(runs.map((r) => r.laborPerFood)),
+    yieldPer: perAxis((r) => r.yieldPer),
+    laborPer: perAxis((r) => r.laborPer),
     foodProcesses: mean(runs.map((r) => r.foodProcesses)),
   };
 }
@@ -176,21 +177,52 @@ function fallsEverywhere(pick: (cell: Cell) => number): {
   return { pass: broken.length === 0, byStand, broken };
 }
 
-function risesEverywhere(pick: (cell: Cell) => number): {
+/**
+ * Does the series **actually rise** at some stand?
+ *
+ * Not "at every stand", because at the bare one there is only a single
+ * technique on the ground and nothing to intensify — flat is then the truth.
+ * And not "does not fall", which was the earlier test: a flat series passed it,
+ * so the criterion could not fail in the direction that matters. What has to be
+ * true is that *somewhere* in the epoch's tree density calls intensification
+ * forth. If nothing rises anywhere, the tree has no intensification in it.
+ */
+/**
+ * Never narrows: the series may stand still, but it must not fall at any stand.
+ * The right shape for a claim of the form "under pressure X does not shrink".
+ */
+function neverFalls(pick: (cell: Cell) => number): {
   pass: boolean;
   byStand: Record<string, number[]>;
-  broken: string[];
+  falling: string[];
 } {
   const byStand: Record<string, number[]> = {};
-  const broken: string[] = [];
+  const falling: string[] = [];
   for (const [name, cells] of Object.entries(grid)) {
     const series = cells.map((c) => round(pick(c)));
     byStand[name] = series;
     const first = series[0] ?? 0;
     const last = series[series.length - 1] ?? 0;
-    if (last < first) broken.push(name);
+    if (last < first - 1e-9) falling.push(name);
   }
-  return { pass: broken.length === 0, byStand, broken };
+  return { pass: falling.length === 0, byStand, falling };
+}
+
+function risesSomewhere(pick: (cell: Cell) => number): {
+  pass: boolean;
+  byStand: Record<string, number[]>;
+  rising: string[];
+} {
+  const byStand: Record<string, number[]> = {};
+  const rising: string[] = [];
+  for (const [name, cells] of Object.entries(grid)) {
+    const series = cells.map((c) => round(pick(c)));
+    byStand[name] = series;
+    const first = series[0] ?? 0;
+    const last = series[series.length - 1] ?? 0;
+    if (last > first + 1e-9) rising.push(name);
+  }
+  return { pass: rising.length > 0, byStand, rising };
 }
 
 // ------------------------------------------------------------------- tripwires
@@ -384,14 +416,23 @@ const report = {
         mean(passive.map((t) => t.foodPerHeadLast)) <=
         mean(passive.map((t) => t.foodPerHeadFirst)),
     },
-    "Boserup — the same ground yields more as density rises": {
-      ...risesEverywhere((c) => c.foodPerWilderness),
-    },
-    "Boserup — and it costs more hands per unit": {
-      ...risesEverywhere((c) => c.laborPerFood),
-    },
+    // One entry per capacity, because the claim is about one fixed resource
+    // being worked harder — and both halves, because only together do they say
+    // "labour is being traded for land". The first alone is ordinary progress.
+    ...Object.fromEntries(
+      AXES.flatMap((axis) => [
+        [
+          `Boserup — a unit of ${axis} yields more as density rises`,
+          risesSomewhere((c) => c.yieldPer[axis] ?? 0),
+        ],
+        [
+          `Boserup — and what is won on the ${axis} costs more hands`,
+          risesSomewhere((c) => c.laborPer[axis] ?? 0),
+        ],
+      ]),
+    ),
     "broad spectrum — the diet widens under pressure (Flannery, Binford)": {
-      ...risesEverywhere((c) => c.foodProcesses),
+      ...neverFalls((c) => c.foodProcesses),
     },
     "diminishing returns — food per head falls with density (Ricardo, Malthus)": {
       ...fallsEverywhere((c) => c.foodPerHead),
