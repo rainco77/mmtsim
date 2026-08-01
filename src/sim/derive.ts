@@ -1,7 +1,7 @@
 import { allocate, type AllocationResult } from "./allocation.ts";
 import { type ConfigIndex, tierEffectAt } from "./config.ts";
 import type { CapacityId, ProjectId, StockId } from "./ids.ts";
-import { HOUSEHOLDS } from "./phases.ts";
+import { decayed, HOUSEHOLDS } from "./phases.ts";
 import { peek } from "./random.ts";
 import { type Capacity, type GameState } from "./state.ts";
 import {
@@ -120,8 +120,14 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     shocks[stream] = Math.pow(peek(state.random, stream), 1 / shape.exponent) * scale;
   }
 
+  // The allocation reckons on what the coming tick will actually have: decay is
+  // its first step (E19), and `derive` is asked before it has run. The view
+  // below keeps reporting the raw holdings — those are the fact — but planning
+  // on them would hand the economy inputs the tick never sees.
+  const afterDecay = decayed(state, index, unlocks);
+
   const allocation = allocate({
-    state,
+    state: afterDecay,
     index,
     sectorId: HOUSEHOLDS,
     shocks,

@@ -455,18 +455,13 @@ export function allocate(input: AllocationInput): AllocationResult {
   // The labour books, and they have to close: supply = processes + projects +
   // idle (E10 reads exactly these numbers).
   //
-  // `carried` is consumption financed out of what was lying in the stock rather
-  // than out of this tick's people. In the tick itself it is always zero,
-  // because labour decays completely and decay runs before production; it is
-  // only ever positive when `derive` is asked about a state that has not been
-  // through its decay yet.
-  //
-  // `freed` is labour the plan had earmarked for a process that then could not
-  // run at its planned level — it stands still rather than going anywhere, and
-  // it can only ever be as large as what was set aside in the first place.
+  // `laborFreed` is labour the plan had earmarked for a process that then could
+  // not run at its planned level, because the one above it had a bad year. It
+  // stands still rather than going anywhere, and it can only ever be as large
+  // as what was set aside in the first place.
   const laborMade = produced[LABOR_STOCK] ?? 0;
-  const laborUsed = Math.min(laborMade, consumed[LABOR_STOCK] ?? 0);
-  const laborReserve = laborMade - laborUsed;
+  const laborUsed = consumed[LABOR_STOCK] ?? 0;
+  const laborReserve = Math.max(0, laborMade - laborUsed);
   const laborStoodStill = Math.min(laborFreed, laborReserve);
   const withShares = runs.map((run) => ({
     ...run,

@@ -68,38 +68,56 @@ export class ShockPhase implements Phase {
  * falls apart, then the rest is reckoned with. The usual order of stock
  * accounting — opening balance, outflow, then additions.
  */
+/**
+ * What falls apart, falls apart — reckoned in one place (E19).
+ *
+ * Pure, and exported, because two callers need exactly this answer: the phase,
+ * which is the first step of the tick, and `derive`, which previews what the
+ * tick will make of the state. `derive` is asked *between* two ticks, so the
+ * stocks it is handed still carry what the coming decay will take off; letting
+ * it plan on those was giving the economy inputs the tick would never see —
+ * most visibly with labour, which decays completely, so the previous tick's
+ * remainder was planned in again.
+ *
+ * The view keeps showing the raw holdings, which are the fact of the matter.
+ * Only the allocation reckons with what is left after the decay.
+ */
+export function decayed(state: GameState, index: ConfigIndex, unlocks: Unlocks): GameState {
+  const sectors: Record<SectorId, SectorState> = {};
+  for (const [id, sector] of Object.entries(state.sectors)) {
+    const stocks: Record<StockId, number> = {};
+    for (const [stockId, amount] of Object.entries(sector.stocks)) {
+      const def = index.stock.get(stockId);
+      const ordinary = decayRate(index, stockId, unlocks);
+      const shelter = def?.protectedBy;
+      if (shelter === undefined) {
+        stocks[stockId] = amount * (1 - ordinary);
+        continue;
+      }
+      // A store is capacity, not a container (E19): what it covers keeps, the
+      // rest spoils at the ordinary rate. There is no "store full".
+      const covered = Math.min(amount, capacityOf(sector.capacityHeld, shelter.capacity).amount);
+      const sheltered =
+        shelter.decayWhenRule?.find((entry) => unlocks.rules.has(entry.rule))?.decayPerTick ??
+        shelter.decayPerTick;
+      stocks[stockId] = covered * (1 - sheltered) + (amount - covered) * (1 - ordinary);
+    }
+    // Capacity decays too, and keeping it means building it again (E19).
+    const capacityHeld: Record<CapacityId, Capacity> = {};
+    for (const [held_id, held] of Object.entries(sector.capacityHeld)) {
+      const rate = index.config.capacities.find((c) => c.id === held_id)?.decayPerTick ?? 0;
+      capacityHeld[held_id] = { ...held, amount: held.amount * (1 - rate) };
+    }
+    sectors[id] = { ...sector, stocks, capacityHeld };
+  }
+  return { ...state, sectors };
+}
+
 export class DecayPhase implements Phase {
   readonly id = "decay";
 
   run(state: GameState, index: ConfigIndex, ctx: TickContext): GameState {
-    const sectors: Record<SectorId, SectorState> = {};
-    for (const [id, sector] of Object.entries(state.sectors)) {
-      const stocks: Record<StockId, number> = {};
-      for (const [stockId, amount] of Object.entries(sector.stocks)) {
-        const def = index.stock.get(stockId);
-        const ordinary = decayRate(index, stockId, ctx);
-        const shelter = def?.protectedBy;
-        if (shelter === undefined) {
-          stocks[stockId] = amount * (1 - ordinary);
-          continue;
-        }
-        // A store is capacity, not a container (E19): what it covers keeps, the
-        // rest spoils at the ordinary rate. There is no "store full".
-        const covered = Math.min(amount, capacityOf(sector.capacityHeld, shelter.capacity).amount);
-        const sheltered =
-          shelter.decayWhenRule?.find((entry) => ctx.unlocks.rules.has(entry.rule))
-            ?.decayPerTick ?? shelter.decayPerTick;
-        stocks[stockId] = covered * (1 - sheltered) + (amount - covered) * (1 - ordinary);
-      }
-      // Capacity decays too, and keeping it means building it again (E19).
-      const capacityHeld: Record<CapacityId, Capacity> = {};
-      for (const [id, held] of Object.entries(sector.capacityHeld)) {
-        const rate = index.config.capacities.find((c) => c.id === id)?.decayPerTick ?? 0;
-        capacityHeld[id] = { ...held, amount: held.amount * (1 - rate) };
-      }
-      sectors[id] = { ...sector, stocks, capacityHeld };
-    }
-    return { ...state, sectors };
+    return decayed(state, index, ctx.unlocks);
   }
 }
 
@@ -196,11 +214,11 @@ export class ProjectPhase implements Phase {
  * A rule may replace the decay rate (E23): with sedentism food becomes
  * storable, and that is a switch the phase reads — not a fifth effect type.
  */
-function decayRate(index: ConfigIndex, stockId: StockId, ctx: TickContext): number {
+function decayRate(index: ConfigIndex, stockId: StockId, unlocks: Unlocks): number {
   const def = index.stock.get(stockId);
   if (def === undefined) return 0;
   for (const override of def.decayWhenRule ?? []) {
-    if (ctx.unlocks.rules.has(override.rule)) return override.decayPerTick;
+    if (unlocks.rules.has(override.rule)) return override.decayPerTick;
   }
   return def.decayPerTick;
 }
