@@ -29,6 +29,7 @@ import {
   type PlanContext,
 } from "./plan.ts";
 import { shockFactor, type Shocks } from "./risk.ts";
+import { renewals } from "./phases.ts";
 import { capacityOf, type GameState } from "./state.ts";
 
 /**
@@ -368,7 +369,16 @@ export function allocate(input: AllocationInput): AllocationResult {
   // food store. Both look only backwards, so the plan still knows nothing of
   // the year ahead; the other half of saving needs no rule at all, since a good
   // year overshoots the blind plan by itself and the surplus stays in the stock.
+  // The leading brake: nothing is laid in while the country is failing. The
+  // backward-looking rule below only stops once a need has already broken, and
+  // measured that was four ticks too late — the store went on claiming while
+  // the fishery fell from 118 to 1.
+  const countryFailing = Object.values(renewals(state, index)).some(
+    (renewal) => renewal.ceiling > 0 && renewal.held / renewal.ceiling < config.saving.pauseBelow,
+  );
+
   for (const stockDef of config.stocks) {
+    if (countryFailing) break;
     const shelter = stockDef.protectedBy;
     if (shelter === undefined) continue;
     const capacity = pools.amount[shelter.capacity]?.available ?? 0;

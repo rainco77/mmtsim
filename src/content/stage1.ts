@@ -243,8 +243,8 @@ export const STAGE1: Config = {
       branch: "food",
       activity: "fishing",
       priority: 75,
-      capacityPerOutput: { water: 0.2 },
-      intermediatesPerOutput: { labor: 2.5 },
+      capacityPerOutput: { water: 0.5 },
+      intermediatesPerOutput: { labor: 3.0 },
       exposure: { weather: 0.1 },
       qualityWeight: 0.2,
       unlockedFromStart: true,
@@ -584,8 +584,18 @@ export const STAGE1: Config = {
       // moves for nothing, a band with many pits is settled in fact long
       // before it settles by decision (Testart).
       id: "range_change",
-      visibleWhen: [],
-      availableWhen: [{ kind: "rule", id: "settled", set: false }],
+      // It appears when the country begins to fail, and that appearance is
+      // itself the warning: half of what the range carries is the notice, a
+      // third is the point at which moving is the answer. Before that, moving
+      // would be a cheap reset rather than a decision.
+      visibleWhen: [
+        { kind: "rule", id: "settled", set: false },
+        { kind: "stockThin", share: 0.5 },
+      ],
+      availableWhen: [
+        { kind: "rule", id: "settled", set: false },
+        { kind: "stockThin", share: 0.3 },
+      ],
       defaultRank: PROJECTS_FIRST,
       laborCost: 60,
       stockCost: {},
@@ -952,7 +962,7 @@ export const STAGE1: Config = {
   // How much of what it uses a society additionally puts by (E19). A start
   // value: Halstead and O'Shea put the normal surplus of such societies at
   // something like a tenth to a third above need.
-  saving: { rate: 0.2 },
+  saving: { rate: 0.2, pauseBelow: 0.5 },
 
   // The player may set the order by hand from the start; a later institution
   // unsets this rule (E23) and the economy decides alone from then on.

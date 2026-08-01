@@ -263,6 +263,13 @@ export type Condition =
    * More than one may be named, and their tallies are added — sewing betters
    * both roads to clothing, so it asks for practice at either.
    */
+  /**
+   * Any renewable stock at or below this share of what the range carries (E29).
+   *
+   * A band does not move on a whim; it moves when the country is spent. And
+   * because the project only appears then, its appearing *is* the warning.
+   */
+  | { readonly kind: "stockThin"; readonly share: number }
   | {
       readonly kind: "experience";
       readonly activities: readonly ActivityId[];
@@ -474,6 +481,17 @@ export interface RiskConfig {
 export interface SavingConfig {
   /** Share of what is used of a good that may additionally be put by. */
   readonly rate: number;
+  /**
+   * Nothing is put by at all while any renewable stock has fallen below this
+   * share of what the range carries.
+   *
+   * The rule above — only where the needs of that good were met last tick — is
+   * a **trailing** brake: it stops after the harm is done. Measured, the store
+   * went on claiming through the four ticks in which the fishery went from 118
+   * to 1, and only gave up once satiety had already broken. One does not lay in
+   * stores while the country is failing.
+   */
+  readonly pauseBelow: number;
 }
 
 // ---------------------------------------------------------------- land
