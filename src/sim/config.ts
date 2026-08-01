@@ -317,6 +317,23 @@ export interface ShockShape {
 export interface RiskConfig {
   /** 0 switches the risk term off entirely. */
   readonly aversion: number;
+  /**
+   * How cautiously the plan reckons with a year it cannot know (E24).
+   *
+   * The plan is blind, so it aims at a year slightly **worse** than the mean —
+   * and in an ordinary year it therefore produces a little more than is needed.
+   * That surplus is what a store is for, and it is what a project finds waiting
+   * when it wants an intermediate nobody has yet asked for.
+   *
+   * Scaled by each process's own exposure, so it costs nothing where nothing
+   * varies: a fire lit indoors needs no margin, a harvest does. One number for
+   * the whole economy rather than one per branch — it is a temperament, not a
+   * technical datum. Later, when there are firms, this is where the sales
+   * forecast sits, and then it may well differ between them.
+   *
+   * 0 plans on the mean exactly.
+   */
+  readonly caution: number;
 }
 
 // ---------------------------------------------------------------- land

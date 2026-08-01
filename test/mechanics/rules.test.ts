@@ -239,7 +239,7 @@ describe("processes and the fallback level (E5)", () => {
   // about dominance. With it on, a thin store is a criterion of its own and the
   // safe process leads (E5) — which is what fishing does in the ordinary
   // opening, and it would be measured here instead of what is meant.
-  const noRisk: Config = { ...STAGE1, risk: { aversion: 0 } };
+  const noRisk: Config = { ...STAGE1, risk: { aversion: 0, caution: 0 } };
   const plain = indexConfig(noRisk);
 
   // The gathering family only: the epoch runs eight processes from the first
@@ -358,7 +358,7 @@ describe("processes and the fallback level (E5)", () => {
     // Two processes, same yield, different exposure.
     const twin: Config = {
       ...STAGE1,
-      risk: { aversion: 0.9 },
+      risk: { aversion: 0.9, caution: 0 },
       processes: [
         ...STAGE1.processes,
         {

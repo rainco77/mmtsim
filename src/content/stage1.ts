@@ -800,8 +800,9 @@ export const STAGE1: Config = {
   shocks: { weather: { shape: "powerLeftSkewed", exponent: 4 } },
 
   // Risk aversion: how strongly a thin store pushes towards the reliable
-  // process (E5).
-  risk: { aversion: 0.5 },
+  // process (E5). Caution: how far below the mean the plan aims, so that an
+  // ordinary year leaves something over (E24).
+  risk: { aversion: 0.5, caution: 0.1 },
 
   // The player may set the order by hand from the start; a later institution
   // unsets this rule (E23) and the economy decides alone from then on.

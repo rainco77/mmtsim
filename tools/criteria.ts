@@ -38,6 +38,15 @@ const CAP = Number(args.get("cap") ?? 600);
 const SEEDS = Number(args.get("seeds") ?? 20);
 
 const index = indexConfig(STAGE1);
+/**
+ * The experiments run without planning caution (E24). It is a temperament, not
+ * a property of a technique: it inflates every committed input by a margin, and
+ * by more where a process is more exposed — which showed up as labour per unit
+ * being *highest* at the lowest density and made Boserup's second half read
+ * backwards. The law is about what intensifying costs, so the forecast margin
+ * has to be held at zero while it is measured.
+ */
+const plain = indexConfig({ ...STAGE1, risk: { ...STAGE1.risk, caution: 0 } });
 const FOOD = "food";
 
 const mean = (xs: readonly number[]): number =>
@@ -95,7 +104,7 @@ interface Cell {
 }
 
 function at(stand: readonly string[], heads: number, seed: number): Cell {
-  const base = createState(STAGE1, { seed, food: 0 });
+  const base = createState(plain.config, { seed, food: 0 });
   const state: GameState = {
     ...base,
     sectors: {
@@ -104,7 +113,7 @@ function at(stand: readonly string[], heads: number, seed: number): Cell {
     },
     completedProjects: Object.fromEntries(stand.map((id) => [id, 1])),
   };
-  const d = derive(state, index);
+  const d = derive(state, plain);
 
   let food = 0;
   let wilderness = 0;
@@ -112,9 +121,9 @@ function at(stand: readonly string[], heads: number, seed: number): Cell {
   let labor = 0;
   const carrying: number[] = [];
   for (const run of d.runs) {
-    const process = index.process.get(run.process);
+    const process = plain.process.get(run.process);
     if (process === undefined) continue;
-    if (index.branch.get(process.branch)?.produces !== FOOD) continue;
+    if (plain.branch.get(process.branch)?.produces !== FOOD) continue;
     food += run.output;
     labor += run.labor;
     carrying.push(run.output);
