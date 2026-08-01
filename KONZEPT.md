@@ -2184,6 +2184,14 @@ Bots die Verschiebung gemacht hat.
 > **Keine Balancing-Änderung auf einen Mittelwert hin.** Das Aggregat zeigt hin,
 > entschieden wird am einzelnen Tick.
 
+**Und was Bot und Kriterien grundsätzlich nicht leisten können.** Der Bot ist eine
+**letzte Verteidigungslinie**, keine Beurteilung: Er und die Kriterien prüfen, dass kein
+grober Unfug passiert — dass niemand verhungert, wo Nahrung im Überfluss läge, dass eine
+Ressource nicht unbemerkt stirbt, dass die Bilanzen aufgehen. **Ob das Spiel sinnvoll
+ist, kann kein Test sagen.** Dafür gibt es nur das echte Durchspielen. Ein grüner
+Kriterienlauf heißt darum nie „es ist gut", sondern nur „es ist nicht offensichtlich
+kaputt" — und wer das verwechselt, tariert gegen eine Zahl statt gegen ein Spiel.
+
 Damit das keine Ermahnung bleibt, **nennt jeder gerissene Stolperdraht Seed und Tick**,
 an dem er zuerst gerissen ist. „51,8 % Leerlauf" ist keine Auskunft, mit der man
 irgendwohin gehen kann; „Leerlauf über 15 % ab Tick 14, Seed 231" ist eine Adresse.

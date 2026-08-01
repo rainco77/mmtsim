@@ -140,8 +140,29 @@ export class SensiblePolicy implements Policy {
       return needed;
     };
 
+    // What is being taken from each renewable stock this tick, against what
+    // grows back. A stock taken above its growth is being run down, and a
+    // thoughtful player does not then pay to take it faster still.
+    const overdrawn = new Set<string>();
+    for (const [stock, renewal] of Object.entries(derived.renewable)) {
+      let taken = 0;
+      for (const run of derived.runs) {
+        const per = index.process.get(run.process)?.intermediatesPerOutput[stock] ?? 0;
+        taken += run.output * per;
+      }
+      if (taken > renewal.growth + 1e-9) overdrawn.add(stock);
+    }
+    /** Does this project pay to draw harder on something already run down? */
+    const deepens = (id: string): boolean =>
+      (index.project.get(id)?.effects ?? []).some((effect) => {
+        if (effect.type !== "process") return false;
+        const inputs = index.process.get(effect.id)?.intermediatesPerOutput ?? {};
+        return Object.keys(inputs).some((stock) => overdrawn.has(stock));
+      });
+
     const open = derived.projects.filter((project) => {
       if (!project.available || project.running) return false;
+      if (deepens(project.id)) return false;
       const effect = moves(project.id, index);
       for (const [capacity, amount] of effect) {
         if (amount >= 0) continue;

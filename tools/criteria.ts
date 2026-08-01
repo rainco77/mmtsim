@@ -242,6 +242,8 @@ interface Trace {
   readonly hideShare: number;
   readonly fibreShare: number;
   readonly waterFoodShare: number;
+  /** Thinnest any renewable stock ever got, against what the range carries. */
+  readonly thinnestStock: number;
   readonly headsAtStart: number;
   readonly foodPerHeadFirst: number;
   readonly foodPerHeadLast: number;
@@ -284,6 +286,7 @@ function play(seed: number, policy: Policy): Trace {
   let waterFood = 0;
   let allFood = 0;
   let ticks = 0;
+  let thinnest = 1;
   let foodPerHeadFirst: number | null = null;
   let foodPerHeadLast = 0;
   const headsAtStart = state.sectors["households"]?.heads ?? 0;
@@ -304,6 +307,10 @@ function play(seed: number, policy: Policy): Trace {
     available += d.laborPerformance;
     if (idleBreachAt === null && d.laborPerformance > 0 && d.laborUnused / d.laborPerformance > IDLE_LIMIT) {
       idleBreachAt = state.tick;
+    }
+
+    for (const renewal of Object.values(d.renewable)) {
+      if (renewal.ceiling > 0) thinnest = Math.min(thinnest, renewal.held / renewal.ceiling);
     }
 
     const open = offers(d);
@@ -356,6 +363,7 @@ function play(seed: number, policy: Policy): Trace {
     hideShare: both > 0 ? hide / both : 0,
     fibreShare: both > 0 ? fibre / both : 0,
     waterFoodShare: allFood > 0 ? waterFood / allFood : 0,
+    thinnestStock: thinnest,
     headsAtStart,
     foodPerHeadFirst: foodPerHeadFirst ?? 0,
     foodPerHeadLast,
@@ -506,6 +514,15 @@ const report = {
       pass:
         mean(thoughtful.map((t) => t.waterFoodShare)) > 0.05 &&
         mean(thoughtful.map((t) => t.waterFoodShare)) < 0.95,
+    },
+    // A resource that dies is gross nonsense, and nothing else was noticing it:
+    // a run could fish its water out entirely and pass every other tripwire.
+    "no renewable stock is run into the ground (E29)": {
+      thinnestMean: round(mean(thoughtful.map((t) => t.thinnestStock))),
+      thinnestSeen: round(thoughtful.reduce((low, t) => Math.min(low, t.thinnestStock), 1)),
+      limit: 0.2,
+      seeds: failedSeeds(thoughtful, (t) => t.thinnestStock < 0.2),
+      pass: thoughtful.every((t) => t.thinnestStock >= 0.2),
     },
     "the settlement stays a village (E14)": {
       headsAtSedentismMean: round(mean(settled.map((t) => t.headsAtEnd))),
