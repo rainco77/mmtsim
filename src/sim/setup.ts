@@ -27,7 +27,13 @@ export function createState(config: Config, options: StartOptions): GameState {
       [HOUSEHOLDS]: {
         heads,
         // Enough for the first tick, so the settlement does not start starving.
-        stocks: { food: options.food ?? heads },
+        // Game and fish start at what the range carries: a band arrives in a
+        // country that is full, not in one it has already hunted out (E29).
+        stocks: {
+          food: options.food ?? heads,
+          game: (options.wilderness ?? 100) * 3.0,
+          fish: (options.water ?? 40) * 4.0,
+        },
         capacityHeld: {},
         productivity: config.carried.baseProductivity,
         workAbility: config.carried.baseWorkAbility,

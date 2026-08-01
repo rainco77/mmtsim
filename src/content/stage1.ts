@@ -54,6 +54,21 @@ export const STAGE1: Config = {
     // all, and that is the point of making it a good of its own rather than a
     // need pointed at wood: it is produced from wood and spent at once.
     { id: "warmth", decayPerTick: 1 },
+    // Animals are not an area (E29). A hectare of forest is not used up by
+    // hunting over it; the deer on it are. So game is a stock that is taken and
+    // breeds again, and the wilderness only says how many of them the range can
+    // carry. Out of that comes the epoch's own history: hunt the big game down
+    // and fish and hard seeds begin to pay.
+    {
+      id: "game",
+      decayPerTick: 0,
+      regrowth: { ratePerTick: 0.3, capacity: "wilderness", densityPerArea: 3.0, refuge: 2 },
+    },
+    {
+      id: "fish",
+      decayPerTick: 0,
+      regrowth: { ratePerTick: 0.4, capacity: "water", densityPerArea: 4.0, refuge: 2 },
+    },
     { id: "hides", decayPerTick: 0.05 },
     { id: "fibre", decayPerTick: 0.04 },
     {
@@ -179,8 +194,8 @@ export const STAGE1: Config = {
       branch: "food",
       activity: "hunting",
       priority: 90,
-      capacityPerOutput: { wilderness: 4.0 },
-      intermediatesPerOutput: { labor: 0.45 },
+      capacityPerOutput: { wilderness: 1.5 },
+      intermediatesPerOutput: { labor: 0.45, game: 1.0 },
       exposure: { weather: 0.8 },
       qualityWeight: 0.5,
       unlockedFromStart: true,
@@ -190,8 +205,8 @@ export const STAGE1: Config = {
       branch: "food",
       activity: "hunting",
       priority: 95,
-      capacityPerOutput: { wilderness: 4.0 },
-      intermediatesPerOutput: { labor: 0.27 },
+      capacityPerOutput: { wilderness: 1.5 },
+      intermediatesPerOutput: { labor: 0.27, game: 1.0 },
       exposure: { weather: 0.8 },
       qualityWeight: 0.5,
       unlockedFromStart: false,
@@ -203,8 +218,8 @@ export const STAGE1: Config = {
       branch: "food",
       activity: "fishing",
       priority: 80,
-      capacityPerOutput: { water: 2.0 },
-      intermediatesPerOutput: { labor: 1.2 },
+      capacityPerOutput: { water: 0.8 },
+      intermediatesPerOutput: { labor: 1.2, fish: 1.0 },
       exposure: { weather: 0.15 },
       qualityWeight: 0.2,
       unlockedFromStart: true,
@@ -217,8 +232,8 @@ export const STAGE1: Config = {
       branch: "food",
       activity: "fishing",
       priority: 85,
-      capacityPerOutput: { water: 2.0 },
-      intermediatesPerOutput: { labor: 0.48 },
+      capacityPerOutput: { water: 0.8 },
+      intermediatesPerOutput: { labor: 0.48, fish: 1.0 },
       exposure: { weather: 0.15 },
       qualityWeight: 0.2,
       unlockedFromStart: false,
@@ -327,8 +342,8 @@ export const STAGE1: Config = {
       branch: "hides",
       activity: "hunting",
       priority: 100,
-      capacityPerOutput: { wilderness: 4.0 },
-      intermediatesPerOutput: { labor: 0.3 },
+      capacityPerOutput: { wilderness: 1.5 },
+      intermediatesPerOutput: { labor: 0.3, game: 1.0 },
       exposure: { weather: 0.8 },
       qualityWeight: 0.5,
       unlockedFromStart: true,

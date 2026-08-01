@@ -251,8 +251,10 @@ describe("processes and the fallback level (E5)", () => {
       .filter((id) => id.startsWith("gathering"));
 
   it("a technique without a capacity input replaces its predecessor entirely", () => {
+    // The project is set rather than played out: it now waits on practice at
+    // gathering (E29), and what is measured here is the ordering.
     const before = createState(noRisk, { seed: 7 });
-    const after = finish(createState(noRisk, { seed: 7 }), "sickle", plain);
+    const after: GameState = { ...before, completedProjects: { sickle: 1 } };
 
     expect(gatheringRuns(before)).toEqual(["gathering"]);
     expect(gatheringRuns(after)).toEqual(["gathering_sickle"]);
@@ -280,9 +282,15 @@ describe("processes and the fallback level (E5)", () => {
       completedProjects: { ...state.completedProjects, sickle: 1, sedentism: 1 },
     };
 
-    const processes = derive(state, plain).runs.map((r) => r.process).filter((p) => p !== "labor");
-    expect(processes).toContain("farming");
-    expect(processes).toContain("gathering_sickle");
+    // Farming runs, and it cannot carry two hundred people off three hectares,
+    // so the rest falls to whatever else can feed them. *Which* process picks
+    // it up is not the point and shifts with the content — that the surplus
+    // demand falls through to a further one is.
+    const food = derive(state, plain)
+      .runs.map((r) => r.process)
+      .filter((id) => plain.branch.get(plain.process.get(id)?.branch ?? "")?.produces === "food");
+    expect(food).toContain("farming");
+    expect(food.filter((id) => id !== "farming").length).toBeGreaterThan(0);
   });
 
   it("the declared priority applies while nothing has bound yet (E5)", () => {

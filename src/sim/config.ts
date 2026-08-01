@@ -51,6 +51,34 @@ export interface StockDef {
     readonly rule: RuleId;
     readonly decayPerTick: number;
   }[];
+
+  /**
+   * A stock that **grows back** instead of falling apart (E29).
+   *
+   * Animals and fish are not areas. A hectare of forest is not used up by
+   * hunting over it, but the deer on it are — they are taken, and they breed
+   * again. That is the difference the model draws between the two kinds of
+   * natural resource, and it is the same distinction throughout: **capacity is
+   * what is occupied and given back, a stock is what is taken and grows again.**
+   * A hand, a field, a pit against a deer, a fish, a tree.
+   *
+   * Mechanically it is decay with the sign reversed and a ceiling — the
+   * logistic curve, the standard model of a renewable resource:
+   *
+   *     ceiling  K = area of `capacity` × `densityPerArea`
+   *     growth     = `ratePerTick` × (stock + `refuge`) × (1 − stock / K)
+   *
+   * `refuge` is what keeps E20 — no state without a way back. At a stock of
+   * nought the growth term would be nought as well, and a range hunted empty
+   * could never recover. There are always corners nothing reaches, and animals
+   * come back out of them; slowly, but they come.
+   */
+  readonly regrowth?: {
+    readonly ratePerTick: number;
+    readonly capacity: CapacityId;
+    readonly densityPerArea: number;
+    readonly refuge: number;
+  };
 }
 
 // ---------------------------------------------------------------- capacityHeld

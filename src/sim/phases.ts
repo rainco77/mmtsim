@@ -113,6 +113,41 @@ export function decayed(state: GameState, index: ConfigIndex, unlocks: Unlocks):
   return { ...state, sectors };
 }
 
+/**
+ * What grows back, grows back (E29) — the mirror of the decay above, and it
+ * runs beside it at the head of the tick: the herd breeds out of what last
+ * year's hunting left standing, and only then is this year reckoned.
+ */
+export function regrown(state: GameState, index: ConfigIndex): GameState {
+  const sectors: Record<SectorId, SectorState> = {};
+  let touched = false;
+  for (const [id, sector] of Object.entries(state.sectors)) {
+    const stocks: Record<StockId, number> = { ...sector.stocks };
+    for (const def of index.config.stocks) {
+      const rule = def.regrowth;
+      if (rule === undefined) continue;
+      const owned = capacityOf(sector.capacityHeld, rule.capacity).amount;
+      const unowned = capacityOf(state.unownedCapacity, rule.capacity).amount;
+      const ceiling = (owned + unowned) * rule.densityPerArea;
+      if (ceiling <= 0) continue;
+      const held = stocks[def.id] ?? 0;
+      const growth = rule.ratePerTick * (held + rule.refuge) * (1 - held / ceiling);
+      stocks[def.id] = Math.max(0, Math.min(ceiling, held + growth));
+      touched = true;
+    }
+    sectors[id] = { ...sector, stocks };
+  }
+  return touched ? { ...state, sectors } : state;
+}
+
+export class RegrowthPhase implements Phase {
+  readonly id = "regrowth";
+
+  run(state: GameState, index: ConfigIndex): GameState {
+    return regrown(state, index);
+  }
+}
+
 export class DecayPhase implements Phase {
   readonly id = "decay";
 
@@ -369,6 +404,7 @@ export class CarryPhase implements Phase {
 export const PIPELINE: readonly Phase[] = [
   new ShockPhase(),
   new DecayPhase(),
+  new RegrowthPhase(),
 
   new ProductionPhase(),
   new ProjectPhase(),
