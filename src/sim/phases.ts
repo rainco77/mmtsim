@@ -118,21 +118,78 @@ export function decayed(state: GameState, index: ConfigIndex, unlocks: Unlocks):
  * runs beside it at the head of the tick: the herd breeds out of what last
  * year's hunting left standing, and only then is this year reckoned.
  */
+/**
+ * Where a renewable stock stands: what is held, what the range can carry, and
+ * what will grow back this tick (E29).
+ *
+ * The third number is the one that matters. A stock on its own says nothing —
+ * "three hundred deer" is neither much nor little until the ceiling stands
+ * beside it — and neither does a ceiling, until one can see what grows. Held
+ * against the ceiling says *how thin it is*; growth against what is being taken
+ * says *whether that will last*. That comparison is the whole of husbandry, and
+ * without it the thinning of a range is a silent drift in the numbers that
+ * nobody, player or bot, can act on.
+ */
+export interface Renewal {
+  readonly held: number;
+  readonly ceiling: number;
+  readonly growth: number;
+}
+
+function renewalIn(
+  state: GameState,
+  index: ConfigIndex,
+  sector: SectorState,
+  stockId: StockId,
+): Renewal | undefined {
+  const rule = index.stock.get(stockId)?.regrowth;
+  if (rule === undefined) return undefined;
+  const owned = capacityOf(sector.capacityHeld, rule.capacity).amount;
+  const unowned = capacityOf(state.unownedCapacity, rule.capacity).amount;
+  const ceiling = (owned + unowned) * rule.densityPerArea;
+  const held = sector.stocks[stockId] ?? 0;
+  if (ceiling <= 0) return { held, ceiling: 0, growth: 0 };
+  const raw = rule.ratePerTick * (held + rule.refuge) * (1 - held / ceiling);
+  // What will really be added, after the ceiling and the floor have their say.
+  const growth = Math.max(0, Math.min(ceiling, held + raw)) - held;
+  return { held, ceiling, growth };
+}
+
+/** The same, for every renewable stock and over every holder — for the view. */
+export function renewals(state: GameState, index: ConfigIndex): Record<StockId, Renewal> {
+  const out: Record<StockId, Renewal> = {};
+  for (const def of index.config.stocks) {
+    if (def.regrowth === undefined) continue;
+    let held = 0;
+    let ceiling = 0;
+    let growth = 0;
+    for (const sector of Object.values(state.sectors)) {
+      const one = renewalIn(state, index, sector, def.id);
+      if (one === undefined) continue;
+      held += one.held;
+      ceiling += one.ceiling;
+      growth += one.growth;
+    }
+    out[def.id] = { held, ceiling, growth };
+  }
+  return out;
+}
+
+/**
+ * What grows back, grows back (E29) — the mirror of the decay below, and it
+ * runs beside it at the head of the tick: the herd breeds out of what last
+ * year's hunting left standing, and only then is this year reckoned.
+ */
 export function regrown(state: GameState, index: ConfigIndex): GameState {
   const sectors: Record<SectorId, SectorState> = {};
   let touched = false;
   for (const [id, sector] of Object.entries(state.sectors)) {
     const stocks: Record<StockId, number> = { ...sector.stocks };
     for (const def of index.config.stocks) {
-      const rule = def.regrowth;
-      if (rule === undefined) continue;
-      const owned = capacityOf(sector.capacityHeld, rule.capacity).amount;
-      const unowned = capacityOf(state.unownedCapacity, rule.capacity).amount;
-      const ceiling = (owned + unowned) * rule.densityPerArea;
-      if (ceiling <= 0) continue;
-      const held = stocks[def.id] ?? 0;
-      const growth = rule.ratePerTick * (held + rule.refuge) * (1 - held / ceiling);
-      stocks[def.id] = Math.max(0, Math.min(ceiling, held + growth));
+      if (def.regrowth === undefined) continue;
+      const one = renewalIn(state, index, sector, def.id);
+      if (one === undefined) continue;
+      stocks[def.id] = one.held + one.growth;
       touched = true;
     }
     sectors[id] = { ...sector, stocks };

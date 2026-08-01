@@ -1,7 +1,7 @@
 import { allocate, type AllocationResult } from "./allocation.ts";
 import { type ConfigIndex, tierEffectAt } from "./config.ts";
 import type { CapacityId, ProjectId, StockId } from "./ids.ts";
-import { decayed, HOUSEHOLDS, regrown } from "./phases.ts";
+import { decayed, HOUSEHOLDS, regrown, renewals, type Renewal } from "./phases.ts";
 import { peek } from "./random.ts";
 import { type Capacity, type GameState } from "./state.ts";
 import {
@@ -45,6 +45,12 @@ export interface Derived {
   readonly ordering: readonly BranchOrdering[];
 
   readonly stocks: Readonly<Record<StockId, number>>;
+  /**
+   * Where every renewable stock stands (E29): held, what the range carries, and
+   * what grows back this tick. Held against the ceiling says how thin it is;
+   * growth against what is being taken says whether that will last.
+   */
+  readonly renewable: Readonly<Record<StockId, Renewal>>;
   readonly unownedCapacity: Readonly<Record<CapacityId, Capacity>>;
   readonly ownedCapacity: Readonly<Record<CapacityId, Capacity>>;
   /**
@@ -204,6 +210,7 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     ownedCapacity: sector?.capacityHeld ?? {},
     capacityTotal: allocation.capacityTotal,
     utilization,
+    renewable: renewals(afterDecay, index),
     nextTakingQuality:
       index.config.land.baseQuality *
       Math.pow(1 - index.config.land.qualityDecayPerTaking, state.landTakings),

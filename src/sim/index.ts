@@ -62,7 +62,9 @@ export {
   HOUSEHOLDS,
   laborPerformance,
   PIPELINE,
+  renewals,
 } from "./phases.ts";
+export type { Renewal } from "./phases.ts";
 export type { RandomState } from "./random.ts";
 export { counterOf, createRandomState, draw, peek, uniformAt } from "./random.ts";
 export type { StartOptions } from "./setup.ts";
