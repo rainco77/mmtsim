@@ -225,6 +225,31 @@ export const STAGE1: Config = {
       unlockedFromStart: true,
     },
     {
+      // The mortar of the water (E29): far more out of the same stretch of
+      // shore, at a great deal more work — gather, carry, shuck. So it does not
+      // pay while the water is wide and does pay once it is crowded, which is
+      // Boserup on the second axis.
+      //
+      // Nobody has to invent picking up shellfish, so it stands open from the
+      // first tick and the allocation reaches for it when the water gets tight.
+      // The Køkkenmøddinger of Ertebølle — hills of oyster and cockle shell —
+      // are the archaeological fingerprint of exactly this.
+      //
+      // Deliberately without a stock of its own. Real beds can be picked over
+      // too, but a third renewable stock is model the epoch does not need, and
+      // this way the shore still carries when the fish have gone — which is the
+      // whole broad-spectrum thought: when the better thins, the worse pays.
+      id: "shellfish_gathering",
+      branch: "food",
+      activity: "fishing",
+      priority: 75,
+      capacityPerOutput: { water: 0.2 },
+      intermediatesPerOutput: { labor: 2.5 },
+      exposure: { weather: 0.1 },
+      qualityWeight: 0.2,
+      unlockedFromStart: true,
+    },
+    {
       // A set net fishes while you sleep. Still worse per hand than gathering —
       // but it does not touch the wilderness and it does not fail in a bad
       // year, and once the land is full that is what decides.
