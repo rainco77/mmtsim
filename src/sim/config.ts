@@ -450,6 +450,32 @@ export interface RiskConfig {
   readonly caution: number;
 }
 
+/**
+ * How a society puts something by (E19, E29).
+ *
+ * A store is not filled in a day. Left to claim the whole gap up to its
+ * capacity, it strips whatever is within reach to do it — measured, the tick a
+ * hundred units of pit were finished the take from the water went from 21 to
+ * 45 against a growth of 16, and the fishery was dead three ticks later. The
+ * settlement had built the very thing meant to carry it through a bad year and
+ * ruined its second source doing it.
+ *
+ * So the deliberate part of saving is bounded twice over. It is a **rate out of
+ * what is used** — Halstead and O'Shea put the *normal surplus* of such
+ * societies at something like a tenth to a third above need, not a granary in
+ * one season — and it only arises **when the needs of that good were met last
+ * tick**: one puts by when there is enough, not while going short. Both look
+ * only backwards, so nothing here knows the year in advance.
+ *
+ * The other part of saving needs no rule at all. Since the plan went blind
+ * (E24), a good year simply delivers more than was reckoned with, and the
+ * overshoot stays in the stock by itself.
+ */
+export interface SavingConfig {
+  /** Share of what is used of a good that may additionally be put by. */
+  readonly rate: number;
+}
+
 // ---------------------------------------------------------------- land
 
 export interface LandConfig {
@@ -484,6 +510,7 @@ export interface Config {
   /** Shape per random stream (E25); streams nobody is exposed to are unused. */
   readonly shocks: Readonly<Record<RandomStreamId, ShockShape>>;
   readonly risk: RiskConfig;
+  readonly saving: SavingConfig;
   /** Rules that hold before any project has been finished (E23). */
   readonly rulesFromStart: readonly RuleId[];
   readonly land: LandConfig;

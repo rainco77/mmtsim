@@ -59,6 +59,16 @@ export interface GameState {
 
   readonly activeProjects: readonly ActiveProject[];
 
+  /**
+   * What each need came to last tick.
+   *
+   * History, like `leadProcess` beside it: it cannot be worked out again from
+   * the state, because it is about a tick that is over. Saving reads it — one
+   * puts something by when there was enough, not while going short (E19) — and
+   * reading the *past* is what keeps that from being clairvoyance.
+   */
+  readonly lastCoverage: Readonly<Record<string, number>>;
+
   /** Which process led per branch last tick — shown, not used to decide (E5). */
   readonly leadProcess: Readonly<Record<BranchId, ProcessId>>;
 

@@ -639,8 +639,20 @@ export const STAGE1: Config = {
       // it pays in the years that would otherwise have killed people. Dhra',
       // about a thousand years before domestication (Kuijt & Finlayson 2009).
       id: "storage_pit",
-      visibleWhen: [],
-      availableWhen: [],
+      // The road to the end of the epoch, so it must not open early (E29). It
+      // waits on the food getting *ample* — practice at winning it, which grows
+      // with the yield and so comes sooner to a band that built the sickle, the
+      // mortar and the net. By then several bad years have been through, so the
+      // player knows what a store is for without anything having to count them.
+      //
+      // It is also what makes a range change cheap at first and dear later,
+      // without a word being said about it: there is nothing to leave behind.
+      visibleWhen: [
+        { kind: "experience", activities: ["gathering", "hunting", "fishing"], min: 1500 },
+      ],
+      availableWhen: [
+        { kind: "experience", activities: ["gathering", "hunting", "fishing"], min: 3000 },
+      ],
       defaultRank: PROJECTS_FIRST,
       laborCost: 60,
       stockCost: { wood: 10 },
@@ -936,6 +948,11 @@ export const STAGE1: Config = {
   // process (E5). Caution: how far below the mean the plan aims, so that an
   // ordinary year leaves something over (E24).
   risk: { aversion: 0.5, caution: 0.1 },
+
+  // How much of what it uses a society additionally puts by (E19). A start
+  // value: Halstead and O'Shea put the normal surplus of such societies at
+  // something like a tenth to a third above need.
+  saving: { rate: 0.2 },
 
   // The player may set the order by hand from the start; a later institution
   // unsets this rule (E23) and the economy decides alone from then on.

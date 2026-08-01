@@ -101,6 +101,17 @@ const scope = {
       running: Object.fromEntries(
         d.runs.filter((r) => r.output > 0).map((r) => [r.process, round(r.output)]),
       ),
+      // Where a renewable stock stands, and whether what is being taken can
+      // last (E29). Config-driven like the rest: nothing is named here.
+      nature: Object.fromEntries(
+        Object.entries(d.renewable).map(([id, r]) => {
+          let taken = 0;
+          for (const run of d.runs) {
+            taken += run.output * (session.idx.process.get(run.process)?.intermediatesPerOutput[id] ?? 0);
+          }
+          return [id, { held: round(r.held), of: round(r.ceiling), grows: round(r.growth), taken: round(taken) }];
+        }),
+      ),
       shocks: from(Object.keys(session.cfg.shocks), (id) => round(d.shocks[id] ?? 1)),
       short: d.binding.kind === "none" ? null : `${d.binding.kind}:${d.binding.what ?? ""}`,
       projects: {

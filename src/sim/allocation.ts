@@ -356,18 +356,35 @@ export function allocate(input: AllocationInput): AllocationResult {
     }
   }
 
-  // Filling the store (E19: a store is capacity that lowers decay for what it
-  // covers). The claim is exactly the gap up to that capacity: gathering more
-  // than the pits protect would spoil at once and be wasted effort. So the
-  // size of the claim comes from what the player built, not from a number in
-  // the content and not from a setting — and it stands last, so it is served
-  // only from what the needs leave behind.
+  // Putting something by (E19, E29). Not the whole gap up to the pits: left to
+  // claim that, a store strips whatever is within reach to fill itself —
+  // measured, the tick a hundred units of pit were finished the take from the
+  // water went from 21 to 45 against a growth of 16, and the fishery was dead
+  // three ticks later.
+  //
+  // So the deliberate part of saving is bounded twice. It is a rate out of what
+  // is *used* of the good, and it only arises where the needs **of that good**
+  // were met last tick — whether there was enough wood is no business of the
+  // food store. Both look only backwards, so the plan still knows nothing of
+  // the year ahead; the other half of saving needs no rule at all, since a good
+  // year overshoots the blind plan by itself and the surplus stays in the stock.
   for (const stockDef of config.stocks) {
     const shelter = stockDef.protectedBy;
     if (shelter === undefined) continue;
     const capacity = pools.amount[shelter.capacity]?.available ?? 0;
     const gap = capacity - (pools.stock[stockDef.id] ?? 0);
     if (gap <= 1e-9) continue;
+
+    const wants = tierList.filter((tier) => tier.stock === stockDef.id);
+    const wentShort = wants.some((tier) => (state.lastCoverage[tier.id] ?? 1) < 0.999);
+    if (wentShort) continue;
+    let used = 0;
+    for (const tier of wants) {
+      used += heads * perHead(tier, plannedShocks) * tier.consumedOnUse;
+    }
+    const claim = Math.min(gap, config.saving.rate * used);
+    if (claim <= 1e-9) continue;
+
     demands.push({
       tier: {
         id: `store:${stockDef.id}`,
@@ -378,7 +395,7 @@ export function allocate(input: AllocationInput): AllocationResult {
         consumedOnUse: 0,
       },
       stock: stockDef.id,
-      amount: gap,
+      amount: claim,
     });
   }
 
