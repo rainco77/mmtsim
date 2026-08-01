@@ -119,14 +119,14 @@ export function conditionHolds(condition: Condition, ctx: ConditionContext): boo
       return held / ctx.population >= condition.min;
     }
     case "experience":
-      return practised(ctx, condition.processes) >= condition.min;
+      return practised(ctx, condition.activities) >= condition.min;
   }
 }
 
-/** What has been produced with any of these processes, all told (E29). */
-function practised(ctx: ConditionContext, processes: readonly string[]): number {
+/** How much has been produced at these activities, all told (E29). */
+function practised(ctx: ConditionContext, activities: readonly string[]): number {
   let total = 0;
-  for (const id of processes) total += ctx.state.experience[id] ?? 0;
+  for (const id of activities) total += ctx.state.experience[id] ?? 0;
   return total;
 }
 
@@ -190,7 +190,7 @@ function standing(condition: Condition, ctx: ConditionContext): Unmet {
     case "stockPerHead":
       return at(ctx.population <= 0 ? 0 : stock(ctx, condition.stock) / ctx.population, condition.min);
     case "experience":
-      return at(practised(ctx, condition.processes), condition.min);
+      return at(practised(ctx, condition.activities), condition.min);
   }
 }
 

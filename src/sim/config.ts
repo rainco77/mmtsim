@@ -1,4 +1,5 @@
 import type {
+  ActivityId,
   CapacityId,
   BranchId,
   NeedTierId,
@@ -120,6 +121,20 @@ export interface ProcessDef {
   /** How strongly land quality enters the yield (E13). Housing does not care. */
   readonly qualityWeight: number;
 
+  /**
+   * What is being *done* here, as against what comes out (E29).
+   *
+   * Not the same as the branch: hunting for meat and hunting for hides deliver
+   * into different branches and are one activity. And not the same as the
+   * process: a technique replaces its predecessor (E5), so gathering with a
+   * sickle is still gathering.
+   *
+   * It exists so that practice can be counted — one improves what one does —
+   * and it is stated here, once, rather than listed again at every project that
+   * refers to it. Two projects then cannot disagree about what "gathering" is.
+   */
+  readonly activity: ActivityId;
+
   readonly unlockedFromStart: boolean;
 }
 
@@ -212,15 +227,17 @@ export type Condition =
    * orders itself by what the player actually does, so the tree grows out of
    * the settlement's own economy rather than being laid down in advance.
    *
-   * Several processes rather than one, because a technique replaces its
+   * An activity rather than a process, because a technique replaces its
    * predecessor (E5): once the sickle is in use, plain gathering stops adding
    * to its own tally, and a later improvement of the same activity would wait
-   * for a counter that has stopped moving. The family is named, so it cannot
-   * stall.
+   * on a counter that has stopped moving.
+   *
+   * More than one may be named, and their tallies are added — sewing betters
+   * both roads to clothing, so it asks for practice at either.
    */
   | {
       readonly kind: "experience";
-      readonly processes: readonly ProcessId[];
+      readonly activities: readonly ActivityId[];
       readonly min: number;
     };
 

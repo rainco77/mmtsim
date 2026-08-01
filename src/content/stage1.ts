@@ -18,20 +18,6 @@ import type { Config } from "../sim/config.ts";
  */
 const PROJECTS_FIRST = 0;
 
-/**
- * The activities a project can be practised at (E29). Named as families rather
- * than single processes because a technique replaces its predecessor (E5): once
- * the sickle is in use, plain gathering stops adding to its own tally, and a
- * later improvement of the same activity would be waiting on a counter that has
- * stopped moving.
- */
-const GATHERING = ["gathering", "gathering_sickle", "gathering_mortar"];
-const HUNTING = ["hunting", "hunting_bow", "hunting_hides"];
-const FISHING = ["fishing", "fishing_net"];
-const WOODCUTTING = ["wood_gathering", "felling"];
-const FIREMAKING = ["open_fire", "earth_oven"];
-const CLOTHMAKING = ["hide_dressing", "tanning", "plaiting"];
-
 export const STAGE1: Config = {
   // ------------------------------------------------------------------ stocks
   //
@@ -126,6 +112,7 @@ export const STAGE1: Config = {
     {
       id: "labor",
       branch: "labor",
+      activity: "working",
       priority: 999,
       capacityPerOutput: { people: 1 },
       intermediatesPerOutput: {},
@@ -143,6 +130,7 @@ export const STAGE1: Config = {
     {
       id: "gathering",
       branch: "food",
+      activity: "gathering",
       priority: 100,
       capacityPerOutput: { wilderness: 1.6 },
       intermediatesPerOutput: { labor: 0.28 },
@@ -157,6 +145,7 @@ export const STAGE1: Config = {
       // threshing.
       id: "gathering_sickle",
       branch: "food",
+      activity: "gathering",
       priority: 105,
       capacityPerOutput: { wilderness: 1.6 },
       intermediatesPerOutput: { labor: 0.182 },
@@ -177,6 +166,7 @@ export const STAGE1: Config = {
       // constraint favours — it just does not get the product of the two.
       id: "gathering_mortar",
       branch: "food",
+      activity: "gathering",
       priority: 103,
       capacityPerOutput: { wilderness: 1.2 },
       intermediatesPerOutput: { labor: 0.28 },
@@ -187,6 +177,7 @@ export const STAGE1: Config = {
     {
       id: "hunting",
       branch: "food",
+      activity: "hunting",
       priority: 90,
       capacityPerOutput: { wilderness: 4.0 },
       intermediatesPerOutput: { labor: 0.45 },
@@ -197,6 +188,7 @@ export const STAGE1: Config = {
     {
       id: "hunting_bow",
       branch: "food",
+      activity: "hunting",
       priority: 95,
       capacityPerOutput: { wilderness: 4.0 },
       intermediatesPerOutput: { labor: 0.27 },
@@ -209,6 +201,7 @@ export const STAGE1: Config = {
       // and meagre: technology does not create a resource, it opens one (E29).
       id: "fishing",
       branch: "food",
+      activity: "fishing",
       priority: 80,
       capacityPerOutput: { water: 2.0 },
       intermediatesPerOutput: { labor: 1.2 },
@@ -222,6 +215,7 @@ export const STAGE1: Config = {
       // year, and once the land is full that is what decides.
       id: "fishing_net",
       branch: "food",
+      activity: "fishing",
       priority: 85,
       capacityPerOutput: { water: 2.0 },
       intermediatesPerOutput: { labor: 0.48 },
@@ -236,6 +230,7 @@ export const STAGE1: Config = {
     {
       id: "farming",
       branch: "food",
+      activity: "farming",
       priority: 200,
       capacityPerOutput: { cleared: 0.35 },
       intermediatesPerOutput: { labor: 0.625 },
@@ -250,6 +245,7 @@ export const STAGE1: Config = {
     {
       id: "farming_fallow",
       branch: "food",
+      activity: "farming",
       priority: 210,
       capacityPerOutput: { cleared: 0.2 },
       intermediatesPerOutput: { labor: 0.740741 },
@@ -264,6 +260,7 @@ export const STAGE1: Config = {
       // stock.
       id: "wood_gathering",
       branch: "wood",
+      activity: "woodcutting",
       priority: 100,
       capacityPerOutput: { wilderness: 0.6 },
       intermediatesPerOutput: { labor: 0.6 },
@@ -277,6 +274,7 @@ export const STAGE1: Config = {
       // the resource, it opens it.
       id: "felling",
       branch: "wood",
+      activity: "woodcutting",
       priority: 110,
       capacityPerOutput: { wilderness: 0.6 },
       intermediatesPerOutput: { labor: 0.24 },
@@ -289,6 +287,7 @@ export const STAGE1: Config = {
     {
       id: "open_fire",
       branch: "warmth",
+      activity: "firemaking",
       priority: 100,
       capacityPerOutput: {},
       intermediatesPerOutput: { labor: 0.3, wood: 1.5 },
@@ -302,6 +301,7 @@ export const STAGE1: Config = {
       // the ancestor of every later efficiency.
       id: "earth_oven",
       branch: "warmth",
+      activity: "firemaking",
       priority: 110,
       capacityPerOutput: {},
       intermediatesPerOutput: { labor: 0.3, wood: 0.9 },
@@ -325,6 +325,7 @@ export const STAGE1: Config = {
     {
       id: "hunting_hides",
       branch: "hides",
+      activity: "hunting",
       priority: 100,
       capacityPerOutput: { wilderness: 4.0 },
       intermediatesPerOutput: { labor: 0.3 },
@@ -335,6 +336,7 @@ export const STAGE1: Config = {
     {
       id: "bast_gathering",
       branch: "fibre",
+      activity: "bastgathering",
       priority: 100,
       capacityPerOutput: { wilderness: 0.5 },
       intermediatesPerOutput: { labor: 1.0 },
@@ -345,6 +347,7 @@ export const STAGE1: Config = {
     {
       id: "hide_dressing",
       branch: "clothing",
+      activity: "clothmaking",
       priority: 100,
       capacityPerOutput: {},
       intermediatesPerOutput: { labor: 0.5, hides: 1.0 },
@@ -356,6 +359,7 @@ export const STAGE1: Config = {
       // Bark and brain tanning: the skin stops being a stiff board.
       id: "tanning",
       branch: "clothing",
+      activity: "clothmaking",
       priority: 110,
       capacityPerOutput: {},
       intermediatesPerOutput: { labor: 0.35, hides: 1.0 },
@@ -364,8 +368,29 @@ export const STAGE1: Config = {
       unlockedFromStart: false,
     },
     {
+      // Two fibres twisted against each other hold a great deal more than loose
+      // bast and work up far faster. The counterpart of tanning: both are the
+      // preparation that turns a raw material into a workable one, one on each
+      // road to clothing — so neither road is the poor relation.
+      //
+      // *Zwirnbindung* — twining — is both the everyday word and the term the
+      // archaeology uses for the textiles of this epoch. Twisted fibre is known
+      // from the Abri du Maras at some 41,000 years, cord impressions run right
+      // through the Mesolithic, and the net of Antrea is twisted bast.
+      id: "twining",
+      branch: "clothing",
+      priority: 95,
+      capacityPerOutput: {},
+      intermediatesPerOutput: { labor: 0.42, fibre: 1.0 },
+      exposure: {},
+      qualityWeight: 0,
+      activity: "clothmaking",
+      unlockedFromStart: false,
+    },
+    {
       id: "plaiting",
       branch: "clothing",
+      activity: "clothmaking",
       priority: 90,
       capacityPerOutput: {},
       intermediatesPerOutput: { labor: 0.6, fibre: 1.0 },
@@ -377,6 +402,7 @@ export const STAGE1: Config = {
     {
       id: "building",
       branch: "housing",
+      activity: "building",
       priority: 100,
       capacityPerOutput: { cleared: 0.05 },
       intermediatesPerOutput: { labor: 2.857143, wood: 1.4 },
@@ -483,8 +509,8 @@ export const STAGE1: Config = {
       // so more of what already grows there counts as food: the same ground
       // yields more. Not a smaller appetite — the need is physiology (E29).
       id: "mortar",
-      visibleWhen: [],
-      availableWhen: [{ kind: "experience", processes: GATHERING, min: 400 }],
+      visibleWhen: [{ kind: "experience", activities: ["gathering"], min: 200 }],
+      availableWhen: [{ kind: "experience", activities: ["gathering"], min: 400 }],
       defaultRank: PROJECTS_FIRST,
       laborCost: 40,
       stockCost: {},
@@ -496,8 +522,8 @@ export const STAGE1: Config = {
     {
       // Cooking pits and burnt mounds are among the commonest Mesolithic finds.
       id: "earth_oven",
-      visibleWhen: [],
-      availableWhen: [{ kind: "experience", processes: FIREMAKING, min: 10 }],
+      visibleWhen: [{ kind: "experience", activities: ["firemaking"], min: 5 }],
+      availableWhen: [{ kind: "experience", activities: ["firemaking"], min: 10 }],
       defaultRank: PROJECTS_FIRST,
       laborCost: 40,
       stockCost: {},
@@ -534,8 +560,8 @@ export const STAGE1: Config = {
     {
       // Natufian blades with sickle gloss.
       id: "sickle",
-      visibleWhen: [],
-      availableWhen: [{ kind: "experience", processes: GATHERING, min: 100 }],
+      visibleWhen: [{ kind: "experience", activities: ["gathering"], min: 50 }],
+      availableWhen: [{ kind: "experience", activities: ["gathering"], min: 100 }],
       defaultRank: PROJECTS_FIRST,
       laborCost: 120,
       stockCost: { wood: 20 },
@@ -548,8 +574,8 @@ export const STAGE1: Config = {
       // Mesolithic core axes. Stone and not simply "axe", so the name says
       // which world this is and leaves room for an iron one later.
       id: "stone_axe",
-      visibleWhen: [],
-      availableWhen: [{ kind: "experience", processes: WOODCUTTING, min: 30 }],
+      visibleWhen: [{ kind: "experience", activities: ["woodcutting"], min: 15 }],
+      availableWhen: [{ kind: "experience", activities: ["woodcutting"], min: 30 }],
       defaultRank: PROJECTS_FIRST,
       laborCost: 120,
       stockCost: { wood: 20 },
@@ -588,8 +614,8 @@ export const STAGE1: Config = {
       // made of bast. The prerequisite is therefore not a lock but a reckoning:
       // somebody has to be gathering fibre.
       id: "fishing_net",
-      visibleWhen: [],
-      availableWhen: [{ kind: "experience", processes: FISHING, min: 50 }],
+      visibleWhen: [{ kind: "experience", activities: ["fishing"], min: 25 }],
+      availableWhen: [{ kind: "experience", activities: ["fishing"], min: 50 }],
       defaultRank: PROJECTS_FIRST,
       laborCost: 120,
       stockCost: { fibre: 30 },
@@ -609,8 +635,8 @@ export const STAGE1: Config = {
       // pieces per head, and half the wear. Both reach every road, so neither
       // needs a process of its own.
       id: "bone_needle",
-      visibleWhen: [],
-      availableWhen: [{ kind: "experience", processes: CLOTHMAKING, min: 30 }],
+      visibleWhen: [{ kind: "experience", activities: ["clothmaking"], min: 15 }],
+      availableWhen: [{ kind: "experience", activities: ["clothmaking"], min: 30 }],
       defaultRank: PROJECTS_FIRST,
       laborCost: 120,
       stockCost: { fibre: 20 },
@@ -626,8 +652,8 @@ export const STAGE1: Config = {
       // Stellmoor arrow shafts, the bows of Holmegaard. Stave and string: wood
       // and fibre.
       id: "bow_and_arrow",
-      visibleWhen: [],
-      availableWhen: [{ kind: "experience", processes: HUNTING, min: 5 }],
+      visibleWhen: [{ kind: "experience", activities: ["hunting"], min: 3 }],
+      availableWhen: [{ kind: "experience", activities: ["hunting"], min: 5 }],
       defaultRank: PROJECTS_FIRST,
       laborCost: 120,
       stockCost: { wood: 20, fibre: 20 },
@@ -639,9 +665,24 @@ export const STAGE1: Config = {
 
     // ---- wanting hides ----
     {
+      // The fibre road's own improvement, so that the map points both ways:
+      // whoever plaits is shown tanning and invited to hides, whoever dresses
+      // skins is shown twining and invited to fibre.
+      id: "twining",
+      visibleWhen: [{ kind: "experience", activities: ["clothmaking"], min: 8 }],
+      availableWhen: [{ kind: "experience", activities: ["clothmaking"], min: 15 }],
+      defaultRank: PROJECTS_FIRST,
+      laborCost: 120,
+      stockCost: { fibre: 20 },
+      minTicks: 12,
+      limit: 1,
+      effects: [{ type: "process", id: "twining" }],
+      sector: "households",
+    },
+    {
       id: "tanning",
-      visibleWhen: [],
-      availableWhen: [{ kind: "experience", processes: CLOTHMAKING, min: 15 }],
+      visibleWhen: [{ kind: "experience", activities: ["clothmaking"], min: 8 }],
+      availableWhen: [{ kind: "experience", activities: ["clothmaking"], min: 15 }],
       defaultRank: PROJECTS_FIRST,
       laborCost: 120,
       stockCost: { hides: 20 },
@@ -663,7 +704,7 @@ export const STAGE1: Config = {
       // taking is more of the same at falling quality, the boat is a different
       // resource that fails at different times.
       id: "boat",
-      visibleWhen: [],
+      visibleWhen: [{ kind: "projectDone", id: "stone_axe", min: 1 }],
       availableWhen: [{ kind: "projectDone", id: "stone_axe", min: 1 }],
       defaultRank: PROJECTS_FIRST,
       laborCost: 300,

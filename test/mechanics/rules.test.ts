@@ -369,6 +369,7 @@ describe("processes and the fallback level (E5)", () => {
           capacityPerOutput: { wilderness: 3.0 },
           exposure: { weather: 0.05 },
           qualityWeight: 0.5,
+          activity: "gathering",
           unlockedFromStart: true,
         },
       ],

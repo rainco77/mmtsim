@@ -1,4 +1,5 @@
 import type {
+  ActivityId,
   CapacityId,
   BranchId,
   ProcessId,
@@ -62,7 +63,7 @@ export interface GameState {
   readonly leadProcess: Readonly<Record<BranchId, ProcessId>>;
 
   /**
-   * How much has ever been produced with each process — a counter that only
+   * How much has ever been produced at each activity — a counter that only
    * grows (E29).
    *
    * One improves what one does. A sickle comes out of many harvests and a net
@@ -76,7 +77,7 @@ export interface GameState {
    * Arrow, *Learning by Doing* (1962): unit costs fall with cumulative output,
    * not with time. Archaeologically the same — technique follows practice.
    */
-  readonly experience: Readonly<Record<ProcessId, number>>;
+  readonly experience: Readonly<Record<ActivityId, number>>;
 }
 
 export interface SectorState {
