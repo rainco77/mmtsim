@@ -2087,6 +2087,40 @@ egal wie großzügig der Verfall gesetzt wurde. Daraus die Regel:
 Mit der Kapazität als Bedingung wird der Übergang im Mittel bei Tick 88 erreicht,
 **spätestens bei 100**: Pech kostet höchstens zwölf Ticks.
 
+**Der Bogen zur nächsten Epoche, und er hängt an der Übernutzung.** Wild und Fisch sind
+Bestände, die nachwachsen (E19) — man kann sie leerjagen. Für eine wandernde Gruppe ist
+die Antwort darauf nicht die Fangordnung, sondern der **Revierwechsel**: Man zieht
+weiter, das neue Revier ist voll, das alte erholt sich. Genau das haben Wildbeuter getan.
+
+> **Solange man weiterziehen kann, ist Übernutzung ein Ärgernis. Sobald man bleibt, ist
+> sie ein Problem.**
+
+Die Sesshaftigkeit nimmt dem Spieler die Flucht — und *erst dadurch* entsteht der Bedarf
+nach einer Regel. Die Fangquote ist deshalb keine Mechanik, die irgendwann nachgereicht
+wird, sondern die Antwort auf einen Verlust, den der Spieler selbst erlebt hat (Punkt 10
+der offenen Liste). Sie in dieser Epoche schon anzubieten würde die Pointe verbrauchen
+und wäre außerdem anachronistisch: Fünfzig Menschen brauchen keine Fangordnung, sie
+gehen woandershin.
+
+**Die räumliche Antwort ist je Epoche eine andere**, und das ist kein Zufall:
+
+| | |
+|---|---|
+| **Revierwechsel** (Epoche 1) | Das alte Revier wird aufgegeben, ein neues genommen. Gleich groß, etwas ärmer. |
+| **Landnahme** (Epoche 2) | Das alte wird behalten und etwas dazugenommen — das heißt, in fremdes Land zu drängen und es zu halten, was voraussetzt, dass man überhaupt etwas verteidigt. |
+
+Für eine wandernde Gruppe wären beide fast dasselbe; getrennt ergeben sie erst Sinn,
+wenn man wählen kann, ob man bleibt. Die Landnahme gehört deshalb **nicht** in diese
+Epoche.
+
+**Die Güte fällt geometrisch und wird beim Sesshaftwerden zurückgesetzt.** Jedes frische
+Revier ist etwas ärmer als das vorige (`Grundgüte × (1 − Verfall)^Züge`), erreicht aber
+nie null. Zurückgesetzt wird, weil sonst eine Entscheidung aus den ersten fünfzig Ticks
+jede spätere Epoche mit einem dauerhaften Abschlag belastete — aus einer Option würde
+eine Falle. Und es lässt sich begründen: **Sesshaft wird man nicht irgendwo, sondern an
+einem ausgesuchten Ort.** Wer viel gewandert ist, hat viel Land gesehen. Der Preis des
+Wanderns wird während des Wanderns bezahlt und ist damit abgegolten.
+
 **Gemessen gegen die abgestimmten Zielwerte:**
 
 | | Ziel | gemessen |
@@ -2614,6 +2648,8 @@ besprochen und vertagt, nicht vergessen:
 | 1 | **Austarieren.** Gemessen wird die Amortisationszeit je Projekt gegen das Zielband aus E29. Erster Befund: über die Hälfte der Arbeit liegt brach, Sesshaftigkeit bei Tick 45 statt 150–200, Ackerbauanteil 44 % — die zwölf Wirkungen sind einzeln vertretbar, ihr **Produkt** nicht | der Baum ist gebaut |
 | 1a | ~~Vorleistungen eines Projekts als Bedingung~~ **Verworfen, gemessen.** Eine Bedingung „halte etwas davon" ist für ein Gut, das vollständig verbraucht wird, keine Schwelle, sondern eine Mauer: Es entsteht nie ein Bestand, neun von zwölf Projekten waren nie startbar, kein Lauf erreichte die Sesshaftigkeit. Ein Projekt zieht seine Vorleistung selbst, sobald es läuft — die Absicht erzeugt die Nachfrage. Verzögert wird statt dessen über **Erfahrung** | erledigt |
 | 1f | **Die Prüfregel der Boserup-Kriterien ist nicht abgestimmt.** Sie steht auf „steigt irgendwo"; ich habe sie am Ergebnis ausgerichtet statt umgekehrt. Zu entscheiden: so lassen oder auf „fällt nirgends" — und falls Letzteres, was am Inhalt geändert wird, damit es zutrifft | Maßstab, nicht Inhalt |
+| 1j | **Die Kost verengt sich unter Druck, statt sich zu verbreitern** (broad spectrum reißt weiter). Die nachwachsenden Bestände sollten das erzeugen und tun es nicht: Wild und Fisch werden bei jeder Dichte rasch auf ihren nachhaltigen Ertrag heruntergenommen, danach ist die Mischung überall dieselbe. Vermutlich eine Frage der Bestandsgrößen und Nachwuchsraten | mit dem Austarieren |
+| 1k | **Ein erschöpfter Bestand bleibt nach der Sesshaftigkeit erschöpft.** Die Zuteilung fischt weiter genau den Nachwuchs ab und hält ihn unten; der Revierwechsel steht dann nicht mehr zur Verfügung. Gewollt als Spannung — die Institution der späteren Epoche ist die Antwort darauf —, aber es darf sich nicht als stille Sackgasse anfühlen (E20). **Nur das Durchspielen kann das entscheiden** | nach dem Austarieren durchspielen |
 | 1g | **Auf dem Wasser gibt es keine Intensivierung.** Der Ertrag je Hektar Wasser ist bei jeder Dichte und jedem Technikstand gleich: Das Netz spart Arbeit, das Boot fügt Fläche hinzu, keines holt mehr aus derselben Stelle. Ein Fischwehr wäre die naheliegende Antwort und ist **verworfen** — eine feste Anlage bindet an den Ort und wirkt damit wie die Gruben, was der Sesshaftigkeit gehört | später, wenn überhaupt |
 | 1i | **Sichtbarkeit und Ausführbarkeit noch etwas herunterdrücken.** Gemessen: bis zu **7 gleichzeitig ausführbar** (E31 will drei bis fünf) und **13 sichtbar**. Beides zu viel. Gestellt wird es über die Erfahrungsschwellen — die Ausführbarkeitsschwelle hoch, die Sichtbarkeitsschwelle (heute die Hälfte davon) ebenfalls | mit dem Austarieren |
 | 1h | **Schlechtes Spiel scheitert nie.** Untätig, unbedacht und umsichtig liegen alle bei 0 % aufgegebener Siedlungen; bestraft wird nur mit Zeit (39 gegen 87 Ticks). Ob das reicht, ist unentschieden | mit dem Austarieren |
@@ -2625,6 +2661,7 @@ besprochen und vertagt, nicht vergessen:
 | 4 | Verfallsraten fein justieren (Gruben, Wohnraum) | mit dem Austarieren |
 | 5 | Meldungen an den Spieler; Motorbegriffe in der Sicht; i18n. Dazu gehört, dass ein aufgefangenes schlechtes Jahr **lautlos** bleibt — der lehrreichste Moment der Epoche wird nicht benannt | unabhängig |
 | 6 | Heterogenität in einem Sektor: jetzt oder später | unabhängig |
+| 10 | **Nachhaltigkeit als Institution**, für eine spätere Epoche (Industrialisierung, vielleicht als eigene Epoche). Ein Projekt setzt eine **Regel**, die Regel deckelt die Entnahme eines Bestands auf seinen Nachwuchs — Schonzeit und Jagdtabu früh, Allmendeordnung, Fischereirechte und Fangquoten später. Anker: Elinor Ostrom, *Governing the Commons*. Später kann an die Stelle der Regel ein **institutioneller Preis** treten (CO₂-Preis und Verwandtes); noch nicht besprochen. Voraussetzung ist, dass Bestände sichtbar sind — das ist gebaut | spätere Epoche |
 | 7 | GitHub: public, privat oder noch nicht — Issues gäbe es auch privat | unabhängig |
 | 8 | Rechenzeit-Reserven: inkrementelles Planen statt Neuplanung je Rangbisektion, `totalUse` fortschreiben. Gemessen: `tick` 0,18 ms, `derive` 0,60 ms, Botentscheidung 0,003 ms — die volle Kriterienmessung (40 Seeds × 600 Ticks × 3 Spielweisen) dauert rund drei Minuten. Der größte einzelne Posten ist, dass jedes Werkzeug **zusätzlich** zum Tick noch einmal ableitet, also doppelt plant | derzeit nicht nötig: zum Iterieren reichen 5 Seeds × 400 Ticks in acht Sekunden |
 | 9 | Die Zahl der Landnahmen steht an zwei Stellen: als Zähler im Zustand für die fallende Güte, als Obergrenze am Projekt | Kleinigkeit |
