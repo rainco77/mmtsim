@@ -163,11 +163,25 @@ function effectiveCapacityPerOutput(
 
 
 
+/**
+ * An average year, and what the plan reckons with (E24).
+ *
+ * Empty on purpose: `shockFactor` reads a missing stream as one, so this *is*
+ * the expected year without a second code path. The plan is blind — it does not
+ * know the draw, because nobody does before the harvest is in.
+ */
+const AVERAGE_YEAR: Shocks = {};
+
+/**
+ * Puts in what the plan meant to put in. **The inputs are committed** — one has
+ * sown, one has set out — so they are spent at the planned level whatever the
+ * year turns out to be. What the year decides is the *output*, and that is
+ * booked by the caller.
+ */
 function consume(
   process: ProcessDef,
-  output: number,
+  level: number,
   pools: Pools,
-  shocks: Shocks,
   capacityUsed: Record<CapacityId, number>,
   consumed: Record<StockId, number>,
 ): number {
@@ -178,26 +192,41 @@ function consume(
         ? (pools.amount[capacityEntries[0][0]]?.quality ?? 1)
         : 1
       : 1;
-  // A shock cuts the output, so every input costs more per unit of what came of
-  // it — see the note where `shockFor` is set.
-  const shock = shockFactor(process, shocks);
-  const scale = shock > 0 ? 1 / shock : 0;
   let labor = 0;
 
   for (const [capacity] of capacityEntries) {
     const pool = pools.amount[capacity];
     if (pool === undefined) continue;
-    const used = output * effectiveCapacityPerOutput(process, capacity, quality) * scale;
+    const used = level * effectiveCapacityPerOutput(process, capacity, quality);
     pool.available -= used;
     capacityUsed[capacity] = (capacityUsed[capacity] ?? 0) + used;
   }
   for (const [stockId, perOutput] of Object.entries(process.intermediatesPerOutput)) {
-    const used = output * perOutput * scale;
+    const used = level * perOutput;
     pools.stock[stockId] = (pools.stock[stockId] ?? 0) - used;
     consumed[stockId] = (consumed[stockId] ?? 0) + used;
     if (stockId === LABOR_STOCK) labor += used;
   }
   return labor;
+}
+
+/**
+ * How much of a planned level the intermediates actually there can carry.
+ *
+ * Needed only because the plan is blind: a process upstream may have had a bad
+ * year and delivered less than the plan counted on, and then the one downstream
+ * cannot run at full level. The same partial pace that a project runs at when
+ * one of its inputs is short (E18), one step earlier.
+ */
+function feasiblePace(process: ProcessDef, level: number, pools: Pools): number {
+  let pace = 1;
+  for (const [stockId, perOutput] of Object.entries(process.intermediatesPerOutput)) {
+    const wanted = level * perOutput;
+    if (wanted <= 1e-12) continue;
+    const have = pools.stock[stockId] ?? 0;
+    if (have < wanted) pace = Math.min(pace, Math.max(0, have / wanted));
+  }
+  return pace;
 }
 
 
@@ -292,17 +321,20 @@ export function allocate(input: AllocationInput): AllocationResult {
   const fromStock = new Map<string, number>();
   const tierList = index.tiersByRank.filter((tier) => input.unlockedBranches.has(tier.branch));
 
-  const perHead = (tier: NeedTierDef): number => {
+  // The demand side of a shock (E24): a bad year asks for more, where a process
+  // would deliver less. Same draw, opposite direction — and blind in the same
+  // way: one heats for an average winter, and a hard one hurts. So the plan uses
+  // `AVERAGE_YEAR` and the coverage is reckoned against what the winter really
+  // asked for.
+  const perHead = (tier: NeedTierDef, year: Shocks): number => {
     const base = input.tierPerHead.get(tier.id) ?? tier.perHead;
     if (tier.exposure === undefined) return base;
-    // The demand side of a shock (E24): a bad year asks for more, where a
-    // process would deliver less. Same draw, opposite direction.
-    const factor = shockFactor({ exposure: tier.exposure }, shocks);
+    const factor = shockFactor({ exposure: tier.exposure }, year);
     return factor > 0 ? base / factor : base;
   };
 
   for (const tier of tierList) {
-    const need = heads * perHead(tier);
+    const need = heads * perHead(tier, AVERAGE_YEAR);
     const inStock = pools.stock[tier.stock] ?? 0;
     const taken = Math.min(need, Math.max(0, inStock));
     pools.stock[tier.stock] = inStock - taken;
@@ -350,16 +382,23 @@ export function allocate(input: AllocationInput): AllocationResult {
       stocks: { ...pools.stock },
     },
     available: availableProcesses,
-    // Where a shock lands (E24/E25 — risk as named random streams): on the
-    // **output**, so every input costs more per unit of what came of it. A
-    // failed harvest wastes the acres it grew on exactly as it wastes the
-    // labour; reaching only the labour used to *free* land in a bad year —
-    // measured, use of the wilderness fell from 100 % to 67 % at a draw of 0.66.
+    // **The plan reckons with an average year** (E24). It used to be handed the
+    // real draw, which was clairvoyance: it then covered the same needs with
+    // less labour in a good year instead of harvesting more, so no surplus could
+    // ever arise — measured, wood, fibre and hides stood at exactly 0,00 for
+    // sixty ticks together, the store had nothing to keep, and the setback of a
+    // bad year came only from labour running out.
     //
-    // No input is singled out, which is also one special case fewer: exposure
-    // is declared per process, and a process either had a bad year or it did
-    // not.
-    shockFor: (process: ProcessDef) => shockFactor(process, shocks),
+    // One sows and the weather decides afterwards. The unexpected plenty of a
+    // good year is the reason stores were invented, and it cannot exist where
+    // nobody is ever surprised.
+    //
+    // Where the draw does land is on the **output**, and there it hits every
+    // input alike: a failed harvest wastes the acres it grew on exactly as it
+    // wastes the labour. Reaching only the labour used to *free* land in a bad
+    // year — measured, use of the wilderness fell from 100 % to 67 % at a draw
+    // of 0.66.
+    shockFor: () => 1,
     order: (stock, processes) => {
       const branch = config.branches.find((b) => b.produces === stock);
       const wanted = branch === undefined ? undefined : ordering.get(branch.id);
@@ -379,6 +418,7 @@ export function allocate(input: AllocationInput): AllocationResult {
   const capacityUsed: Record<CapacityId, number> = {};
   const runs: ProcessRun[] = [];
   let totalOutput = 0;
+  let laborFreed = 0;
 
   // Producers before consumers: a house cannot be built from wood that is only
   // cut later in the loop, and nothing can be made from labour before the
@@ -388,19 +428,46 @@ export function allocate(input: AllocationInput): AllocationResult {
   const inDependencyOrder = topological([...plan.levels.keys()], index);
 
   for (const id of inDependencyOrder) {
-    const level = plan.levels.get(id) ?? 0;
+    const planned = plan.levels.get(id) ?? 0;
     const process = index.process.get(id);
-    if (process === undefined || level <= 1e-12) continue;
-    const labor = consume(process, level, pools, shocks, capacityUsed, consumed);
+    if (process === undefined || planned <= 1e-12) continue;
+    // What the plan meant to run, cut back to what the inputs actually there
+    // allow — the plan was made before the year was known.
+    const level = planned * feasiblePace(process, planned, pools);
+    // Labour the plan had earmarked for this process and that it did not take,
+    // because the process could not run at the planned level. It is idle, not
+    // set aside for anything — see the labour books below.
+    laborFreed += (planned - level) * (process.intermediatesPerOutput[LABOR_STOCK] ?? 0);
+    if (level <= 1e-12) continue;
+    const labor = consume(process, level, pools, capacityUsed, consumed);
+    // And here the year has its say: the inputs went in as planned, the harvest
+    // is what it is.
+    const output = level * shockFactor(process, shocks);
     const stock = index.branch.get(process.branch)?.produces;
     if (stock !== undefined) {
-      produced[stock] = (produced[stock] ?? 0) + level;
+      produced[stock] = (produced[stock] ?? 0) + output;
       // Available to whatever needs it as an input further down the loop.
-      pools.stock[stock] = (pools.stock[stock] ?? 0) + level;
+      pools.stock[stock] = (pools.stock[stock] ?? 0) + output;
     }
-    runs.push({ process: id, output: level, labor, share: 0 });
-    totalOutput += level;
+    runs.push({ process: id, output, labor, share: 0 });
+    totalOutput += output;
   }
+  // The labour books, and they have to close: supply = processes + projects +
+  // idle (E10 reads exactly these numbers).
+  //
+  // `carried` is consumption financed out of what was lying in the stock rather
+  // than out of this tick's people. In the tick itself it is always zero,
+  // because labour decays completely and decay runs before production; it is
+  // only ever positive when `derive` is asked about a state that has not been
+  // through its decay yet.
+  //
+  // `freed` is labour the plan had earmarked for a process that then could not
+  // run at its planned level — it stands still rather than going anywhere, and
+  // it can only ever be as large as what was set aside in the first place.
+  const laborMade = produced[LABOR_STOCK] ?? 0;
+  const laborUsed = Math.min(laborMade, consumed[LABOR_STOCK] ?? 0);
+  const laborReserve = laborMade - laborUsed;
+  const laborStoodStill = Math.min(laborFreed, laborReserve);
   const withShares = runs.map((run) => ({
     ...run,
     share: totalOutput > 0 ? run.output / totalOutput : 0,
@@ -414,7 +481,9 @@ export function allocate(input: AllocationInput): AllocationResult {
   let bindingTier: string | undefined;
 
   for (const tier of tierList) {
-    const need = heads * perHead(tier);
+    // What the year really asked for, against what the plan set aside for an
+    // average one. A hard winter therefore shows up as a gap, not as extra work.
+    const need = heads * perHead(tier, shocks);
     const taken = fromStock.get(tier.id) ?? 0;
     const wanted = Math.max(0, need - taken);
     const got = Math.min(wanted, left[tier.stock] ?? 0);
@@ -443,14 +512,12 @@ export function allocate(input: AllocationInput): AllocationResult {
 
   return {
     laborAvailable,
-    // The books have to balance: supply = processes + projects + idle. What
-    // the plan made is what it meant to use; the part no process consumed is
-    // what the projects claimed (they hold the top rank, so it is set aside for
-    // them). Counting that as idle said "labour binds" and "1.8 free" in the
-    // same breath — and E10's criterion reads exactly this number.
-    laborToProjects: Math.max(0, (produced[LABOR_STOCK] ?? 0) - (consumed[LABOR_STOCK] ?? 0)),
-    laborToProduction: consumed[LABOR_STOCK] ?? 0,
-    laborUnused: Math.max(0, laborAvailable - (produced[LABOR_STOCK] ?? 0)),
+    // What no process took is what the projects claimed — they hold the top
+    // rank, so it is set aside for them. Counting that as idle said "labour
+    // binds" and "1.8 free" in the same breath.
+    laborToProjects: laborReserve - laborStoodStill,
+    laborToProduction: laborUsed,
+    laborUnused: laborAvailable - laborMade + laborStoodStill,
     tiers,
     produced,
     consumed,

@@ -1561,6 +1561,34 @@ schlechtes Jahr") statt eines Bündels unsichtbarer Störungen.
 schlechtes Jahr oder nicht; was hineinging, ist dann für weniger Ertrag verbraucht — alle
 Inputkoeffizienten steigen gemeinsam.
 
+**Und der Plan kennt den Wurf nicht.** Geplant wird auf ein **durchschnittliches Jahr**;
+die Vorleistungen werden **verbraucht wie geplant** — man hat gesät, man ist losgezogen —,
+und der **Ertrag** ergibt sich aus dem echten Wurf. Die Nachfrageseite ebenso: geheizt
+wird für einen mittleren Winter, ein harter tut weh.
+
+> *Befund aus der Umsetzung:* Vorher fiel der Wurf in einer Phase **vor** der Planung und
+> wurde der Zuteilung übergeben. Das war Hellsehen, und es hatte eine Folge, die lange
+> unerklärt blieb: In einem guten Jahr deckte der Plan denselben Bedarf mit *weniger
+> Arbeit*, statt mehr zu ernten. **Es konnte also nie ein Überschuss entstehen** —
+> gemessen standen Holz, Faser und Felle über sechzig Ticks gemeinsam auf 0,00, der
+> Speicher hatte nichts zu bewahren, und der Rückschlag eines schlechten Jahres kam
+> allein daher, dass die Arbeit ausging.
+>
+> Man sät, und danach entscheidet das Wetter. **Der unerwartete Überfluss guter Jahre ist
+> der Grund, warum Speicher erfunden wurden**, und er kann nicht existieren, wo niemand
+> überrascht wird.
+
+**Ein blinder Plan braucht ein Teiltempo eine Stufe früher.** Hat ein Verfahren weiter
+oben ein schlechtes Jahr, fehlt der Stufe darunter ihre Vorleistung; sie läuft dann so
+weit, wie das Vorhandene trägt — dieselbe Regel wie bei einem Projekt, dem eine Zutat
+fehlt (E18). Die dabei nicht abgerufene Arbeit steht still und wird als **ungenutzt**
+gebucht, nicht als Arbeit für Projekte.
+
+**Was hier „Erwartungswert" heißt, ist in späteren Epochen die Absatzprognose.** Damit
+ist die Stelle gebaut, an der später Erwartungen sitzen: Unternehmen produzieren gegen
+eine Erwartung, und der Fehler landet im Lager — daraus kommen unverkaufte Bestände und
+Lagerzyklen.
+
 > *Befund aus der Umsetzung:* Vorher traf der Schock nur die **Arbeit**. Damit machte
 > eine Missernte **Fläche frei**: gemessen fiel die Nutzung der Wildnis bei einem Wurf
 > von 0,66 von 100 % auf 67 %. Eine missratene Ernte verbraucht ihre Fläche aber genauso
