@@ -72,7 +72,14 @@ const STANDS: Readonly<Record<string, readonly string[]>> = {
   ],
 };
 
-const DENSITIES = [50, 100, 200, 400];
+/**
+ * The band sits *at* the carrying capacity of its range (E14), so a series that
+ * starts there and doubles only ever sees the saturated case — the land is
+ * already full at the first cell and every law about density read flat.
+ * Intensification happens on the way *to* the limit, not far past it, so the
+ * series runs from a thinly settled range up to a crowded one.
+ */
+const DENSITIES = [10, 25, 50, 100];
 
 interface Cell {
   /** Food produced per head — Ricardo and Malthus: must fall as heads rise. */
@@ -95,37 +102,72 @@ interface Cell {
   readonly foodProcesses: number;
 }
 
+/** How long an experiment runs, and over how much of its tail it is read. */
+const SETTLE = 30;
+const WINDOW = 10;
+
+/**
+ * One cell of the grid: a settlement held at a fixed size on a fixed range,
+ * left to run.
+ *
+ * It has to **run**, not be looked at once. Since game and fish became stocks
+ * that are taken and grow back (E29), the interesting behaviour is a course
+ * over many ticks — first the big game thins, then the mix moves to what is
+ * left. A single tick on a full stock cannot show any of it, and measured that
+ * way every law about density read flat.
+ *
+ * The heads are put back after every tick, because the population would
+ * otherwise drift and the density — the one thing being varied — would drift
+ * with it.
+ */
 function at(stand: readonly string[], heads: number, seed: number): Cell {
-  const base = createState(STAGE1, { seed, food: 0 });
-  const state: GameState = {
-    ...base,
+  const start = createState(STAGE1, { seed, food: 0 });
+  const pinned = (state: GameState): GameState => ({
+    ...state,
     sectors: {
-      ...base.sectors,
-      households: { ...base.sectors["households"]!, heads, stocks: { food: 0 } },
+      ...state.sectors,
+      households: { ...state.sectors["households"]!, heads },
     },
+  });
+  let state: GameState = {
+    ...pinned(start),
     completedProjects: Object.fromEntries(stand.map((id) => [id, 1])),
   };
-  const d = derive(state, index);
 
   let food = 0;
+  let ticks = 0;
   const output: Record<string, number> = {};
   const occupied: Record<string, number> = {};
   const labor: Record<string, number> = {};
-  const carrying: number[] = [];
-  for (const run of d.runs) {
-    const process = index.process.get(run.process);
-    if (process === undefined) continue;
-    if (index.branch.get(process.branch)?.produces !== FOOD) continue;
-    food += run.output;
-    carrying.push(run.output);
-    for (const axis of AXES) {
-      const per = process.capacityPerOutput[axis] ?? 0;
-      if (per <= 0) continue;
-      output[axis] = (output[axis] ?? 0) + run.output;
-      occupied[axis] = (occupied[axis] ?? 0) + run.output * per;
-      labor[axis] = (labor[axis] ?? 0) + run.labor;
+  let processes = 0;
+
+  for (let i = 0; i < SETTLE; i += 1) {
+    const d = derive(state, index);
+    // Only the tail is read: the first ticks are the range settling down.
+    if (i >= SETTLE - WINDOW) {
+      ticks += 1;
+      let here = 0;
+      const carrying: number[] = [];
+      for (const run of d.runs) {
+        const process = index.process.get(run.process);
+        if (process === undefined) continue;
+        if (index.branch.get(process.branch)?.produces !== FOOD) continue;
+        food += run.output;
+        here += run.output;
+        carrying.push(run.output);
+        for (const axis of AXES) {
+          const per = process.capacityPerOutput[axis] ?? 0;
+          if (per <= 0) continue;
+          output[axis] = (output[axis] ?? 0) + run.output;
+          occupied[axis] = (occupied[axis] ?? 0) + run.output * per;
+          labor[axis] = (labor[axis] ?? 0) + run.labor;
+        }
+      }
+      processes += carrying.filter((o) => o > here * 0.01).length;
     }
+    state = pinned(tick(state, index));
   }
+
   const yieldPer: Record<string, number> = {};
   const laborPer: Record<string, number> = {};
   for (const axis of AXES) {
@@ -133,12 +175,10 @@ function at(stand: readonly string[], heads: number, seed: number): Cell {
     laborPer[axis] = (output[axis] ?? 0) > 0 ? (labor[axis] ?? 0) / (output[axis] ?? 1) : 0;
   }
   return {
-    foodPerHead: heads > 0 ? food / heads : 0,
+    foodPerHead: heads > 0 && ticks > 0 ? food / ticks / heads : 0,
     yieldPer,
     laborPer,
-    // One per cent of the food or more: below that a process is rounding, not
-    // a part of the diet.
-    foodProcesses: carrying.filter((o) => o > food * 0.01).length,
+    foodProcesses: ticks > 0 ? processes / ticks : 0,
   };
 }
 
