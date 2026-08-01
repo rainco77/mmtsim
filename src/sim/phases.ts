@@ -1,7 +1,7 @@
 import { allocate, type AllocationResult } from "./allocation.ts";
 import { type ConfigIndex, tierEffectAt } from "./config.ts";
 import { applyEffect } from "./effects.ts";
-import type { CapacityId, SectorId, StockId } from "./ids.ts";
+import type { CapacityId, ProcessId, SectorId, StockId } from "./ids.ts";
 import { drawShocks, type Shocks } from "./risk.ts";
 import {
   capacityOf,
@@ -259,10 +259,19 @@ export class ProductionPhase implements Phase {
       stocks[id] = Math.max(0, stockOf(stocks, id) - amount);
     }
 
+    // One improves what one does (E29): every run adds to the tally of its own
+    // process, and the tally never falls.
+    const experience: Record<ProcessId, number> = { ...state.experience };
+    for (const run of result.runs) {
+      if (run.output <= 0) continue;
+      experience[run.process] = (experience[run.process] ?? 0) + run.output;
+    }
+
     return {
       ...state,
       sectors: { ...state.sectors, [HOUSEHOLDS]: { ...sector, stocks } },
       leadProcess: result.leadProcess,
+      experience,
     };
   }
 }

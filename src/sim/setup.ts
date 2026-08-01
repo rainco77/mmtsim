@@ -60,5 +60,6 @@ export function createState(config: Config, options: StartOptions): GameState {
     completedProjects: {},
     activeProjects: [],
     leadProcess: {},
+    experience: {},
   };
 }

@@ -60,6 +60,23 @@ export interface GameState {
 
   /** Which process led per branch last tick — shown, not used to decide (E5). */
   readonly leadProcess: Readonly<Record<BranchId, ProcessId>>;
+
+  /**
+   * How much has ever been produced with each process — a counter that only
+   * grows (E29).
+   *
+   * One improves what one does. A sickle comes out of many harvests and a net
+   * out of many hauls, so a project that betters an activity asks that the
+   * activity has been carried on for a while. That **delays and never blocks**:
+   * keep gathering and the sickle comes, and a bad year costs a few ticks and
+   * nothing more. And it orders itself by what the player actually does — fish
+   * a great deal and the net arrives first — so the tree grows out of the
+   * settlement's own economy instead of being laid down in advance.
+   *
+   * Arrow, *Learning by Doing* (1962): unit costs fall with cumulative output,
+   * not with time. Archaeologically the same — technique follows practice.
+   */
+  readonly experience: Readonly<Record<ProcessId, number>>;
 }
 
 export interface SectorState {

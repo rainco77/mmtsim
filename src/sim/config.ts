@@ -202,6 +202,26 @@ export type Condition =
       readonly kind: "capacityPerHead";
       readonly capacity: CapacityId;
       readonly min: number;
+    }
+  /**
+   * How much has been produced with these processes, all told (E29).
+   *
+   * One improves what one does: the sickle comes out of many harvests, the net
+   * out of many hauls. This **delays and never blocks** — keep at the activity
+   * and the improvement arrives, and a bad year costs a few ticks. It also
+   * orders itself by what the player actually does, so the tree grows out of
+   * the settlement's own economy rather than being laid down in advance.
+   *
+   * Several processes rather than one, because a technique replaces its
+   * predecessor (E5): once the sickle is in use, plain gathering stops adding
+   * to its own tally, and a later improvement of the same activity would wait
+   * for a counter that has stopped moving. The family is named, so it cannot
+   * stall.
+   */
+  | {
+      readonly kind: "experience";
+      readonly processes: readonly ProcessId[];
+      readonly min: number;
     };
 
 /**

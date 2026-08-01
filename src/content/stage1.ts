@@ -18,6 +18,20 @@ import type { Config } from "../sim/config.ts";
  */
 const PROJECTS_FIRST = 0;
 
+/**
+ * The activities a project can be practised at (E29). Named as families rather
+ * than single processes because a technique replaces its predecessor (E5): once
+ * the sickle is in use, plain gathering stops adding to its own tally, and a
+ * later improvement of the same activity would be waiting on a counter that has
+ * stopped moving.
+ */
+const GATHERING = ["gathering", "gathering_sickle", "gathering_mortar"];
+const HUNTING = ["hunting", "hunting_bow", "hunting_hides"];
+const FISHING = ["fishing", "fishing_net"];
+const WOODCUTTING = ["wood_gathering", "felling"];
+const FIREMAKING = ["open_fire", "earth_oven"];
+const CLOTHMAKING = ["hide_dressing", "tanning", "plaiting"];
+
 export const STAGE1: Config = {
   // ------------------------------------------------------------------ stocks
   //
@@ -470,7 +484,7 @@ export const STAGE1: Config = {
       // yields more. Not a smaller appetite — the need is physiology (E29).
       id: "mortar",
       visibleWhen: [],
-      availableWhen: [],
+      availableWhen: [{ kind: "experience", processes: GATHERING, min: 400 }],
       defaultRank: PROJECTS_FIRST,
       laborCost: 40,
       stockCost: {},
@@ -483,7 +497,7 @@ export const STAGE1: Config = {
       // Cooking pits and burnt mounds are among the commonest Mesolithic finds.
       id: "earth_oven",
       visibleWhen: [],
-      availableWhen: [],
+      availableWhen: [{ kind: "experience", processes: FIREMAKING, min: 10 }],
       defaultRank: PROJECTS_FIRST,
       laborCost: 40,
       stockCost: {},
@@ -521,7 +535,7 @@ export const STAGE1: Config = {
       // Natufian blades with sickle gloss.
       id: "sickle",
       visibleWhen: [],
-      availableWhen: [],
+      availableWhen: [{ kind: "experience", processes: GATHERING, min: 100 }],
       defaultRank: PROJECTS_FIRST,
       laborCost: 120,
       stockCost: { wood: 20 },
@@ -535,7 +549,7 @@ export const STAGE1: Config = {
       // which world this is and leaves room for an iron one later.
       id: "stone_axe",
       visibleWhen: [],
-      availableWhen: [],
+      availableWhen: [{ kind: "experience", processes: WOODCUTTING, min: 30 }],
       defaultRank: PROJECTS_FIRST,
       laborCost: 120,
       stockCost: { wood: 20 },
@@ -575,7 +589,7 @@ export const STAGE1: Config = {
       // somebody has to be gathering fibre.
       id: "fishing_net",
       visibleWhen: [],
-      availableWhen: [],
+      availableWhen: [{ kind: "experience", processes: FISHING, min: 50 }],
       defaultRank: PROJECTS_FIRST,
       laborCost: 120,
       stockCost: { fibre: 30 },
@@ -596,7 +610,7 @@ export const STAGE1: Config = {
       // needs a process of its own.
       id: "bone_needle",
       visibleWhen: [],
-      availableWhen: [],
+      availableWhen: [{ kind: "experience", processes: CLOTHMAKING, min: 30 }],
       defaultRank: PROJECTS_FIRST,
       laborCost: 120,
       stockCost: { fibre: 20 },
@@ -613,7 +627,7 @@ export const STAGE1: Config = {
       // and fibre.
       id: "bow_and_arrow",
       visibleWhen: [],
-      availableWhen: [],
+      availableWhen: [{ kind: "experience", processes: HUNTING, min: 5 }],
       defaultRank: PROJECTS_FIRST,
       laborCost: 120,
       stockCost: { wood: 20, fibre: 20 },
@@ -627,7 +641,7 @@ export const STAGE1: Config = {
     {
       id: "tanning",
       visibleWhen: [],
-      availableWhen: [],
+      availableWhen: [{ kind: "experience", processes: CLOTHMAKING, min: 15 }],
       defaultRank: PROJECTS_FIRST,
       laborCost: 120,
       stockCost: { hides: 20 },
