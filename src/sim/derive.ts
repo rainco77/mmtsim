@@ -1,14 +1,15 @@
 import { allocate, type AllocationResult } from "./allocation.ts";
-import { type ConfigIndex, tierEffectAt } from "./config.ts";
+import { type ConfigIndex, type Effect, type QualitySource, tierEffectAt } from "./config.ts";
 import type { CapacityId, ProjectId, StockId } from "./ids.ts";
 import { decayed, HOUSEHOLDS, regrown, renewals, type Renewal } from "./phases.ts";
 import { peek } from "./random.ts";
-import { type Capacity, type GameState } from "./state.ts";
+import { capacityOf, type Capacity, type GameState } from "./state.ts";
 import {
   allHold,
   computeUnlocks,
   unmetConditions,
   type ConditionContext,
+  type Unlocks,
   type Unmet,
 } from "./unlocks.ts";
 import type { OrderingReason } from "./ordering.ts";
@@ -108,8 +109,22 @@ export interface ProjectView {
   readonly limit?: number;
   /** Named, not "locked" (E12). */
   readonly missing: readonly Unmet[];
-  /** What this project opens up, so the horizon is local and always present. */
-  readonly unlocks: readonly string[];
+  /**
+   * What starting this would do, reckoned **against the state as it stands**.
+   *
+   * Data and not prose (T6): the shell turns it into sentences and translates
+   * them. It used to be a list of engine words — `capacity:storage`,
+   * `process:gathering_sickle` — out of which no interface could build a
+   * statement that says anything, and a project whose worth cannot be read is
+   * not a choice but a coin toss (E31).
+   *
+   * Quantities are given as *where you stand now* and *where you would stand*,
+   * because that is the comparison the player has to make. A process is given
+   * in its own absolute figures instead: the one it would replace is on the
+   * screen anyway, and comparing two plain numbers is something a person does
+   * better than a rule about which of them counts.
+   */
+  readonly consequences: readonly Consequence[];
 }
 
 export function derive(state: GameState, index: ConfigIndex): Derived {
@@ -179,7 +194,7 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
       completed: state.completedProjects[def.id] ?? 0,
       ...(def.limit === undefined ? {} : { limit: def.limit }),
       missing: unmetConditions(def.availableWhen, ctx),
-      unlocks: def.effects.map(describeEffect),
+      consequences: consequencesOf(def, state, index, unlocks),
     };
   });
 
@@ -234,19 +249,109 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
 }
 
 
-function describeEffect(effect: { type: string } & Record<string, unknown>): string {
-  switch (effect.type) {
-    case "branch":
-      return `branch:${String(effect["id"])}`;
-    case "process":
-      return `process:${String(effect["id"])}`;
-    case "rule":
-      return `rule:${String(effect["id"])}=${String(effect["set"])}`;
-    case "capacity":
-      return `capacity:${String(effect["capacity"])}${
-        Number(effect["amount"]) >= 0 ? "+" : ""
-      }${String(effect["amount"])}`;
+/** One consequence of starting a project, in numbers (T6). */
+export type Consequence =
+  | { readonly kind: "capacity"; readonly capacity: CapacityId; readonly from: number; readonly to: number }
+  | { readonly kind: "quality"; readonly capacity: CapacityId; readonly from: number; readonly to: number }
+  /** What one head needs of a good, before and after (E9). */
+  | { readonly kind: "need"; readonly tier: string; readonly from: number; readonly to: number }
+  /** A way of producing that would open, in its own figures. */
+  | {
+      readonly kind: "process";
+      readonly process: string;
+      readonly produces: StockId;
+      readonly capacityPerOutput: Readonly<Record<CapacityId, number>>;
+      readonly intermediatesPerOutput: Readonly<Record<StockId, number>>;
+      readonly exposure: Readonly<Record<string, number>>;
+    }
+  | { readonly kind: "branch"; readonly branch: string }
+  | { readonly kind: "rule"; readonly rule: string; readonly set: boolean };
+
+function consequencesOf(
+  def: { readonly effects: readonly Effect[] },
+  state: GameState,
+  index: ConfigIndex,
+  unlocks: Unlocks,
+): readonly Consequence[] {
+  const out: Consequence[] = [];
+  const sector = state.sectors[HOUSEHOLDS];
+  for (const effect of def.effects) {
+    switch (effect.type) {
+      case "capacity": {
+        const owned = capacityOf(sector?.capacityHeld ?? {}, effect.capacity);
+        const unowned = capacityOf(state.unownedCapacity, effect.capacity);
+        const from = effect.sector === undefined ? unowned.amount : owned.amount;
+        out.push({
+          kind: "capacity",
+          capacity: effect.capacity,
+          from,
+          to: Math.max(0, from + effect.amount),
+        });
+        if (effect.quality !== undefined) {
+          const now = effect.sector === undefined ? unowned.quality : owned.quality;
+          out.push({
+            kind: "quality",
+            capacity: effect.capacity,
+            from: now,
+            to: qualityOf(effect.quality, state, index, now),
+          });
+        }
+        break;
+      }
+      case "tier": {
+        const tier = index.tier.get(effect.id);
+        out.push({
+          kind: "need",
+          tier: effect.id,
+          from: unlocks.tierPerHead.get(effect.id) ?? tier?.perHead ?? 0,
+          to: effect.perHead,
+        });
+        break;
+      }
+      case "process": {
+        const process = index.process.get(effect.id);
+        if (process === undefined) break;
+        out.push({
+          kind: "process",
+          process: process.id,
+          produces: index.branch.get(process.branch)?.produces ?? "",
+          capacityPerOutput: process.capacityPerOutput,
+          intermediatesPerOutput: process.intermediatesPerOutput,
+          exposure: process.exposure,
+        });
+        break;
+      }
+      case "branch":
+        out.push({ kind: "branch", branch: effect.id });
+        break;
+      case "rule":
+        out.push({ kind: "rule", rule: effect.id, set: effect.set });
+        break;
+    }
+  }
+  return out;
+}
+
+/** Where the quality of added area would come from (E13), as a number. */
+function qualityOf(
+  source: QualitySource,
+  state: GameState,
+  index: ConfigIndex,
+  fallback: number,
+): number {
+  switch (source.kind) {
+    case "fixed":
+      return source.value;
+    case "from":
+      return capacityOf(state.sectors[HOUSEHOLDS]?.capacityHeld ?? {}, source.capacity).amount > 0
+        ? capacityOf(state.sectors[HOUSEHOLDS]?.capacityHeld ?? {}, source.capacity).quality
+        : capacityOf(state.unownedCapacity, source.capacity).quality;
+    case "nextTaking":
+      return (
+        index.config.land.baseQuality *
+        Math.pow(1 - index.config.land.qualityDecayPerTaking, state.landTakings)
+      );
     default:
-      return effect.type;
+      return fallback;
   }
 }

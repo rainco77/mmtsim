@@ -29,7 +29,7 @@ export type {
   ShockShape,
 } from "./config.ts";
 export { indexConfig, tierEffectAt } from "./config.ts";
-export type { BranchOrdering, Derived, ProjectView } from "./derive.ts";
+export type { BranchOrdering, Consequence, Derived, ProjectView } from "./derive.ts";
 export type {
   OrderedProcesses,
   OrderingContext,
