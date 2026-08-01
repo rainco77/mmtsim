@@ -78,6 +78,24 @@ export interface StockDef {
     readonly capacity: CapacityId;
     readonly densityPerArea: number;
     readonly refuge: number;
+    /**
+     * How much dearer taking becomes when the stock is thin — the effort per
+     * unit caught, at most.
+     *
+     * A fish is a fish: a thin lake does not want *more* fish per meal, it
+     * wants **more work** for each one. Effort per catch runs inverse to what
+     * is left — `catch = q · effort · stock`, the standard bioeconomic form
+     * (Gordon and Schaefer), and the same statement optimal foraging makes as
+     * a falling encounter rate.
+     *
+     * Without it, a stock in hand looks free to the plan and is taken to
+     * nothing whenever that is the cheapest way — measured, the fishery went
+     * from full to dead in nineteen ticks and no brake anywhere reached it in
+     * time. With it, taking grows dear before the last one is gone, which is
+     * what really saves a stock. The cap keeps a spent range from being
+     * infinitely dear, so there is always a way back (E20).
+     */
+    readonly maxEffort: number;
   };
 }
 

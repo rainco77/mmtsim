@@ -29,7 +29,7 @@ import {
   type PlanContext,
 } from "./plan.ts";
 import { shockFactor, type Shocks } from "./risk.ts";
-import { renewals } from "./phases.ts";
+import { renewals, type Renewal } from "./phases.ts";
 import { capacityOf, type GameState } from "./state.ts";
 
 /**
@@ -185,6 +185,34 @@ function plannedYear(config: Config): Shocks {
 }
 
 /**
+ * How much dearer a process is because what it takes has grown thin (E29).
+ *
+ * `catch = q · effort · stock` — the standard bioeconomic form — so effort per
+ * unit caught runs inverse to what is left, and the same statement optimal
+ * foraging makes as a falling encounter rate. It is what really saves a stock:
+ * taking grows dear long before the last one is gone.
+ *
+ * A fish is still a fish, so this never touches how much of the quarry a unit
+ * of output needs. It falls on the labour and the ground — the searching.
+ */
+function effortFactor(
+  process: ProcessDef,
+  index: ConfigIndex,
+  standing: Readonly<Record<StockId, Renewal>>,
+): number {
+  let worst = 1;
+  for (const id of Object.keys(process.intermediatesPerOutput)) {
+    const rule = index.stock.get(id)?.regrowth;
+    if (rule === undefined) continue;
+    const renewal = standing[id];
+    if (renewal === undefined || renewal.ceiling <= 0) continue;
+    const share = Math.max(1e-6, renewal.held / renewal.ceiling);
+    worst = Math.max(worst, Math.min(rule.maxEffort, 1 / share));
+  }
+  return worst;
+}
+
+/**
  * Puts in what the plan meant to put in. **The inputs are committed** — one has
  * sown, one has set out — so they are spent at the planned level whatever the
  * year turns out to be. What the year decides is the *output*, and that is
@@ -194,6 +222,8 @@ function consume(
   process: ProcessDef,
   level: number,
   pools: Pools,
+  effort: number,
+  index: ConfigIndex,
   capacityUsed: Record<CapacityId, number>,
   consumed: Record<StockId, number>,
 ): number {
@@ -209,12 +239,14 @@ function consume(
   for (const [capacity] of capacityEntries) {
     const pool = pools.amount[capacity];
     if (pool === undefined) continue;
-    const used = level * effectiveCapacityPerOutput(process, capacity, quality);
+    const used = level * effectiveCapacityPerOutput(process, capacity, quality) * effort;
     pool.available -= used;
     capacityUsed[capacity] = (capacityUsed[capacity] ?? 0) + used;
   }
   for (const [stockId, perOutput] of Object.entries(process.intermediatesPerOutput)) {
-    const used = level * perOutput;
+    // The quarry itself is not dearer when it is scarce — only the finding is.
+    const scale = index.stock.get(stockId)?.regrowth === undefined ? effort : 1;
+    const used = level * perOutput * scale;
     pools.stock[stockId] = (pools.stock[stockId] ?? 0) - used;
     consumed[stockId] = (consumed[stockId] ?? 0) + used;
     if (stockId === LABOR_STOCK) labor += used;
@@ -230,10 +262,17 @@ function consume(
  * cannot run at full level. The same partial pace that a project runs at when
  * one of its inputs is short (E18), one step earlier.
  */
-function feasiblePace(process: ProcessDef, level: number, pools: Pools): number {
+function feasiblePace(
+  process: ProcessDef,
+  level: number,
+  pools: Pools,
+  effort: number,
+  index: ConfigIndex,
+): number {
   let pace = 1;
   for (const [stockId, perOutput] of Object.entries(process.intermediatesPerOutput)) {
-    const wanted = level * perOutput;
+    const scale = index.stock.get(stockId)?.regrowth === undefined ? effort : 1;
+    const wanted = level * perOutput * scale;
     if (wanted <= 1e-12) continue;
     const have = pools.stock[stockId] ?? 0;
     if (have < wanted) pace = Math.min(pace, Math.max(0, have / wanted));
@@ -373,7 +412,8 @@ export function allocate(input: AllocationInput): AllocationResult {
   // backward-looking rule below only stops once a need has already broken, and
   // measured that was four ticks too late — the store went on claiming while
   // the fishery fell from 118 to 1.
-  const countryFailing = Object.values(renewals(state, index)).some(
+  const standing = renewals(state, index);
+  const countryFailing = Object.values(standing).some(
     (renewal) => renewal.ceiling > 0 && renewal.held / renewal.ceiling < config.saving.pauseBelow,
   );
 
@@ -438,6 +478,7 @@ export function allocate(input: AllocationInput): AllocationResult {
     // year — measured, use of the wilderness fell from 100 % to 67 % at a draw
     // of 0.66.
     shockFor: (process: ProcessDef) => shockFactor(process, plannedShocks),
+    effortFor: (process: ProcessDef) => effortFactor(process, index, standing),
     order: (stock, processes) => {
       const branch = config.branches.find((b) => b.produces === stock);
       const wanted = branch === undefined ? undefined : ordering.get(branch.id);
@@ -477,13 +518,14 @@ export function allocate(input: AllocationInput): AllocationResult {
     const planned = margin > 0 ? target / margin : target;
     // Cut back to what the inputs actually there allow — the plan was made
     // before the year was known, and the step above it may have fallen short.
-    const level = planned * feasiblePace(process, planned, pools);
+    const effort = effortFactor(process, index, standing);
+    const level = planned * feasiblePace(process, planned, pools, effort, index);
     // Labour the plan had earmarked for this process and that it did not take,
     // because the process could not run at the planned level. It is idle, not
     // set aside for anything — see the labour books below.
     laborFreed += (planned - level) * (process.intermediatesPerOutput[LABOR_STOCK] ?? 0);
     if (level <= 1e-12) continue;
-    const labor = consume(process, level, pools, capacityUsed, consumed);
+    const labor = consume(process, level, pools, effort, index, capacityUsed, consumed);
     // And here the year has its say: the inputs went in as committed, the
     // harvest is what it is.
     const output = level * shockFactor(process, shocks);

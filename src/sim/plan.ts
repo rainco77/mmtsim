@@ -56,6 +56,12 @@ export interface PlanContext {
   readonly available: readonly ProcessDef[];
   /** How much this tick's shocks cut this process back — 1 means untouched. */
   shockFor(process: ProcessDef): number;
+  /**
+   * How much dearer this process is because what it takes has grown thin — 1
+   * means the range is full (E29). It falls on the *effort*: a fish is a fish,
+   * but a thin lake wants more work for each one.
+   */
+  effortFor(process: ProcessDef): number;
   /** Ordering within one stock, best first — see E5. */
   order(stock: StockId, processes: readonly ProcessDef[]): readonly ProcessDef[];
 }
@@ -146,6 +152,7 @@ function computeInputPerOutput(
 ): number {
   const shock = ctx.shockFor(process);
   if (shock <= 0) return Infinity;
+  const effort = ctx.effortFor(process);
 
   if (input.startsWith("capacity:")) {
     const type = input.slice("capacity:".length);
@@ -153,10 +160,15 @@ function computeInputPerOutput(
     if (base <= 0) return 0;
     const quality = ctx.supplies.capacityHeld[type]?.quality ?? 1;
     const factor = 1 - process.qualityWeight + process.qualityWeight * quality;
-    return factor > 0 ? base / factor / shock : Infinity;
+    return factor > 0 ? (base * effort) / factor / shock : Infinity;
   }
   if (input.startsWith("stock:")) {
-    return (process.intermediatesPerOutput[input.slice(6)] ?? 0) / shock;
+    const id = input.slice(6);
+    const base = process.intermediatesPerOutput[id] ?? 0;
+    // The scarcity falls on the effort, not on the quarry: one animal is still
+    // one animal, it just takes longer to find.
+    const scale = ctx.index.stock.get(id)?.regrowth === undefined ? effort : 1;
+    return (base * scale) / shock;
   }
   return 0;
 }

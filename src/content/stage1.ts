@@ -62,12 +62,24 @@ export const STAGE1: Config = {
     {
       id: "game",
       decayPerTick: 0,
-      regrowth: { ratePerTick: 0.3, capacity: "wilderness", densityPerArea: 3.0, refuge: 2 },
+      regrowth: {
+        ratePerTick: 0.3,
+        capacity: "wilderness",
+        densityPerArea: 3.0,
+        refuge: 2,
+        maxEffort: 6,
+      },
     },
     {
       id: "fish",
       decayPerTick: 0,
-      regrowth: { ratePerTick: 0.4, capacity: "water", densityPerArea: 4.0, refuge: 2 },
+      regrowth: {
+        ratePerTick: 0.4,
+        capacity: "water",
+        densityPerArea: 4.0,
+        refuge: 2,
+        maxEffort: 6,
+      },
     },
     { id: "hides", decayPerTick: 0.05 },
     { id: "fibre", decayPerTick: 0.04 },
