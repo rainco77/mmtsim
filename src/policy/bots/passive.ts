@@ -1,8 +1,14 @@
 import type { Action, ConfigIndex, Derived, GameState } from "../../sim/index.ts";
 import type { Policy } from "../policy.ts";
 
-/** Below this share of what the range carries, a stock counts as spent (E29). */
-const SPENT = 0.5;
+/**
+ * Above this price the country counts as spent: the same meal costs half again
+ * as much walking as it does on fresh ground (E29).
+ *
+ * Read off the one figure the allocation writes, never worked out here. How
+ * full a stand looks says nothing — it is read after the growing back.
+ */
+const SPENT = 1.5;
 
 /**
  * Builds nothing, ever — and moves on when the country is spent.
@@ -26,9 +32,7 @@ export class PassivePolicy implements Policy {
 
   decide(_state: GameState, derived: Derived, index: ConfigIndex): readonly Action[] {
     if (derived.projects.some((project) => project.running)) return [];
-    const thin = Object.values(derived.renewable).some(
-      (renewal) => renewal.ceiling > 0 && renewal.held / renewal.ceiling < SPENT,
-    );
+    const thin = Object.values(derived.effortPerStock).some((price) => price >= SPENT);
     if (!thin) return [];
     // Whatever the content offers that sets a stock back to what the range
     // carries — a fresh country. Named by what it does, not by its id, so this

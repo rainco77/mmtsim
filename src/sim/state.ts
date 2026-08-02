@@ -69,6 +69,20 @@ export interface GameState {
    */
   readonly lastCoverage: Readonly<Record<string, number>>;
 
+  /**
+   * What taking each renewable stock cost last tick, against what the same
+   * taking costs on fresh country (E29). One on untouched ground, higher the
+   * harder it has grown to find.
+   *
+   * History like `lastCoverage` beside it, and for the same reason: only the
+   * allocation knows what a taking cost, and it is over by the time anything
+   * else asks. Kept here so that the condition for moving on, the bots and the
+   * view all read the **one** figure instead of each working out its own idea
+   * of how spent the country is — which is what left all three of them unable
+   * to see two thirds of a range being taken every tick.
+   */
+  readonly lastEffort: Readonly<Record<StockId, number>>;
+
   /** Which process led per branch last tick — shown, not used to decide (E5). */
   readonly leadProcess: Readonly<Record<BranchId, ProcessId>>;
 

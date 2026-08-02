@@ -82,6 +82,13 @@ export interface Derived {
    * year that was put by from one that was lived through — and since making and
    * keeping share one pot (E19), it is the only place that answer comes from.
    */
+  /**
+   * What taking each renewable stock costs this tick against fresh country —
+   * one on untouched ground, higher the harder it is to find (E29). The single
+   * measure of how spent the range is; a fill level cannot say it, because it
+   * is read after the growing back.
+   */
+  readonly effortPerStock: Readonly<Record<StockId, number>>;
   readonly storeBefore: Readonly<Record<StockId, number>>;
   readonly storeAfter: Readonly<Record<StockId, number>>;
 
@@ -249,6 +256,7 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     runs: allocation.runs,
     produced: allocation.produced,
     storeBefore: allocation.storeBefore,
+    effortPerStock: allocation.effortPerStock,
     storeAfter: allocation.storeAfter,
     birthFactor,
     survival,

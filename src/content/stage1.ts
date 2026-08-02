@@ -760,23 +760,30 @@ export const STAGE1: Config = {
       // before it settles by decision (Testart).
       id: "range_change",
       // It appears when the country begins to fail, and that appearance is
-      // itself the warning: four fifths of what the range carries is the
-      // notice, three fifths the point at which moving is the answer. Before
-      // that, moving would be a cheap reset rather than a decision.
+      // itself the warning. What "failing" means is the **price of searching**:
+      // half again as much walking for the same meal is the notice, twice as
+      // much is the point at which moving is the answer. Before that, moving
+      // would be a cheap reset rather than a decision.
       //
-      // It used to read a half and a third, and over eight seeds the thinnest
-      // any stock ever reached was 0.826 — so the one answer a moving people
-      // really had was never so much as visible. Set here, it shows itself
-      // while the range is merely pressed and can be taken before the crisis,
-      // and it falls out of use again of its own accord once the mortar lifts
-      // the ceiling, because the same taking is then a smaller share of it.
+      // It used to read a fill level — a stock below a half, then below a third
+      // of what the range carries — and that could never fire. A fill level is
+      // read after the growing back, so a range that fills overnight shows
+      // untouched however much comes off it: over eight seeds the thinnest any
+      // stock ever reached was 0.861 while two thirds of the range was taken
+      // every tick, and the one answer a moving people really had was never so
+      // much as visible.
+      //
+      // The price also tells efficiency from intensification without being
+      // told. The sickle only makes hands quicker and leaves it exactly where
+      // it was; the mortar means less country per meal, so it really does push
+      // the move further off — which is what intensification is supposed to do.
       visibleWhen: [
         { kind: "rule", id: "settled", set: false },
-        { kind: "stockThin", share: 0.8 },
+        { kind: "stockDear", factor: 1.5 },
       ],
       availableWhen: [
         { kind: "rule", id: "settled", set: false },
-        { kind: "stockThin", share: 0.6 },
+        { kind: "stockDear", factor: 2.0 },
       ],
       defaultRank: PROJECTS_LAST,
       laborCost: 60,

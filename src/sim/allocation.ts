@@ -108,6 +108,17 @@ export interface AllocationResult {
   readonly storeBefore: Readonly<Record<StockId, number>>;
   readonly storeAfter: Readonly<Record<StockId, number>>;
 
+  /**
+   * What taking each renewable stock cost this tick, against what the same
+   * taking costs on fresh country: one on untouched ground, higher the harder
+   * it has grown to find (E29).
+   *
+   * The one place this is worked out. Whoever wants to know how spent the
+   * country is reads this and does not derive it again — a fill level cannot
+   * answer it, because it is read after the growing back.
+   */
+  readonly effortPerStock: Readonly<Record<StockId, number>>;
+
   /** Occupied area per type; utilisation follows from it (E4). */
   readonly capacityUsed: Readonly<Record<CapacityId, number>>;
   /**
@@ -266,6 +277,31 @@ function effortFactor(
  * what a plan takes barely moves between the two — it shifts only where labour
  * is the thing that binds.
  */
+/**
+ * What taking each renewable stock costs this tick, over its whole taking —
+ * the same average of `ceiling / stock` the processes are charged, gathered
+ * per stock so that everything else can read one figure.
+ */
+function pricePerStock(
+  standing: Readonly<Record<StockId, Renewal>>,
+  taking: Readonly<Record<StockId, number>>,
+  index: ConfigIndex,
+): Record<StockId, number> {
+  const out: Record<StockId, number> = {};
+  for (const [id, renewal] of Object.entries(standing)) {
+    const rule = index.stock.get(id)?.regrowth;
+    if (rule === undefined || renewal.ceiling <= 0) continue;
+    const held = Math.max(1e-9, renewal.held);
+    const take = Math.min(Math.max(0, taking[id] ?? 0), held * 0.999);
+    const factor =
+      take > 1e-9
+        ? (renewal.ceiling / take) * Math.log(held / (held - take))
+        : renewal.ceiling / held;
+    out[id] = Math.max(1, Math.min(rule.maxEffort, factor));
+  }
+  return out;
+}
+
 function takingOf(
   levels: ReadonlyMap<ProcessId, number>,
   index: ConfigIndex,
@@ -564,6 +600,7 @@ export function allocate(input: AllocationInput): AllocationResult {
   // that much really costs.
   const draft = makePlan(demands, planCtx);
   const taking = takingOf(draft.levels, index);
+  const effortPerStock = pricePerStock(standing, taking, index);
   const effortFor = (process: ProcessDef): number =>
     effortFactor(process, index, standing, taking);
   const plan = makePlan(demands, { ...planCtx, effortFor });
@@ -698,6 +735,7 @@ export function allocate(input: AllocationInput): AllocationResult {
     consumed,
     storeBefore,
     storeAfter,
+    effortPerStock,
     runs: withShares,
     capacityUsed,
     capacityTotal: Object.fromEntries(

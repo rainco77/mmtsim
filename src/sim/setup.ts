@@ -69,6 +69,8 @@ export function createState(config: Config, options: StartOptions): GameState {
     landTakings: 0,
     // Nothing has happened yet, so nothing was short: the first tick may save.
     lastCoverage: {},
+    // Fresh country: nothing has been searched for yet.
+    lastEffort: {},
     completedProjects: {},
     activeProjects: [],
     leadProcess: {},

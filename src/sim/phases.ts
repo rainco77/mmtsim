@@ -367,6 +367,7 @@ export class ProductionPhase implements Phase {
       sectors: { ...state.sectors, [HOUSEHOLDS]: { ...sector, stocks } },
       leadProcess: result.leadProcess,
       lastCoverage: Object.fromEntries(result.tiers.map((t) => [t.tier, t.coverage])),
+      lastEffort: result.effortPerStock,
       experience,
     };
   }

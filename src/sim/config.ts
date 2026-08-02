@@ -329,12 +329,26 @@ export type Condition =
    * both roads to clothing, so it asks for practice at either.
    */
   /**
-   * Any renewable stock at or below this share of what the range carries (E29).
+   * Taking anything the range carries has grown at least this much dearer than
+   * it is on fresh country (E29).
    *
-   * A community does not move on a whim; it moves when the country is spent. And
-   * because the project only appears then, its appearing *is* the warning.
+   * A community does not move on a whim; it moves when the country is spent.
+   * And because the project only appears then, its appearing *is* the warning.
+   *
+   * What "spent" means had to be the **price of searching** and not how full
+   * the stand looks. A fill level cannot express pressure at all: it is read
+   * after the growing back, so a range that fills overnight reads untouched
+   * however much is taken from it — over eight seeds the thinnest any stock
+   * ever showed was 0.861 while two thirds of the range was being taken every
+   * tick, and the move never once became available. The price cannot be fooled
+   * that way, because it asks what a taking costs and not what is standing.
+   *
+   * It also tells efficiency from intensification by itself, which is what this
+   * condition wants. Working faster — a sickle — leaves it alone. Needing less
+   * of the country for the same meal — a mortar — really does lower it, so
+   * intensifying postpones the move, exactly as it should.
    */
-  | { readonly kind: "stockThin"; readonly share: number }
+  | { readonly kind: "stockDear"; readonly factor: number }
   | {
       readonly kind: "experience";
       readonly activities: readonly ActivityId[];

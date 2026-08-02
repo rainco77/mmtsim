@@ -87,8 +87,13 @@ const FED = 0.95;
  */
 const BOUGHT_WITH_COMFORT = 450;
 
-/** Below this share of what the range carries, a stock counts as spent (E29). */
-const SPENT = 0.25;
+/**
+ * Above this price the country counts as spent, and this player moves before it
+ * hurts: twice the walking for the same meal (E29). The one figure the
+ * allocation writes — a fill level cannot say it, being read after the growing
+ * back.
+ */
+const SPENT = 2;
 
 /**
  * Builds out of surplus: starts something while the people are well fed, and
@@ -193,7 +198,7 @@ export class SensiblePolicy implements Policy {
     // care of itself: what is in the ground stays there, so a community with
     // many pits will not do this lightly.
     const spent = Object.values(derived.renewable).some(
-      (renewal) => renewal.ceiling > 0 && renewal.held < renewal.ceiling * SPENT,
+      () => Object.values(derived.effortPerStock).some((price) => price >= SPENT),
     );
     if (spent) {
       const move = derived.projects.find(

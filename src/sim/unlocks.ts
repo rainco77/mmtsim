@@ -1,6 +1,5 @@
 import type { Condition, ConfigIndex } from "./config.ts";
 import type { BranchId, ProcessId, RuleId } from "./ids.ts";
-import { renewals } from "./phases.ts";
 import { capacityOf, completedCount, type GameState } from "./state.ts";
 
 /**
@@ -121,19 +120,25 @@ export function conditionHolds(condition: Condition, ctx: ConditionContext): boo
     }
     case "experience":
       return practised(ctx, condition.activities) >= condition.min;
-    case "stockThin":
-      return thinnest(ctx) <= condition.share;
+    case "stockDear":
+      return dearest(ctx) >= condition.factor;
   }
 }
 
-/** The thinnest renewable stock, against what the range carries (E29). */
-function thinnest(ctx: ConditionContext): number {
-  let lowest = Number.POSITIVE_INFINITY;
-  for (const renewal of Object.values(renewals(ctx.state, ctx.index))) {
-    if (renewal.ceiling <= 0) continue;
-    lowest = Math.min(lowest, renewal.held / renewal.ceiling);
-  }
-  return Number.isFinite(lowest) ? lowest : 1;
+/**
+ * The dearest anything the range carries has become — what a taking cost last
+ * tick against what it costs on fresh country (E29).
+ *
+ * Read out of the state and never worked out again here. It is one number with
+ * one home: the allocation is the only place that knows what a taking cost,
+ * and everything else — this condition, the bots, the view — reads the same
+ * figure it wrote. Three separate derivations of "how spent is the country" is
+ * what left every one of them blind twice over.
+ */
+function dearest(ctx: ConditionContext): number {
+  let highest = 1;
+  for (const price of Object.values(ctx.state.lastEffort)) highest = Math.max(highest, price);
+  return highest;
 }
 
 /** How much has been produced at these activities, all told (E29). */
@@ -204,10 +209,8 @@ function standing(condition: Condition, ctx: ConditionContext): Unmet {
       return at(ctx.population <= 0 ? 0 : stock(ctx, condition.stock) / ctx.population, condition.min);
     case "experience":
       return at(practised(ctx, condition.activities), condition.min);
-    // Read the other way round from the rest — less is what fulfils it — so it
-    // is reported as how far the thinnest stock still has to fall.
-    case "stockThin":
-      return at(Math.max(0, thinnest(ctx) - condition.share), 0);
+    case "stockDear":
+      return at(dearest(ctx), condition.factor);
   }
 }
 
