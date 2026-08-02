@@ -1011,10 +1011,16 @@ export const STAGE1: Config = {
   population: {
     baseBirthRate: 0.01,
     baseDeathRate: 0.01,
-    // Birdsell's "magic numbers": a band of about 25 is the smallest that
-    // sustains itself — below it a group has to join another or it is gone.
-    // Twelve was too low to be honest, because nothing recovers from twelve.
-    minimumViableSize: 25,
+    // Below about a dozen a band stops working: too few hunters, nobody spare
+    // to carry children or the sick, and no cover at all for a single death. It
+    // does not die out — it joins a neighbour, and as *this* band it is over.
+    //
+    // Twenty-five is the band itself (Birdsell's magic numbers), so it cannot
+    // also be the floor. His other number, five hundred, is the circle within
+    // which people marry — a network of bands, not a settlement, and nothing
+    // this model has: we play one band, which is understood to sit inside such
+    // a network.
+    minimumViableSize: 12,
   },
 
   shocks: { weather: { shape: "powerLeftSkewed", exponent: 4 } },
@@ -1028,7 +1034,13 @@ export const STAGE1: Config = {
   // unsets this rule (E23) and the economy decides alone from then on.
   rulesFromStart: [],
 
-  land: { baseQuality: 1.0, qualityDecayPerTaking: 0.05 },
+  // A band of about twenty-five on the range that carries it (E14, Birdsell's
+  // magic numbers). The figures per head are what gets tuned; the totals follow.
+  land: {
+    perHeadAtStart: { wilderness: 0.6, water: 0.24 },
+    baseQuality: 1.0,
+    qualityDecayPerTaking: 0.05,
+  },
 
   carried: { baseProductivity: 1.0, baseWorkAbility: 1.0, adjustmentPerTick: 0.25 },
 };

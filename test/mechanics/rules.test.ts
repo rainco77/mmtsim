@@ -533,7 +533,9 @@ describe("sedentism (E29)", () => {
   });
 
   it("clearing turns wilderness into cleared land, keeping the total (E13)", () => {
-    let state = finish(createState(STAGE1, { seed: 7 }), "sickle");
+    // Room enough that the conversions are not clamped at zero: the point is
+    // that the total is preserved, not what a band's own range holds.
+    let state = finish(createState(STAGE1, { seed: 7, wilderness: 300, water: 120 }), "sickle");
     state = {
       ...state,
       sectors: {
@@ -586,7 +588,7 @@ describe("supply chains (E4)", () => {
   it("produces an intermediate nobody needs directly", () => {
     // Housing needs wood; nothing needs wood for its own sake. Without derived
     // demand no wood would ever be made and the roof would stay uncovered.
-    let state = finish(createState(STAGE1, { seed: 7 }), "sickle");
+    let state = finish(createState(STAGE1, { seed: 7, wilderness: 300, water: 120 }), "sickle");
     state = {
       ...state,
       sectors: {

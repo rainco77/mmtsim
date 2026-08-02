@@ -496,6 +496,16 @@ export interface RiskConfig {
 // ---------------------------------------------------------------- land
 
 export interface LandConfig {
+  /**
+   * How much of each capacity a band starts with **per head** (E14).
+   *
+   * Stated per head rather than as a total, because that is what the rule
+   * actually says: a band on a range that carries it. Written as two loose
+   * figures, the range and the band drifted apart the moment either was tuned —
+   * and the same mistake put the starting stocks out of step with their own
+   * ceilings, so a settlement began in a fished-out water.
+   */
+  readonly perHeadAtStart: Readonly<Record<CapacityId, number>>;
   /** Quality of the very first territory. */
   readonly baseQuality: number;
   /** Each taking yields land this much worse than the previous one (E13). */

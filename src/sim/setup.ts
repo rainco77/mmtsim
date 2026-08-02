@@ -1,7 +1,8 @@
 import type { Config } from "./config.ts";
+import type { CapacityId, StockId } from "./ids.ts";
 import { HOUSEHOLDS } from "./phases.ts";
 import { createRandomState } from "./random.ts";
-import type { GameState } from "./state.ts";
+import type { Capacity, GameState } from "./state.ts";
 
 export interface StartOptions {
   readonly seed: number;
@@ -19,54 +20,47 @@ export interface StartOptions {
  * regulated commons would be an institution, and there is none.
  */
 export function createState(config: Config, options: StartOptions): GameState {
-  const heads = options.heads ?? 50;
+  const heads = options.heads ?? 25;
+
+  // The range follows the band (E14): so much of each capacity per head. The
+  // options are there for tests and measurements, not for the game.
+  const unownedCapacity: Record<CapacityId, Capacity> = {};
+  for (const [id, perHead] of Object.entries(config.land.perHeadAtStart)) {
+    const override = id === "wilderness" ? options.wilderness : id === "water" ? options.water : undefined;
+    unownedCapacity[id] = {
+      amount: override ?? heads * perHead,
+      quality: config.land.baseQuality,
+    };
+  }
+
+  // And what lives on it starts at what it carries — a band arrives in a full
+  // country, not in one it has already hunted out. Reckoned from the same rule
+  // the regrowth uses, so the two cannot drift apart.
+  const stocks: Record<StockId, number> = { food: options.food ?? heads };
+  for (const stock of config.stocks) {
+    const rule = stock.regrowth;
+    if (rule === undefined) continue;
+    stocks[stock.id] = (unownedCapacity[rule.capacity]?.amount ?? 0) * rule.densityPerArea;
+  }
+
   return {
     tick: 0,
     random: createRandomState(options.seed),
     sectors: {
       [HOUSEHOLDS]: {
         heads,
-        // Enough for the first tick, so the settlement does not start starving.
-        // Game and fish start at what the range carries: a band arrives in a
-        // country that is full, not in one it has already hunted out (E29).
-        stocks: {
-          food: options.food ?? heads,
-          game: (options.wilderness ?? 100) * 3.0,
-          fish: (options.water ?? 40) * 4.0,
-        },
+        stocks,
         capacityHeld: {},
         productivity: config.carried.baseProductivity,
         workAbility: config.carried.baseWorkAbility,
       },
     },
-    unownedCapacity: {
-      wilderness: {
-        // A band sits *at* the carrying capacity of its range, not far below
-        // it (E14). At carrying capacity a bad year is a matter of life and
-        // death, which is what makes storing worth the work and land worth
-        // taking.
-        //
-        // The number is a measurement and follows the coefficients: it is
-        // where a settlement that decides *nothing* stops growing. With the
-        // stage's twelve techniques, 300 left a third of every hand idle and
-        // carried 179 people — three and a half times the band. At 100 the
-        // idle share is three per cent.
-        amount: options.wilderness ?? 30,
-        quality: config.land.baseQuality,
-      },
-      // A stretch of shore. Small on purpose: from the bank one reaches a few
-      // metres, and it is the boat that opens the rest (E29). Unowned like the
-      // wilderness — nobody owns the water before there is property.
-      water: {
-        amount: options.water ?? 12,
-        quality: config.land.baseQuality,
-      },
-    },
+    unownedCapacity,
     landTakings: 0,
-    completedProjects: {},
-    activeProjects: [],
     // Nothing has happened yet, so nothing was short: the first tick may save.
     lastCoverage: {},
+    completedProjects: {},
+    activeProjects: [],
     leadProcess: {},
     experience: {},
   };
