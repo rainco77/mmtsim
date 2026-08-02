@@ -371,9 +371,10 @@ describe("processes and the fallback level (E5)", () => {
     };
     const d = derive(state, index);
     const output = (id: string) => d.runs.find((r) => r.process === id)?.output ?? 0;
-    // Both run, and the cheaper one runs to the end of what there is to gather
-    // before the dearer one takes the rest: twenty of growth, twenty gathered.
-    expect(output("gathering_sickle")).toBeGreaterThan(10);
+    // Both run, and the wild is gathered for what it holds before the fields
+    // take the rest.
+    const gathered = output("gathering") + output("gathering_sickle");
+    expect(gathered).toBeGreaterThan(10);
     expect(output("farming")).toBeGreaterThan(0);
     // Far more comes off the fields than out of the wild — that is the whole
     // point of the fields.

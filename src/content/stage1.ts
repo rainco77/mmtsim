@@ -80,16 +80,29 @@ export const STAGE1: Config = {
     // Overtaxing therefore means something different in each case, and the way
     // out of it is a different length.
     {
-      // What there is to gather: seeds, berries, roots, nuts. Fast, because
-      // this is the annual growth of a range — which is exactly why gathering
-      // carries the bulk of the food and hunting cannot (Lee: plant food is the
-      // greater part of what foragers eat).
+      // What there is to gather: seeds, berries, roots, nuts. It carries the
+      // bulk of the food and hunting cannot (Lee: plant food is the greater
+      // part of what foragers eat).
+      //
+      // Fast and shallow, and that is the whole point of it. A herd and a
+      // forest are capital: what stands is many times what comes in over a
+      // tick, because it grew over many. The growth of a range is not — one
+      // cannot eat next year's berries this year. Set deep like the others, it
+      // became a **larder**: a band of twenty-five found a hundred and twenty
+      // standing against thirty of growth, feasted for four ticks and grew all
+      // the while, and then the larder was empty. Gathering turned four times
+      // dearer, food ate every hand there was, rank 200 got nothing, and people
+      // froze in a good year with the forest untouched — satt und frierend,
+      // exactly what E29 says must not come out.
+      //
+      // Shallow, the year goes straight through to the table: a bad one is
+      // felt, which is what makes a store worth digging later.
       id: "plants",
       decayPerTick: 0,
       regrowth: {
-        ratePerTick: 1.0,
+        ratePerTick: 4.0,
         capacity: "wilderness",
-        densityPerArea: 8.0,
+        densityPerArea: 6.0,
         refuge: 3,
         maxEffort: 6,
       },
