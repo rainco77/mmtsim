@@ -383,14 +383,32 @@ export function allocate(input: AllocationInput): AllocationResult {
     return factor > 0 ? base / factor : base;
   };
 
-  // What the settlement means to live on this tick, all of it. The store is
-  // **not** drawn on here (E19): one lives off what is being made and reaches
-  // into the store when that falls short. Taking from it first was what kept it
-  // empty — the pits held one tick's saving and no more, however large they
-  // were, because every tick began by eating them and ended by refilling them.
+  // What the settlement means to live on this tick, and it asks for what it
+  // will really use — reckoned against a normal year with a little caution, so
+  // that a good year leaves something over and a poor one is felt.
+  //
+  // What that comes to depends on whether the good is used up, and the tier
+  // says so itself (E19). Food flows through: the whole ration has to be made
+  // afresh every tick, and the store is **not** drawn on here — one lives off
+  // what is being made and reaches into the store when that falls short.
+  // Taking from it first was what kept it empty: the pits held one tick's
+  // saving and no more, however large they were, because every tick began by
+  // eating them and ended by refilling them.
+  //
+  // Clothing is worn, not eaten, and what is worn is already there. Keeping it
+  // is rebuilding what fell apart and nothing else (E19) — so the ask is the
+  // gap. Without that distinction a band of thirty sewed eight new garments
+  // every tick while wearing ninety-two, and since bast costs two and a half
+  // trees to the fibre, the whole forest went into clothes nobody needed and
+  // the settlement then froze.
   for (const tier of tierList) {
     const need = heads * perHead(tier, plannedShocks);
-    if (need > 1e-9) demands.push({ tier, stock: tier.stock, amount: need });
+    if (need <= 1e-9) continue;
+    const used = need * tier.consumedOnUse;
+    const worn = need - used;
+    const missing = Math.max(0, worn - (pools.stock[tier.stock] ?? 0));
+    const amount = used + missing;
+    if (amount > 1e-9) demands.push({ tier, stock: tier.stock, amount });
   }
 
   // Putting something by (E19). A stock is held because output is uncertain,
