@@ -44,7 +44,7 @@ export interface StockDef {
     /**
      * Where putting something by stands in the ranking (E9).
      *
-     * Behind every need is where it used to stand, and a settlement at the
+     * Behind every need is where it used to stand, and a community at the
      * carrying capacity of its range then never saves anything at all: what is
      * left over after everyone has eaten their fill is nothing, and where there
      * *is* something left it turns into people rather than into stores, because
@@ -296,7 +296,7 @@ export type Condition =
   | { readonly kind: "ownedCapacity"; readonly capacity: CapacityId; readonly min: number }
   | { readonly kind: "coverage"; readonly tier: NeedTierId; readonly min: number }
   /**
-   * A stock actually held, measured per head so it scales with the settlement.
+   * A stock actually held, measured per head so it scales with the community.
    * Holding a store is what makes staying possible (Testart) — and it cannot be
    * waited for: it needs the capacity to keep it and the output to spare.
    */
@@ -318,7 +318,7 @@ export type Condition =
    * out of many hauls. This **delays and never blocks** — keep at the activity
    * and the improvement arrives, and a bad year costs a few ticks. It also
    * orders itself by what the player actually does, so the tree grows out of
-   * the settlement's own economy rather than being laid down in advance.
+   * the community's own economy rather than being laid down in advance.
    *
    * An activity rather than a process, because a technique replaces its
    * predecessor (E5): once the sickle is in use, plain gathering stops adding
@@ -474,7 +474,7 @@ export interface PopulationConfig {
   readonly baseSurvival: number;
 
   /**
-   * Below this the settlement is given up and the run ends (E20). Not a
+   * Below this the community is given up and the run ends (E20). Not a
    * concession to playability: a community under a certain size is not viable.
    */
   readonly minimumViableSize: number;
@@ -534,7 +534,7 @@ export interface LandConfig {
    * actually says: a band on a range that carries it. Written as two loose
    * figures, the range and the band drifted apart the moment either was tuned —
    * and the same mistake put the starting stocks out of step with their own
-   * ceilings, so a settlement began in a fished-out water.
+   * ceilings, so a community began in a fished-out water.
    */
   readonly perHeadAtStart: Readonly<Record<CapacityId, number>>;
   /** Quality of the very first territory. */

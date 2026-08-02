@@ -80,8 +80,8 @@ export interface Derived {
   /** Factor on the heads this tick; 1 means the band stands (E20). */
   readonly birthFactor: number;
   readonly survival: number;
-  /** The settlement was given up and the run is over (E20). */
-  readonly settlementAbandoned: boolean;
+  /** The community was given up and the run is over (E20). */
+  readonly communityGivenUp: boolean;
   /** The tick it happened at; absent while it is still going. */
   readonly abandonedAt?: number;
 
@@ -242,7 +242,7 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     produced: allocation.produced,
     birthFactor,
     survival,
-    settlementAbandoned: state.abandonedAt !== undefined,
+    communityGivenUp: state.abandonedAt !== undefined,
     ...(state.abandonedAt === undefined ? {} : { abandonedAt: state.abandonedAt }),
     binding: allocation.binding,
     ...(allocation.bindingTier === undefined

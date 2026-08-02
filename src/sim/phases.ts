@@ -407,7 +407,7 @@ export class PopulationPhase implements Phase {
       sectors: { ...state.sectors, [HOUSEHOLDS]: { ...sector, heads } },
     };
 
-    // Below the minimum viable size the settlement is given up (E20), and that
+    // Below the minimum viable size the community is given up (E20), and that
     // is written down rather than left to be noticed: from the next tick on
     // nothing moves any more.
     return heads < index.config.population.minimumViableSize

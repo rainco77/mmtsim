@@ -93,7 +93,7 @@ interface Cell {
    * nothing — it then follows the mix between wilderness and water, which is
    * substitution between two resources and not intensification of either.
    * Measured that way the criterion passed for years for the wrong reason: the
-   * number rose because the settlement fished more, not because anyone worked
+   * number rose because the community fished more, not because anyone worked
    * the ground harder.
    */
   readonly yieldPer: Readonly<Record<string, number>>;
@@ -107,7 +107,7 @@ const SETTLE = 30;
 const WINDOW = 10;
 
 /**
- * One cell of the grid: a settlement held at a fixed size on a fixed range,
+ * One cell of the grid: a community held at a fixed size on a fixed range,
  * left to run.
  *
  * It has to **run**, not be looked at once. Since game and fish became stocks
@@ -338,7 +338,7 @@ function play(seed: number, policy: Policy): Trace {
     }
     const d = derive(state, index);
     ticks += 1;
-    if (d.settlementAbandoned) {
+    if (d.communityGivenUp) {
       abandoned = true;
       break;
     }
@@ -372,7 +372,7 @@ function play(seed: number, policy: Policy): Trace {
       foodNow += run.output;
       if ((process.capacityPerOutput["water"] ?? 0) > 0) waterFood += run.output;
     }
-    // Not from tick zero: the settlement starts with a store, so the first few
+    // Not from tick zero: the community starts with a store, so the first few
     // ticks produce less than they can and the series would rise for a reason
     // that has nothing to do with the standard of living. Food decays at 0.9,
     // so by tick five the store is gone.
@@ -510,7 +510,7 @@ const report = {
         share(passive.map((t) => t.abandoned)) > share(thoughtful.map((t) => t.abandoned)),
     },
     // Not the population at the end: an epoch that ends at a milestone lasts
-    // longer for the worse player, so his settlement has more ticks to grow in
+    // longer for the worse player, so his community has more ticks to grow in
     // and *looks* bigger. Measured that way, bad play came out ahead by a
     // factor of five. What "worse" means inside this epoch is: it takes you
     // longer to get out of it.
@@ -564,7 +564,7 @@ const report = {
       seeds: failedSeeds(thoughtful, (t) => t.thinnestStock < 0.2),
       pass: thoughtful.every((t) => t.thinnestStock >= 0.2),
     },
-    "the settlement stays a village (E14)": {
+    "the community stays a village (E14)": {
       headsAtSedentismMean: round(mean(settled.map((t) => t.headsAtEnd))),
       headsAtSedentismMax: settled.reduce((max, t) => Math.max(max, t.headsAtEnd), 0),
       pass: settled.every((t) => t.headsAtEnd < 1000),

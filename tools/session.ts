@@ -85,7 +85,7 @@ const scope = {
       people: round(d.heads),
       births: round(d.birthFactor),
       survival: round(d.survival),
-      abandoned: d.settlementAbandoned,
+      abandoned: d.communityGivenUp,
       needs: from(
         d.tiers.map((t) => t.tier),
         (id) => round(d.coverage[id] ?? 0),

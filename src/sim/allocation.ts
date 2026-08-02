@@ -383,7 +383,7 @@ export function allocate(input: AllocationInput): AllocationResult {
     return factor > 0 ? base / factor : base;
   };
 
-  // What the settlement means to live on this tick, and it asks for what it
+  // What the community means to live on this tick, and it asks for what it
   // will really use — reckoned against a normal year with a little caution, so
   // that a good year leaves something over and a poor one is felt.
   //
@@ -400,7 +400,7 @@ export function allocate(input: AllocationInput): AllocationResult {
   // gap. Without that distinction a band of thirty sewed eight new garments
   // every tick while wearing ninety-two, and since bast costs two and a half
   // trees to the fibre, the whole forest went into clothes nobody needed and
-  // the settlement then froze.
+  // the community then froze.
   for (const tier of tierList) {
     const need = heads * perHead(tier, plannedShocks);
     if (need <= 1e-9) continue;
@@ -414,7 +414,7 @@ export function allocate(input: AllocationInput): AllocationResult {
   // Putting something by (E19). A stock is held because output is uncertain,
   // which is as true of a delivery that fails as of a harvest that does — no
   // seasons, no seed corn, nothing that only food can have. It needs no guard
-  // beyond its rank: a settlement that cannot feed itself never reaches the
+  // beyond its rank: a community that cannot feed itself never reaches the
   // store's rank at all.
   for (const stockDef of config.stocks) {
     const shelter = stockDef.protectedBy;

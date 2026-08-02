@@ -42,14 +42,14 @@ export interface GameState {
   readonly landTakings: number;
 
   /**
-   * The tick at which the settlement fell below the minimum viable size and was
+   * The tick at which the community fell below the minimum viable size and was
    * given up (E20). Absent while it is still going.
    *
    * This is history, not a comparison: once it has happened it stays true, and
    * `heads < minimum` evaluated afresh could stop being. And it has to live
    * here rather than being derived, because from here it stops the world for
    * everybody at once. Left to each caller to notice, it was noticed by none —
-   * bots, criteria and measuring scripts all went on computing settlements down
+   * bots, criteria and measuring scripts all went on computing communities down
    * to a tenth of a person.
    */
   readonly abandonedAt?: number;
@@ -82,7 +82,7 @@ export interface GameState {
    * keep gathering and the sickle comes, and a bad year costs a few ticks and
    * nothing more. And it orders itself by what the player actually does — fish
    * a great deal and the net arrives first — so the tree grows out of the
-   * settlement's own economy instead of being laid down in advance.
+   * community's own economy instead of being laid down in advance.
    *
    * Arrow, *Learning by Doing* (1962): unit costs fall with cumulative output,
    * not with time. Archaeologically the same — technique follows practice.

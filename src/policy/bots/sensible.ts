@@ -46,7 +46,7 @@ function worth(capacity: string, stock: string, index: ConfigIndex): number {
  * margin says so loudly: an acre of field carries thirteen times the food of an
  * acre of wild. Wood has no alternative; it grows on standing wilderness and
  * nowhere else. Clearing the last of it therefore does not trade one source for
- * a better one, it ends the source — and the settlement then carries a death
+ * a better one, it ends the source — and the community then carries a death
  * penalty it can never lift, and bleeds out over hundreds of ticks.
  */
 function soleSource(capacity: string, stock: string, index: ConfigIndex): boolean {
@@ -74,13 +74,13 @@ const SPENT = 0.25;
  * him. It is the investment decision itself: hands put into a project are hands
  * not gathering, so you can invest when there is something to spare and not
  * when there is not. A band of thirty therefore builds one thing at a time and
- * a settlement of five hundred builds several, without either being written
+ * a community of five hundred builds several, without either being written
  * down anywhere.
  *
  * The contrast with `eager` is deliberate. Starting everything at once is not a
  * more determined version of this but a worse one: the projects compete for the
  * same hands, and building three things while the food fails kills the
- * settlement. That only became true when the projects were given costs that
+ * community. That only became true when the projects were given costs that
  * bite.
  */
 export class SensiblePolicy implements Policy {
@@ -114,7 +114,7 @@ export class SensiblePolicy implements Policy {
       .filter((project) => project.running)
       .map((project) => moves(project.id, index));
     // Every need that is not covered, lowest rank first, with the capacity it
-    // is short of. All of them, not only the lowest: a settlement can be short
+    // is short of. All of them, not only the lowest: a community can be short
     // of food and of wood at once, and they pull the land in opposite ways.
     const wanting = [...derived.tiers]
       .filter((tier) => tier.coverage < 0.999 && tier.binding.kind === "capacity")
@@ -126,7 +126,7 @@ export class SensiblePolicy implements Policy {
 
     // How much of a capacity has to stay standing: everything that rests on it
     // and has nowhere else to come from. Not a rule of thumb — the size follows
-    // from the needs themselves, so it grows with the settlement.
+    // from the needs themselves, so it grows with the community.
     const reserve = (capacity: string): number => {
       let needed = 0;
       for (const outcome of derived.tiers) {
@@ -165,7 +165,7 @@ export class SensiblePolicy implements Policy {
 
     // A range that has been hunted or fished out is not mended by working
     // harder in it — a band that can still move, moves (E29). The cost takes
-    // care of itself: what is in the ground stays there, so a settlement with
+    // care of itself: what is in the ground stays there, so a community with
     // many pits will not do this lightly.
     const spent = Object.values(derived.renewable).some(
       (renewal) => renewal.ceiling > 0 && renewal.held < renewal.ceiling * SPENT,

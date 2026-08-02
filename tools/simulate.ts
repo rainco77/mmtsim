@@ -73,7 +73,7 @@ function run(seed: number): RunResult {
 
   for (let step = 0; step < ticks; step += 1) {
     const derived = derive(state, index);
-    if (derived.settlementAbandoned && abandonedAt === null) abandonedAt = state.tick;
+    if (derived.communityGivenUp && abandonedAt === null) abandonedAt = state.tick;
 
     const key =
       derived.binding.kind === "none"

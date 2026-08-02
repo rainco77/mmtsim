@@ -133,7 +133,7 @@ describe("the year's quality (E24)", () => {
       values.push(derive(state, index).shocks["weather"] ?? 1);
       state = tick(state, index);
       // The draw is what is under test, so the band must not be allowed to die
-      // of it: once a settlement is given up the world stops and the last draw
+      // of it: once a community is given up the world stops and the last draw
       // would be counted a thousand times over. Holding the heads steady keeps
       // the stream running without touching what it produces.
       const alive: Record<string, unknown> = { ...state };
@@ -267,7 +267,7 @@ describe("processes and the fallback level (E5)", () => {
     // The project is set rather than played out: it now waits on practice at
     // gathering (E29), and what is measured here is the ordering.
     // A roomy range, so the land does not bind: what is measured here is that
-    // one technique replaces another, not what a crowded settlement does.
+    // one technique replaces another, not what a crowded community does.
     const before = createState(noRisk, { seed: 7, wilderness: 300, water: 120 });
     const after: GameState = { ...before, completedProjects: { sickle: 1 } };
 
@@ -493,18 +493,18 @@ describe("population (E20)", () => {
     expect(fed.survival * fed.birthFactor).toBeGreaterThan(1);
   });
 
-  it("gives the settlement up below the minimum viable size, and stops (E20)", () => {
+  it("gives the community up below the minimum viable size, and stops (E20)", () => {
     const tiny = createState(STAGE1, { seed: 7, heads: 5 });
     // Nothing has happened yet at creation — being given up is an event in the
     // run, not a comparison, and it is written into the state when it occurs.
-    expect(derive(tiny, index).settlementAbandoned).toBe(false);
+    expect(derive(tiny, index).communityGivenUp).toBe(false);
 
     const over = tick(tiny, index);
-    expect(derive(over, index).settlementAbandoned).toBe(true);
+    expect(derive(over, index).communityGivenUp).toBe(true);
     expect(over.abandonedAt).toBe(0);
 
     // And from there nothing moves at all — not even the clock. A caller that
-    // forgets to stop cannot compute a settlement that no longer exists.
+    // forgets to stop cannot compute a community that no longer exists.
     expect(tick(over, index)).toEqual(over);
     expect(tick(tick(over, index), index).tick).toBe(over.tick);
   });

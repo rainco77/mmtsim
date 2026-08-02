@@ -7,7 +7,7 @@ import type { Policy } from "../policy.ts";
  * The yardstick for "acting is not enough — acting *well* is" (T4). It has
  * exactly the same options as the thoughtful player and differs in judgement:
  *
- * - **It builds at the worst moment.** It waits until the settlement is already
+ * - **It builds at the worst moment.** It waits until the community is already
  *   short of its most basic need and starts something then, rather than out of
  *   a surplus. Investment is what you can afford, and this is what it looks
  *   like not to understand that.
