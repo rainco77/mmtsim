@@ -1999,6 +1999,38 @@ gibt, ist dieselbe wie beim bedachten Spieler, damit sie als Erklärung ausschei
 
 Gemessen: 993 gegen 139 Menschen, Faktor 7. Sterben muss dabei niemand.
 
+**Wie an diesem Modell gerechnet wird.** Fast alles, was in diesem Modell wie eine
+Geschmacksfrage aussieht, ist ausrechenbar — und wurde lange statt dessen durch Drehen
+gesucht. Sieben Handgriffe, jeder in dieser Sitzung mindestens einmal entscheidend:
+
+1. **Erst die Formel hinschreiben, dann drehen.** Jede Zahl steht in einer Beziehung zu
+   anderen. Wer sie aufschreibt, sieht sofort, ob die Zahl überhaupt das kann, was von
+   ihr erwartet wird. *So kam heraus, dass eine größere Decke den entnommenen Anteil im
+   Gleichgewicht überhaupt nicht ändert — er folgt der Nachwuchsrate, nicht der Decke.*
+2. **Fragen, was sich herauskürzt.** Kürzt sich die Kopfzahl, ist die Größe der
+   Gemeinschaft nicht die Ursache. *So stellte sich heraus, dass der Startanteil allein
+   am Ertrag des Reviers je Kopf hängt — nicht daran, wie viele Menschen es sind.*
+3. **Stand, Fluss und Anteil auseinanderhalten.** Ein Füllstand kann Druck grundsätzlich
+   nicht ausdrücken; er wird nach dem Nachwachsen gemessen. *Deshalb meldete das Revier
+   über acht Seeds nie weniger als 86 %, während zwei Drittel davon jeden Tick genommen
+   wurden — und die eine Antwort darauf war nie verfügbar.*
+4. **Gleichgewichte über „Zufluss = Abfluss" suchen, und prüfen, welche Wurzel stabil
+   ist.** *So ergab sich, wo der Bestand sich einpendelt und dass jenseits des Maximums
+   der Nachwuchskurve kein Gleichgewicht mehr existiert, sondern ein Absturz.*
+5. **Nachrechnen, was ein Grenzwert im Extremfall bedeutet.** *So fiel auf, dass eine
+   Bedarfsstufe, die ihre volle Menge jeden Tick verlangt, statt nur den Abrieb, bei
+   dreißig Menschen zweiundneunzig Kleidungsstücke anhäuft — und dass Bast dafür den
+   ganzen Wald kostet.*
+6. **Eine Schwelle in eine Häufigkeit übersetzen.** Eine Grenze allein sagt nichts; erst
+   mit der Verteilung wird daraus eine Aussage. *„Ab Wurf 0,70 sterben Menschen" heißt
+   jeder zehnte Tick, „ab 0,46" jeder sechsundfünfzigste.*
+7. **Vor dem Glauben prüfen, ob das Maß noch sehen kann, was es misst.** Ein Kriterium,
+   das nicht mehr scheitern kann, ist schlimmer als keines. *Vier Boserup-Maße standen
+   auf null, weil sie fragten, wer Fläche **bezahlt** — und niemand bezahlt mehr Fläche.*
+
+Und der Gegenprobe halber: Gerechnet wird, um zu wissen, **wo** man hinsehen muss.
+Entschieden wird danach am einzelnen Tick (E30 — Durchspielen als Prüfung).
+
 **Vor dem Drehen wird gerechnet.** Die Zahlen dieser Epoche hängen über wenige
 Beziehungen zusammen, und wer sie kennt, muss nicht probieren. Sie sind hier
 aufgeschrieben, damit niemand sie noch einmal durch Herumdrehen finden muss.

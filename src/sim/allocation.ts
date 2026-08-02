@@ -412,6 +412,10 @@ export function allocate(input: AllocationInput): AllocationResult {
   // or put into it: the opening balance the closing one is read against.
   const storeBefore: Record<StockId, number> = { ...(sector?.stocks ?? {}) };
 
+  // Where every renewable stock stands before anything is taken — needed by
+  // the ordering as well as by the plan, so it is worked out before both.
+  const standing = renewals(state, index);
+
   const pools: Pools = {
     amount: poolCapacities(state, sectorId, config),
     stock: { ...(sector?.stocks ?? {}) },
@@ -437,6 +441,25 @@ export function allocate(input: AllocationInput): AllocationResult {
       available: forBranch,
       buffer,
       quality: (capacity: string) => pools.amount[capacity]?.quality ?? 1,
+      // What searching **last** cost, out of the one figure the state carries.
+      //
+      // It has to be last tick's and cannot be this one's: the ordering runs
+      // before there is a plan, and at the margin — before anything is taken —
+      // every price is one. Measured with the margin, the bow still carried the
+      // whole of the food the moment it was finished, because a herd nobody has
+      // hunted yet reads 1.02 however much is about to be taken from it.
+      //
+      // A tick of lag is also how a community really learns that its country is
+      // thin: by having hunted it. The herd takes one hard tick and the
+      // ordering moves off it afterwards.
+      effort: (process: ProcessDef) => {
+        let worst = effortFactor(process, index, standing, {});
+        for (const id of Object.keys(process.intermediatesPerOutput)) {
+          if (index.stock.get(id)?.regrowth === undefined) continue;
+          worst = Math.max(worst, state.lastEffort[id] ?? 1);
+        }
+        return worst;
+      },
     };
     const resolved = ORDERING_RESOLVER.resolve(branch, orderCtx);
     ordering.set(branch.id, resolved.processes);
@@ -477,7 +500,6 @@ export function allocate(input: AllocationInput): AllocationResult {
     }
   }
 
-  const standing = renewals(state, index);
   const consumed: Record<StockId, number> = {};
   const tierList = index.tiersByRank.filter((tier) => input.unlockedBranches.has(tier.branch));
 

@@ -40,6 +40,19 @@ export interface OrderingContext {
   readonly buffer: number;
   /** Land quality of one capacity — poor ground means more of it (E13). */
   quality(capacity: string): number;
+  /**
+   * What searching costs this process, because what it takes has grown thin
+   * (E29) — one on fresh country, higher the harder its quarry is to find.
+   *
+   * Without it the comparison read coefficients off the content and never
+   * noticed the country. Measured: the moment the bow was finished, the whole
+   * of the food went over to hunting because it asks 0.27 of labour against
+   * gathering's 0.28 — and the herd, which grows back at a tenth of the rate
+   * the greens do, fell from 44 to 4 in two ticks and the community starved. By
+   * then a hunted meal really cost 1.92 of labour against 0.29 gathered, six
+   * times as much; the ordering just could not see it.
+   */
+  effort(process: ProcessDef): number;
 }
 
 /** The order stated in the content. Fallback only (E5). */
@@ -99,15 +112,21 @@ export class DominanceOrdering implements ProcessOrdering {
 
     const costs = ctx.available.map((process) => {
       const risk = 1 / Math.max(1e-12, 1 - riskWeight * exposureMagnitude(process));
+      // A fish is still a fish (E29): searching falls on the labour and the
+      // ground, never on how much of the quarry a unit of output needs.
+      const effort = ctx.effort(process);
       return order.map((key) => {
         if (key.startsWith("a:")) {
           const type = key.slice(2);
           const base = process.capacityPerOutput[type] ?? 0;
           if (base === 0) return 0;
           const factor = 1 - process.qualityWeight + process.qualityWeight * ctx.quality(type);
-          return (base * risk) / Math.max(1e-12, factor);
+          return (base * risk * effort) / Math.max(1e-12, factor);
         }
-        return (process.intermediatesPerOutput[key.slice(2)] ?? 0) * risk;
+        const id = key.slice(2);
+        const per = process.intermediatesPerOutput[id] ?? 0;
+        const quarry = ctx.index.stock.get(id)?.regrowth !== undefined;
+        return per * risk * (quarry ? 1 : effort);
       });
     });
 
