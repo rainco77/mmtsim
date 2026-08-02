@@ -205,18 +205,38 @@ function plannedYear(config: Config): Shocks {
 /**
  * How much dearer a process is because what it takes has grown thin (E29).
  *
- * `catch = q · effort · stock` — the standard bioeconomic form — so effort per
- * unit caught runs inverse to what is left, and the same statement optimal
- * foraging makes as a falling encounter rate. It is what really saves a stock:
- * taking grows dear long before the last one is gone.
+ * `catch = q · effort · stock` — the standard bioeconomic form, and the same
+ * thing optimal foraging says as a falling encounter rate. Effort per unit runs
+ * inverse to what is standing, so it is the cost of *searching* that rises. A
+ * fish is still a fish: this never touches how much of the quarry a unit of
+ * output needs, only the labour and the ground spent finding it.
  *
- * A fish is still a fish, so this never touches how much of the quarry a unit
- * of output needs. It falls on the labour and the ground — the searching.
+ * The form matters, and getting it wrong cost the epoch its whole middle. Read
+ * off the stand as it is found — before anything is taken — the figure is the
+ * cost of the *first* unit, and taking four fifths of a range then costs no
+ * more per unit than taking a twentieth. Played, it sat at exactly 1.0 from
+ * tick 0 to tick 45 while the taking rose from 31 to 75: nothing ever grew
+ * dear, a third of all labour lay idle, no project could pay for itself, and
+ * the community grew until the taking reached the whole ceiling — whereupon the
+ * stand fell from 89 to 12 in three ticks and everyone died at once. Pressure
+ * arrived as a cliff because the price never rose on the way to it.
+ *
+ * What Gordon and Schaefer mean is the stock *during* the taking: whoever
+ * gathers half a range finds the second half harder than the first. Over a
+ * taking of `T` out of a stand of `S`, that is the average of `K / S` as the
+ * stand runs down —
+ *
+ *     effort = (K / T) · ln( S / (S − T) )
+ *
+ * — which is the old figure again as `T` goes to nothing, and climbs without
+ * bound as the taking approaches the whole stand. The cap keeps a spent range
+ * from being infinitely dear, so there is always a way back (E20).
  */
 function effortFactor(
   process: ProcessDef,
   index: ConfigIndex,
   standing: Readonly<Record<StockId, Renewal>>,
+  taking: Readonly<Record<StockId, number>>,
 ): number {
   let worst = 1;
   for (const id of Object.keys(process.intermediatesPerOutput)) {
@@ -224,10 +244,42 @@ function effortFactor(
     if (rule === undefined) continue;
     const renewal = standing[id];
     if (renewal === undefined || renewal.ceiling <= 0) continue;
-    const share = Math.max(1e-6, renewal.held / renewal.ceiling);
-    worst = Math.max(worst, Math.min(rule.maxEffort, 1 / share));
+    const held = Math.max(1e-9, renewal.held);
+    // Never quite all of it: the last unit is unfindable, which is what the cap
+    // stands for.
+    const take = Math.min(Math.max(0, taking[id] ?? 0), held * 0.999);
+    const factor =
+      take > 1e-9
+        ? (renewal.ceiling / take) * Math.log(held / (held - take))
+        : renewal.ceiling / held;
+    worst = Math.max(worst, Math.min(rule.maxEffort, factor));
   }
   return worst;
+}
+
+/**
+ * What a plan means to take out of each stock that grows back.
+ *
+ * Needed because the price of searching depends on how much is searched for,
+ * and how much is searched for depends on the price. One pass settles it well
+ * enough: the quarry itself is never scaled by effort (only the finding is), so
+ * what a plan takes barely moves between the two — it shifts only where labour
+ * is the thing that binds.
+ */
+function takingOf(
+  levels: ReadonlyMap<ProcessId, number>,
+  index: ConfigIndex,
+): Record<StockId, number> {
+  const out: Record<StockId, number> = {};
+  for (const [id, level] of levels) {
+    const process = index.process.get(id);
+    if (process === undefined) continue;
+    for (const [stockId, per] of Object.entries(process.intermediatesPerOutput)) {
+      if (per <= 0 || index.stock.get(stockId)?.regrowth === undefined) continue;
+      out[stockId] = (out[stockId] ?? 0) + level * per;
+    }
+  }
+  return out;
 }
 
 /**
@@ -491,7 +543,8 @@ export function allocate(input: AllocationInput): AllocationResult {
     // year — measured, use of the wilderness fell from 100 % to 67 % at a draw
     // of 0.66.
     shockFor: (process: ProcessDef) => shockFactor(process, plannedShocks),
-    effortFor: (process: ProcessDef) => effortFactor(process, index, standing),
+    // Filled in below, once there is a draft to read the taking off.
+    effortFor: (process: ProcessDef) => effortFactor(process, index, standing, {}),
     order: (stock, processes) => {
       const branch = config.branches.find((b) => b.produces === stock);
       const wanted = branch === undefined ? undefined : ordering.get(branch.id);
@@ -504,7 +557,16 @@ export function allocate(input: AllocationInput): AllocationResult {
     },
   };
 
-  const plan = makePlan(demands, planCtx);
+  // Two passes, because searching costs more the more of a stand is searched
+  // for, and how much is searched for is what a plan decides. The first pass
+  // prices at the margin — the cost of the first unit — and its only purpose is
+  // to say how much this tick means to take; the second charges what taking
+  // that much really costs.
+  const draft = makePlan(demands, planCtx);
+  const taking = takingOf(draft.levels, index);
+  const effortFor = (process: ProcessDef): number =>
+    effortFactor(process, index, standing, taking);
+  const plan = makePlan(demands, { ...planCtx, effortFor });
 
   // Carry the plan out: consume inputs, book output.
   const produced: Record<StockId, number> = {};
@@ -531,7 +593,7 @@ export function allocate(input: AllocationInput): AllocationResult {
     const planned = margin > 0 ? target / margin : target;
     // Cut back to what the inputs actually there allow — the plan was made
     // before the year was known, and the step above it may have fallen short.
-    const effort = effortFactor(process, index, standing);
+    const effort = effortFor(process);
     const level = planned * feasiblePace(process, planned, pools, effort, index);
     // Labour the plan had earmarked for this process and that it did not take,
     // because the process could not run at the planned level. It is idle, not

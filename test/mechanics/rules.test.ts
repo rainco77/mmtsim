@@ -213,7 +213,12 @@ describe("projects (E18)", () => {
       },
       index,
     ).state;
-    state = tick(state, index);
+    // Long enough to have moved: a project claims behind every need now, so it
+    // only advances out of what a tick has to spare, and the first tick of all
+    // need not have any.
+    for (let i = 0; i < 10 && (state.activeProjects[0]?.progress ?? 0) <= 0; i += 1) {
+      state = tick(state, index);
+    }
     const progress = state.activeProjects[0]?.progress ?? 0;
     expect(progress).toBeGreaterThan(0);
 
@@ -684,7 +689,10 @@ describe("supply chains (E4)", () => {
         households: {
           ...state.sectors["households"]!,
           heads: 200,
-          stocks: { food: 400 },
+          // Everything else the country carries is there in plenty, so the one
+          // thing that can be short is the wood — otherwise two exhausted
+          // stocks compete for the report and the answer says nothing.
+          stocks: { food: 4000, plants: 4000, game: 4000, fish: 4000, shellfish: 4000, trees: 0 },
           capacityHeld: { cleared: { amount: 400, quality: 1 } },
         },
       },
