@@ -8,7 +8,7 @@ import type { Policy } from "../policy.ts";
  * Read off the one figure the allocation writes, never worked out here. How
  * full a stand looks says nothing — it is read after the growing back.
  */
-const SPENT = 1.5;
+const SPENT = 1.35;
 
 /**
  * Builds nothing, ever — and moves on when the country is spent.

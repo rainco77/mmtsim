@@ -93,7 +93,7 @@ const BOUGHT_WITH_COMFORT = 450;
  * allocation writes — a fill level cannot say it, being read after the growing
  * back.
  */
-const SPENT = 2;
+const SPENT = 1.5;
 
 /**
  * Builds out of surplus: starts something while the people are well fed, and

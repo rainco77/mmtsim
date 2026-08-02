@@ -114,16 +114,32 @@ export const STAGE1: Config = {
       // twentieth. Cutting the density to 3.5 against that broken price only
       // starved the community at tick 0.
       //
-      // With the price charged as the stand runs down, this same figure gives
-      // what the epoch wants: the stand settles near half its ceiling, so a
-      // taking is felt long before it is fatal, and the mortar — 0.75 of this
-      // per meal instead of 1.0 — is what moves the wall.
+      // With the price charged as the stand runs down, the figure that decides
+      // everything is what the range yields per head: `need ÷ (ground per head
+      // × density)` is the share taken at the start, and the head count cancels
+      // out of it. At 6.0 that share was a half, so twenty-five people already
+      // paid 1.38 for their food on wholly untouched country and the room to
+      // grow ran out at about thirty-three — seventy-seven per cent of what the
+      // range carried, with almost no space in which the epoch's story could
+      // happen at all. At 8.0 they start at three eighths and 1.25, and the
+      // room reaches to about forty-four.
+      //
+      // It is also nearer what is claimed of foragers: they sat at a fifth to
+      // two fifths of what their land could have carried (Kelly), not at three
+      // quarters of it.
+      //
+      // The upper end is not set here and cannot be: it is wherever food comes
+      // to need every hand. Every labour-saving technique lifts it — with the
+      // sickle the same reckoning gives about 2.5 instead of 1.61 — so the span
+      // widens of itself as the player builds, which is the reward for
+      // building. And the mortar, which needs less country per meal rather than
+      // fewer hands, lowers the price outright.
       id: "plants",
       decayPerTick: 0,
       regrowth: {
         ratePerTick: 4.0,
         capacity: "wilderness",
-        densityPerArea: 6.0,
+        densityPerArea: 8.0,
         refuge: 3,
         maxEffort: 30,
       },
@@ -760,9 +776,11 @@ export const STAGE1: Config = {
       // before it settles by decision (Testart).
       id: "range_change",
       // It appears when the country begins to fail, and that appearance is
-      // itself the warning. What "failing" means is the **price of searching**:
-      // half again as much walking for the same meal is the notice, twice as
-      // much is the point at which moving is the answer. Before that, moving
+      // itself the warning. What "failing" means is the **price of searching**,
+      // and the two figures sit inside the span that was measured: fresh
+      // country costs 1.25, and the room to grow runs out around 1.61. A third
+      // more walking for the same meal is the notice, half as much again is the
+      // point at which moving is the answer. Before that, moving
       // would be a cheap reset rather than a decision.
       //
       // It used to read a fill level — a stock below a half, then below a third
@@ -779,11 +797,11 @@ export const STAGE1: Config = {
       // the move further off — which is what intensification is supposed to do.
       visibleWhen: [
         { kind: "rule", id: "settled", set: false },
-        { kind: "stockDear", factor: 1.5 },
+        { kind: "stockDear", factor: 1.35 },
       ],
       availableWhen: [
         { kind: "rule", id: "settled", set: false },
-        { kind: "stockDear", factor: 2.0 },
+        { kind: "stockDear", factor: 1.5 },
       ],
       defaultRank: PROJECTS_LAST,
       laborCost: 60,
