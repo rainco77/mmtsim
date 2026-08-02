@@ -1,6 +1,12 @@
 import type { Config, Effect, LevelSource, QualitySource } from "./config.ts";
-import type { CapacityId, SectorId } from "./ids.ts";
-import { capacityOf, carryingArea, type Capacity, type GameState } from "./state.ts";
+import type { CapacityId, SectorId, StockId } from "./ids.ts";
+import {
+  capacityOf,
+  carryingArea,
+  type Capacity,
+  type GameState,
+  type SectorState,
+} from "./state.ts";
 
 /**
  * Effect handlers as a registry (T2). A new effect type is a new class plus one
@@ -17,6 +23,37 @@ export interface EffectHandler<T extends Effect = Effect> {
 type CapacityEffect = Extract<Effect, { type: "capacity" }>;
 
 /** Capacity moves between types and holders; amounts may be negative (E12, E13). */
+/**
+ * Land added or taken away brings what lives on it along, at the density it
+ * already lies at — so opening country never makes its stock look scarcer than
+ * it was, and giving country up never makes what is left look richer.
+ */
+function stocked(
+  state: GameState,
+  config: Config,
+  capacity: CapacityId,
+  added: number,
+  before: GameState,
+): GameState {
+  if (added === 0) return state;
+  let area = capacityOf(before.unownedCapacity, capacity).amount;
+  for (const holder of Object.values(before.sectors)) {
+    area += capacityOf(holder.capacityHeld, capacity).amount;
+  }
+  if (area <= 0) return state;
+  const factor = Math.max(0, (area + added) / area);
+  const grown = config.stocks.filter((stock) => stock.regrowth?.capacity === capacity);
+  if (grown.length === 0) return state;
+
+  const sectors: Record<SectorId, SectorState> = {};
+  for (const [id, holder] of Object.entries(state.sectors)) {
+    const stocks: Record<StockId, number> = { ...holder.stocks };
+    for (const stock of grown) stocks[stock.id] = (stocks[stock.id] ?? 0) * factor;
+    sectors[id] = { ...holder, stocks };
+  }
+  return { ...state, sectors };
+}
+
 class CapacityEffectHandler implements EffectHandler<CapacityEffect> {
   readonly type = "capacity" as const;
 
@@ -27,7 +64,14 @@ class CapacityEffectHandler implements EffectHandler<CapacityEffect> {
     sector: SectorId,
   ): GameState {
     const { quality, advanceTaking } = resolveQuality(state, config, effect);
-    const next = advanceTaking ? { ...state, landTakings: state.landTakings + 1 } : state;
+    const withTaking = advanceTaking ? { ...state, landTakings: state.landTakings + 1 } : state;
+    // New country comes with what lives on it (E29). Opening water without its
+    // fish left the same fish spread over four times the water, so the boat —
+    // which is supposed to open the water — made fishing dearer instead:
+    // measured, the price went from 1.20 to 6.64 the tick it was finished,
+    // without one fish fewer being there. Everything that grows on a stretch of
+    // country therefore grows with it, so that how thick it lies is unchanged.
+    const next = stocked(withTaking, config, effect.capacity, effect.amount, state);
 
     if (effect.sector === undefined) {
       const current = capacityOf(next.unownedCapacity, effect.capacity);
