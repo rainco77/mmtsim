@@ -724,6 +724,20 @@ export const STAGE1: Config = {
 
   // ---------------------------------------------------------------- projects
   //
+  // **What a project may cost is reckoned, not guessed.** A community of
+  // twenty-five performs about twenty-five of labour and spends some twenty of
+  // it on being fed, warm and clothed, so what it has to spare is four or five
+  // a tick. A project's claim is `laborCost ÷ minTicks`, and that is what it
+  // takes every tick it runs — so the ordinary techniques are set at **four** a
+  // tick and the two great commitments, the boat and settling itself, at six.
+  //
+  // They used to ask ten, which is nearly half of everything a community of
+  // twenty-five can do, held for twelve ticks. Played with a bot doing
+  // everything else right — one site at a time, claiming behind every need —
+  // the community still fell from twenty-five to sixteen while it built a
+  // single bow. The costs were reckoned for a far larger community than the one
+  // the epoch begins with.
+  //
   // Twelve for the epoch, on five axes, and no two of them doing the same
   // thing (E29, step 3). Almost none of them gates another: what gates them is
   // the economy. At the first tick all the wood goes into warmth, which ranks
@@ -743,7 +757,7 @@ export const STAGE1: Config = {
       visibleWhen: [{ kind: "experience", activities: ["gathering"], min: 200 }],
       availableWhen: [{ kind: "experience", activities: ["gathering"], min: 400 }],
       defaultRank: PROJECTS_LAST,
-      laborCost: 40,
+      laborCost: 32,
       stockCost: {},
       minTicks: 8,
       limit: 1,
@@ -756,7 +770,7 @@ export const STAGE1: Config = {
       visibleWhen: [{ kind: "experience", activities: ["firemaking"], min: 5 }],
       availableWhen: [{ kind: "experience", activities: ["firemaking"], min: 10 }],
       defaultRank: PROJECTS_LAST,
-      laborCost: 40,
+      laborCost: 32,
       stockCost: {},
       minTicks: 8,
       limit: 1,
@@ -804,7 +818,7 @@ export const STAGE1: Config = {
         { kind: "stockDear", factor: 1.5 },
       ],
       defaultRank: PROJECTS_LAST,
-      laborCost: 60,
+      laborCost: 24,
       stockCost: {},
       minTicks: 6,
       effects: [
@@ -840,7 +854,7 @@ export const STAGE1: Config = {
       visibleWhen: [{ kind: "experience", activities: ["gathering"], min: 50 }],
       availableWhen: [{ kind: "experience", activities: ["gathering"], min: 100 }],
       defaultRank: PROJECTS_LAST,
-      laborCost: 120,
+      laborCost: 48,
       stockCost: { wood: 20 },
       minTicks: 12,
       limit: 1,
@@ -854,7 +868,7 @@ export const STAGE1: Config = {
       visibleWhen: [{ kind: "experience", activities: ["woodcutting"], min: 15 }],
       availableWhen: [{ kind: "experience", activities: ["woodcutting"], min: 30 }],
       defaultRank: PROJECTS_LAST,
-      laborCost: 120,
+      laborCost: 48,
       stockCost: { wood: 20 },
       minTicks: 12,
       limit: 1,
@@ -882,7 +896,7 @@ export const STAGE1: Config = {
         { kind: "experience", activities: ["gathering", "hunting", "fishing"], min: 3000 },
       ],
       defaultRank: PROJECTS_LAST,
-      laborCost: 60,
+      laborCost: 24,
       stockCost: { wood: 10 },
       minTicks: 6,
       effects: [
@@ -906,7 +920,7 @@ export const STAGE1: Config = {
       visibleWhen: [{ kind: "experience", activities: ["fishing"], min: 25 }],
       availableWhen: [{ kind: "experience", activities: ["fishing"], min: 50 }],
       defaultRank: PROJECTS_LAST,
-      laborCost: 120,
+      laborCost: 48,
       stockCost: { fibre: 30 },
       minTicks: 12,
       limit: 1,
@@ -927,7 +941,7 @@ export const STAGE1: Config = {
       visibleWhen: [{ kind: "experience", activities: ["clothmaking"], min: 15 }],
       availableWhen: [{ kind: "experience", activities: ["clothmaking"], min: 30 }],
       defaultRank: PROJECTS_LAST,
-      laborCost: 120,
+      laborCost: 48,
       stockCost: { fibre: 20 },
       minTicks: 12,
       limit: 1,
@@ -944,7 +958,7 @@ export const STAGE1: Config = {
       visibleWhen: [{ kind: "experience", activities: ["hunting"], min: 3 }],
       availableWhen: [{ kind: "experience", activities: ["hunting"], min: 5 }],
       defaultRank: PROJECTS_LAST,
-      laborCost: 120,
+      laborCost: 48,
       stockCost: { wood: 20, fibre: 20 },
       minTicks: 12,
       limit: 1,
@@ -961,7 +975,7 @@ export const STAGE1: Config = {
       visibleWhen: [{ kind: "experience", activities: ["clothmaking"], min: 8 }],
       availableWhen: [{ kind: "experience", activities: ["clothmaking"], min: 15 }],
       defaultRank: PROJECTS_LAST,
-      laborCost: 120,
+      laborCost: 48,
       stockCost: { fibre: 20 },
       minTicks: 12,
       limit: 1,
@@ -973,7 +987,7 @@ export const STAGE1: Config = {
       visibleWhen: [{ kind: "experience", activities: ["clothmaking"], min: 8 }],
       availableWhen: [{ kind: "experience", activities: ["clothmaking"], min: 15 }],
       defaultRank: PROJECTS_LAST,
-      laborCost: 120,
+      laborCost: 48,
       stockCost: { hides: 20 },
       minTicks: 12,
       limit: 1,
@@ -996,7 +1010,7 @@ export const STAGE1: Config = {
       visibleWhen: [{ kind: "projectDone", id: "stone_axe", min: 1 }],
       availableWhen: [{ kind: "projectDone", id: "stone_axe", min: 1 }],
       defaultRank: PROJECTS_LAST,
-      laborCost: 300,
+      laborCost: 120,
       stockCost: { wood: 60 },
       minTicks: 20,
       limit: 1,
@@ -1019,7 +1033,7 @@ export const STAGE1: Config = {
       // moves with the weather: bad luck may delay a transition, never block it.
       availableWhen: [{ kind: "capacityPerHead", capacity: "storage", min: 2 }],
       defaultRank: PROJECTS_LAST,
-      laborCost: 300,
+      laborCost: 120,
       stockCost: { wood: 40 },
       minTicks: 20,
       limit: 1,
@@ -1063,7 +1077,7 @@ export const STAGE1: Config = {
       availableWhen: [{ kind: "rule", id: "settled", set: true }],
       limit: 6,
       defaultRank: PROJECTS_LAST,
-      laborCost: 120,
+      laborCost: 48,
       stockCost: {},
       minTicks: 12,
       effects: [
