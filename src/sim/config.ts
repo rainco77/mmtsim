@@ -41,6 +41,23 @@ export interface StockDef {
   readonly protectedBy?: {
     readonly capacity: CapacityId;
     readonly decayPerTick: number;
+    /**
+     * Where putting something by stands in the ranking (E9).
+     *
+     * Behind every need is where it used to stand, and a settlement at the
+     * carrying capacity of its range then never saves anything at all: what is
+     * left over after everyone has eaten their fill is nothing, and where there
+     * *is* something left it turns into people rather than into stores, because
+     * satiety drives births. Seven pits over a hundred and sixty ticks held
+     * nothing.
+     *
+     * Put ahead of comfort instead, laying something by costs what it really
+     * costs — **eating less well now**, and fewer children for it. That is the
+     * bargain storing actually is, and it makes the store a decision with a
+     * price rather than a remainder. It belongs to the good and not to the
+     * engine: another epoch may want its stores kept differently.
+     */
+    readonly rank: number;
     /** A rule may improve the sheltered rate, as it may the ordinary one. */
     readonly decayWhenRule?: readonly {
       readonly rule: RuleId;

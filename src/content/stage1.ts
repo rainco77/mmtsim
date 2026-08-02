@@ -43,6 +43,9 @@ export const STAGE1: Config = {
       // buys: maintenance and a guard.
       protectedBy: {
         capacity: "storage",
+        // Between warmth, which kills, and satiety, which does not: one puts by
+        // before one eats one's fill, and never before one eats at all.
+        rank: 250,
         decayPerTick: 0.4,
         decayWhenRule: [{ rule: "settled", decayPerTick: 0.12 }],
       },

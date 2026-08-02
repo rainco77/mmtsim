@@ -19,8 +19,7 @@ import {
 const LABOR_STOCK: StockId = "labor";
 
 
-/** After every need: a store is filled from what is left over, never before. */
-const STORE_RANK = Number.MAX_SAFE_INTEGER;
+
 
 import {
   makePlan,
@@ -426,7 +425,20 @@ export function allocate(input: AllocationInput): AllocationResult {
     if (gap <= 1e-9) continue;
 
     const wants = tierList.filter((tier) => tier.stock === stockDef.id);
-    const wentShort = wants.some((tier) => (state.lastCoverage[tier.id] ?? 1) < 0.999);
+    // Only the needs that *kill* when they are short have to have been met —
+    // and which those are is read off the content, not named here: a tier that
+    // moves the death rate is one, a tier that moves births or the ability to
+    // work is not.
+    //
+    // Keying it on every need of the good was measured to switch saving off
+    // altogether. Satiety is a need of food and a settlement at the carrying
+    // capacity of its range sits permanently at half to four fifths of it — so
+    // the rule meant to stop a hungry band laying in stores stopped every band
+    // from ever laying in any. Seven pits were dug over a hundred and sixty
+    // ticks and not one of them ever held anything.
+    const vital = wants.filter((tier) => tier.deathRate !== undefined);
+    const guard = vital.length > 0 ? vital : wants;
+    const wentShort = guard.some((tier) => (state.lastCoverage[tier.id] ?? 1) < 0.999);
     if (wentShort) continue;
     let used = 0;
     for (const tier of wants) {
@@ -438,7 +450,7 @@ export function allocate(input: AllocationInput): AllocationResult {
     demands.push({
       tier: {
         id: `store:${stockDef.id}`,
-        rank: STORE_RANK,
+        rank: shelter.rank,
         stock: stockDef.id,
         branch: config.branches.find((b) => b.produces === stockDef.id)?.id ?? "",
         perHead: 0,
