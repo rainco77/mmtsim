@@ -204,9 +204,21 @@ export interface ProcessDef {
 // ---------------------------------------------------------------- needs
 
 /**
- * How strongly a need tier moves a quantity. Interpolated linearly between no
- * coverage and full coverage — the non-linearity that famine mortality needs
- * already sits in the ranking itself (E20).
+ * How strongly a need tier moves a quantity — as a **factor**, interpolated
+ * linearly between no coverage and full coverage.
+ *
+ * Everything in the model is a product, and there is no addition anywhere: a
+ * survival of 0.10 means a tenth of the band lives through the tick, and a
+ * productivity of 1.2 means a fifth more is got done. That is not merely
+ * tidier, it is the exact composition — independent causes of death combine
+ * multiplicatively in *survival*, and adding their mortalities is a
+ * approximation that only happens to be close while the rates are small. It
+ * also cannot produce a negative population or a negative day's work, which
+ * adding could and once did.
+ *
+ * The non-linearity that a threshold needs does not live here but in the
+ * ranking: a need that is deadly only when it fails altogether is split into a
+ * small vital rank and a comfort rank above it, as food and warmth both are.
  */
 export interface TierEffect {
   readonly atZero: number;
@@ -249,8 +261,10 @@ export interface NeedTierDef {
    */
   readonly consumedOnUse: number;
 
+  /** Factor on the birth rate; 1 is no effect. */
   readonly birthRate?: TierEffect;
-  readonly deathRate?: TierEffect;
+  /** Factor on survival; 1 means nobody dies of this, 0.1 means nine in ten do. */
+  readonly survival?: TierEffect;
   readonly productivity?: TierEffect;
   readonly workAbility?: TierEffect;
 }
@@ -436,11 +450,12 @@ export interface ProjectDef {
 
 export interface PopulationConfig {
   /**
-   * Base rates per tick. Equal by construction: with rank 100 fully covered and
-   * nothing above it, births equal deaths and the population stands (E20).
+   * The two factors a tick applies to the heads before any need is considered.
+   * Reciprocal by construction, so that a band whose needs are all met neither
+   * grows nor shrinks: it grows when it is *better* off than it needs to be.
    */
-  readonly baseBirthRate: number;
-  readonly baseDeathRate: number;
+  readonly baseBirthFactor: number;
+  readonly baseSurvival: number;
 
   /**
    * Below this the settlement is given up and the run ends (E20). Not a
@@ -585,8 +600,8 @@ export function indexConfig(config: Config): ConfigIndex {
   };
 }
 
-/** Linear interpolation of a tier effect by coverage (E20). */
+/** Linear interpolation of a tier factor by coverage; absent means 1 (E20). */
 export function tierEffectAt(effect: TierEffect | undefined, coverage: number): number {
-  if (effect === undefined) return 0;
+  if (effect === undefined) return 1;
   return effect.atZero + (effect.atFull - effect.atZero) * coverage;
 }

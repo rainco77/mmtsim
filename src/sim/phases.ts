@@ -390,17 +390,17 @@ export class PopulationPhase implements Phase {
     const allocation = ctx.allocation;
     if (sector === undefined || allocation === undefined) return state;
 
-    let birthRate = index.config.population.baseBirthRate;
-    let deathRate = index.config.population.baseDeathRate;
+    let births = index.config.population.baseBirthFactor;
+    let survival = index.config.population.baseSurvival;
 
     for (const outcome of allocation.tiers) {
       const tier = index.tier.get(outcome.tier);
       if (tier === undefined) continue;
-      birthRate += tierEffectAt(tier.birthRate, outcome.coverage);
-      deathRate += tierEffectAt(tier.deathRate, outcome.coverage);
+      births *= tierEffectAt(tier.birthRate, outcome.coverage);
+      survival *= tierEffectAt(tier.survival, outcome.coverage);
     }
 
-    const heads = Math.max(0, sector.heads * (1 + birthRate - deathRate));
+    const heads = Math.max(0, sector.heads * survival * births);
     const next: GameState = {
       ...state,
       sectors: { ...state.sectors, [HOUSEHOLDS]: { ...sector, heads } },
@@ -440,8 +440,8 @@ export class CarryPhase implements Phase {
     for (const outcome of allocation.tiers) {
       const tier = index.tier.get(outcome.tier);
       if (tier === undefined) continue;
-      productivity += tierEffectAt(tier.productivity, outcome.coverage);
-      workAbility += tierEffectAt(tier.workAbility, outcome.coverage);
+      productivity *= tierEffectAt(tier.productivity, outcome.coverage);
+      workAbility *= tierEffectAt(tier.workAbility, outcome.coverage);
     }
 
     const rate = index.config.carried.adjustmentPerTick;

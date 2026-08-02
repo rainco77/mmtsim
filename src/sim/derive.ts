@@ -77,8 +77,9 @@ export interface Derived {
   readonly runs: AllocationResult["runs"];
   readonly produced: Readonly<Record<StockId, number>>;
 
-  readonly birthRate: number;
-  readonly deathRate: number;
+  /** Factor on the heads this tick; 1 means the band stands (E20). */
+  readonly birthFactor: number;
+  readonly survival: number;
   /** The settlement was given up and the run is over (E20). */
   readonly settlementAbandoned: boolean;
   /** The tick it happened at; absent while it is still going. */
@@ -166,13 +167,13 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
   const coverage: Record<string, number> = {};
   for (const outcome of allocation.tiers) coverage[outcome.tier] = outcome.coverage;
 
-  let birthRate = index.config.population.baseBirthRate;
-  let deathRate = index.config.population.baseDeathRate;
+  let birthFactor = index.config.population.baseBirthFactor;
+  let survival = index.config.population.baseSurvival;
   for (const outcome of allocation.tiers) {
     const tier = index.tier.get(outcome.tier);
     if (tier === undefined) continue;
-    birthRate += tierEffectAt(tier.birthRate, outcome.coverage);
-    deathRate += tierEffectAt(tier.deathRate, outcome.coverage);
+    birthFactor *= tierEffectAt(tier.birthRate, outcome.coverage);
+    survival *= tierEffectAt(tier.survival, outcome.coverage);
   }
 
   const utilization: Record<CapacityId, number> = {};
@@ -239,8 +240,8 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     tiers: allocation.tiers,
     runs: allocation.runs,
     produced: allocation.produced,
-    birthRate,
-    deathRate,
+    birthFactor,
+    survival,
     settlementAbandoned: state.abandonedAt !== undefined,
     ...(state.abandonedAt === undefined ? {} : { abandonedAt: state.abandonedAt }),
     binding: allocation.binding,

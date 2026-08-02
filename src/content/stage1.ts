@@ -506,7 +506,10 @@ export const STAGE1: Config = {
       // 1,4 against 0,4 the cushion is 22 %, and a bad year reaches through it.
       perHead: 1.4,
       consumedOnUse: 1,
-      deathRate: { atZero: 0.08, atFull: 0 },
+      // Without any food at all, nine in ten are gone. Twenty per cent short of
+      // the bare ration costs eighteen per cent — the order of magnitude of a
+      // historical famine.
+      survival: { atZero: 0.1, atFull: 1 },
     },
     {
       // Fire, in the amount it takes not to freeze. Small, and high in the
@@ -530,16 +533,9 @@ export const STAGE1: Config = {
       branch: "warmth",
       perHead: 0.03,
       consumedOnUse: 1,
-      // Below the greatest birth rate on purpose (0.011), so that fire cannot
-      // balance growth on its own and therefore cannot become the regulator.
-      //
-      // Whichever need *can* balance births by itself decides the population,
-      // and no quantity anywhere else can change that: measured, the settlement
-      // simply grew until warmth was pressed back to 0.45 again, whether the
-      // need was 0.1 or 0.03 per head and whether wood cost 0.6 of a hectare or
-      // 0.2. Freezing kills individuals; famine kills populations, and among
-      // the checks on a forager band it is hunger that does the work.
-      deathRate: { atZero: 0.008, atFull: 0 },
+      // No fire at all in a Mesolithic winter kills a great many — less than
+      // starving, because clothing and huddling take part of it.
+      survival: { atZero: 0.4, atFull: 1 },
     },
     {
       // Clothing does not kill, it costs *work ability* (E16). The honest
@@ -567,8 +563,10 @@ export const STAGE1: Config = {
       branch: "housing",
       perHead: 0.3,
       consumedOnUse: 0,
-      deathRate: { atZero: 0.005, atFull: 0 },
-      birthRate: { atZero: 0, atFull: 0.003 },
+      // A band that moves has no roof at all and lives; only those who stay
+      // come to depend on one.
+      survival: { atZero: 0.9, atFull: 1 },
+      birthRate: { atZero: 1, atFull: 1.003 },
     },
     {
       // Warmth beyond the minimum: cooked food, shorter nights at the fire,
@@ -582,7 +580,7 @@ export const STAGE1: Config = {
       branch: "warmth",
       perHead: 0.07,
       consumedOnUse: 1,
-      productivity: { atZero: 0, atFull: 0.1 },
+      productivity: { atZero: 1, atFull: 1.1 },
     },
     {
       id: "food_satiety",
@@ -591,8 +589,8 @@ export const STAGE1: Config = {
       branch: "food",
       perHead: 0.4,
       consumedOnUse: 1,
-      birthRate: { atZero: 0, atFull: 0.011 },
-      productivity: { atZero: 0, atFull: 0.2 },
+      birthRate: { atZero: 1, atFull: 1.01 },
+      productivity: { atZero: 1, atFull: 1.2 },
     },
   ],
 
@@ -1009,8 +1007,10 @@ export const STAGE1: Config = {
   // Equal base rates: with rank 100 fully covered and nothing above it, births
   // equal deaths and the population stands (E20).
   population: {
-    baseBirthRate: 0.01,
-    baseDeathRate: 0.01,
+    // Reciprocal: a band whose needs are all met neither grows nor shrinks. It
+    // grows when it is better off than it needs to be.
+    baseBirthFactor: 1.01,
+    baseSurvival: 1 / 1.01,
     // Below about a dozen a band stops working: too few hunters, nobody spare
     // to carry children or the sick, and no cover at all for a single death. It
     // does not die out — it joins a neighbour, and as *this* band it is over.

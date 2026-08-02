@@ -127,7 +127,7 @@ describe("the year's quality (E24)", () => {
   it("has mean one, an upper bound and a long left tail", () => {
     const exponent = STAGE1.shocks["weather"]!.exponent;
     const scale = (exponent + 1) / exponent;
-    let state = createState(STAGE1, { seed: 4 });
+    let state = createState(STAGE1, { seed: 4, wilderness: 4000, water: 1600 });
     const values: number[] = [];
     for (let i = 0; i < 4000; i += 1) {
       values.push(derive(state, index).shocks["weather"] ?? 1);
@@ -227,7 +227,7 @@ describe("projects (E18)", () => {
   });
 
   it("effects apply exactly once, on completion", () => {
-    const state = finish(createState(STAGE1, { seed: 7 }), "sickle");
+    const state = finish(createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600 }), "sickle");
     expect(completedCount(state, "sickle")).toBe(1);
     expect(computeUnlocks(state, index).processes.has("gathering_sickle")).toBe(true);
     expect(state.activeProjects.some((p) => p.id === "sickle")).toBe(false);
@@ -341,7 +341,7 @@ describe("processes and the fallback level (E5)", () => {
     // Not a switch but a mix: the labour-richest process runs until *its own*
     // capacity is used up, and the next takes what is left. With no wilderness
     // to speak of, gathering cannot carry the settlement and farming must.
-    let state = finish(createState(STAGE1, { seed: 7 }), "sickle");
+    let state = finish(createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600 }), "sickle");
     state = {
       ...state,
       completedProjects: { ...state.completedProjects, sedentism: 1 },
@@ -438,8 +438,10 @@ describe("allocation runs rank by rank (E21)", () => {
 });
 
 describe("population (E20)", () => {
-  it("stands when rank 100 is exactly covered and nothing above it is", () => {
-    expect(STAGE1.population.baseBirthRate).toBe(STAGE1.population.baseDeathRate);
+  it("stands when every need is met and nothing is over-met", () => {
+    // Everything is a factor and the two base ones are reciprocal, so a band
+    // whose needs are exactly covered neither grows nor shrinks (E20).
+    expect(STAGE1.population.baseBirthFactor * STAGE1.population.baseSurvival).toBeCloseTo(1, 6);
   });
 
   it("shrinks under famine and grows when sated", () => {
@@ -449,12 +451,14 @@ describe("population (E20)", () => {
       wilderness: 20,
       food: 0,
     });
-    expect(derive(starving, index).deathRate).toBeGreaterThan(
-      derive(starving, index).birthRate,
-    );
+    const hungry = derive(starving, index);
+    expect(hungry.survival * hungry.birthFactor).toBeLessThan(1);
 
-    const fed = createState(STAGE1, { seed: 7, heads: 20, wilderness: 4000, food: 200 });
-    expect(derive(fed, index).birthRate).toBeGreaterThan(derive(fed, index).deathRate);
+    const fed = derive(
+      createState(STAGE1, { seed: 7, heads: 20, wilderness: 4000, water: 1600, food: 200 }),
+      index,
+    );
+    expect(fed.survival * fed.birthFactor).toBeGreaterThan(1);
   });
 
   it("gives the settlement up below the minimum viable size, and stops (E20)", () => {
@@ -476,7 +480,7 @@ describe("population (E20)", () => {
 
 describe("sedentism (E29)", () => {
   it("opens branches, processes, the rule and the first fields", () => {
-    let state = finish(createState(STAGE1, { seed: 7 }), "sickle");
+    let state = finish(createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600 }), "sickle");
     state = {
       ...state,
       sectors: {
@@ -563,7 +567,7 @@ describe("sedentism (E29)", () => {
   });
 
   it("each taking brings worse land than the one before (E13, Ricardo)", () => {
-    let state = finish(createState(STAGE1, { seed: 7 }), "sickle");
+    let state = finish(createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600 }), "sickle");
     state = {
       ...state,
       sectors: {
@@ -624,7 +628,7 @@ describe("supply chains (E4)", () => {
   it("names the upstream bottleneck, not the missing intermediate", () => {
     // Wood is short because there is no wilderness left — that is what should
     // be reported, not "wood is missing".
-    let state = finish(createState(STAGE1, { seed: 7 }), "sickle");
+    let state = finish(createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600 }), "sickle");
     state = {
       ...state,
       unownedCapacity: { wilderness: { amount: 0.01, quality: 1 } },

@@ -83,8 +83,8 @@ const scope = {
     return {
       tick: d.tick,
       people: round(d.heads),
-      births: round(d.birthRate),
-      deaths: round(d.deathRate),
+      births: round(d.birthFactor),
+      survival: round(d.survival),
       abandoned: d.settlementAbandoned,
       needs: from(
         d.tiers.map((t) => t.tier),
