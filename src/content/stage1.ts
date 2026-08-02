@@ -359,7 +359,15 @@ export const STAGE1: Config = {
       activity: "fishing",
       priority: 80,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 1.2, fish: 1.0 },
+      // Halved from 1.2. The second axis of the epoch is supposed to catch the
+      // pressure when the land grows dear (E29), and it never could: gathering
+      // costs 0.28 times the price of searching, so at 1.2 the water only paid
+      // once that price passed 4.3 — and every technique on the land pushes it
+      // further down instead. Measured over eight seeds the water carried 0.0 %
+      // of the food while it could sustainably carry a sixth of it. At 0.6 the
+      // switch falls at a price near 2, which is inside the span the range
+      // actually reaches.
+      intermediatesPerOutput: { labor: 0.6, fish: 1.0 },
       // Safer than the land, not immune to it: the drought that costs the
       // harvest lowers the river too. At 0.15 the water carried a quarter of
       // the food and felt nothing, so the worst year of a run never reached
@@ -397,7 +405,7 @@ export const STAGE1: Config = {
       activity: "fishing",
       priority: 85,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.48, fish: 1.0 },
+      intermediatesPerOutput: { labor: 0.24, fish: 1.0 },
       exposure: { weather: 0.4 },
       qualityWeight: 0,
       unlockedFromStart: false,
