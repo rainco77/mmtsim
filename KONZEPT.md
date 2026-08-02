@@ -818,7 +818,7 @@ Buchführung über einzelne Parzellen, nur einen zweiten Typ.
 
 ### E14 — Startaufstellung
 
-**Eine Bande von etwa fünfundzwanzig auf einem Revier, das sie gerade trägt.**
+**Eine Gemeinschaft von etwa fünfundzwanzig auf einem Revier, das sie gerade trägt.**
 Fünfundzwanzig ist die Gruppe, die zusammen lebt und zieht (Birdsells *magic numbers*);
 fünfzig wären zwei davon.
 
@@ -826,20 +826,21 @@ fünfzig wären zwei davon.
 
 | | |
 |---|---|
-| **Revier** | *je Kopf* angegeben und mit der Bande multipliziert |
-| **Wild und Fisch zu Beginn** | = ihre Obergrenze, aus derselben Regel wie der Nachwuchs (E19) |
+| **Revier** | *je Kopf* angegeben und mit der Gemeinschaft multipliziert |
+| **Alles, was auf dem Revier lebt** | beginnt an seiner Obergrenze, aus derselben Regel wie der Nachwuchs (E19) — man kommt in ein Land, das noch niemand leergejagt hat |
+| **Vorrat** | **keiner.** Von der Hand in den Mund ist der Zustand, in dem die Epoche anfängt und aus dem sie sich herausarbeitet; ein Startvorrat verschenkte gerade den Mangel, den die Grube später beantwortet — und war ohnehin wirkungslos, weil Nahrung mit 0,9 verdirbt |
 | **Ende bei zwölf** | darunter zu wenige Jäger, niemand übrig für Kinder und Kranke, kein Ausgleich für einen einzelnen Todesfall |
 
-Zwei lose Zahlen für Bande und Revier liefen auseinander, sobald an einer gedreht wurde —
+Zwei lose Zahlen für Gemeinschaft und Revier liefen auseinander, sobald an einer gedreht wurde —
 und derselbe Fehler ließ eine Gruppe in einem *bereits leergefischten* Gewässer starten,
 weil die Startbestände neben der Regel standen statt aus ihr zu folgen. Als Abhängigkeit
 geschrieben kann das nicht wiederkehren.
 
-Eine Bande unter zwölf stirbt übrigens nicht aus — sie schließt sich einer anderen an.
-Als *diese* Bande ist sie vorbei, und das genügt: eine weitere Regel dafür braucht es
+Eine Gemeinschaft unter zwölf stirbt übrigens nicht aus — sie schließt sich einer anderen an.
+Als *diese* Gemeinschaft ist sie vorbei, und das genügt: eine weitere Regel dafür braucht es
 nicht. Die Gruppe sitzt *an* der
 Tragfähigkeit ihres Landes, nicht weit darunter — das ist die Lage einer
-Wildbeutergruppe, und nur so ist ein schlechtes Jahr existentiell, lohnt Vorratshaltung
+Wildbeutergemeinschaft, und nur so ist ein schlechtes Jahr existentiell, lohnt Vorratshaltung
 und entsteht Druck zur Intensivierung. Mit einem Revier, das ein Vielfaches des Bedarfs
 hergibt, drückt jahrhundertelang nichts, und dann hat weder der Speicher noch die Rodung
 eine Aufgabe.
@@ -1049,10 +1050,15 @@ eine eigene Phase davor.
 
 **Und der Rang ist eine Zahl, die das Projekt trägt — vom Spieler gesetzt.** Jedes
 Projekt einzeln: Für einen Speicher geht man vielleicht hungern, für ein Denkmal nicht.
-Die Voreinstellung steht im Inhalt und liegt über allen Bedürfnissen, also bleibt die
-alte Regel der Normalfall; der Spieler senkt sie für alles, wofür er nicht hungern will.
-Im Kern ist es eine freie Zahl, damit jede Stellung ausdrückbar ist; was die Oberfläche
-davon anbietet — freie Wahl oder ein paar benannte Plätze —, entscheidet die Hülle (T1).
+Die Voreinstellung steht im Inhalt und liegt **hinter allen Bedürfnissen**: gebaut wird
+aus dem, was übrig ist, nie aus jemandes Abendessen. Im Kern ist es eine freie Zahl,
+damit jede Stellung ausdrückbar ist; was die Oberfläche davon anbietet — freie Wahl oder
+ein paar benannte Plätze —, entscheidet die Hülle (T1).
+
+Der beste Platz ist mit ziemlicher Sicherheit **keines der beiden Enden**: über den
+Rängen, die nur Behaglichkeit und Kinder kosten, und unter denen, die Leben kosten.
+Genau deshalb darf er nicht die Voreinstellung sein — er ist das, was ein Spieler
+herausfinden soll.
 
 Der Grund für diese Form ist gemessen. Steht ein Projekt **fest** über allem, ist es
 eine Falle statt einer Entscheidung: Seine Kosten sind absolut, also wächst ihr Anteil,
@@ -1064,8 +1070,9 @@ verschwindet die Falle — aber mit ihr die Entscheidung: Der Zeitpunkt spielt d
 noch eine Rolle, weil das Modell den Spieler ohnehin schützt.
 
 Als Zahl am Projekt ist die Gefahr **gewählt** statt verborgen, und der Zeitpunkt zählt
-wieder. Gemessen: Wer die Voreinstellung stehen lässt, stirbt in 100 % der Läufe; wer
-seine Projekte knapp unter das Überleben setzt, stirbt nicht mehr an ihnen. Pausieren
+wieder. Von Hand gespielt: Zwei Projekte auf der alten Voreinstellung — ganz vorn —
+töteten die Gemeinschaft binnen **eines** Ticks, weil der Anspruch über dem Hunger stand
+und die Hände in die Grube statt in die Ernte gingen; gewarnt wurde nicht. Pausieren
 bleibt daneben das, was es sein soll — ein Mittel, kein Pflichtprogramm.
 
 Das war vorher anders und war ein Sonderweg, der nur deshalb nicht auffiel, weil
@@ -1111,10 +1118,41 @@ der Branche.
 Hektar Wald wird nicht verbraucht, wenn man darüber jagt — die Rehe darauf schon. Daraus
 die Regel, die im ganzen Modell gilt und für jede Epoche:
 
-> **Kapazität ist, was belegt und zurückgegeben wird. Bestand ist, was entnommen wird
-> und nachwächst.** Eine Hand, ein Feld, eine Grube gegen ein Tier, einen Fisch, einen
-> Baum. Maschinenstunden und Gebäude sind Kapazität; Erz, Öl und Fischgründe sind
-> Bestände.
+> **Fläche wird belegt: ausschließlich, ohne Gedächtnis** — wer sie nimmt, nimmt sie
+> jedem anderen, und im nächsten Tick steht sie unverändert da, wie hart auch immer
+> darauf gearbeitet wurde.
+>
+> **Ein Bestand wird entnommen: nebeneinander, mit Gedächtnis** — wer entnimmt, nimmt
+> nur denen etwas weg, die aus *demselben* Bestand nehmen; was fehlt, fehlt weiter,
+> wächst aus dem Rest nach und kostet je Einheit mehr, je dünner er wird.
+
+Eine Hand, ein Feld, eine Grube gegen ein Tier, einen Fisch, einen Baum. Maschinenstunden
+und Gebäude sind Kapazität; Erz, Öl und Fischgründe sind Bestände.
+
+**Beide Eigenschaften werden gebraucht, und die erste ist die wichtigere.** Am Gedächtnis
+allein ließe sich nichts entscheiden, weil ein Wildbeuter überhaupt nichts belegt: Er
+liest Totholz auf demselben Waldstück auf, auf dem er sammelt und über das er jagt.
+Solange all das Fläche kostete, nahm die Nahrung als höchster Rang das ganze Revier, und
+Holz, Bast und Felle waren nicht knapp, sondern **ausgesperrt** — es wurde in keinem Tick
+davon etwas gewonnen, die Gemeinschaft fror und ging nackt. Wo Verdrängung sachlich
+richtig ist, bildet das Modell sie weiter ab: Jagen auf Fleisch und Jagen auf Felle ziehen
+aus demselben Wild und konkurrieren dort hart. Die Konkurrenz sitzt am Wild statt am
+Hektar, und dort gehört sie hin.
+
+**Fläche ist deshalb nicht der Grenzfall eines schnell nachwachsenden Bestands.** Bei
+Rate 1 kommt ein halb entnommener Bestand auf drei Viertel zurück, nicht auf voll; um
+sich wie Fläche zu verhalten, bräuchte er die Rate `Decke / Bestand`, die mit der
+Ausdünnung ins Unendliche wächst.
+
+**In dieser Epoche zahlt daher kein einziges Verfahren Fläche.** Wildnis und Wasser sind
+reine **Träger**: Sie setzen die Decken dessen, was auf ihnen lebt, und ihre Güte sagt,
+wieviel das ist. Belegt wird erst der Acker und die Hütte — die Sesshaftigkeit ist damit
+auch mechanisch der Bruch, den sie erzählt.
+
+Weil nichts mehr für Fläche zahlt, hätte die **Bodengüte** sonst keine Wirkung mehr. Sie
+sitzt deshalb an der Decke: `Decke = Fläche × Güte × Dichte`. Schlechteres Land trägt
+weniger Wild, weniger Wuchs, weniger Bäume — Ricardo unverändert, an der einzigen Stelle,
+an der er noch beißen kann. Der Revierwechsel behält damit seinen Preis.
 
 Der Nachwuchs ist der Verfall mit umgekehrtem Vorzeichen und einer Decke — die
 logistische Kurve, das Standardmodell erneuerbarer Ressourcen:
@@ -1140,11 +1178,32 @@ Ein Fisch bleibt dabei ein Fisch: Der Aufschlag trifft **Arbeit und Fläche**, d
 — nie die Menge der Beute je Einheit. Nach oben ist er gedeckelt, damit ein erschöpftes
 Revier nicht unendlich teuer wird.
 
-**Ein Speicher ist ein Rückfall, keine erste Quelle.** Man lebt von dem, was gerade
-erzeugt wird, und greift ins Lager, wenn das nicht reicht. Andersherum gebaut — Bedarfe
-nehmen zuerst aus dem Lager und fragen nur den Rest nach — beginnt jeder Tick damit, den
-Speicher aufzuessen, und endet damit, ihn wieder zu füllen; er steht dann dauerhaft bei
-*einem* Tick Ersparnis, wie groß die Gruben auch sind.
+**Ein Speicher ist ein Rückfall, keine erste Quelle — und das entscheidet sich beim
+Planen, nicht beim Austeilen.** Nachgefragt wird immer der **volle** Bedarf, gerechnet
+gegen ein normales Jahr mit etwas Vorsicht. Andersherum — Bedarfe ziehen schon beim
+Planen den Vorrat ab und bestellen nur den Rest — beginnt jeder Tick damit, den Speicher
+aufzuessen, und endet damit, ihn wieder zu füllen; er steht dann dauerhaft bei *einem*
+Tick Ersparnis, wie groß die Gruben auch sind.
+
+**Ausgeteilt wird dagegen aus einem einzigen Topf.** Was erzeugt wird, geht ins Lager,
+und die Ränge decken sich der Reihe nach von dort. Zwei Töpfe — eine Liste „heute
+entstanden" neben dem Vorrat — führten zur Doppelzählung: Die Erzeugung lag in beiden,
+weil ein nachgelagertes Verfahren am selben Tick darauf zugreifen können muss, und ein
+Rang, der zu kurz kam, fand im Lager genau das wieder, was ihm gerade verweigert worden
+war. Gemessen: 42 Nahrung erzeugt, 69 ausgeteilt, davon 27 aus einem Lager mit Bestand
+null. Hunger war damit unmöglich, jeder Rang meldete Deckung, die Geburten liefen voll
+weiter — und die Gemeinschaft wuchs, bis das Revier selbst nachgab.
+
+**Was in der Nutzung nicht aufgebraucht wird, wird nur zum Fehlbetrag nachgefragt.**
+Nahrung fließt durch und muss jeden Tick ganz neu erzeugt werden; Kleidung wird getragen,
+nicht gegessen, und Erhalt ist Neubau dessen, was zerfallen ist. Ohne diese
+Unterscheidung nähte eine Gemeinschaft von dreißig jeden Tick acht neue Kleidungsstücke,
+während sie zweiundneunzig trug — und weil Bast 2,5 Bäume je Faser kostet, wanderte der
+ganze Wald in Kleider, die niemand brauchte, worauf die Gemeinschaft erfror.
+
+**Und was der Spieler daran ablesen kann, ist der Lagerstand vor und nach dem Tick.**
+Woher eine einzelne Einheit im Topf stammt, weiß sie selbst nicht; ob von der Substanz
+gelebt wurde, sagt der Vergleich der beiden Stände.
 
 Wieviel zu halten sich lohnt, sagt der Speicher selbst: **das Ziel ist seine Kapazität.**
 Darüber hinaus verdirbt ein Gut mit dem gewöhnlichen Satz, die Arbeit wäre vertan — und
@@ -1260,7 +1319,7 @@ Ordnungsliebe:
 
 > **Warnung aus der Umsetzung:** Solange Raten addiert und Faktoren als Zuschläge
 > geschrieben wurden, stand die Wirkung der Kleidung (0,6 bei Nulldeckung, 1,0 bei
-> voller) in einem Feld, das addiert wurde. Ergebnis: Eine **nackte** Bande arbeitete
+> voller) in einem Feld, das addiert wurde. Ergebnis: Eine **nackte** Gemeinschaft arbeitete
 > *besser* als eine gekleidete, und niemandem fiel es auf, weil beide Lesarten plausible
 > Zahlen ergeben. Eine gemischte Konvention ist eine Fehlerquelle, die nicht auffällt.
 
@@ -1298,7 +1357,7 @@ klein gewordene Siedlungen aufgegeben oder gingen in anderen auf. Bis auf den le
 Menschen zu rechnen wäre die unrealistischere Variante.
 
 **Die Schwelle liegt bei 25, die Startgruppe bei 50.** Der Anker sind Birdsells „magic
-numbers": Eine Bande von rund 25 ist die kleinste, die sich selbst trägt — darunter muss
+numbers": Eine Gemeinschaft von rund 25 ist die kleinste, die sich selbst trägt — darunter muss
 eine Gruppe in einer anderen aufgehen oder sie verschwindet. Und aus einer zu kleinen
 Gruppe erholt sich nichts mehr, also muss der Lauf **davor** enden und nicht erst, wenn
 niemand mehr da ist.
@@ -1870,17 +1929,23 @@ Lauf, keine Eindrücke:
 0,6 je Kopf heißt: Ein Drittel des Nahrungsbedarfs ist entbehrlich. Ein schlechtes Jahr
 frisst zuerst diesen Teil, und erst wenn es mehr nimmt, sterben Menschen.
 
-Gemessen bei 1,0 gegen 0,8 — also 44 % entbehrlich — war eine Hungersnot **unmöglich**:
-Der schlechteste Wurf über 2000 Ticks nahm 40 % des Ertrags, blieb also unter dem
-Polster. Bei 1,4 gegen 0,4 stirbt der bedachte Spieler dagegen in 60 % der Läufe, was
-gegen die Regel verstößt, dass gutes Spiel praktisch nie scheitern darf.
+Bei 1,0 gegen 0,8 — also 44 % entbehrlich — war eine Hungersnot **unmöglich**: Der
+schlechteste Wurf eines langen Laufs blieb unter dem Polster. Eine Gesellschaft mit
+44 % Luft ist auch keine Subsistenzgesellschaft mehr.
 
-Bei 1,2 gegen 0,6 stimmt der Bogen, und zwar im Durchspielen sichtbar: In der dünnen
-Frühphase heben schlechte Jahre die Sterberate von 1,0 % auf 3,1 % und die Gruppe
-schrumpft; in der gefestigten Siedlung frisst derselbe Wurf (0,39, der schlechteste des
-Laufs) die Sättigung auf 2 % herunter, halbiert die Geburtenrate und tötet niemanden.
-Genau die Ordnung, die eine Rangfolge leisten soll — erst fällt der Komfort, dann das
-Leben.
+Wo das Polster liegt, sagt eine Schwelle, die sich ausrechnen lässt und nicht geraten
+werden muss. Geplant wird gegen einen Wurf von 0,9; der Hunger wird also berührt,
+sobald der Ertrag unter seinen Anteil an den 1,8 fällt:
+
+| Polster | erste Tote ab einem Wurf von | wie oft |
+|---|---|---|
+| 1,4 / 0,4 (ein Fünftel entbehrlich) | 0,70 | jeder 10. Tick |
+| 1,2 / 0,6 (ein Drittel entbehrlich) | 0,60 | jeder 19. Tick |
+| dazu Sammeln mit Exposition 0,7 | **0,46** | **jeder 56. Tick** |
+
+Gespielt bei 1,4 / 0,4: Zwei Würfe, 0,44 bei Tick 73 und 0,24 bei Tick 81, kosteten
+28 % und 52 % der Menschen und beendeten den Lauf. Dieselben Würfe kosten mit dem
+größeren Polster und der kleineren Exposition 2 % und 22 %.
 
 **Beide Hälften von T4 werden gebraucht.** Handeln muss besser sein als Nichtstun —
 sonst sind die Projekte Zierrat. Und *gut* zu handeln muss besser sein als schlecht zu
@@ -1928,7 +1993,7 @@ statt hinterher.
 **Die Erzählung der Epoche.** Sie ist der Maßstab, gegen den alles andere geprüft wird —
 nicht eine Stimmung, sondern eine Folge von Zuständen, die eintreten müssen:
 
-1. Eine Bande lebt auf einem Revier, das sie in einem **leicht schlechten Jahr** trägt.
+1. Eine Gemeinschaft lebt auf einem Revier, das sie in einem **leicht schlechten Jahr** trägt.
 2. **Schlechte Jahre beißen**: Die Nahrung reicht nicht, Menschen sterben, die Gruppe
    schrumpft.
 3. **Gute Jahre lassen sie wachsen.** Im Schnitt wächst sie langsam.
@@ -1966,12 +2031,12 @@ Was braucht ein Mensch, damit er nicht stirbt, Kinder bekommt und arbeiten kann.
 
 | Rang | Bedarf | Gut | je Kopf | Wirkung bei Nulldeckung |
 |---|---|---|---|---|
-| 100 | **Hunger** | Nahrung | 1,4 | Überleben **0,10** — neun von zehn sterben |
+| 100 | **Hunger** | Nahrung | 1,2 | Überleben **0,10** — neun von zehn sterben |
 | 200 | **Feuer** | Wärme, aus Holz | 0,03 | Überleben **0,40** |
 | 300 | **Kleidung** | Kleidung, aus Fell oder Faser | 0,3 | Arbeitsfähigkeit **0,60** |
 | 400 | *Wohnraum* | Wohnraum | 0,3 | Überleben 0,90 · Geburten ×1,003 bei voller Deckung |
 | 500 | *Vorrat anlegen* | — | — | siehe E19: Ziel ist die Speicherkapazität |
-| 600 | **Sättigung** | Nahrung | 0,4 | Geburten ×1,01 · Produktivität ×1,2 bei voller Deckung |
+| 600 | **Sättigung** | Nahrung | 0,6 | Geburten ×1,01 · Produktivität ×1,2 bei voller Deckung |
 | 700 | **geheizt** | Wärme | 0,07 | Produktivität ×1,1 bei voller Deckung |
 
 *Wohnraum kommt erst mit der Sesshaftigkeit.* Die Ränge stehen in **Hunderterschritten**,
@@ -2373,7 +2438,7 @@ das —, verschwindet sie im Mittel oder erscheint dort, wo sie nicht ist.
    tut die Anzeige, was sie behauptet.
 2. **Ist es akademisch haltbar?** Nicht nur „kein Fehler im Modell", sondern: Entwickelt
    sich das Spiel so, wie die Entwicklung menschlicher Gesellschaften wissenschaftlich
-   beschrieben wird. Sitzt eine Wildbeutergruppe an der Tragfähigkeit ihres Reviers?
+   beschrieben wird. Sitzt eine Wildbeutergemeinschaft an der Tragfähigkeit ihres Reviers?
    Kommt das Lager vor der Sesshaftigkeit? Wird intensiviert, wenn das Land knapp wird?
 3. **Trägt es spieldynamisch?** Hat der Spieler an *diesem* Tick etwas zu entscheiden,
    und hat eine frühere Entscheidung hier eine sichtbare Folge? Beides muss über den
@@ -2834,7 +2899,8 @@ besprochen und vertagt, nicht vergessen:
 
 | | Punkt | |
 |---|---|---|
-| 0 | **Ausschließliche Fläche — der Blocker.** Holz, Felle und Faser kommen aus derselben Wildnis wie die Nahrung, und Fläche gilt als *ausschließlich belegt*: Ein Hektar, auf dem gesammelt wird, steht fürs Holzholen nicht mehr zur Verfügung. Da Nahrung Rang 100 ist, nimmt sie alles — gespielt wird in **keinem** Tick Holz, Bast oder Fell gewonnen, Feuer steht bei 0,04 und Kleidung bei 0,00, und seit die Sterbefaktoren ehrlich sind, ist die Bande **bei Tick 1 tot**. Für einen Acker ist Ausschließlichkeit richtig, fürs Sammeln nicht: Man liest Totholz auf demselben Waldstück auf, auf dem man Beeren sammelt. **Vor dem Angehen besprechen** | zuerst |
+| 0 | ~~Ausschließliche Fläche — der Blocker~~ **Erledigt.** Die Wildnis wird nicht mehr belegt, sondern beerntet: Sammeln, Jagen, Fischen, Holz und Bast ziehen aus Beständen, die auf ihr sitzen, statt Fläche zu bezahlen. Damit sperrt die Nahrung nichts mehr aus, und Feuer, Felle und Kleidung entstehen wieder ab Tick 0 | erledigt |
+| 0a | **Der Druck kommt als Klippe, nicht als Hang.** Der Aufwandszuschlag eines Bestands wird gegen den Stand *nach* dem Nachwachsen gerechnet. Solange das Revier über Nacht wieder volläuft, kostet es also gleich viel, ob ein Zwanzigstel oder vier Fünftel davon genommen werden — gespielt stand der Zuschlag von Tick 0 bis 45 unverändert auf 1,0, während die Entnahme von 31 auf 75 stieg und ein Drittel der Arbeit brachlag. Erst als die Entnahme die **ganze Decke** erreichte, fiel der Stand in drei Ticks von 89 über 82 und 56 auf 12, der Zuschlag sprang auf 6, und die Gemeinschaft war tot. Zu prüfen: ob der Zuschlag gegen den Stand *während* der Entnahme gerechnet gehört, wie Gordon-Schaefer es meint | **vor dem Angehen besprechen** |
 | 1 | **Austarieren.** Gemessen wird die Amortisationszeit je Projekt gegen das Zielband aus E29. Erster Befund: über die Hälfte der Arbeit liegt brach, Sesshaftigkeit bei Tick 45 statt 150–200, Ackerbauanteil 44 % — die zwölf Wirkungen sind einzeln vertretbar, ihr **Produkt** nicht | der Baum ist gebaut |
 | 1a | ~~Vorleistungen eines Projekts als Bedingung~~ **Verworfen, gemessen.** Eine Bedingung „halte etwas davon" ist für ein Gut, das vollständig verbraucht wird, keine Schwelle, sondern eine Mauer: Es entsteht nie ein Bestand, neun von zwölf Projekten waren nie startbar, kein Lauf erreichte die Sesshaftigkeit. Ein Projekt zieht seine Vorleistung selbst, sobald es läuft — die Absicht erzeugt die Nachfrage. Verzögert wird statt dessen über **Erfahrung** | erledigt |
 | 1f | **Die Prüfregel der Boserup-Kriterien ist nicht abgestimmt.** Sie steht auf „steigt irgendwo"; ich habe sie am Ergebnis ausgerichtet statt umgekehrt. Zu entscheiden: so lassen oder auf „fällt nirgends" — und falls Letzteres, was am Inhalt geändert wird, damit es zutrifft | Maßstab, nicht Inhalt |
@@ -2955,7 +3021,7 @@ dieselbe Sackgasse ein zweites Mal baut.
   Verbrauchs). Sagt nichts, was die Speicherkapazität nicht schon sagt — und wie groß die
   ist, hat der Spieler beim Bauen entschieden.
 - **Allee-Effekt**: fallende Produktivität bei kleiner Gruppe, damit sich eine
-  schrumpfende Bande nicht mehr fängt. Zusätzliche Mechanik für etwas, das die
+  schrumpfende Gemeinschaft nicht mehr fängt. Zusätzliche Mechanik für etwas, das die
   Aufgabeschwelle schon leistet.
 - **Wohlstandsjahre** (monoton steigende Leitzahl aus Bevölkerung × Deckung). Die
   Zeit läuft ohnehin hoch, und Siedlungsgröße ist die ehrlichere Erfolgszahl.
