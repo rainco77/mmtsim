@@ -402,7 +402,11 @@ describe("processes and the fallback level (E5)", () => {
   });
 
   it("a thin store pushes towards the less exposed process (E5, E24)", () => {
-    // Two processes, same yield, different exposure.
+    // A true twin: the same of every input as gathering, differing only in how
+    // hard a poor draw hits it. It has to be exact now that the order is
+    // decided by risk-adjusted cost rather than by exposure on its own — a
+    // process that is safer *and* dearer is a different question, and the
+    // answer to it is properly "it depends how much dearer".
     const twin: Config = {
       ...STAGE1,
       risk: { aversion: 0.9, caution: 0 },
@@ -412,8 +416,8 @@ describe("processes and the fallback level (E5)", () => {
           id: "gathering_safe",
           branch: "food",
           priority: 5,
-          intermediatesPerOutput: { labor: 1.111111 },
-          capacityPerOutput: { wilderness: 3.0 },
+          intermediatesPerOutput: { labor: 0.28, plants: 1.0 },
+          capacityPerOutput: {},
           exposure: { weather: 0.05 },
           qualityWeight: 0.5,
           activity: "gathering",

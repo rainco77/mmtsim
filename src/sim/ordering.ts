@@ -2,6 +2,9 @@ import type { BranchDef, Config, ConfigIndex, ProcessDef } from "./config.ts";
 import type { BranchId } from "./ids.ts";
 import { exposureMagnitude } from "./risk.ts";
 
+/** The stock every process needs some of, and so the one that stays comparable. */
+const LABOR = "labor";
+
 /**
  * Where the order of processes comes from (E5).
  *
@@ -144,10 +147,37 @@ export class DominanceOrdering implements ProcessOrdering {
       }
     }
 
+    // What a unit really costs in hands, searching and risk included. Labour is
+    // the one thing everything needs, so it is what remains comparable where
+    // dominance has nothing to say.
+    const perUnit = ctx.available.map((process) => {
+      const risk = 1 / Math.max(1e-12, 1 - riskWeight * exposureMagnitude(process));
+      return (process.intermediatesPerOutput[LABOR] ?? 0) * risk * ctx.effort(process);
+    });
+
+    /**
+     * Where dominance is silent, the cheaper one goes first.
+     *
+     * Two processes that draw different stocks never dominate each other — each
+     * needs something the other does not — and the rule for that case used to
+     * be that both simply run to their own limit. For irrigated against dry
+     * fields that is right: both limits stand still. For a stock it is fatal,
+     * because "its own limit" is the herd itself. Measured: with the bow
+     * finished, hunting carried the whole of the food while a hunted meal cost
+     * 1.92 of labour against 0.29 gathered, and the herd fell from 44 to 4 in
+     * two ticks.
+     *
+     * This is the place the concept has always pointed at, out of Koopmans:
+     * where dominance is silent, quantities cannot decide and it takes a price.
+     * There is one now — what the searching costs — so it is used here rather
+     * than only inside a comparison that never happens.
+     */
     const preference = (a: number, b: number): number => {
       const pa = ctx.available[a];
       const pb = ctx.available[b];
       if (pa === undefined || pb === undefined) return 0;
+      const cost = (perUnit[a] ?? 0) - (perUnit[b] ?? 0);
+      if (Math.abs(cost) > 1e-9) return cost;
       const risk = riskWeight * (exposureMagnitude(pa) - exposureMagnitude(pb));
       if (Math.abs(risk) > 1e-12) return risk;
       return pb.priority - pa.priority;
