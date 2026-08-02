@@ -107,21 +107,23 @@ export const STAGE1: Config = {
       // Shallow, the draw goes straight through to the table: a poor one is
       // felt, which is what makes a store worth digging later.
       //
-      // The density is what decides whether anything binds at all. At 6.0 the
-      // range held ninety against a take of forty-five, so the stand stood at
-      // its ceiling in every one of eighty-two played ticks, gathering never
-      // grew dearer, no rank was ever short, and no project could pay for
-      // itself — a quarter of all labour lay idle throughout. At 3.5 the
-      // ceiling is fifty-two, the stand settles near seven tenths of it,
-      // gathering costs about half again as much labour, and the range carries
-      // some twenty-nine people. Growth then presses against a wall, and the
-      // mortar — 0.75 of this per meal instead of 1.0 — is what moves it.
+      // The stand used to stand at its ceiling in every one of eighty-two
+      // played ticks, and the density looked like the reason. It was not: the
+      // price of searching was read off the stand before anything was taken,
+      // so taking four fifths of the range cost no more per unit than taking a
+      // twentieth. Cutting the density to 3.5 against that broken price only
+      // starved the community at tick 0.
+      //
+      // With the price charged as the stand runs down, this same figure gives
+      // what the epoch wants: the stand settles near half its ceiling, so a
+      // taking is felt long before it is fatal, and the mortar — 0.75 of this
+      // per meal instead of 1.0 — is what moves the wall.
       id: "plants",
       decayPerTick: 0,
       regrowth: {
         ratePerTick: 4.0,
         capacity: "wilderness",
-        densityPerArea: 3.5,
+        densityPerArea: 6.0,
         refuge: 3,
         maxEffort: 6,
       },
