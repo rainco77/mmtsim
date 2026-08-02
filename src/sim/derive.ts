@@ -9,7 +9,7 @@ import {
 import type { CapacityId, ProjectId, StockId } from "./ids.ts";
 import { decayed, HOUSEHOLDS, regrown, renewals, type Renewal } from "./phases.ts";
 import { peek } from "./random.ts";
-import { capacityOf, type Capacity, type GameState } from "./state.ts";
+import { capacityOf, carryingArea, type Capacity, type GameState } from "./state.ts";
 import {
   allHold,
   computeUnlocks,
@@ -380,9 +380,9 @@ function levelOf(
   if (source.kind === "fixed") return source.value;
   const rule = index.stock.get(stockId)?.regrowth;
   if (rule === undefined) return 0;
-  let area = capacityOf(state.unownedCapacity, rule.capacity).amount;
+  let area = carryingArea(capacityOf(state.unownedCapacity, rule.capacity));
   for (const holder of Object.values(state.sectors)) {
-    area += capacityOf(holder.capacityHeld, rule.capacity).amount;
+    area += carryingArea(capacityOf(holder.capacityHeld, rule.capacity));
   }
   return area * rule.densityPerArea;
 }

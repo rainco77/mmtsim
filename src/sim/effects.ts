@@ -1,6 +1,6 @@
 import type { Config, Effect, LevelSource, QualitySource } from "./config.ts";
 import type { CapacityId, SectorId } from "./ids.ts";
-import { capacityOf, type Capacity, type GameState } from "./state.ts";
+import { capacityOf, carryingArea, type Capacity, type GameState } from "./state.ts";
 
 /**
  * Effect handlers as a registry (T2). A new effect type is a new class plus one
@@ -148,9 +148,9 @@ function levelOf(
   if (source.kind === "fixed") return source.value;
   const rule = config.stocks.find((stock) => stock.id === stockId)?.regrowth;
   if (rule === undefined) return 0;
-  let area = capacityOf(state.unownedCapacity, rule.capacity).amount;
+  let area = carryingArea(capacityOf(state.unownedCapacity, rule.capacity));
   for (const holder of Object.values(state.sectors)) {
-    area += capacityOf(holder.capacityHeld, rule.capacity).amount;
+    area += carryingArea(capacityOf(holder.capacityHeld, rule.capacity));
   }
   return area * rule.densityPerArea;
 }

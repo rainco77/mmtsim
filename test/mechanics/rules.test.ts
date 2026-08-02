@@ -132,6 +132,19 @@ describe("the year's quality (E24)", () => {
     for (let i = 0; i < 4000; i += 1) {
       values.push(derive(state, index).shocks["weather"] ?? 1);
       state = tick(state, index);
+      // The draw is what is under test, so the band must not be allowed to die
+      // of it: once a settlement is given up the world stops and the last draw
+      // would be counted a thousand times over. Holding the heads steady keeps
+      // the stream running without touching what it produces.
+      const alive: Record<string, unknown> = { ...state };
+      delete alive["abandonedAt"];
+      state = {
+        ...(alive as unknown as GameState),
+        sectors: {
+          ...state.sectors,
+          households: { ...state.sectors["households"]!, heads: 25 },
+        },
+      };
     }
     const mean = values.reduce((a, b) => a + b, 0) / values.length;
     expect(mean).toBeGreaterThan(0.97);
@@ -337,10 +350,10 @@ describe("processes and the fallback level (E5)", () => {
     expect(output(tightLabor, "farming")).toBeGreaterThan(output(tightLabor, "farming_fallow"));
   });
 
-  it("when the forest runs out, farming absorbs the rest — Boserup (E6, E13)", () => {
+  it("when the wild growth runs out, farming absorbs the rest — Boserup (E6, E13)", () => {
     // Not a switch but a mix: the labour-richest process runs until *its own*
-    // capacity is used up, and the next takes what is left. With no wilderness
-    // to speak of, gathering cannot carry the settlement and farming must.
+    // limit is reached, and the next takes what is left. With only a little
+    // left to gather, gathering cannot carry the settlement and farming must.
     let state = finish(createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600 }), "sickle");
     state = {
       ...state,
@@ -351,17 +364,20 @@ describe("processes and the fallback level (E5)", () => {
         households: {
           ...state.sectors["households"]!,
           heads: 200,
-          stocks: { food: 0 },
+          stocks: { food: 0, plants: 20 },
           capacityHeld: { cleared: { amount: 400, quality: 1 } },
         },
       },
     };
-    const runs = derive(state, index).runs;
-    const farming = runs.find((r) => r.process === "farming");
-    expect(farming).toBeDefined();
-    expect(farming?.output ?? 0).toBeGreaterThan(0);
-    // And the wilderness is used to the last hectare before farming steps in.
-    expect(derive(state, index).utilization["wilderness"] ?? 0).toBeGreaterThan(0.9);
+    const d = derive(state, index);
+    const output = (id: string) => d.runs.find((r) => r.process === id)?.output ?? 0;
+    // Both run, and the cheaper one runs to the end of what there is to gather
+    // before the dearer one takes the rest: twenty of growth, twenty gathered.
+    expect(output("gathering_sickle")).toBeGreaterThan(10);
+    expect(output("farming")).toBeGreaterThan(0);
+    // Far more comes off the fields than out of the wild — that is the whole
+    // point of the fields.
+    expect(output("farming")).toBeGreaterThan(output("gathering_sickle"));
   });
 
   it("a thin store pushes towards the less exposed process (E5, E24)", () => {
@@ -428,12 +444,22 @@ describe("allocation runs rank by rank (E21)", () => {
   });
 
   it("names the binding input when a rank cannot be covered (E6)", () => {
-    // Far too little wilderness for the population: area binds, not labour.
-    const state = createState(STAGE1, { seed: 7, heads: 200, wilderness: 30, food: 0 });
+    // A small country, already picked over: the lowest rank cannot be covered,
+    // and what is reported is an *input* — never "food is missing", which is
+    // the one thing the player can already see for himself.
+    const start = createState(STAGE1, { seed: 7, heads: 25, wilderness: 1, water: 1, food: 0 });
+    const state = {
+      ...start,
+      sectors: {
+        ...start.sectors,
+        households: { ...start.sectors["households"]!, stocks: { food: 0, plants: 6 } },
+      },
+    };
     const d = derive(state, index);
-    expect(d.binding.kind).toBe("capacity");
-    expect(d.binding.what).toBe("wilderness");
+    expect(d.coverage["food_survival"] ?? 1).toBeLessThan(1);
     expect(d.bindingTier).toBe("food_survival");
+    expect(d.binding.kind).not.toBe("none");
+    expect(d.binding.what).not.toBe("food");
   });
 });
 
@@ -445,12 +471,17 @@ describe("population (E20)", () => {
   });
 
   it("shrinks under famine and grows when sated", () => {
-    const starving = createState(STAGE1, {
-      seed: 7,
-      heads: 200,
-      wilderness: 20,
-      food: 0,
-    });
+    const start = createState(STAGE1, { seed: 7, heads: 200, wilderness: 20, water: 8, food: 0 });
+    // A small range that has already been eaten bare: a full country can be
+    // plundered for one tick however many mouths there are, so famine is a
+    // state of the *stocks*, not of the area.
+    const starving = {
+      ...start,
+      sectors: {
+        ...start.sectors,
+        households: { ...start.sectors["households"]!, stocks: { food: 0 } },
+      },
+    };
     const hungry = derive(starving, index);
     expect(hungry.survival * hungry.birthFactor).toBeLessThan(1);
 
@@ -626,8 +657,8 @@ describe("supply chains (E4)", () => {
   });
 
   it("names the upstream bottleneck, not the missing intermediate", () => {
-    // Wood is short because there is no wilderness left — that is what should
-    // be reported, not "wood is missing".
+    // Wood is short because there are no trees left — that is what should be
+    // reported, not "wood is missing".
     let state = finish(createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600 }), "sickle");
     state = {
       ...state,
@@ -645,7 +676,7 @@ describe("supply chains (E4)", () => {
     };
     const d = derive(state, index);
     expect(d.coverage["shelter_roof"] ?? 1).toBeLessThan(1);
-    expect(d.binding.kind).toBe("capacity");
-    expect(d.binding.what).toBe("wilderness");
+    expect(d.binding.kind).toBe("stock");
+    expect(d.binding.what).toBe("trees");
   });
 });

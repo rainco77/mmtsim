@@ -72,18 +72,34 @@ export interface StockDef {
   /**
    * A stock that **grows back** instead of falling apart (E29).
    *
-   * Animals and fish are not areas. A hectare of forest is not used up by
-   * hunting over it, but the deer on it are — they are taken, and they breed
-   * again. That is the difference the model draws between the two kinds of
-   * natural resource, and it is the same distinction throughout: **capacity is
-   * what is occupied and given back, a stock is what is taken and grows again.**
-   * A hand, a field, a pit against a deer, a fish, a tree.
+   * Nothing a forager takes is an area. A hectare of forest is not used up by
+   * hunting over it, or by gathering on it, or by picking up the deadwood that
+   * lies on it — all three happen on the same ground at once. What is used up
+   * is the deer, the growth and the wood, and each of those is taken and comes
+   * back. Two things tell the kinds apart, and both matter:
+   *
+   * - **Exclusive or side by side.** An area, once occupied, is occupied
+   *   against everybody: whoever takes it takes it from all the rest. A stock
+   *   is only taken from those who draw the *same* stock. Getting that wrong is
+   *   what once left a band freezing and naked — food ranks first, so it took
+   *   the whole range, and no tick ever produced wood, bast or hides.
+   * - **Memory.** An area is unchanged next tick however hard it was worked;
+   *   what is missing from a stock stays missing, grows back out of the rest,
+   *   and costs more per unit the thinner it gets. So a stock can be overtaxed
+   *   and an area cannot.
+   *
+   * An area is therefore *not* the limiting case of a fast-growing stock. At
+   * rate 1 a stock taken in half comes back to three quarters, not to full: it
+   * would take a rate of K/stock, rising without bound as the stock thins.
    *
    * Mechanically it is decay with the sign reversed and a ceiling — the
    * logistic curve, the standard model of a renewable resource:
    *
-   *     ceiling  K = area of `capacity` × `densityPerArea`
+   *     ceiling  K = area of `capacity` × quality × `densityPerArea`
    *     growth     = `ratePerTick` × (stock + `refuge`) × (1 − stock / K)
+   *
+   * Quality sits in the ceiling because that is where land quality can still be
+   * felt once nothing pays for ground: poorer country carries less (E13).
    *
    * `refuge` is what keeps E20 — no state without a way back. At a stock of
    * nought the growth term would be nought as well, and a range hunted empty

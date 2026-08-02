@@ -5,6 +5,7 @@ import type { ActivityId, CapacityId, SectorId, StockId } from "./ids.ts";
 import { drawShocks, type Shocks } from "./risk.ts";
 import {
   capacityOf,
+  carryingArea,
   stockOf,
   type ActiveProject,
   type Capacity,
@@ -144,8 +145,8 @@ function renewalIn(
 ): Renewal | undefined {
   const rule = index.stock.get(stockId)?.regrowth;
   if (rule === undefined) return undefined;
-  const owned = capacityOf(sector.capacityHeld, rule.capacity).amount;
-  const unowned = capacityOf(state.unownedCapacity, rule.capacity).amount;
+  const owned = carryingArea(capacityOf(sector.capacityHeld, rule.capacity));
+  const unowned = carryingArea(capacityOf(state.unownedCapacity, rule.capacity));
   const ceiling = (owned + unowned) * rule.densityPerArea;
   const held = sector.stocks[stockId] ?? 0;
   if (ceiling <= 0) return { held, ceiling: 0, growth: 0 };

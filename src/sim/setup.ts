@@ -2,7 +2,7 @@ import type { Config } from "./config.ts";
 import type { CapacityId, StockId } from "./ids.ts";
 import { HOUSEHOLDS } from "./phases.ts";
 import { createRandomState } from "./random.ts";
-import type { Capacity, GameState } from "./state.ts";
+import { carryingArea, type Capacity, type GameState } from "./state.ts";
 
 export interface StartOptions {
   readonly seed: number;
@@ -40,7 +40,8 @@ export function createState(config: Config, options: StartOptions): GameState {
   for (const stock of config.stocks) {
     const rule = stock.regrowth;
     if (rule === undefined) continue;
-    stocks[stock.id] = (unownedCapacity[rule.capacity]?.amount ?? 0) * rule.densityPerArea;
+    const range = unownedCapacity[rule.capacity];
+    stocks[stock.id] = (range === undefined ? 0 : carryingArea(range)) * rule.densityPerArea;
   }
 
   return {

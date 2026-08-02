@@ -140,6 +140,21 @@ export function capacityOf(capacityHeld: Readonly<Record<CapacityId, Capacity>>,
   return capacityHeld[id] ?? EMPTY_AREA;
 }
 
+/**
+ * How much land this really is, for the purpose of what can live on it (E13).
+ *
+ * Before there are fields, nobody occupies ground: it is walked over, and what
+ * is taken from it grows back. Quality therefore cannot show itself by making a
+ * hectare dearer — no process pays hectares at all. It shows itself in what the
+ * ground **carries**: poorer country holds fewer deer, less growth, fewer
+ * trees. That is Ricardo unchanged, at the only place left where it can bite,
+ * and it is what keeps a change of range costly: the next range is the same
+ * size and a little poorer, so it feeds a little less.
+ */
+export function carryingArea(capacity: Capacity): number {
+  return capacity.amount * capacity.quality;
+}
+
 export function stockOf(stocks: Readonly<Record<StockId, number>>, id: StockId): number {
   return stocks[id] ?? 0;
 }

@@ -65,11 +65,35 @@ export const STAGE1: Config = {
     // all, and that is the point of making it a good of its own rather than a
     // need pointed at wood: it is produced from wood and spent at once.
     { id: "warmth", decayPerTick: 1 },
-    // Animals are not an area (E29). A hectare of forest is not used up by
-    // hunting over it; the deer on it are. So game is a stock that is taken and
-    // breeds again, and the wilderness only says how many of them the range can
-    // carry. Out of that comes the epoch's own history: hunt the big game down
-    // and fish and hard seeds begin to pay.
+    // ---- what the country carries ----
+    //
+    // Nobody in this epoch occupies ground (E29). The band walks over its range
+    // and takes what lives on it, and three different takings happen on the very
+    // same hectare: berries are picked where the deer walk and the deadwood
+    // lies. So the wilderness is not a pot that is emptied, it is the **carrier**
+    // that says how much of each of these there can be — and the water carries
+    // two more.
+    //
+    // The rates say something on their own, and they are the whole reason for
+    // keeping these apart: greens come back within the tick, molluscs and fish
+    // take their time, deer take longer, and a forest hardly comes back at all.
+    // Overtaxing therefore means something different in each case, and the way
+    // out of it is a different length.
+    {
+      // What there is to gather: seeds, berries, roots, nuts. Fast, because
+      // this is the annual growth of a range — which is exactly why gathering
+      // carries the bulk of the food and hunting cannot (Lee: plant food is the
+      // greater part of what foragers eat).
+      id: "plants",
+      decayPerTick: 0,
+      regrowth: {
+        ratePerTick: 1.0,
+        capacity: "wilderness",
+        densityPerArea: 8.0,
+        refuge: 3,
+        maxEffort: 6,
+      },
+    },
     {
       id: "game",
       decayPerTick: 0,
@@ -82,6 +106,21 @@ export const STAGE1: Config = {
       },
     },
     {
+      // What stands and what lies: the wood of the range, and the bast that is
+      // stripped off it. Slowest of them all — which is why the epoch cannot
+      // deforest its country whatever it does, and why clearing and afforesting
+      // belong to the settlers who come after (E13).
+      id: "trees",
+      decayPerTick: 0,
+      regrowth: {
+        ratePerTick: 0.1,
+        capacity: "wilderness",
+        densityPerArea: 20.0,
+        refuge: 5,
+        maxEffort: 6,
+      },
+    },
+    {
       id: "fish",
       decayPerTick: 0,
       regrowth: {
@@ -89,6 +128,24 @@ export const STAGE1: Config = {
         capacity: "water",
         densityPerArea: 4.0,
         refuge: 2,
+        maxEffort: 6,
+      },
+    },
+    {
+      // Mussel and cockle beds. They are picked over slowly and they show it:
+      // the Køkkenmøddinger of Ertebølle hold shells that grow smaller through
+      // the layers, and lower-ranked species that appear as the better ones
+      // thin. That is the archaeological proof that a shore has a memory — so
+      // making it inexhaustible would contradict the very find the process is
+      // built on. What keeps the shore the last reliable thing is not that it
+      // cannot be emptied but that the weather does not reach it.
+      id: "shellfish",
+      decayPerTick: 0,
+      regrowth: {
+        ratePerTick: 0.35,
+        capacity: "water",
+        densityPerArea: 10.0,
+        refuge: 3,
         maxEffort: 6,
       },
     },
@@ -109,6 +166,11 @@ export const STAGE1: Config = {
 
   // -------------------------------------------------------------- capacities
   capacities: [
+    // Wilderness and water are carriers, not pots: no process of this epoch
+    // pays a hectare of either. What they do is set the ceilings of what lives
+    // on them, and their quality says how much that is. Occupying ground begins
+    // with the field and the hut — which is exactly the break the epoch is
+    // about, now in the mechanism and not only in the telling.
     { id: "wilderness" },
     // The second axis, and structurally the most important thing about the
     // epoch (E29): without it everything competes for the same wilderness and
@@ -170,10 +232,10 @@ export const STAGE1: Config = {
       branch: "food",
       activity: "gathering",
       priority: 100,
-      capacityPerOutput: { wilderness: 1.6 },
-      intermediatesPerOutput: { labor: 0.28 },
+      capacityPerOutput: {},
+      intermediatesPerOutput: { labor: 0.28, plants: 1.0 },
       exposure: { weather: 1.0 },
-      qualityWeight: 0.5,
+      qualityWeight: 0,
       unlockedFromStart: true,
     },
     {
@@ -185,16 +247,19 @@ export const STAGE1: Config = {
       branch: "food",
       activity: "gathering",
       priority: 105,
-      capacityPerOutput: { wilderness: 1.6 },
-      intermediatesPerOutput: { labor: 0.182 },
+      capacityPerOutput: {},
+      intermediatesPerOutput: { labor: 0.182, plants: 1.0 },
       exposure: { weather: 1.0 },
-      qualityWeight: 0.5,
+      qualityWeight: 0,
       unlockedFromStart: false,
     },
     {
-      // The mortar's road: the same ground carries more, because small hard
-      // seeds become edible and more of what already grows there counts as
-      // food. Not a smaller appetite — the need is physiology (E29).
+      // The mortar's road: the same growth feeds more, because small hard seeds
+      // become edible and more of what stands there counts as food. Not a
+      // smaller appetite — the need is physiology (E29). It is the one process
+      // of the epoch that takes *less nature* per meal instead of less work,
+      // which is why it is intensification in Boserup's sense and the sickle is
+      // not.
       //
       // Sickle and mortar stand beside each other rather than combining. A
       // process is unlocked by a set, so "both done" cannot be expressed
@@ -206,21 +271,23 @@ export const STAGE1: Config = {
       branch: "food",
       activity: "gathering",
       priority: 103,
-      capacityPerOutput: { wilderness: 1.2 },
-      intermediatesPerOutput: { labor: 0.28 },
+      capacityPerOutput: {},
+      intermediatesPerOutput: { labor: 0.28, plants: 0.75 },
       exposure: { weather: 1.0 },
-      qualityWeight: 0.5,
+      qualityWeight: 0,
       unlockedFromStart: false,
     },
     {
+      // Hunting used to pay a hectare *and* a deer for the same meal — the same
+      // nature counted twice, and it was the hectare that bound.
       id: "hunting",
       branch: "food",
       activity: "hunting",
       priority: 90,
-      capacityPerOutput: { wilderness: 1.5 },
+      capacityPerOutput: {},
       intermediatesPerOutput: { labor: 0.45, game: 1.0 },
       exposure: { weather: 0.8 },
-      qualityWeight: 0.5,
+      qualityWeight: 0,
       unlockedFromStart: true,
     },
     {
@@ -228,10 +295,10 @@ export const STAGE1: Config = {
       branch: "food",
       activity: "hunting",
       priority: 95,
-      capacityPerOutput: { wilderness: 1.5 },
+      capacityPerOutput: {},
       intermediatesPerOutput: { labor: 0.27, game: 1.0 },
       exposure: { weather: 0.8 },
-      qualityWeight: 0.5,
+      qualityWeight: 0,
       unlockedFromStart: false,
     },
     {
@@ -241,7 +308,7 @@ export const STAGE1: Config = {
       branch: "food",
       activity: "fishing",
       priority: 80,
-      capacityPerOutput: { water: 0.8 },
+      capacityPerOutput: {},
       intermediatesPerOutput: { labor: 1.2, fish: 1.0 },
       // Safer than the land, not immune to it: the drought that costs the
       // harvest lowers the river too. At 0.15 the water carried a quarter of
@@ -250,32 +317,25 @@ export const STAGE1: Config = {
       // figure — mussels lie there whether it rains or not, and that is what
       // made it the last reliable thing to fall back on.
       exposure: { weather: 0.4 },
-      qualityWeight: 0.2,
+      qualityWeight: 0,
       unlockedFromStart: true,
     },
     {
       // The mortar of the water (E29): far more out of the same stretch of
       // shore, at a great deal more work — gather, carry, shuck. So it does not
-      // pay while the water is wide and does pay once it is crowded, which is
+      // pay while the fish are plentiful and does pay once they thin, which is
       // Boserup on the second axis.
       //
       // Nobody has to invent picking up shellfish, so it stands open from the
       // first tick and the allocation reaches for it when the water gets tight.
-      // The Køkkenmøddinger of Ertebølle — hills of oyster and cockle shell —
-      // are the archaeological fingerprint of exactly this.
-      //
-      // Deliberately without a stock of its own. Real beds can be picked over
-      // too, but a third renewable stock is model the epoch does not need, and
-      // this way the shore still carries when the fish have gone — which is the
-      // whole broad-spectrum thought: when the better thins, the worse pays.
       id: "shellfish_gathering",
       branch: "food",
       activity: "fishing",
       priority: 75,
-      capacityPerOutput: { water: 0.5 },
-      intermediatesPerOutput: { labor: 3.0 },
+      capacityPerOutput: {},
+      intermediatesPerOutput: { labor: 3.0, shellfish: 1.0 },
       exposure: { weather: 0.1 },
-      qualityWeight: 0.2,
+      qualityWeight: 0,
       unlockedFromStart: true,
     },
     {
@@ -286,10 +346,10 @@ export const STAGE1: Config = {
       branch: "food",
       activity: "fishing",
       priority: 85,
-      capacityPerOutput: { water: 0.8 },
+      capacityPerOutput: {},
       intermediatesPerOutput: { labor: 0.48, fish: 1.0 },
       exposure: { weather: 0.4 },
-      qualityWeight: 0.2,
+      qualityWeight: 0,
       unlockedFromStart: false,
     },
 
@@ -331,14 +391,10 @@ export const STAGE1: Config = {
       branch: "wood",
       activity: "woodcutting",
       priority: 100,
-      // Deadwood lies thick in a forest. At 0.6 the five hectares a band's
-      // firewood really wants were never granted, because food had taken the
-      // ground first — so warmth sat at 0.48 for ever and *cold* regulated the
-      // population instead of hunger. The story of the epoch is about food.
-      capacityPerOutput: { wilderness: 0.2 },
-      intermediatesPerOutput: { labor: 0.6 },
+      capacityPerOutput: {},
+      intermediatesPerOutput: { labor: 0.6, trees: 1.0 },
       exposure: { weather: 0.2 },
-      qualityWeight: 0.4,
+      qualityWeight: 0,
       unlockedFromStart: true,
     },
     {
@@ -349,10 +405,10 @@ export const STAGE1: Config = {
       branch: "wood",
       activity: "woodcutting",
       priority: 110,
-      capacityPerOutput: { wilderness: 0.2 },
-      intermediatesPerOutput: { labor: 0.24 },
+      capacityPerOutput: {},
+      intermediatesPerOutput: { labor: 0.24, trees: 1.0 },
       exposure: { weather: 0.2 },
-      qualityWeight: 0.4,
+      qualityWeight: 0,
       unlockedFromStart: false,
     },
 
@@ -385,36 +441,40 @@ export const STAGE1: Config = {
 
     // ---- the two roads to clothing ----
     //
-    // Hides want much ground and little labour, fibre little ground and much
-    // labour. That is the first real alternative of the epoch (E31): it shifts
-    // the risk profile, not the outcome. When land is tight fibre wins, when
-    // hands are tight hides win — and it says something true, because it was
-    // exactly when land grew tight that people went from animal to plant
-    // materials.
+    // Hides want the scarcest thing the range holds and little labour; fibre
+    // wants the most plentiful and a great deal of labour. That is the first
+    // real alternative of the epoch (E31): it shifts the risk profile, not the
+    // outcome. When the herd is thin fibre wins, when hands are short hides win
+    // — and it says something true, because it was exactly as game grew scarce
+    // that people went from animal to plant materials.
     //
-    // The difference in ground does not sit in these two processes but one step
-    // above them, in hunting and bast gathering. The player feels it all the
-    // same, because the allocation reckons in chain coefficients (E21).
+    // The difference does not sit in these two processes but one step above
+    // them, in hunting and bast gathering. The player feels it all the same,
+    // because the allocation reckons in chain coefficients (E21).
     {
       id: "hunting_hides",
       branch: "hides",
       activity: "hunting",
       priority: 100,
-      capacityPerOutput: { wilderness: 1.5 },
+      capacityPerOutput: {},
       intermediatesPerOutput: { labor: 0.3, game: 1.0 },
       exposure: { weather: 0.8 },
-      qualityWeight: 0.5,
+      qualityWeight: 0,
       unlockedFromStart: true,
     },
     {
+      // Bast is the inner bark of a lime, and taking it takes the tree — so it
+      // draws on the same standing wood the firewood does, and dearly: two and
+      // a half trees' worth of drawing for one of fibre, the relation the areas
+      // used to carry.
       id: "bast_gathering",
       branch: "fibre",
       activity: "bastgathering",
       priority: 100,
-      capacityPerOutput: { wilderness: 0.5 },
-      intermediatesPerOutput: { labor: 1.0 },
+      capacityPerOutput: {},
+      intermediatesPerOutput: { labor: 1.0, trees: 2.5 },
       exposure: { weather: 0.4 },
-      qualityWeight: 0.4,
+      qualityWeight: 0,
       unlockedFromStart: true,
     },
     {
@@ -668,12 +728,23 @@ export const STAGE1: Config = {
         { type: "setCapacity", capacity: "storage", sector: "households", to: { kind: "fixed", value: 0 } },
         { type: "stock", id: "food", to: { kind: "fixed", value: 0 } },
         { type: "stock", id: "wood", to: { kind: "fixed", value: 0 } },
-        // Found: a country that has not been hunted over.
-        { type: "stock", id: "game", to: { kind: "ceiling" } },
-        { type: "stock", id: "fish", to: { kind: "ceiling" } },
         // Same size, a little poorer — and the good ranges of the world are
-        // there but once (E13).
+        // there but once (E13). Both kinds of ground go down together: one
+        // moves with the whole range, shore and all. The water inherits what
+        // the wilderness has just become rather than drawing again, because
+        // drawing again would count the move as two takings and make the new
+        // country twice as poor.
         { type: "setCapacity", capacity: "wilderness", quality: { kind: "nextTaking" } },
+        { type: "setCapacity", capacity: "water", quality: { kind: "from", capacity: "wilderness" } },
+        // Found: a country nobody has been over — every one of the five, or the
+        // band would move into a range it had already gathered bare. After the
+        // quality, so that what it finds is the full measure of the *new*
+        // country and not of the one it left.
+        { type: "stock", id: "plants", to: { kind: "ceiling" } },
+        { type: "stock", id: "game", to: { kind: "ceiling" } },
+        { type: "stock", id: "trees", to: { kind: "ceiling" } },
+        { type: "stock", id: "fish", to: { kind: "ceiling" } },
+        { type: "stock", id: "shellfish", to: { kind: "ceiling" } },
       ],
       sector: "households",
     },
