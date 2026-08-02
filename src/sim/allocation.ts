@@ -63,8 +63,16 @@ export interface TierOutcome {
   readonly tier: NeedTierId;
   readonly rank: number;
   readonly need: number;
-  readonly fromStock: number;
-  readonly produced: number;
+  /**
+   * What this rank actually got, out of the one pot everything lies in.
+   *
+   * There is no telling apart "out of today's making" and "out of the store",
+   * because a unit in the pot does not know when it got there — and asking cost
+   * more than it told. What a reader wants is whether the community is living
+   * off its substance, and `storeBefore` against `storeAfter` says that
+   * directly.
+   */
+  readonly served: number;
   /** In [0, 1]: what arrived, against what was needed. */
   readonly coverage: number;
   readonly binding: Binding;
@@ -88,6 +96,17 @@ export interface AllocationResult {
   readonly produced: Readonly<Record<StockId, number>>;
   readonly consumed: Readonly<Record<StockId, number>>;
   readonly runs: readonly ProcessRun[];
+
+  /**
+   * What lay in store when the tick began, and what lies there when it ends —
+   * per good, after decay and regrowth have had their say.
+   *
+   * The pair is what tells a reader whether a good year was put by or a bad one
+   * lived through, and it is the only honest way to say it now that making and
+   * keeping share one pot.
+   */
+  readonly storeBefore: Readonly<Record<StockId, number>>;
+  readonly storeAfter: Readonly<Record<StockId, number>>;
 
   /** Occupied area per type; utilisation follows from it (E4). */
   readonly capacityUsed: Readonly<Record<CapacityId, number>>;
@@ -301,6 +320,10 @@ export function allocate(input: AllocationInput): AllocationResult {
   const heads = sector?.heads ?? 0;
   const laborAvailable = heads * (sector?.workAbility ?? 0) * (sector?.productivity ?? 0);
 
+  // What the tick found in store, kept aside before anything is taken out of it
+  // or put into it: the opening balance the closing one is read against.
+  const storeBefore: Record<StockId, number> = { ...(sector?.stocks ?? {}) };
+
   const pools: Pools = {
     amount: poolCapacities(state, sectorId, config),
     stock: { ...(sector?.stocks ?? {}) },
@@ -368,7 +391,6 @@ export function allocate(input: AllocationInput): AllocationResult {
 
   const standing = renewals(state, index);
   const consumed: Record<StockId, number> = {};
-  const fromStock = new Map<string, number>();
   const tierList = index.tiersByRank.filter((tier) => input.unlockedBranches.has(tier.branch));
 
   // The demand side of a shock (E24): a bad year asks for more, where a process
@@ -545,9 +567,25 @@ export function allocate(input: AllocationInput): AllocationResult {
     share: totalOutput > 0 ? run.output / totalOutput : 0,
   }));
 
-  // Coverage per tier: the store it took plus its share of what was produced,
-  // handed out by rank (E9 rations, it does not produce).
-  const left: Record<StockId, number> = { ...produced };
+  // Everything lies in one pot: what was already there and what was made today
+  // went into it alike, and the ranks now help themselves from it in order (E9
+  // rations, it does not produce).
+  //
+  // It used to be two — a list of today's making beside the store — and each
+  // rank took from the list first and reached into the store for the rest,
+  // because a store is a fallback and not a first source (E19). But the making
+  // had gone into the store as well, so that whatever a downstream process
+  // needed was there for it; so a rank that came up short reached into the
+  // store and found again exactly the food it had just been denied. At one tick
+  // forty-two of food were made and sixty-nine handed out, twenty-seven of them
+  // out of a store holding nothing. Hunger could not happen: every gap was
+  // filled from a place that did not exist, and because every rank always read
+  // as covered, births ran at full tilt until the range itself gave way.
+  //
+  // One pot cannot double-count, and it does not weaken E19: that rule bites on
+  // the **planning** side, which is untouched — the ask is still the whole need
+  // reckoned against a cautious year, never the need less the store. So a good
+  // year leaves something over and a bad one eats into it.
   const tiers: TierOutcome[] = [];
   let overallBinding: Binding = { kind: "none" };
   let bindingTier: string | undefined;
@@ -556,32 +594,31 @@ export function allocate(input: AllocationInput): AllocationResult {
     // What the year really asked for, against what the plan set aside for an
     // average one. A hard winter therefore shows up as a gap, not as extra work.
     const need = heads * perHead(tier, shocks);
-    const got = Math.min(need, left[tier.stock] ?? 0);
-    left[tier.stock] = (left[tier.stock] ?? 0) - got;
-    // And only now the store, for what the year did not deliver.
-    const taken = Math.min(Math.max(0, need - got), Math.max(0, pools.stock[tier.stock] ?? 0));
-    pools.stock[tier.stock] = (pools.stock[tier.stock] ?? 0) - taken;
-    fromStock.set(tier.id, taken);
+    const served = Math.min(need, Math.max(0, pools.stock[tier.stock] ?? 0));
+    pools.stock[tier.stock] = (pools.stock[tier.stock] ?? 0) - served;
 
-    const coverage = need > 0 ? Math.min(1, (taken + got) / need) : 1;
+    const coverage = need > 0 ? Math.min(1, served / need) : 1;
     const binding = coverage < 1 - 1e-9 ? bindingFromPlan(plan) : { kind: "none" as const };
-    tiers.push({
-      tier: tier.id,
-      rank: tier.rank,
-      need,
-      fromStock: taken,
-      produced: got,
-      coverage,
-      binding,
-    });
+    tiers.push({ tier: tier.id, rank: tier.rank, need, served, coverage, binding });
     if (coverage < 1 - 1e-9 && bindingTier === undefined) {
       overallBinding = binding;
       bindingTier = tier.id;
     }
 
-    const served = taken + got;
     const eaten = served * tier.consumedOnUse;
     if (eaten > 0) consumed[tier.stock] = (consumed[tier.stock] ?? 0) + eaten;
+  }
+
+  // What lay there before and what lies there after. The pot the ranks just ate
+  // from is not the answer: it was drawn down for rationing between them, while
+  // what is really kept is what a rank did not use up (E19 — a coat is worn,
+  // not eaten). So the closing store is reckoned the way the tick books it.
+  const storeAfter: Record<StockId, number> = { ...storeBefore };
+  for (const [id, amount] of Object.entries(produced)) {
+    storeAfter[id] = (storeAfter[id] ?? 0) + amount;
+  }
+  for (const [id, amount] of Object.entries(consumed)) {
+    storeAfter[id] = Math.max(0, (storeAfter[id] ?? 0) - amount);
   }
 
   return {
@@ -597,6 +634,8 @@ export function allocate(input: AllocationInput): AllocationResult {
     tiers,
     produced,
     consumed,
+    storeBefore,
+    storeAfter,
     runs: withShares,
     capacityUsed,
     capacityTotal: Object.fromEntries(

@@ -76,6 +76,14 @@ export interface Derived {
   readonly tiers: AllocationResult["tiers"];
   readonly runs: AllocationResult["runs"];
   readonly produced: Readonly<Record<StockId, number>>;
+  /**
+   * What lay in store when the tick began and what lies there when it ends, per
+   * good. The difference is the one thing a reader needs in order to tell a
+   * year that was put by from one that was lived through — and since making and
+   * keeping share one pot (E19), it is the only place that answer comes from.
+   */
+  readonly storeBefore: Readonly<Record<StockId, number>>;
+  readonly storeAfter: Readonly<Record<StockId, number>>;
 
   /** Factor on the heads this tick; 1 means the band stands (E20). */
   readonly birthFactor: number;
@@ -240,6 +248,8 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     tiers: allocation.tiers,
     runs: allocation.runs,
     produced: allocation.produced,
+    storeBefore: allocation.storeBefore,
+    storeAfter: allocation.storeAfter,
     birthFactor,
     survival,
     communityGivenUp: state.abandonedAt !== undefined,

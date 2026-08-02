@@ -32,11 +32,26 @@ function runTicks(state: GameState, count: number): GameState {
   return next;
 }
 
+/**
+ * Runs a project to completion, claiming behind every need.
+ *
+ * The rank matters and the engine's default is the front of the queue, ahead of
+ * eating (E18: the danger of committing is the player's to choose). These tests
+ * are about what an effect does once it lands, not about that bargain, so they
+ * take the patient end of it — at the front, a project starves the community
+ * before it ever finishes.
+ */
+const BEHIND_EVERY_NEED = 1000;
+
 function finish(state: GameState, projectId: string, on: ConfigIndex = index): GameState {
-  let next = apply(state, { type: "startProject", id: projectId }, on).state;
+  let next = apply(
+    state,
+    { type: "startProject", id: projectId, rank: BEHIND_EVERY_NEED },
+    on,
+  ).state;
   const def = on.project.get(projectId);
   if (def === undefined) throw new Error(projectId);
-  for (let i = 0; i < def.minTicks * 6 && completedCount(next, projectId) === 0; i += 1) {
+  for (let i = 0; i < def.minTicks * 20 && completedCount(next, projectId) === 0; i += 1) {
     next = tick(next, on);
   }
   return next;
