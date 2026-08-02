@@ -33,10 +33,19 @@ export function createState(config: Config, options: StartOptions): GameState {
     };
   }
 
-  // And what lives on it starts at what it carries — a band arrives in a full
-  // country, not in one it has already hunted out. Reckoned from the same rule
-  // the regrowth uses, so the two cannot drift apart.
-  const stocks: Record<StockId, number> = { food: options.food ?? heads };
+  // Nothing put by. The band owns what the country holds and not one meal more:
+  // living from hand to mouth is the state the epoch starts in and the thing it
+  // spends itself getting out of, so handing it a reserve on the first tick
+  // gives away the very want that the storage pit later answers. It made no
+  // difference in any case — food spoils at nine tenths a tick, so of the
+  // twenty-five it used to start with, two and a half survived to the first
+  // allocation.
+  //
+  // What it does start with is a full country: what lives on the range begins
+  // at what the range carries, because a band arrives in a country it has not
+  // yet hunted out. Reckoned from the same rule the regrowth uses, so the two
+  // cannot drift apart.
+  const stocks: Record<StockId, number> = { food: options.food ?? 0 };
   for (const stock of config.stocks) {
     const rule = stock.regrowth;
     if (rule === undefined) continue;

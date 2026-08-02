@@ -246,12 +246,12 @@ describe("projects (E18)", () => {
       },
       local,
     ).state;
-    const foodBefore = state.sectors["households"]?.stocks["food"] ?? 0;
     state = tick(state, local);
     expect(state.activeProjects[0]?.progress).toBe(0);
-    // Nothing was taken for the project: food only moved by decay and eating.
+    // And nothing was taken for it either: the good it wants never appears, so
+    // it stands still instead of quietly eating what it cannot use.
     expect(state.sectors["households"]?.stocks["housing"] ?? 0).toBe(0);
-    expect(foodBefore).toBeGreaterThan(0);
+    expect(state.activeProjects.some((p) => p.id === "sickle")).toBe(true);
   });
 
   it("effects apply exactly once, on completion", () => {
