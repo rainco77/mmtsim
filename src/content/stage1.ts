@@ -650,7 +650,7 @@ export const STAGE1: Config = {
       //
       // Also exposed on the demand side: a cold year asks for more of it.
       id: "clothing_cover",
-      rank: 300,
+      rank: 400,
       exposure: { weather: 0.3 },
       stock: "clothing",
       branch: "clothing",
@@ -661,9 +661,12 @@ export const STAGE1: Config = {
       workAbility: { atZero: 0.6, atFull: 1.0 },
     },
     {
-      // Arrives with sedentism, so it is numbered into the gap (E29).
+      // Arrives with sedentism, and ranked by what its failure costs: no roof
+      // takes a tenth of the people, no clothing takes nobody but costs the
+      // strength to work. The deadly rank goes first — so this is 300 and
+      // clothing 400, swapped once the two were read side by side.
       id: "shelter_roof",
-      rank: 400,
+      rank: 300,
       stock: "housing",
       branch: "housing",
       perHead: 0.3,

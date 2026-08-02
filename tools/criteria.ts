@@ -42,6 +42,13 @@ const FOOD = "food";
 /** The two natural capacities food is won from, measured apart (see `Cell`). */
 const AXES = ["wilderness", "water"] as const;
 
+/**
+ * How many moves count as having played the option out. Each one leaves the
+ * community on country a twentieth poorer than the last, so by here the range
+ * carries about two thirds of what the first one did.
+ */
+const MOVES_EXHAUSTED = 8;
+
 /** Does a process live off this stretch of country — by paying it or by taking what grows on it? */
 const drawsOn = (process: ProcessDef, capacity: string): boolean =>
   livesOn(process, capacity, index);
@@ -280,6 +287,8 @@ interface Trace {
   readonly seed: number;
   readonly sedentismAt: number | null;
   readonly abandoned: boolean;
+  /** How often the community picked up and moved to a fresh country (E13). */
+  readonly moves: number;
   readonly length: number;
   readonly headsAtEnd: number;
   readonly idleShare: number;
@@ -401,6 +410,7 @@ function play(seed: number, policy: Policy): Trace {
     seed,
     sedentismAt,
     abandoned,
+    moves: state.landTakings,
     length: ticks,
     headsAtEnd: state.sectors["households"]?.heads ?? 0,
     idleShare: available > 0 ? idle / available : 0,
@@ -523,10 +533,17 @@ const report = {
     // false. And a player who does nothing and dies learns only that the game
     // is unfair; a player who does nothing and **stands still** sees at once
     // what acting is for.
-    "doing nothing does not kill (T4)": {
+    "doing nothing does not kill before the country is used up (T4)": {
       abandonedShare: round(share(passive.map((t) => t.abandoned))),
-      seeds: failedSeeds(passive, (t) => t.abandoned),
-      pass: passive.every((t) => !t.abandoned),
+      movesBeforeEndMean: round(mean(passive.map((t) => t.moves))),
+      // Walking away from a picked-over range is what foragers did, so it
+      // belongs to the baseline and not to acting. What it buys is time, not
+      // escape: every country is a little poorer than the last (E13), so the
+      // cycle runs slowly downhill. Idleness may therefore end in the
+      // community being given up — but never before moving has been played out.
+      limit: MOVES_EXHAUSTED,
+      seeds: failedSeeds(passive, (t) => t.abandoned && t.moves < MOVES_EXHAUSTED),
+      pass: passive.every((t) => !t.abandoned || t.moves >= MOVES_EXHAUSTED),
     },
     // What idleness costs is therefore not lives but progress: it never gets
     // out of the epoch. Failing remains the price of acting *badly* — of

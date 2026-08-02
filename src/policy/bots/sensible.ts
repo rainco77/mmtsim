@@ -68,6 +68,25 @@ function soleSource(capacity: string, stock: string, index: ConfigIndex): boolea
 /** Below this the most basic need is not met and nothing else matters. */
 const FED = 0.95;
 
+/**
+ * Where this player puts a project: behind everything that costs lives or the
+ * strength to work, ahead of putting by, eating one's fill and being warm.
+ *
+ * The bargain is then the one a project ought to be — progress bought with
+ * fewer children and less comfort, never with anybody's life. It used to sit
+ * one place below bare hunger, on the reasoning that this player would go
+ * without comfort but not starve; but below hunger does not come comfort, it
+ * comes **fire**, and going without fire kills three in five. Measured, the
+ * community was down from twenty-five to eight by tick 3 with warmth at
+ * nought, in every run — so "thoughtful play fails" was measuring a beginner's
+ * mistake in the yardstick, not anything about the game.
+ *
+ * The declared default stays at the very back, where nothing can ever die of
+ * it. Moving up to here is what a player learns, and this is the player who
+ * has learnt it.
+ */
+const BOUGHT_WITH_COMFORT = 450;
+
 /** Below this share of what the range carries, a stock counts as spent (E29). */
 const SPENT = 0.25;
 
@@ -185,7 +204,7 @@ export class SensiblePolicy implements Policy {
             (effect) => effect.type === "stock" && effect.to.kind === "ceiling",
           ),
       );
-      if (move !== undefined) return [{ type: "startProject", id: move.id, rank: lowest + 1 }];
+      if (move !== undefined) return [{ type: "startProject", id: move.id, rank: BOUGHT_WITH_COMFORT }];
     }
 
     const open = derived.projects.filter((project) => {
@@ -228,10 +247,6 @@ export class SensiblePolicy implements Policy {
     const start = ranked[0];
     if (start === undefined) return [];
 
-    // Urgency is part of starting something (E18): this player puts every
-    // project just below bare survival — he is willing to go without comfort
-    // for it, but not to starve for it. Leaving it at the declared default,
-    // which is above every need, is what `eager` does, and it kills.
-    return [{ type: "startProject", id: start.id, rank: lowest + 1 }];
+    return [{ type: "startProject", id: start.id, rank: BOUGHT_WITH_COMFORT }];
   }
 }
