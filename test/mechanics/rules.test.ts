@@ -516,9 +516,9 @@ describe("sedentism (E29)", () => {
     const full = tick(withPits(100), index).sectors["households"]?.stocks["food"] ?? 0;
 
     expect(bare).toBeCloseTo(100 * (1 - 0.9), 6);
-    expect(full).toBeCloseTo(100 * (1 - 0.4), 6);
+    expect(full).toBeCloseTo(100 * (1 - 0.2), 6);
     // Half covered: half at the sheltered rate, half at the ordinary one.
-    expect(half).toBeCloseTo(50 * (1 - 0.4) + 50 * (1 - 0.9), 6);
+    expect(half).toBeCloseTo(50 * (1 - 0.2) + 50 * (1 - 0.9), 6);
     expect(half).toBeGreaterThan(bare);
     expect(full).toBeGreaterThan(half);
 

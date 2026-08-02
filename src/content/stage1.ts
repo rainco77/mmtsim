@@ -43,10 +43,18 @@ export const STAGE1: Config = {
       // buys: maintenance and a guard.
       protectedBy: {
         capacity: "storage",
-        // Between warmth, which kills, and satiety, which does not: one puts by
-        // before one eats one's fill, and never before one eats at all.
-        rank: 250,
-        decayPerTick: 0.4,
+        // Behind everything that costs life or the strength to work, ahead of
+        // comfort alone: one puts by before eating one's fill, and never
+        // before eating at all or being clothed against the winter.
+        rank: 500,
+        // A pit dug by people who move on. It has to keep distinctly worse
+        // than a store in a place someone lives in and guards (0.12), and
+        // distinctly better than nothing (0.9) — but at 0.4 it kept so badly
+        // that no store was physically possible: two fifths of it spoiled every
+        // tick, so a stock could never reach more than about two and a half
+        // times what came in, and the lesson the epoch is built around could
+        // not happen before the epoch was over.
+        decayPerTick: 0.2,
         decayWhenRule: [{ rule: "settled", decayPerTick: 0.12 }],
       },
     },
@@ -526,7 +534,7 @@ export const STAGE1: Config = {
     {
       // Arrives with sedentism, so it is numbered into the gap (E29).
       id: "shelter_roof",
-      rank: 350,
+      rank: 400,
       stock: "housing",
       branch: "housing",
       perHead: 0.3,
@@ -536,7 +544,7 @@ export const STAGE1: Config = {
     },
     {
       id: "food_satiety",
-      rank: 400,
+      rank: 600,
       stock: "food",
       branch: "food",
       perHead: 0.6,

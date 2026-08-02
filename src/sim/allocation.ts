@@ -387,7 +387,21 @@ export function allocate(input: AllocationInput): AllocationResult {
   for (const tier of tierList) {
     const need = heads * perHead(tier, plannedShocks);
     const inStock = pools.stock[tier.stock] ?? 0;
-    const taken = Math.min(need, Math.max(0, inStock));
+    // What a store holds is put by *for* the needs that outrank it. A need
+    // ranked below it may only take what the store does not cover — one does
+    // not eat the winter's reserve for comfort. The rank therefore says the
+    // same thing in both directions: it divides what is provided for from what
+    // has to wait.
+    //
+    // Without this the store was filled and then eaten again the next tick:
+    // measured, a hundred and eighty units of pit stood empty while satiety sat
+    // at 0.29, because comfort had drunk the reserve.
+    const shelter = index.stock.get(tier.stock)?.protectedBy;
+    const reach =
+      shelter !== undefined && tier.rank > shelter.rank
+        ? Math.max(0, inStock - (pools.amount[shelter.capacity]?.available ?? 0))
+        : inStock;
+    const taken = Math.min(need, Math.max(0, reach));
     pools.stock[tier.stock] = inStock - taken;
     fromStock.set(tier.id, taken);
     if (need - taken > 1e-9) {
