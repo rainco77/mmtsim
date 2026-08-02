@@ -47,6 +47,9 @@ export const STAGE1: Config = {
         // comfort alone: one puts by before eating one's fill, and never
         // before eating at all or being clothed against the winter.
         rank: 500,
+        // Two ticks' worth is what is worth holding: enough that a bad year is
+        // blunted, not so much that the work is wasted on what will spoil.
+        coverTicks: 2,
         // A pit dug by people who move on. It has to keep distinctly worse
         // than a store in a place someone lives in and guards (0.12), and
         // distinctly better than nothing (0.9) — but at 0.4 it kept so badly
@@ -981,11 +984,6 @@ export const STAGE1: Config = {
   // process (E5). Caution: how far below the mean the plan aims, so that an
   // ordinary year leaves something over (E24).
   risk: { aversion: 0.5, caution: 0.1 },
-
-  // How much of what it uses a society additionally puts by (E19). A start
-  // value: Halstead and O'Shea put the normal surplus of such societies at
-  // something like a tenth to a third above need.
-  saving: { rate: 0.2, pauseBelow: 0.5 },
 
   // The player may set the order by hand from the start; a later institution
   // unsets this rule (E23) and the economy decides alone from then on.

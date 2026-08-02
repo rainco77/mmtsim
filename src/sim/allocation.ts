@@ -366,8 +366,7 @@ export function allocate(input: AllocationInput): AllocationResult {
     }
   }
 
-  // Ranks eat from the store first, lowest rank first (E9). What is left over
-  // is the demand the plan has to cover.
+  const standing = renewals(state, index);
   const consumed: Record<StockId, number> = {};
   const fromStock = new Map<string, number>();
   const tierList = index.tiersByRank.filter((tier) => input.unlockedBranches.has(tier.branch));
@@ -384,82 +383,38 @@ export function allocate(input: AllocationInput): AllocationResult {
     return factor > 0 ? base / factor : base;
   };
 
+  // What the settlement means to live on this tick, all of it. The store is
+  // **not** drawn on here (E19): one lives off what is being made and reaches
+  // into the store when that falls short. Taking from it first was what kept it
+  // empty — the pits held one tick's saving and no more, however large they
+  // were, because every tick began by eating them and ended by refilling them.
   for (const tier of tierList) {
     const need = heads * perHead(tier, plannedShocks);
-    const inStock = pools.stock[tier.stock] ?? 0;
-    // What a store holds is put by *for* the needs that outrank it. A need
-    // ranked below it may only take what the store does not cover — one does
-    // not eat the winter's reserve for comfort. The rank therefore says the
-    // same thing in both directions: it divides what is provided for from what
-    // has to wait.
-    //
-    // Without this the store was filled and then eaten again the next tick:
-    // measured, a hundred and eighty units of pit stood empty while satiety sat
-    // at 0.29, because comfort had drunk the reserve.
-    const shelter = index.stock.get(tier.stock)?.protectedBy;
-    const reach =
-      shelter !== undefined && tier.rank > shelter.rank
-        ? Math.max(0, inStock - (pools.amount[shelter.capacity]?.available ?? 0))
-        : inStock;
-    const taken = Math.min(need, Math.max(0, reach));
-    pools.stock[tier.stock] = inStock - taken;
-    fromStock.set(tier.id, taken);
-    if (need - taken > 1e-9) {
-      demands.push({ tier, stock: tier.stock, amount: need - taken });
-    }
+    if (need > 1e-9) demands.push({ tier, stock: tier.stock, amount: need });
   }
 
-  // Putting something by (E19, E29). Not the whole gap up to the pits: left to
-  // claim that, a store strips whatever is within reach to fill itself —
-  // measured, the tick a hundred units of pit were finished the take from the
-  // water went from 21 to 45 against a growth of 16, and the fishery was dead
-  // three ticks later.
+  // Putting something by (E19). One figure with a meaning: how much of the good
+  // is worth holding, in ticks of what is used of it — and never more than the
+  // store protects, since anything beyond that spoils at the ordinary rate and
+  // the work is wasted.
   //
-  // So the deliberate part of saving is bounded twice. It is a rate out of what
-  // is *used* of the good, and it only arises where the needs **of that good**
-  // were met last tick — whether there was enough wood is no business of the
-  // food store. Both look only backwards, so the plan still knows nothing of
-  // the year ahead; the other half of saving needs no rule at all, since a good
-  // year overshoots the blind plan by itself and the surplus stays in the stock.
-  // The leading brake: nothing is laid in while the country is failing. The
-  // backward-looking rule below only stops once a need has already broken, and
-  // measured that was four ticks too late — the store went on claiming while
-  // the fishery fell from 118 to 1.
-  const standing = renewals(state, index);
-  const countryFailing = Object.values(standing).some(
-    (renewal) => renewal.ceiling > 0 && renewal.held / renewal.ceiling < config.saving.pauseBelow,
-  );
-
+  // A stock is held because output is uncertain, which is as true of a delivery
+  // that fails as of a harvest that does. It needs no guard beyond its rank: a
+  // settlement that cannot feed itself does not reach the store's rank at all.
   for (const stockDef of config.stocks) {
-    if (countryFailing) break;
     const shelter = stockDef.protectedBy;
     if (shelter === undefined) continue;
-    const capacity = pools.amount[shelter.capacity]?.available ?? 0;
-    const gap = capacity - (pools.stock[stockDef.id] ?? 0);
-    if (gap <= 1e-9) continue;
-
-    const wants = tierList.filter((tier) => tier.stock === stockDef.id);
-    // Only the needs that *kill* when they are short have to have been met —
-    // and which those are is read off the content, not named here: a tier that
-    // moves the death rate is one, a tier that moves births or the ability to
-    // work is not.
-    //
-    // Keying it on every need of the good was measured to switch saving off
-    // altogether. Satiety is a need of food and a settlement at the carrying
-    // capacity of its range sits permanently at half to four fifths of it — so
-    // the rule meant to stop a hungry band laying in stores stopped every band
-    // from ever laying in any. Seven pits were dug over a hundred and sixty
-    // ticks and not one of them ever held anything.
-    const vital = wants.filter((tier) => tier.deathRate !== undefined);
-    const guard = vital.length > 0 ? vital : wants;
-    const wentShort = guard.some((tier) => (state.lastCoverage[tier.id] ?? 1) < 0.999);
-    if (wentShort) continue;
     let used = 0;
-    for (const tier of wants) {
+    for (const tier of tierList) {
+      if (tier.stock !== stockDef.id) continue;
       used += heads * perHead(tier, plannedShocks) * tier.consumedOnUse;
     }
-    const claim = Math.min(gap, config.saving.rate * used);
-    if (claim <= 1e-9) continue;
+    const target = Math.min(
+      pools.amount[shelter.capacity]?.available ?? 0,
+      shelter.coverTicks * used,
+    );
+    const gap = target - (pools.stock[stockDef.id] ?? 0);
+    if (gap <= 1e-9) continue;
 
     demands.push({
       tier: {
@@ -471,7 +426,7 @@ export function allocate(input: AllocationInput): AllocationResult {
         consumedOnUse: 0,
       },
       stock: stockDef.id,
-      amount: claim,
+      amount: gap,
     });
   }
 
@@ -591,10 +546,12 @@ export function allocate(input: AllocationInput): AllocationResult {
     // What the year really asked for, against what the plan set aside for an
     // average one. A hard winter therefore shows up as a gap, not as extra work.
     const need = heads * perHead(tier, shocks);
-    const taken = fromStock.get(tier.id) ?? 0;
-    const wanted = Math.max(0, need - taken);
-    const got = Math.min(wanted, left[tier.stock] ?? 0);
+    const got = Math.min(need, left[tier.stock] ?? 0);
     left[tier.stock] = (left[tier.stock] ?? 0) - got;
+    // And only now the store, for what the year did not deliver.
+    const taken = Math.min(Math.max(0, need - got), Math.max(0, pools.stock[tier.stock] ?? 0));
+    pools.stock[tier.stock] = (pools.stock[tier.stock] ?? 0) - taken;
+    fromStock.set(tier.id, taken);
 
     const coverage = need > 0 ? Math.min(1, (taken + got) / need) : 1;
     const binding = coverage < 1 - 1e-9 ? bindingFromPlan(plan) : { kind: "none" as const };
