@@ -125,7 +125,7 @@ export const STAGE1: Config = {
         capacity: "wilderness",
         densityPerArea: 6.0,
         refuge: 3,
-        maxEffort: 6,
+        maxEffort: 30,
       },
     },
     {
@@ -136,7 +136,7 @@ export const STAGE1: Config = {
         capacity: "wilderness",
         densityPerArea: 3.0,
         refuge: 2,
-        maxEffort: 6,
+        maxEffort: 30,
       },
     },
     {
@@ -151,7 +151,7 @@ export const STAGE1: Config = {
         capacity: "wilderness",
         densityPerArea: 20.0,
         refuge: 5,
-        maxEffort: 6,
+        maxEffort: 30,
       },
     },
     {
@@ -162,7 +162,7 @@ export const STAGE1: Config = {
         capacity: "water",
         densityPerArea: 4.0,
         refuge: 2,
-        maxEffort: 6,
+        maxEffort: 30,
       },
     },
     {
@@ -180,7 +180,7 @@ export const STAGE1: Config = {
         capacity: "water",
         densityPerArea: 10.0,
         refuge: 3,
-        maxEffort: 6,
+        maxEffort: 30,
       },
     },
     { id: "hides", decayPerTick: 0.05 },

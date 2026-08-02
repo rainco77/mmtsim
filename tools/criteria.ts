@@ -517,13 +517,37 @@ const report = {
       seeds: failedSeeds(thoughtful, (t) => t.abandoned),
       pass: share(thoughtful.map((t) => t.abandoned)) < 0.01,
     },
-    "bad play is punished — it fails more often (T4)": {
-      thoughtful: round(share(thoughtful.map((t) => t.abandoned))),
-      poor: round(share(poor.map((t) => t.abandoned))),
-      passive: round(share(passive.map((t) => t.abandoned))),
+    // Doing nothing must not kill. People lived this way for an enormous span
+    // without ever settling, so a model in which sitting still ends the
+    // community says the whole way of life was untenable — which is plainly
+    // false. And a player who does nothing and dies learns only that the game
+    // is unfair; a player who does nothing and **stands still** sees at once
+    // what acting is for.
+    "doing nothing does not kill (T4)": {
+      abandonedShare: round(share(passive.map((t) => t.abandoned))),
+      seeds: failedSeeds(passive, (t) => t.abandoned),
+      pass: passive.every((t) => !t.abandoned),
+    },
+    // What idleness costs is therefore not lives but progress: it never gets
+    // out of the epoch. Failing remains the price of acting *badly* — of
+    // building when the community can least afford it — and that is what the
+    // poor player is for.
+    "doing nothing gets nowhere (T4)": {
+      thoughtfulReached: round(share(thoughtful.map((t) => t.sedentismAt !== null))),
+      passiveReached: round(share(passive.map((t) => t.sedentismAt !== null))),
       pass:
-        share(poor.map((t) => t.abandoned)) > share(thoughtful.map((t) => t.abandoned)) ||
-        share(passive.map((t) => t.abandoned)) > share(thoughtful.map((t) => t.abandoned)),
+        share(passive.map((t) => t.sedentismAt !== null)) <
+        share(thoughtful.map((t) => t.sedentismAt !== null)),
+    },
+    // And it has to be worth something while it lasts, or the projects are
+    // ornament: the thoughtful community lives at a higher level than the idle
+    // one, measured where both are still alive.
+    "acting raises the level (T4)": {
+      thoughtfulHeads: round(mean(survived(thoughtful).map((t) => t.headsAtEnd))),
+      passiveHeads: round(mean(survived(passive).map((t) => t.headsAtEnd))),
+      pass:
+        mean(survived(thoughtful).map((t) => t.headsAtEnd)) >
+        mean(survived(passive).map((t) => t.headsAtEnd)) * 1.1,
     },
     // Not the population at the end: an epoch that ends at a milestone lasts
     // longer for the worse player, so his community has more ticks to grow in

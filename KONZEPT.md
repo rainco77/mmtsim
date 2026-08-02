@@ -1175,8 +1175,28 @@ rechtzeitig. Was einen Bestand wirklich rettet, ist, dass das Nehmen teuer wird:
 > was die optimale Nahrungssuche als fallende Begegnungsrate sagt.
 
 Ein Fisch bleibt dabei ein Fisch: Der Aufschlag trifft **Arbeit und Fläche**, das Suchen
-— nie die Menge der Beute je Einheit. Nach oben ist er gedeckelt, damit ein erschöpftes
-Revier nicht unendlich teuer wird.
+— nie die Menge der Beute je Einheit.
+
+**Gerechnet wird gegen den Stand, aus dem gerade genommen wird, nicht gegen den, der
+vorgefunden wurde.** Wer die Hälfte eines Reviers abgrast, findet die zweite Hälfte
+schwerer als die erste; über eine Entnahme `T` aus einem Stand `S` ist das der Mittelwert
+von `Decke / Bestand`, also `(Decke / T) · ln(S / (S − T))`. Am Rand — winzige Entnahme —
+ist das wieder die alte Zahl.
+
+Gegen den vorgefundenen Stand gerechnet war der Preis der der **ersten** Einheit, und
+vier Fünftel eines Reviers zu nehmen kostete je Einheit so wenig wie ein Zwanzigstel.
+Gespielt stand der Zuschlag von Tick 0 bis 45 unverändert auf 1,0, während die Entnahme
+von 31 auf 75 stieg: Nichts wurde teuer, ein Drittel der Arbeit lag brach, kein Projekt
+konnte sich lohnen — und die Gemeinschaft wuchs weiter, bis die Entnahme die ganze Decke
+erreichte, worauf der Stand in drei Ticks von 89 auf 12 fiel und alle auf einmal starben.
+Der Druck kam als Klippe, weil der Preis auf dem Weg dorthin nie stieg.
+
+**Der Deckel nach oben hat zwei Aufgaben, und sie streiten.** Er soll verhindern, dass ein
+erschöpftes Revier unendlich teuer wird, damit es einen Weg zurück gibt (E20 — kein
+Zustand ohne Rückweg). Zugleich ist er die Obergrenze des Preises, der die Übernutzung
+bremsen soll. Bei 6 gewann die erste Aufgabe und die zweite fiel aus: Sobald die Sichel
+die Arbeit je Einheit halbiert hatte, war selbst der Anschlag noch bezahlbar, und die
+Gemeinschaft nahm weiter, bis der Stand kippte.
 
 **Ein Speicher ist ein Rückfall, keine erste Quelle — und das entscheidet sich beim
 Planen, nicht beim Austeilen.** Nachgefragt wird immer der **volle** Bedarf, gerechnet
@@ -1921,7 +1941,9 @@ Lauf, keine Eindrücke:
 | Wechselt der bindende Input im Verlauf? | E6 |
 | Beißt die Malthus-Falle und lässt wieder los? | E7, E20 |
 | Wird Intensivierung irgendwann besser als Expansion? | E6, E13 |
+| **Tötet Nichtstun?** Es darf nicht — es soll nur stehenbleiben | T4 |
 | Kommt eine passive Strategie genauso weit wie eine aktive? | T4 |
+| Hebt Handeln das Niveau, solange beide leben? | T4 |
 | **Kommt schlechtes Spiel genauso weit wie gutes?** | T4 |
 | Gibt es Zustände ohne Weg zurück? | E20 |
 
@@ -1947,6 +1969,22 @@ Gespielt bei 1,4 / 0,4: Zwei Würfe, 0,44 bei Tick 73 und 0,24 bei Tick 81, kost
 28 % und 52 % der Menschen und beendeten den Lauf. Dieselben Würfe kosten mit dem
 größeren Polster und der kleineren Exposition 2 % und 22 %.
 
+**Nichtstun tötet nicht — es bleibt stehen.** Das ist die Grundregel, gegen die die
+anderen gelesen werden. Eine Gemeinschaft, die nichts unternimmt, sitzt auf einem
+niedrigen Niveau und bleibt dort; sie stirbt nicht aus. Zwei Gründe, und beide zählen:
+
+- **Sachlich.** Menschen haben so über eine ungeheure Zeitspanne gelebt, ohne sesshaft
+  zu werden. Ein Modell, in dem Stillhalten die Gemeinschaft beendet, behauptet, diese
+  Lebensweise sei nicht tragfähig gewesen — das ist falsch. Die Nullhypothese der
+  Epoche ist Beharren, nicht Aussterben.
+- **Spieldynamisch.** Wer nichts tut und stirbt, lernt daraus nur, dass das Spiel unfair
+  ist. Wer nichts tut und **auf der Stelle tritt**, sieht unmittelbar, wozu Handeln da
+  ist.
+
+**Gestraft wird Untätigkeit also mit Stillstand: Sie kommt nicht aus der Epoche heraus.**
+Scheitern bleibt der Preis dafür, **falsch** zu handeln — zu bauen, wenn die Gemeinschaft
+es am wenigsten tragen kann. Nie darf der Zufall allein den Ausschlag geben.
+
 **Beide Hälften von T4 werden gebraucht.** Handeln muss besser sein als Nichtstun —
 sonst sind die Projekte Zierrat. Und *gut* zu handeln muss besser sein als schlecht zu
 handeln — sonst ist es kein Spiel, sondern ein Klickwettlauf.
@@ -1959,8 +1997,7 @@ Siedlung ohnehin schon schlecht geht, statt aus dem Überschuss, und nimmt, was 
 da ist, statt dessen, was etwas Neues bringt. Die Dringlichkeit, die er seinen Projekten
 gibt, ist dieselbe wie beim bedachten Spieler, damit sie als Erklärung ausscheidet.
 
-Gemessen: 993 gegen 139 Menschen, Faktor 7. Sterben muss dabei niemand — Scheitern ist
-die Strafe für Untätigkeit, nicht für einen Fehlgriff.
+Gemessen: 993 gegen 139 Menschen, Faktor 7. Sterben muss dabei niemand.
 
 **Die Schwankung wird von Anfang an eingeschaltet.** Mit Puffern zu wirtschaften ist
 teurer als ohne; wer erst ohne austariert und sie später zuschaltet, macht alles zweimal.
