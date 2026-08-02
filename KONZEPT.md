@@ -1999,6 +1999,64 @@ gibt, ist dieselbe wie beim bedachten Spieler, damit sie als Erklärung ausschei
 
 Gemessen: 993 gegen 139 Menschen, Faktor 7. Sterben muss dabei niemand.
 
+**Vor dem Drehen wird gerechnet.** Die Zahlen dieser Epoche hängen über wenige
+Beziehungen zusammen, und wer sie kennt, muss nicht probieren. Sie sind hier
+aufgeschrieben, damit niemand sie noch einmal durch Herumdrehen finden muss.
+
+**1. Welcher Anteil eines Bestands am Anfang genommen wird.**
+
+```
+Anteil = Bedarf je Kopf ÷ (Fläche je Kopf × Dichte)
+```
+
+Die Kopfzahl kürzt sich heraus — sie steht in Zähler und Nenner. Der Startanteil hängt
+also **nur** am Ertrag des Reviers je Kopf, nie an der Größe der Gemeinschaft. Beispiel:
+1,8 ÷ (0,6 × 8) = 0,375.
+
+**2. Was das Suchen kostet.** Der Preis ist der Mittelwert von `Decke / Bestand` über die
+ganze Entnahme, also `(Decke / Entnahme) · ln(Stand / Rest)`. Auf einem vollen Stand
+hängt er nur am Anteil `x`:
+
+```
+Preis = (1 / x) · ln(1 / (1 − x))
+```
+
+| Anteil | 0,25 | 0,375 | 0,50 | 0,65 | 0,80 |
+|---|---|---|---|---|---|
+| Preis | 1,15 | 1,25 | 1,39 | 1,62 | 2,01 |
+
+**3. Wo das Wachstum aufhört.** Dort, wo das Essen alle Hände braucht:
+
+```
+Preis am Ruhepunkt = (1 − übrige Arbeit je Kopf) ÷ (Bedarf je Kopf × Arbeit je Einheit)
+```
+
+Deshalb ist die Obergrenze **keine Stellschraube**: Jede arbeitssparende Technik hebt sie
+von selbst — mit der Sichel (0,182 statt 0,28) rückt sie von rund 1,6 auf rund 2,5. Über
+Anteil und Preis lässt sich daraus die Kopfzahl am Ruhepunkt zurückrechnen.
+
+**4. Was ein Bestand dauerhaft hergibt.** Die logistische Kurve hat ihr Maximum bei halber
+Decke: `Rate × Decke ÷ 4`. Wird mehr genommen, fällt der Stand, bis der Preis die
+Entnahme bremst. Bei Rate 4 ist dieses Maximum ungefähr so groß wie die Decke selbst —
+deshalb nimmt eine Gemeinschaft von einem Jahreswuchs zwangsläufig den größten Teil, und
+das ist bei einem Wuchs richtig und bei einer Herde alarmierend.
+
+**5. Ab welchem Wurf Menschen sterben.** Geplant wird gegen `1 − Vorsicht`. Der tödliche
+Rang wird berührt, sobald der Ertrag unter seinen Anteil am Gesamtbedarf fällt:
+
+```
+Faktor(Wurf) = Faktor(geplant) × (tödlicher Bedarf ÷ Gesamtbedarf)
+```
+
+wobei `Faktor(w) = 1 + Exposition · (w − 1)`. Und wie oft das vorkommt, sagt die Form der
+Schwankung: `P(Wurf < x) = (x / Maßstab)^Exponent` mit `Maßstab = (Exponent+1)/Exponent`.
+
+**Was diese fünf zusammen bedeuten.** Startanteil, Preisspanne, Ruhepunkt und
+Hungerschwelle sind **nicht** unabhängig voneinander einstellbar. Wer den Startanteil
+senkt, verschiebt zwangsläufig den Ruhepunkt zu mehr Menschen; wer das Polster
+verbreitert, verschiebt die Hungerschwelle nach unten und macht Krisen seltener. Jede
+dieser Zahlen ist deshalb erst zu rechnen und dann zu messen — nie zu raten.
+
 **Die Schwankung wird von Anfang an eingeschaltet.** Mit Puffern zu wirtschaften ist
 teurer als ohne; wer erst ohne austariert und sie später zuschaltet, macht alles zweimal.
 
