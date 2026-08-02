@@ -51,14 +51,14 @@ export function createState(config: Config, options: StartOptions): GameState {
         // stage's twelve techniques, 300 left a third of every hand idle and
         // carried 179 people — three and a half times the band. At 100 the
         // idle share is three per cent.
-        amount: options.wilderness ?? 100,
+        amount: options.wilderness ?? 30,
         quality: config.land.baseQuality,
       },
       // A stretch of shore. Small on purpose: from the bank one reaches a few
       // metres, and it is the boat that opens the rest (E29). Unowned like the
       // wilderness — nobody owns the water before there is property.
       water: {
-        amount: options.water ?? 40,
+        amount: options.water ?? 12,
         quality: config.land.baseQuality,
       },
     },

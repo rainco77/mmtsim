@@ -253,7 +253,9 @@ describe("processes and the fallback level (E5)", () => {
   it("a technique without a capacity input replaces its predecessor entirely", () => {
     // The project is set rather than played out: it now waits on practice at
     // gathering (E29), and what is measured here is the ordering.
-    const before = createState(noRisk, { seed: 7 });
+    // A roomy range, so the land does not bind: what is measured here is that
+    // one technique replaces another, not what a crowded settlement does.
+    const before = createState(noRisk, { seed: 7, wilderness: 300, water: 120 });
     const after: GameState = { ...before, completedProjects: { sickle: 1 } };
 
     expect(gatheringRuns(before)).toEqual(["gathering"]);

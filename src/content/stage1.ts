@@ -243,7 +243,13 @@ export const STAGE1: Config = {
       priority: 80,
       capacityPerOutput: { water: 0.8 },
       intermediatesPerOutput: { labor: 1.2, fish: 1.0 },
-      exposure: { weather: 0.15 },
+      // Safer than the land, not immune to it: the drought that costs the
+      // harvest lowers the river too. At 0.15 the water carried a quarter of
+      // the food and felt nothing, so the worst year of a run never reached
+      // hunger at all and a store had no work to do. The shore keeps its low
+      // figure — mussels lie there whether it rains or not, and that is what
+      // made it the last reliable thing to fall back on.
+      exposure: { weather: 0.4 },
       qualityWeight: 0.2,
       unlockedFromStart: true,
     },
@@ -282,7 +288,7 @@ export const STAGE1: Config = {
       priority: 85,
       capacityPerOutput: { water: 0.8 },
       intermediatesPerOutput: { labor: 0.48, fish: 1.0 },
-      exposure: { weather: 0.15 },
+      exposure: { weather: 0.4 },
       qualityWeight: 0.2,
       unlockedFromStart: false,
     },
@@ -325,7 +331,11 @@ export const STAGE1: Config = {
       branch: "wood",
       activity: "woodcutting",
       priority: 100,
-      capacityPerOutput: { wilderness: 0.6 },
+      // Deadwood lies thick in a forest. At 0.6 the five hectares a band's
+      // firewood really wants were never granted, because food had taken the
+      // ground first — so warmth sat at 0.48 for ever and *cold* regulated the
+      // population instead of hunger. The story of the epoch is about food.
+      capacityPerOutput: { wilderness: 0.2 },
       intermediatesPerOutput: { labor: 0.6 },
       exposure: { weather: 0.2 },
       qualityWeight: 0.4,
@@ -339,7 +349,7 @@ export const STAGE1: Config = {
       branch: "wood",
       activity: "woodcutting",
       priority: 110,
-      capacityPerOutput: { wilderness: 0.6 },
+      capacityPerOutput: { wilderness: 0.2 },
       intermediatesPerOutput: { labor: 0.24 },
       exposure: { weather: 0.2 },
       qualityWeight: 0.4,
@@ -494,13 +504,22 @@ export const STAGE1: Config = {
       // draw of the whole run (0,39) still left hunger fully covered. A society
       // with 44 % of its calories to spare is not a subsistence society. At
       // 1,4 against 0,4 the cushion is 22 %, and a bad year reaches through it.
-      perHead: 1.2,
+      perHead: 1.4,
       consumedOnUse: 1,
       deathRate: { atZero: 0.08, atFull: 0 },
     },
     {
-      // Fire. It kills when it fails, which is why it ranks straight above
-      // hunger and above everything else.
+      // Fire, in the amount it takes not to freeze. Small, and high in the
+      // ranking, so it is met almost whatever else happens.
+      //
+      // Warmth is split as food is, and for the same reason (E8): cold is a
+      // *threshold*, not a slope. Half rations of food are starvation; half the
+      // firewood is a cold winter, not a fatal one. A single tier interpolating
+      // linearly said the opposite — at 0.44 coverage it charged more than half
+      // the mortality of having no fire at all, and cold then regulated the
+      // population long before hunger ever could. Two ranks say it without
+      // bending a coefficient: the non-linearity sits in the ranking, which is
+      // exactly where E8 puts it.
       id: "warmth_fire",
       rank: 200,
       // A cold year takes the harvest and calls for more firewood at the same
@@ -509,9 +528,18 @@ export const STAGE1: Config = {
       exposure: { weather: 0.4 },
       stock: "warmth",
       branch: "warmth",
-      perHead: 0.1,
+      perHead: 0.03,
       consumedOnUse: 1,
-      deathRate: { atZero: 0.02, atFull: 0 },
+      // Below the greatest birth rate on purpose (0.011), so that fire cannot
+      // balance growth on its own and therefore cannot become the regulator.
+      //
+      // Whichever need *can* balance births by itself decides the population,
+      // and no quantity anywhere else can change that: measured, the settlement
+      // simply grew until warmth was pressed back to 0.45 again, whether the
+      // need was 0.1 or 0.03 per head and whether wood cost 0.6 of a hectare or
+      // 0.2. Freezing kills individuals; famine kills populations, and among
+      // the checks on a forager band it is hunger that does the work.
+      deathRate: { atZero: 0.008, atFull: 0 },
     },
     {
       // Clothing does not kill, it costs *work ability* (E16). The honest
@@ -543,11 +571,25 @@ export const STAGE1: Config = {
       birthRate: { atZero: 0, atFull: 0.003 },
     },
     {
+      // Warmth beyond the minimum: cooked food, shorter nights at the fire,
+      // people who have rested. It costs **productivity** — clothing already
+      // carries the ability to work, and the two ought to stay distinguishable
+      // (E16).
+      id: "warmth_comfort",
+      rank: 700,
+      exposure: { weather: 0.4 },
+      stock: "warmth",
+      branch: "warmth",
+      perHead: 0.07,
+      consumedOnUse: 1,
+      productivity: { atZero: 0, atFull: 0.1 },
+    },
+    {
       id: "food_satiety",
       rank: 600,
       stock: "food",
       branch: "food",
-      perHead: 0.6,
+      perHead: 0.4,
       consumedOnUse: 1,
       birthRate: { atZero: 0, atFull: 0.011 },
       productivity: { atZero: 0, atFull: 0.2 },
