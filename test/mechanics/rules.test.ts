@@ -147,7 +147,7 @@ describe("the year's quality (E24)", () => {
     for (let i = 0; i < 4000; i += 1) {
       values.push(derive(state, index).shocks["weather"] ?? 1);
       state = tick(state, index);
-      // The draw is what is under test, so the band must not be allowed to die
+      // The draw is what is under test, so the community must not be allowed to die
       // of it: once a community is given up the world stops and the last draw
       // would be counted a thousand times over. Holding the heads steady keeps
       // the stream running without touching what it produces.
@@ -481,7 +481,7 @@ describe("allocation runs rank by rank (E21)", () => {
 
 describe("population (E20)", () => {
   it("stands when every need is met and nothing is over-met", () => {
-    // Everything is a factor and the two base ones are reciprocal, so a band
+    // Everything is a factor and the two base ones are reciprocal, so a community
     // whose needs are exactly covered neither grows nor shrinks (E20).
     expect(STAGE1.population.baseBirthFactor * STAGE1.population.baseSurvival).toBeCloseTo(1, 6);
   });
@@ -585,7 +585,7 @@ describe("sedentism (E29)", () => {
 
   it("clearing turns wilderness into cleared land, keeping the total (E13)", () => {
     // Room enough that the conversions are not clamped at zero: the point is
-    // that the total is preserved, not what a band's own range holds.
+    // that the total is preserved, not what a community's own range holds.
     let state = finish(createState(STAGE1, { seed: 7, wilderness: 300, water: 120 }), "sickle");
     state = {
       ...state,

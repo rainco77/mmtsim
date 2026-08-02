@@ -22,7 +22,7 @@ export interface StartOptions {
 export function createState(config: Config, options: StartOptions): GameState {
   const heads = options.heads ?? 25;
 
-  // The range follows the band (E14): so much of each capacity per head. The
+  // The range follows the community (E14): so much of each capacity per head. The
   // options are there for tests and measurements, not for the game.
   const unownedCapacity: Record<CapacityId, Capacity> = {};
   for (const [id, perHead] of Object.entries(config.land.perHeadAtStart)) {
@@ -33,7 +33,7 @@ export function createState(config: Config, options: StartOptions): GameState {
     };
   }
 
-  // Nothing put by. The band owns what the country holds and not one meal more:
+  // Nothing put by. The community owns what the country holds and not one meal more:
   // living from hand to mouth is the state the epoch starts in and the thing it
   // spends itself getting out of, so handing it a reserve on the first tick
   // gives away the very want that the storage pit later answers. It made no
@@ -42,7 +42,7 @@ export function createState(config: Config, options: StartOptions): GameState {
   // allocation.
   //
   // What it does start with is a full country: what lives on the range begins
-  // at what the range carries, because a band arrives in a country it has not
+  // at what the range carries, because a community arrives in a country it has not
   // yet hunted out. Reckoned from the same rule the regrowth uses, so the two
   // cannot drift apart.
   const stocks: Record<StockId, number> = { food: options.food ?? 0 };

@@ -419,7 +419,7 @@ export function allocate(input: AllocationInput): AllocationResult {
   //
   // Clothing is worn, not eaten, and what is worn is already there. Keeping it
   // is rebuilding what fell apart and nothing else (E19) — so the ask is the
-  // gap. Without that distinction a band of thirty sewed eight new garments
+  // gap. Without that distinction a community of thirty sewed eight new garments
   // every tick while wearing ninety-two, and since bast costs two and a half
   // trees to the fibre, the whole forest went into clothes nobody needed and
   // the community then froze.

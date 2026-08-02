@@ -180,7 +180,7 @@ class StockEffectHandler implements EffectHandler<StockEffect> {
 
 /**
  * Sets what a capacity is: how much of it there is, how good it is, or both.
- * The pits stay in the ground when a band moves on, and the country it moves
+ * The pits stay in the ground when a community moves on, and the country it moves
  * into is the same size but a little poorer.
  */
 class SetCapacityEffectHandler implements EffectHandler<SetCapacityEffect> {

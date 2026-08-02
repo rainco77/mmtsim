@@ -10,13 +10,22 @@ import type { Config } from "../sim/config.ts";
  */
 
 /**
- * Where a project's claim stands unless the player moves it: above every need
- * (E18 — projects are financed first). Every project starts there because that
- * is the rule; the player lowers it for anything he is not willing to go hungry
- * for, and each project carries its own number, so a granary and a monument
- * need not be equally urgent.
+ * Where a project's claim stands unless the player moves it: **behind every
+ * need**, so that it is built out of what is left over and never out of
+ * somebody's dinner.
+ *
+ * It used to stand in front of everything, and that was a trap rather than a
+ * decision. Played twice by hand, starting two projects at the default killed
+ * the community within a single tick: the claim outranks hunger, so the hands
+ * went to the pit instead of the harvest and nobody was warned.
+ *
+ * The best place is almost certainly neither end — above the ranks that only
+ * cost comfort and children, below the ones that cost lives. That is exactly
+ * why it must not be the default: the player is meant to find it. Each project
+ * carries its own number (E18), so a granary and a monument need not be equally
+ * urgent, and the danger of committing stays chosen rather than inflicted.
  */
-const PROJECTS_FIRST = 0;
+const PROJECTS_LAST = 1000;
 
 export const STAGE1: Config = {
   // ------------------------------------------------------------------ stocks
@@ -67,12 +76,12 @@ export const STAGE1: Config = {
     { id: "warmth", decayPerTick: 1 },
     // ---- what the country carries ----
     //
-    // Nobody in this epoch occupies ground (E29). The band walks over its range
-    // and takes what lives on it, and three different takings happen on the very
-    // same hectare: berries are picked where the deer walk and the deadwood
-    // lies. So the wilderness is not a pot that is emptied, it is the **carrier**
-    // that says how much of each of these there can be — and the water carries
-    // two more.
+    // Nobody in this epoch occupies ground (E29). The community walks over its
+    // range and takes what lives on it, and three different takings happen on
+    // the very same ground: berries are picked where the deer walk and the
+    // deadwood lies. So the wilderness is not a pot that is emptied, it is the
+    // **carrier** that says how much of each of these there can be — and the
+    // water carries two more.
     //
     // The rates say something on their own, and they are the whole reason for
     // keeping these apart: greens come back within the tick, molluscs and fish
@@ -86,23 +95,33 @@ export const STAGE1: Config = {
       //
       // Fast and shallow, and that is the whole point of it. A herd and a
       // forest are capital: what stands is many times what comes in over a
-      // tick, because it grew over many. The growth of a range is not — one
-      // cannot eat next year's berries this year. Set deep like the others, it
-      // became a **larder**: a band of twenty-five found a hundred and twenty
-      // standing against thirty of growth, feasted for four ticks and grew all
-      // the while, and then the larder was empty. Gathering turned four times
-      // dearer, food ate every hand there was, rank 200 got nothing, and people
-      // froze in a good year with the forest untouched — satt und frierend,
-      // exactly what E29 says must not come out.
+      // tick, because it grew over many ticks. The growth of a range is not —
+      // one cannot gather next season's berries now. Set deep like the others,
+      // it became a **larder**: a community of twenty-five found a hundred and
+      // twenty standing against thirty of growth, feasted for four ticks and
+      // grew all the while, and then the larder was empty. Gathering turned
+      // four times dearer, food ate every hand there was, rank 200 got nothing,
+      // and people froze in a good tick with the forest untouched — satt und
+      // frierend, exactly what E29 says must not come out.
       //
-      // Shallow, the year goes straight through to the table: a bad one is
+      // Shallow, the draw goes straight through to the table: a poor one is
       // felt, which is what makes a store worth digging later.
+      //
+      // The density is what decides whether anything binds at all. At 6.0 the
+      // range held ninety against a take of forty-five, so the stand stood at
+      // its ceiling in every one of eighty-two played ticks, gathering never
+      // grew dearer, no rank was ever short, and no project could pay for
+      // itself — a quarter of all labour lay idle throughout. At 3.5 the
+      // ceiling is fifty-two, the stand settles near seven tenths of it,
+      // gathering costs about half again as much labour, and the range carries
+      // some twenty-nine people. Growth then presses against a wall, and the
+      // mortar — 0.75 of this per meal instead of 1.0 — is what moves it.
       id: "plants",
       decayPerTick: 0,
       regrowth: {
         ratePerTick: 4.0,
         capacity: "wilderness",
-        densityPerArea: 6.0,
+        densityPerArea: 3.5,
         refuge: 3,
         maxEffort: 6,
       },
@@ -247,7 +266,7 @@ export const STAGE1: Config = {
       priority: 100,
       capacityPerOutput: {},
       intermediatesPerOutput: { labor: 0.28, plants: 1.0 },
-      exposure: { weather: 1.0 },
+      exposure: { weather: 0.7 },
       qualityWeight: 0,
       unlockedFromStart: true,
     },
@@ -262,7 +281,7 @@ export const STAGE1: Config = {
       priority: 105,
       capacityPerOutput: {},
       intermediatesPerOutput: { labor: 0.182, plants: 1.0 },
-      exposure: { weather: 1.0 },
+      exposure: { weather: 0.7 },
       qualityWeight: 0,
       unlockedFromStart: false,
     },
@@ -286,7 +305,7 @@ export const STAGE1: Config = {
       priority: 103,
       capacityPerOutput: {},
       intermediatesPerOutput: { labor: 0.28, plants: 0.75 },
-      exposure: { weather: 1.0 },
+      exposure: { weather: 0.7 },
       qualityWeight: 0,
       unlockedFromStart: false,
     },
@@ -376,7 +395,7 @@ export const STAGE1: Config = {
       priority: 200,
       capacityPerOutput: { cleared: 0.35 },
       intermediatesPerOutput: { labor: 0.625 },
-      exposure: { weather: 0.6 },
+      exposure: { weather: 0.9 },
       qualityWeight: 0.9,
       unlockedFromStart: false,
     },
@@ -391,7 +410,7 @@ export const STAGE1: Config = {
       priority: 210,
       capacityPerOutput: { cleared: 0.2 },
       intermediatesPerOutput: { labor: 0.740741 },
-      exposure: { weather: 0.5 },
+      exposure: { weather: 0.8 },
       qualityWeight: 0.9,
       unlockedFromStart: false,
     },
@@ -571,13 +590,24 @@ export const STAGE1: Config = {
       rank: 100,
       stock: "food",
       branch: "food",
-      // Most of what a subsistence society eats is not discretionary. With 1,0
-      // against 0,8 for satiety, 44 % of the food need could be given up in a
-      // bad year — measured, that made famine impossible: at tick 124 the worst
-      // draw of the whole run (0,39) still left hunger fully covered. A society
-      // with 44 % of its calories to spare is not a subsistence society. At
-      // 1,4 against 0,4 the cushion is 22 %, and a bad year reaches through it.
-      perHead: 1.4,
+      // Most of what a subsistence society eats is not discretionary — but not
+      // all of it either, and the split between this rank and satiety is what
+      // decides how hard a poor draw lands. Together they come to 1.8: what is
+      // asked for here is the part whose failure kills, the rest only costs
+      // births and the strength to work.
+      //
+      // The plan aims at a draw of 0.9, so a poorer one reaches this rank as
+      // soon as the harvest falls below 1.2 of the 1.8. That puts the first
+      // deaths at a draw of 0.6 instead of 0.7 — one tick in nineteen rather
+      // than one in ten. At 1.4 against 0.4 only a fifth was dispensable, and
+      // played, two draws (0.44 and 0.24) took 28 % and 52 % of the people and
+      // ended the run at tick 82.
+      //
+      // A society with half its food to spare would not be a subsistence
+      // society, so this cannot go much further: measured at 1.0 against 0.8,
+      // famine became impossible — the worst draw of a whole run still left
+      // this rank fully covered.
+      perHead: 1.2,
       consumedOnUse: 1,
       // Without any food at all, nine in ten are gone. Twenty per cent short of
       // the bare ration costs eighteen per cent — the order of magnitude of a
@@ -636,7 +666,7 @@ export const STAGE1: Config = {
       branch: "housing",
       perHead: 0.3,
       consumedOnUse: 0,
-      // A band that moves has no roof at all and lives; only those who stay
+      // A community that moves has no roof at all and lives; only those who stay
       // come to depend on one.
       survival: { atZero: 0.9, atFull: 1 },
       birthRate: { atZero: 1, atFull: 1.003 },
@@ -656,11 +686,15 @@ export const STAGE1: Config = {
       productivity: { atZero: 1, atFull: 1.1 },
     },
     {
+      // The dispensable third of the food, and the community's whole buffer
+      // against a poor draw: a bad tick eats this before it reaches the rank
+      // that kills. Raising it from 0.4 to 0.6 does not feed anyone more — the
+      // two ranks still come to 1.8 together — it moves where the harm lands.
       id: "food_satiety",
       rank: 600,
       stock: "food",
       branch: "food",
-      perHead: 0.4,
+      perHead: 0.6,
       consumedOnUse: 1,
       birthRate: { atZero: 1, atFull: 1.01 },
       productivity: { atZero: 1, atFull: 1.2 },
@@ -687,7 +721,7 @@ export const STAGE1: Config = {
       id: "mortar",
       visibleWhen: [{ kind: "experience", activities: ["gathering"], min: 200 }],
       availableWhen: [{ kind: "experience", activities: ["gathering"], min: 400 }],
-      defaultRank: PROJECTS_FIRST,
+      defaultRank: PROJECTS_LAST,
       laborCost: 40,
       stockCost: {},
       minTicks: 8,
@@ -700,7 +734,7 @@ export const STAGE1: Config = {
       id: "earth_oven",
       visibleWhen: [{ kind: "experience", activities: ["firemaking"], min: 5 }],
       availableWhen: [{ kind: "experience", activities: ["firemaking"], min: 10 }],
-      defaultRank: PROJECTS_FIRST,
+      defaultRank: PROJECTS_LAST,
       laborCost: 40,
       stockCost: {},
       minTicks: 8,
@@ -709,30 +743,37 @@ export const STAGE1: Config = {
       sector: "households",
     },
     {
-      // The spatial answer of a band that can still move (E29). Overuse is
+      // The spatial answer of a community that can still move (E29). Overuse is
       // met by going somewhere else, not by a catch limit — a group of fifty
       // needs no fishing ordinance, it walks.
       //
       // What it costs is stated here and not in the engine, because *what one
       // can carry* is a claim about the world that will want changing: what is
       // in the ground and stacked stays behind, what is worn and held comes
-      // along. And the price rises of itself — a band that has dug nothing
-      // moves for nothing, a band with many pits is settled in fact long
+      // along. And the price rises of itself — a community that has dug nothing
+      // moves for nothing, a community with many pits is settled in fact long
       // before it settles by decision (Testart).
       id: "range_change",
       // It appears when the country begins to fail, and that appearance is
-      // itself the warning: half of what the range carries is the notice, a
-      // third is the point at which moving is the answer. Before that, moving
-      // would be a cheap reset rather than a decision.
+      // itself the warning: four fifths of what the range carries is the
+      // notice, three fifths the point at which moving is the answer. Before
+      // that, moving would be a cheap reset rather than a decision.
+      //
+      // It used to read a half and a third, and over eight seeds the thinnest
+      // any stock ever reached was 0.826 — so the one answer a moving people
+      // really had was never so much as visible. Set here, it shows itself
+      // while the range is merely pressed and can be taken before the crisis,
+      // and it falls out of use again of its own accord once the mortar lifts
+      // the ceiling, because the same taking is then a smaller share of it.
       visibleWhen: [
         { kind: "rule", id: "settled", set: false },
-        { kind: "stockThin", share: 0.5 },
+        { kind: "stockThin", share: 0.8 },
       ],
       availableWhen: [
         { kind: "rule", id: "settled", set: false },
-        { kind: "stockThin", share: 0.3 },
+        { kind: "stockThin", share: 0.6 },
       ],
-      defaultRank: PROJECTS_FIRST,
+      defaultRank: PROJECTS_LAST,
       laborCost: 60,
       stockCost: {},
       minTicks: 6,
@@ -750,7 +791,7 @@ export const STAGE1: Config = {
         { type: "setCapacity", capacity: "wilderness", quality: { kind: "nextTaking" } },
         { type: "setCapacity", capacity: "water", quality: { kind: "from", capacity: "wilderness" } },
         // Found: a country nobody has been over — every one of the five, or the
-        // band would move into a range it had already gathered bare. After the
+        // community would move into a range it had already gathered bare. After the
         // quality, so that what it finds is the full measure of the *new*
         // country and not of the one it left.
         { type: "stock", id: "plants", to: { kind: "ceiling" } },
@@ -768,7 +809,7 @@ export const STAGE1: Config = {
       id: "sickle",
       visibleWhen: [{ kind: "experience", activities: ["gathering"], min: 50 }],
       availableWhen: [{ kind: "experience", activities: ["gathering"], min: 100 }],
-      defaultRank: PROJECTS_FIRST,
+      defaultRank: PROJECTS_LAST,
       laborCost: 120,
       stockCost: { wood: 20 },
       minTicks: 12,
@@ -782,7 +823,7 @@ export const STAGE1: Config = {
       id: "stone_axe",
       visibleWhen: [{ kind: "experience", activities: ["woodcutting"], min: 15 }],
       availableWhen: [{ kind: "experience", activities: ["woodcutting"], min: 30 }],
-      defaultRank: PROJECTS_FIRST,
+      defaultRank: PROJECTS_LAST,
       laborCost: 120,
       stockCost: { wood: 20 },
       minTicks: 12,
@@ -798,7 +839,7 @@ export const STAGE1: Config = {
       id: "storage_pit",
       // The road to the end of the epoch, so it must not open early (E29). It
       // waits on the food getting *ample* — practice at winning it, which grows
-      // with the yield and so comes sooner to a band that built the sickle, the
+      // with the yield and so comes sooner to a community that built the sickle, the
       // mortar and the net. By then several bad years have been through, so the
       // player knows what a store is for without anything having to count them.
       //
@@ -810,7 +851,7 @@ export const STAGE1: Config = {
       availableWhen: [
         { kind: "experience", activities: ["gathering", "hunting", "fishing"], min: 3000 },
       ],
-      defaultRank: PROJECTS_FIRST,
+      defaultRank: PROJECTS_LAST,
       laborCost: 60,
       stockCost: { wood: 10 },
       minTicks: 6,
@@ -834,7 +875,7 @@ export const STAGE1: Config = {
       id: "fishing_net",
       visibleWhen: [{ kind: "experience", activities: ["fishing"], min: 25 }],
       availableWhen: [{ kind: "experience", activities: ["fishing"], min: 50 }],
-      defaultRank: PROJECTS_FIRST,
+      defaultRank: PROJECTS_LAST,
       laborCost: 120,
       stockCost: { fibre: 30 },
       minTicks: 12,
@@ -855,7 +896,7 @@ export const STAGE1: Config = {
       id: "bone_needle",
       visibleWhen: [{ kind: "experience", activities: ["clothmaking"], min: 15 }],
       availableWhen: [{ kind: "experience", activities: ["clothmaking"], min: 30 }],
-      defaultRank: PROJECTS_FIRST,
+      defaultRank: PROJECTS_LAST,
       laborCost: 120,
       stockCost: { fibre: 20 },
       minTicks: 12,
@@ -872,7 +913,7 @@ export const STAGE1: Config = {
       id: "bow_and_arrow",
       visibleWhen: [{ kind: "experience", activities: ["hunting"], min: 3 }],
       availableWhen: [{ kind: "experience", activities: ["hunting"], min: 5 }],
-      defaultRank: PROJECTS_FIRST,
+      defaultRank: PROJECTS_LAST,
       laborCost: 120,
       stockCost: { wood: 20, fibre: 20 },
       minTicks: 12,
@@ -889,7 +930,7 @@ export const STAGE1: Config = {
       id: "twining",
       visibleWhen: [{ kind: "experience", activities: ["clothmaking"], min: 8 }],
       availableWhen: [{ kind: "experience", activities: ["clothmaking"], min: 15 }],
-      defaultRank: PROJECTS_FIRST,
+      defaultRank: PROJECTS_LAST,
       laborCost: 120,
       stockCost: { fibre: 20 },
       minTicks: 12,
@@ -901,7 +942,7 @@ export const STAGE1: Config = {
       id: "tanning",
       visibleWhen: [{ kind: "experience", activities: ["clothmaking"], min: 8 }],
       availableWhen: [{ kind: "experience", activities: ["clothmaking"], min: 15 }],
-      defaultRank: PROJECTS_FIRST,
+      defaultRank: PROJECTS_LAST,
       laborCost: 120,
       stockCost: { hides: 20 },
       minTicks: 12,
@@ -924,7 +965,7 @@ export const STAGE1: Config = {
       id: "boat",
       visibleWhen: [{ kind: "projectDone", id: "stone_axe", min: 1 }],
       availableWhen: [{ kind: "projectDone", id: "stone_axe", min: 1 }],
-      defaultRank: PROJECTS_FIRST,
+      defaultRank: PROJECTS_LAST,
       laborCost: 300,
       stockCost: { wood: 60 },
       minTicks: 20,
@@ -947,7 +988,7 @@ export const STAGE1: Config = {
       // It also has to be this and not the held stock, because a held stock
       // moves with the weather: bad luck may delay a transition, never block it.
       availableWhen: [{ kind: "capacityPerHead", capacity: "storage", min: 2 }],
-      defaultRank: PROJECTS_FIRST,
+      defaultRank: PROJECTS_LAST,
       laborCost: 300,
       stockCost: { wood: 40 },
       minTicks: 20,
@@ -984,14 +1025,14 @@ export const STAGE1: Config = {
     {
       // Epoch two's spatial answer: keep the old ground and take more beside
       // it — which means pressing into somebody else's country and holding it,
-      // and that presupposes having something to defend. For a band that can
+      // and that presupposes having something to defend. For a community that can
       // simply move on it would be almost the same act as a range change, so
       // the two only come apart once staying is a choice (E29).
       id: "land_taking",
       visibleWhen: [{ kind: "rule", id: "settled", set: true }],
       availableWhen: [{ kind: "rule", id: "settled", set: true }],
       limit: 6,
-      defaultRank: PROJECTS_FIRST,
+      defaultRank: PROJECTS_LAST,
       laborCost: 120,
       stockCost: {},
       minTicks: 12,
@@ -1013,7 +1054,7 @@ export const STAGE1: Config = {
         { kind: "rule", id: "settled", set: true },
         { kind: "unownedCapacity", capacity: "wilderness", min: 10 },
       ],
-      defaultRank: PROJECTS_FIRST,
+      defaultRank: PROJECTS_LAST,
       // Clearing is hard work and slow. That is what makes the fixed factor
       // bite: a growing population outruns what can be cleared (E7, E13).
       laborCost: 60,
@@ -1050,7 +1091,7 @@ export const STAGE1: Config = {
         { kind: "rule", id: "settled", set: true },
         { kind: "ownedCapacity", capacity: "cleared", min: 10 },
       ],
-      defaultRank: PROJECTS_FIRST,
+      defaultRank: PROJECTS_LAST,
       laborCost: 20,
       stockCost: {},
       minTicks: 40,
@@ -1077,7 +1118,7 @@ export const STAGE1: Config = {
         { kind: "rule", id: "settled", set: true },
         { kind: "projectDone", id: "clearing", min: 4 },
       ],
-      defaultRank: PROJECTS_FIRST,
+      defaultRank: PROJECTS_LAST,
       laborCost: 6,
       stockCost: {},
       minTicks: 30,
@@ -1091,18 +1132,18 @@ export const STAGE1: Config = {
   // Equal base rates: with rank 100 fully covered and nothing above it, births
   // equal deaths and the population stands (E20).
   population: {
-    // Reciprocal: a band whose needs are all met neither grows nor shrinks. It
+    // Reciprocal: a community whose needs are all met neither grows nor shrinks. It
     // grows when it is better off than it needs to be.
     baseBirthFactor: 1.01,
     baseSurvival: 1 / 1.01,
-    // Below about a dozen a band stops working: too few hunters, nobody spare
+    // Below about a dozen a community stops working: too few hunters, nobody spare
     // to carry children or the sick, and no cover at all for a single death. It
-    // does not die out — it joins a neighbour, and as *this* band it is over.
+    // does not die out — it joins a neighbour, and as *this* community it is over.
     //
-    // Twenty-five is the band itself (Birdsell's magic numbers), so it cannot
+    // Twenty-five is the community itself (Birdsell's magic numbers), so it cannot
     // also be the floor. His other number, five hundred, is the circle within
-    // which people marry — a network of bands, not a settlement, and nothing
-    // this model has: we play one band, which is understood to sit inside such
+    // which people marry — a network of communities, not a settlement, and nothing
+    // this model has: we play one community, which is understood to sit inside such
     // a network.
     minimumViableSize: 12,
   },
@@ -1118,7 +1159,7 @@ export const STAGE1: Config = {
   // unsets this rule (E23) and the economy decides alone from then on.
   rulesFromStart: [],
 
-  // A band of about twenty-five on the range that carries it (E14, Birdsell's
+  // A community of about twenty-five on the range that carries it (E14, Birdsell's
   // magic numbers). The figures per head are what gets tuned; the totals follow.
   land: {
     perHeadAtStart: { wilderness: 0.6, water: 0.24 },

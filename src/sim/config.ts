@@ -81,7 +81,7 @@ export interface StockDef {
    * - **Exclusive or side by side.** An area, once occupied, is occupied
    *   against everybody: whoever takes it takes it from all the rest. A stock
    *   is only taken from those who draw the *same* stock. Getting that wrong is
-   *   what once left a band freezing and naked — food ranks first, so it took
+   *   what once left a community freezing and naked — food ranks first, so it took
    *   the whole range, and no tick ever produced wood, bast or hides.
    * - **Memory.** An area is unchanged next tick however hard it was worked;
    *   what is missing from a stock stays missing, grows back out of the rest,
@@ -224,7 +224,7 @@ export interface ProcessDef {
  * linearly between no coverage and full coverage.
  *
  * Everything in the model is a product, and there is no addition anywhere: a
- * survival of 0.10 means a tenth of the band lives through the tick, and a
+ * survival of 0.10 means a tenth of the community lives through the tick, and a
  * productivity of 1.2 means a fifth more is got done. That is not merely
  * tidier, it is the exact composition — independent causes of death combine
  * multiplicatively in *survival*, and adding their mortalities is a
@@ -331,7 +331,7 @@ export type Condition =
   /**
    * Any renewable stock at or below this share of what the range carries (E29).
    *
-   * A band does not move on a whim; it moves when the country is spent. And
+   * A community does not move on a whim; it moves when the country is spent. And
    * because the project only appears then, its appearing *is* the warning.
    */
   | { readonly kind: "stockThin"; readonly share: number }
@@ -389,7 +389,7 @@ export type Effect =
   /**
    * Sets a stock outright, rather than adding to it (E29).
    *
-   * What a moving band leaves behind and what it finds in a fresh country are
+   * What a moving community leaves behind and what it finds in a fresh country are
    * both of this shape: food to nothing, game to what the range carries. It is
    * stated in the content and not in the engine, because *what one can carry*
    * is a claim about the world that will want changing — and changing it must
@@ -400,7 +400,7 @@ export type Effect =
    * Sets what a capacity *is*, rather than adding to it: how much of it there
    * is, or how good it is, or both.
    *
-   * The pits stay in the ground when a band moves on — that is the amount going
+   * The pits stay in the ground when a community moves on — that is the amount going
    * to nothing. And the country it moves into is the same size but a little
    * poorer — that is the quality, taken from the falling margin of E13. Omitting
    * either leaves it as it was. Without a sector it works on the land that
@@ -467,7 +467,7 @@ export interface ProjectDef {
 export interface PopulationConfig {
   /**
    * The two factors a tick applies to the heads before any need is considered.
-   * Reciprocal by construction, so that a band whose needs are all met neither
+   * Reciprocal by construction, so that a community whose needs are all met neither
    * grows nor shrinks: it grows when it is *better* off than it needs to be.
    */
   readonly baseBirthFactor: number;
@@ -528,11 +528,11 @@ export interface RiskConfig {
 
 export interface LandConfig {
   /**
-   * How much of each capacity a band starts with **per head** (E14).
+   * How much of each capacity a community starts with **per head** (E14).
    *
    * Stated per head rather than as a total, because that is what the rule
-   * actually says: a band on a range that carries it. Written as two loose
-   * figures, the range and the band drifted apart the moment either was tuned —
+   * actually says: a community on a range that carries it. Written as two loose
+   * figures, the range and the community drifted apart the moment either was tuned —
    * and the same mistake put the starting stocks out of step with their own
    * ceilings, so a community began in a fished-out water.
    */
@@ -620,4 +620,55 @@ export function indexConfig(config: Config): ConfigIndex {
 export function tierEffectAt(effect: TierEffect | undefined, coverage: number): number {
   if (effect === undefined) return 1;
   return effect.atZero + (effect.atFull - effect.atZero) * coverage;
+}
+
+/**
+ * Does this process live off the named stretch of country?
+ *
+ * Two ways it can, and anything judging land has to count both. It may pay the
+ * ground directly, as a field does — or it may take a stock that **grows** on
+ * that ground, as hunting and fishing do, without occupying a step of it.
+ *
+ * Nothing that reads land may ask only the first question. When the epoch
+ * stopped paying for ground, everything that did went quietly blind: four laws
+ * about density measured flat across every technology, "the water carries part
+ * of the food" read nought while people were eating mussels, and the bot lost
+ * its one safeguard against clearing the last of the wood.
+ */
+export function livesOn(
+  process: ProcessDef,
+  capacity: CapacityId,
+  index: ConfigIndex,
+): boolean {
+  if ((process.capacityPerOutput[capacity] ?? 0) > 0) return true;
+  for (const id of Object.keys(process.intermediatesPerOutput)) {
+    if (index.stock.get(id)?.regrowth?.capacity === capacity) return true;
+  }
+  return false;
+}
+
+/**
+ * What one unit of this stretch of country can yield of a good per tick, at
+ * best, without being run down.
+ *
+ * For ground that is occupied and given back it is simply the reciprocal of
+ * what a unit of output costs. For a stock growing on it, the honest figure is
+ * what the ground **grows**: a logistic stock at half its ceiling puts on
+ * `rate × ceiling / 4` per tick, and the ceiling of one unit of ground is its
+ * density. Anything above that is eating the capital.
+ */
+export function yieldPerCapacity(
+  process: ProcessDef,
+  capacity: CapacityId,
+  index: ConfigIndex,
+): number {
+  const direct = process.capacityPerOutput[capacity] ?? 0;
+  if (direct > 0) return 1 / direct;
+  let best = 0;
+  for (const [id, per] of Object.entries(process.intermediatesPerOutput)) {
+    const rule = index.stock.get(id)?.regrowth;
+    if (rule === undefined || rule.capacity !== capacity || per <= 0) continue;
+    best = Math.max(best, (rule.ratePerTick * rule.densityPerArea) / 4 / per);
+  }
+  return best;
 }

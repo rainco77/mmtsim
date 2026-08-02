@@ -1,3 +1,4 @@
+import { livesOn, yieldPerCapacity } from "../../sim/index.ts";
 import type { Action, ConfigIndex, Derived, GameState } from "../../sim/index.ts";
 import type { Policy } from "../policy.ts";
 
@@ -32,8 +33,7 @@ function worth(capacity: string, stock: string, index: ConfigIndex): number {
   let best = 0;
   for (const process of index.config.processes) {
     if (index.branch.get(process.branch)?.produces !== stock) continue;
-    const per = process.capacityPerOutput[capacity] ?? 0;
-    if (per > 0) best = Math.max(best, 1 / per);
+    best = Math.max(best, yieldPerCapacity(process, capacity, index));
   }
   return best;
 }
@@ -53,8 +53,14 @@ function soleSource(capacity: string, stock: string, index: ConfigIndex): boolea
   let onThis = false;
   for (const process of index.config.processes) {
     if (index.branch.get(process.branch)?.produces !== stock) continue;
-    if ((process.capacityPerOutput[capacity] ?? 0) > 0) onThis = true;
-    else if (Object.keys(process.capacityPerOutput).length > 0) return false;
+    if (livesOn(process, capacity, index)) {
+      onThis = true;
+      continue;
+    }
+    // Somewhere else in the country, so this stretch is not the only source.
+    for (const other of index.config.capacities) {
+      if (other.id !== capacity && livesOn(process, other.id, index)) return false;
+    }
   }
   return onThis;
 }
@@ -73,7 +79,7 @@ const SPENT = 0.25;
  * knowledge of the content — only the one signal a player also has in front of
  * him. It is the investment decision itself: hands put into a project are hands
  * not gathering, so you can invest when there is something to spare and not
- * when there is not. A band of thirty therefore builds one thing at a time and
+ * when there is not. A community of thirty therefore builds one thing at a time and
  * a community of five hundred builds several, without either being written
  * down anywhere.
  *
@@ -91,7 +97,7 @@ export class SensiblePolicy implements Policy {
     // comfort, and building out of comfort is what investment is.
     //
     // Waiting for *every* need was measured to be a trap: at the carrying
-    // capacity of its range a band is never comfortable, so it would never
+    // capacity of its range a community is never comfortable, so it would never
     // invest and never escape, and a hundred people sat with seventy idle hands
     // for a hundred ticks. It was also a rule against a danger that no longer
     // exists — since projects rank below survival (E18) they cannot starve
@@ -164,7 +170,7 @@ export class SensiblePolicy implements Policy {
       });
 
     // A range that has been hunted or fished out is not mended by working
-    // harder in it — a band that can still move, moves (E29). The cost takes
+    // harder in it — a community that can still move, moves (E29). The cost takes
     // care of itself: what is in the ground stays there, so a community with
     // many pits will not do this lightly.
     const spent = Object.values(derived.renewable).some(

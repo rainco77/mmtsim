@@ -85,7 +85,7 @@ export interface Derived {
   readonly storeBefore: Readonly<Record<StockId, number>>;
   readonly storeAfter: Readonly<Record<StockId, number>>;
 
-  /** Factor on the heads this tick; 1 means the band stands (E20). */
+  /** Factor on the heads this tick; 1 means the community stands (E20). */
   readonly birthFactor: number;
   readonly survival: number;
   /** The community was given up and the run is over (E20). */

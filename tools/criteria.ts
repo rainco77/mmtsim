@@ -1,8 +1,8 @@
 import { STAGE1 } from "../src/content/stage1.ts";
 import { PassivePolicy, PoorPolicy, SensiblePolicy } from "../src/policy/bots/index.ts";
 import type { Policy } from "../src/policy/policy.ts";
-import { apply, createState, derive, indexConfig, tick } from "../src/sim/index.ts";
-import type { Derived, GameState } from "../src/sim/index.ts";
+import { apply, createState, derive, indexConfig, livesOn, tick } from "../src/sim/index.ts";
+import type { Derived, GameState, ProcessDef } from "../src/sim/index.ts";
 
 /**
  * Balancing is a measurement, not an impression (E27).
@@ -42,6 +42,10 @@ const FOOD = "food";
 /** The two natural capacities food is won from, measured apart (see `Cell`). */
 const AXES = ["wilderness", "water"] as const;
 
+/** Does a process live off this stretch of country — by paying it or by taking what grows on it? */
+const drawsOn = (process: ProcessDef, capacity: string): boolean =>
+  livesOn(process, capacity, index);
+
 const mean = (xs: readonly number[]): number =>
   xs.reduce((a, b) => a + b, 0) / (xs.length || 1);
 const share = (xs: readonly boolean[]): number => xs.filter(Boolean).length / (xs.length || 1);
@@ -73,7 +77,7 @@ const STANDS: Readonly<Record<string, readonly string[]>> = {
 };
 
 /**
- * The band sits *at* the carrying capacity of its range (E14), so a series that
+ * The community sits *at* the carrying capacity of its range (E14), so a series that
  * starts there and doubles only ever sees the saturated case — the land is
  * already full at the first cell and every law about density read flat.
  * Intensification happens on the way *to* the limit, not far past it, so the
@@ -137,12 +141,14 @@ function at(stand: readonly string[], heads: number, seed: number): Cell {
   let food = 0;
   let ticks = 0;
   const output: Record<string, number> = {};
-  const occupied: Record<string, number> = {};
   const labor: Record<string, number> = {};
+  /** How much of each stretch of country there is — fixed for the whole cell. */
+  const extent: Record<string, number> = {};
   let processes = 0;
 
   for (let i = 0; i < SETTLE; i += 1) {
     const d = derive(state, index);
+    for (const axis of AXES) extent[axis] = d.capacityTotal[axis] ?? 0;
     // Only the tail is read: the first ticks are the range settling down.
     if (i >= SETTLE - WINDOW) {
       ticks += 1;
@@ -156,10 +162,8 @@ function at(stand: readonly string[], heads: number, seed: number): Cell {
         here += run.output;
         carrying.push(run.output);
         for (const axis of AXES) {
-          const per = process.capacityPerOutput[axis] ?? 0;
-          if (per <= 0) continue;
+          if (!drawsOn(process, axis)) continue;
           output[axis] = (output[axis] ?? 0) + run.output;
-          occupied[axis] = (occupied[axis] ?? 0) + run.output * per;
           labor[axis] = (labor[axis] ?? 0) + run.labor;
         }
       }
@@ -168,10 +172,15 @@ function at(stand: readonly string[], heads: number, seed: number): Cell {
     state = pinned(tick(state, index));
   }
 
+  // Yield against the stretch of country the community **has**, not against
+  // what a process happened to occupy. That is what Boserup's claim is about:
+  // the same fixed country worked harder. Divided by what was occupied, the
+  // figure was just the reciprocal of a coefficient and could not move at all.
   const yieldPer: Record<string, number> = {};
   const laborPer: Record<string, number> = {};
   for (const axis of AXES) {
-    yieldPer[axis] = (occupied[axis] ?? 0) > 0 ? (output[axis] ?? 0) / (occupied[axis] ?? 1) : 0;
+    const area = extent[axis] ?? 0;
+    yieldPer[axis] = area > 0 && ticks > 0 ? (output[axis] ?? 0) / ticks / area : 0;
     laborPer[axis] = (output[axis] ?? 0) > 0 ? (labor[axis] ?? 0) / (output[axis] ?? 1) : 0;
   }
   return {
@@ -370,7 +379,7 @@ function play(seed: number, policy: Policy): Trace {
       if (index.branch.get(process.branch)?.produces !== FOOD) continue;
       allFood += run.output;
       foodNow += run.output;
-      if ((process.capacityPerOutput["water"] ?? 0) > 0) waterFood += run.output;
+      if (drawsOn(process, "water")) waterFood += run.output;
     }
     // Not from tick zero: the community starts with a store, so the first few
     // ticks produce less than they can and the series would rise for a reason
@@ -446,16 +455,23 @@ const report = {
     // configuration, not the economy, and could not fail. What the claim is
     // really about is that **time alone gives nothing** — and that is a
     // statement about the land, which can fail and does.
-    "the band starts at the carrying capacity of its range (E14)": {
+    "the community starts at the carrying capacity of its range (E14)": {
       startHeads: round(mean(passive.map((t) => t.headsAtStart))),
       plateauHeads: round(mean(passive.map((t) => t.headsAtEnd))),
       factor: round(
         mean(passive.map((t) => t.headsAtEnd)) /
           Math.max(1, mean(passive.map((t) => t.headsAtStart))),
       ),
+      // A corridor, not a ceiling. Only an upper bound let a community that
+      // shrank to two fifths of its starting size count as "at the carrying
+      // capacity of its range" — which is the opposite of what E14 claims. It
+      // has to end up near where it began: comfortably above the point where
+      // it is given up, and not several times larger.
       pass:
-        mean(passive.map((t) => t.headsAtEnd)) <
-        mean(passive.map((t) => t.headsAtStart)) * 1.25,
+        mean(passive.map((t) => t.headsAtEnd)) >=
+          mean(passive.map((t) => t.headsAtStart)) * 0.8 &&
+        mean(passive.map((t) => t.headsAtEnd)) <=
+          mean(passive.map((t) => t.headsAtStart)) * 1.5,
     },
     "waiting does not raise the standard of living": {
       foodPerHeadFirst: round(mean(passive.map((t) => t.foodPerHeadFirst))),
@@ -564,10 +580,15 @@ const report = {
       seeds: failedSeeds(thoughtful, (t) => t.thinnestStock < 0.2),
       pass: thoughtful.every((t) => t.thinnestStock >= 0.2),
     },
-    "the community stays a village (E14)": {
+    // It is still a small community when it settles, not a town that grew into
+    // it. Nothing "stays a village" here — there is no village yet, and that is
+    // the point: the epoch has to end while these are still people who could
+    // have walked away.
+    "it is still small when it settles (E14)": {
       headsAtSedentismMean: round(mean(settled.map((t) => t.headsAtEnd))),
       headsAtSedentismMax: settled.reduce((max, t) => Math.max(max, t.headsAtEnd), 0),
-      pass: settled.every((t) => t.headsAtEnd < 1000),
+      measurable: settled.length > 0,
+      pass: settled.length > 0 && settled.every((t) => t.headsAtEnd < 1000),
     },
   },
 };
