@@ -2165,12 +2165,15 @@ einer unerreichbaren Liste. Am ersten Tick steht nichts auf dem Schirm; ab dem z
 wächst die Karte herein.
 
 **Ausgenommen sind Vorsorge und Fläche.** Vorratsgrube, Revierwechsel, Boot und
-Sesshaftigkeit verlangen keine Übung — die Grube muss man bauen dürfen, *bevor* das
-schlechte Jahr kommt, sonst zerstört man die Lehre der Epoche. Statt dessen wartet die
-Grube darauf, dass die **Nahrungsgewinnung ergiebig** geworden ist: Sie ist der Weg aus
-der Epoche und darf nicht am dritten Tick aufgehen. Bis dahin sind mehrere schlechte
-Jahre vergangen, ohne dass irgendetwas sie zählen müsste — und der Revierwechsel ist
-dadurch früh billig und später teuer, ohne dass ein Wort darüber verloren wird.
+Sesshaftigkeit verlangen keine Übung — eine Grube gräbt man, man erfindet sie nicht.
+
+Die Grube wartet statt dessen darauf, dass die **Nahrungsgewinnung ergiebig** geworden
+ist. Sie ist der Weg aus der Epoche und **darf nicht zu früh aufgehen**; und weil sie
+spät kommt, hat der Spieler bis dahin ohnehin mehrere schlechte Jahre erlebt und weiß,
+wofür ein Speicher da ist — **das erledigt der Zufall von allein**, es muss nichts
+gezählt werden. Nebenbei ist der Revierwechsel dadurch früh billig und später teuer,
+ohne dass ein Wort darüber verloren wird: Wer noch nichts gegraben hat, lässt nichts
+zurück.
 
 **Der Revierwechsel erscheint erst, wenn das Revier ausdünnt** — sichtbar unter der
 Hälfte dessen, was es trägt, ausführbar unter einem Drittel. Sein Erscheinen *ist* damit
