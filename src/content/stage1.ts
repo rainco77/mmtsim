@@ -47,9 +47,6 @@ export const STAGE1: Config = {
         // comfort alone: one puts by before eating one's fill, and never
         // before eating at all or being clothed against the winter.
         rank: 500,
-        // Two ticks' worth is what is worth holding: enough that a bad year is
-        // blunted, not so much that the work is wasted on what will spoil.
-        coverTicks: 2,
         // A pit dug by people who move on. It has to keep distinctly worse
         // than a store in a place someone lives in and guards (0.12), and
         // distinctly better than nothing (0.9) — but at 0.4 it kept so badly

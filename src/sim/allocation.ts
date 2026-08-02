@@ -393,26 +393,18 @@ export function allocate(input: AllocationInput): AllocationResult {
     if (need > 1e-9) demands.push({ tier, stock: tier.stock, amount: need });
   }
 
-  // Putting something by (E19). One figure with a meaning: how much of the good
-  // is worth holding, in ticks of what is used of it — and never more than the
-  // store protects, since anything beyond that spoils at the ordinary rate and
-  // the work is wasted.
-  //
-  // A stock is held because output is uncertain, which is as true of a delivery
-  // that fails as of a harvest that does. It needs no guard beyond its rank: a
-  // settlement that cannot feed itself does not reach the store's rank at all.
+  // Putting something by (E19). A stock is held because output is uncertain,
+  // which is as true of a delivery that fails as of a harvest that does — no
+  // seasons, no seed corn, nothing that only food can have. It needs no guard
+  // beyond its rank: a settlement that cannot feed itself never reaches the
+  // store's rank at all.
   for (const stockDef of config.stocks) {
     const shelter = stockDef.protectedBy;
     if (shelter === undefined) continue;
-    let used = 0;
-    for (const tier of tierList) {
-      if (tier.stock !== stockDef.id) continue;
-      used += heads * perHead(tier, plannedShocks) * tier.consumedOnUse;
-    }
-    const target = Math.min(
-      pools.amount[shelter.capacity]?.available ?? 0,
-      shelter.coverTicks * used,
-    );
+    // How much is worth holding is what the store protects, and no second
+    // figure is needed to say so: beyond it a good spoils at the ordinary rate,
+    // and how large the store is, is what the player decided when he dug.
+    const target = pools.amount[shelter.capacity]?.available ?? 0;
     const gap = target - (pools.stock[stockDef.id] ?? 0);
     if (gap <= 1e-9) continue;
 

@@ -58,18 +58,6 @@ export interface StockDef {
      * engine: another epoch may want its stores kept differently.
      */
     readonly rank: number;
-    /**
-     * How much is worth holding, measured in **ticks of what is used** of the
-     * good — "we keep a fortnight's worth". Capped by what the store protects,
-     * since anything beyond that spoils at the ordinary rate and the work is
-     * wasted.
-     *
-     * One number with a meaning, in place of the four rules this replaced. It
-     * is also the figure a business keeps its warehouse by, so it carries over
-     * to every later epoch: a stock is held because output is uncertain, and
-     * that is as true of a delivery that fails as of a harvest that does.
-     */
-    readonly coverTicks: number;
     /** A rule may improve the sheltered rate, as it may the ordinary one. */
     readonly decayWhenRule?: readonly {
       readonly rule: RuleId;

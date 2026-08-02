@@ -825,6 +825,31 @@ und entsteht Druck zur Intensivierung. Mit einem Revier, das ein Vielfaches des 
 hergibt, drückt jahrhundertelang nichts, und dann hat weder der Speicher noch die Rodung
 eine Aufgabe.
 
+**Aber „an der Tragfähigkeit" heißt: an der eines *leicht* schlechten Jahres.** Wörtlich
+am Durchschnittsjahr genommen wäre nie etwas übrig — kein Vorrat, kein Projekt, keine
+Entwicklung, und die Epoche wäre unspielbar. Die Bevölkerung von Wildbeutern pendelt sich
+auch tatsächlich nicht am Mittel ein, sondern an dem, was die mageren Jahre zulassen;
+genau deshalb war in guten Jahren etwas übrig, und genau davon handelt der *normal
+surplus* von Halstead und O'Shea.
+
+Daraus wird ein **messbares Ziel** für das Austarieren, und zugleich der Prüfstein für
+die Lehre der Epoche:
+
+| Jahr | ohne Speicher | mit Speicher |
+|---|---|---|
+| leicht schlecht (Wurf um 0,85) | niemand stirbt | — |
+| **sehr schlecht (Wurf um 0,50)** | **Menschen sterben** | **niemand stirbt** |
+
+Das schlechte Jahr muss also **wehtun, solange es keinen Speicher gibt** — und der
+Speicher ist genau das, was aus „es sterben Menschen" ein „es wird knapp" macht. Fällt
+die erste Zeile aus, hat der Speicher keine Aufgabe; fällt die zweite aus, hat er keine
+Wirkung.
+
+**Die Stellschrauben dafür sind nicht die Wachstumsgeschwindigkeit.** Wie schnell die
+Bevölkerung wächst, verschiebt nur, wann das Gleichgewicht erreicht ist, nicht wo es
+liegt. Wo es liegt, hängt daran, wie hart ein schlechtes Jahr zurückwirft und wie lange
+die Erholung dauert — die Sterberate bei Hunger und die Geburtenrate.
+
 Beides gehört deshalb zusammen austariert, und die Zahl folgt aus den Koeffizienten der
 Epoche — sie muss jedes Mal neu gemessen werden, wenn die sich ändern. Gemessen wird sie
 an einer Siedlung, die **nichts entscheidet**: Wo deren Bevölkerung stehen bleibt, das
