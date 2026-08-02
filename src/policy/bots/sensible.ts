@@ -1,5 +1,5 @@
 import { livesOn, yieldPerCapacity } from "../../sim/index.ts";
-import type { Action, ConfigIndex, Derived, GameState } from "../../sim/index.ts";
+import type { Action, ConfigIndex, Derived, GameState, ProcessDef } from "../../sim/index.ts";
 import type { Policy } from "../policy.ts";
 
 /** Net effect of a project on each capacity — the sign is what matters. */
@@ -88,6 +88,15 @@ const FED = 0.95;
 const BOUGHT_WITH_COMFORT = 450;
 
 /**
+ * Above this price the country counts as pressed and a technique that only
+ * saves hands on it is a trap rather than a relief (E29).
+ */
+const PRESSED = 1.3;
+
+/** Hands lying idle before a second building site is worth opening. */
+const SPARE_HANDS = 2;
+
+/**
  * Above this price the country counts as spent, and this player moves before it
  * hurts: twice the walking for the same meal (E29). The one figure the
  * allocation writes — a fill level cannot say it, being read after the growing
@@ -135,6 +144,22 @@ export class SensiblePolicy implements Policy {
       .every((tier) => tier.coverage >= FED);
     if (!alive) return [];
 
+    // One thing at a time, unless there are hands genuinely lying idle.
+    //
+    // This is the plainest lesson of playing by hand: I built the mortar,
+    // waited for it, then the sickle, and the community grew throughout. The
+    // bot started a new project every tick instead — five at once — because
+    // its test was whether the lowest rank was covered, and with projects
+    // claiming behind every need that stays covered while they quietly eat the
+    // surplus. Measured: ten of seventeen hands went to five building sites,
+    // production got seven, and twenty-five people became twelve.
+    //
+    // Idle labour is the honest signal for affording another. It is what a
+    // second site would have to come out of, and when there is none, a second
+    // site comes out of somebody's dinner by another name.
+    const building = derived.projects.filter((project) => project.running).length;
+    if (building > 0 && derived.laborUnused < SPARE_HANDS) return [];
+
     // Nothing that undoes what is already under way. Clearing and afforestation
     // move the same ground in opposite directions, so running both is not a
     // bolder plan but a self-cancelling one — and a yardstick that contradicts
@@ -173,25 +198,51 @@ export class SensiblePolicy implements Policy {
       return needed;
     };
 
-    // What is being taken from each renewable stock this tick, against what
-    // grows back. A stock taken above its growth is being run down, and a
-    // thoughtful player does not then pay to take it faster still.
-    const overdrawn = new Set<string>();
-    for (const [stock, renewal] of Object.entries(derived.renewable)) {
-      let taken = 0;
-      for (const run of derived.runs) {
-        const per = index.process.get(run.process)?.intermediatesPerOutput[stock] ?? 0;
-        taken += run.output * per;
-      }
-      if (taken > renewal.growth + 1e-9) overdrawn.add(stock);
-    }
-    /** Does this project pay to draw harder on something already run down? */
+    // Which of the things the country carries have grown dear to search for —
+    // read off the one figure the allocation writes, never worked out again
+    // here. Above this a stock is being pressed, whatever its stand looks like.
+    const pressed = new Set(
+      Object.entries(derived.effortPerStock)
+        .filter(([, price]) => price >= PRESSED)
+        .map(([stock]) => stock),
+    );
+
+    /**
+     * Does this project pay to draw harder on something already pressed?
+     *
+     * The lesson of the bow, played by hand: it makes hunting quicker, so the
+     * whole of the food went over to a herd that grows back at a tenth of the
+     * rate the greens do, and it fell from 44 to 4 in two ticks. A technique
+     * that only saves hands on a slow stock does not relieve anything — it
+     * spends the capital faster. What is worth building against a dear country
+     * is a technique that needs **less of the country** for the same output.
+     */
     const deepens = (id: string): boolean =>
       (index.project.get(id)?.effects ?? []).some((effect) => {
         if (effect.type !== "process") return false;
-        const inputs = index.process.get(effect.id)?.intermediatesPerOutput ?? {};
-        return Object.keys(inputs).some((stock) => overdrawn.has(stock));
+        const opened = index.process.get(effect.id);
+        if (opened === undefined) return false;
+        return Object.entries(opened.intermediatesPerOutput).some(([stock, per]) => {
+          if (per <= 0 || !pressed.has(stock)) return false;
+          // Unless it asks less of that very thing than what it replaces —
+          // then it is intensification and exactly what a pressed country
+          // wants (Boserup).
+          return !sparesTheCountry(opened, stock);
+        });
       });
+
+    /** Does this process need less of a stock per unit than its predecessors? */
+    const sparesTheCountry = (opened: ProcessDef, stock: string): boolean => {
+      const per = opened.intermediatesPerOutput[stock] ?? 0;
+      for (const other of index.config.processes) {
+        if (other.id === opened.id) continue;
+        if (other.branch !== opened.branch) continue;
+        if (!derived.processes.includes(other.id)) continue;
+        const theirs = other.intermediatesPerOutput[stock] ?? 0;
+        if (theirs > 0 && per < theirs - 1e-9) return true;
+      }
+      return false;
+    };
 
     // A range that has been hunted or fished out is not mended by working
     // harder in it — a community that can still move, moves (E29). The cost takes
