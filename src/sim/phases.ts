@@ -232,7 +232,8 @@ export class ProjectPhase implements Phase {
     // Labour is a stock now, so a project spends it like it spends wood. The
     // plan has already produced for it — projects hold the top rank — so this
     // phase only books what was set aside.
-    const stocks: Record<StockId, number> = { ...(sector?.stocks ?? {}) };
+    const opening: Readonly<Record<StockId, number>> = sector?.stocks ?? {};
+    const stocks: Record<StockId, number> = { ...opening };
     let laborLeft = stocks["labor"] ?? 0;
 
     const ordered = [...state.activeProjects].sort((a, b) => a.order - b.order);
@@ -292,12 +293,23 @@ export class ProjectPhase implements Phase {
     ctx.laborToProjects = (sector?.stocks["labor"] ?? 0) - laborLeft;
 
     const current = next.sectors[HOUSEHOLDS];
+    // What this phase spent, laid on top of whatever the effects left — not the
+    // copy it started from. Written back whole, it silently undid every stock a
+    // finished project had touched: the boat opened four times the water and
+    // the fish that came with it were thrown away in the same tick, and the
+    // change of range set the country back to full for exactly as long as it
+    // took to reach this line.
+    const kept: Record<StockId, number> = { ...(current?.stocks ?? {}) };
+    for (const id of new Set([...Object.keys(opening), ...Object.keys(stocks)])) {
+      const spent = (opening[id] ?? 0) - (stocks[id] ?? 0);
+      if (spent !== 0) kept[id] = Math.max(0, (kept[id] ?? 0) - spent);
+    }
     return {
       ...next,
       sectors:
         current === undefined
           ? next.sectors
-          : { ...next.sectors, [HOUSEHOLDS]: { ...current, stocks } },
+          : { ...next.sectors, [HOUSEHOLDS]: { ...current, stocks: kept } },
       activeProjects: remaining,
     };
   }
