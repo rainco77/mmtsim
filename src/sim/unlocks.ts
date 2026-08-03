@@ -121,7 +121,7 @@ export function conditionHolds(condition: Condition, ctx: ConditionContext): boo
     case "experience":
       return practised(ctx, condition.activities) >= condition.min;
     case "stockDear":
-      return dearest(ctx) >= condition.factor;
+      return dearest(ctx, condition.stock) >= condition.factor;
   }
 }
 
@@ -135,7 +135,8 @@ export function conditionHolds(condition: Condition, ctx: ConditionContext): boo
  * figure it wrote. Three separate derivations of "how spent is the country" is
  * what left every one of them blind twice over.
  */
-function dearest(ctx: ConditionContext): number {
+function dearest(ctx: ConditionContext, stock?: string): number {
+  if (stock !== undefined) return Math.max(1, ctx.state.lastEffort[stock] ?? 1);
   let highest = 1;
   for (const price of Object.values(ctx.state.lastEffort)) highest = Math.max(highest, price);
   return highest;
@@ -210,7 +211,7 @@ function standing(condition: Condition, ctx: ConditionContext): Unmet {
     case "experience":
       return at(practised(ctx, condition.activities), condition.min);
     case "stockDear":
-      return at(dearest(ctx), condition.factor);
+      return at(dearest(ctx, condition.stock), condition.factor);
   }
 }
 

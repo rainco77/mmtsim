@@ -361,7 +361,12 @@ export type Condition =
    * of the country for the same meal — a mortar — really does lower it, so
    * intensifying postpones the move, exactly as it should.
    */
-  | { readonly kind: "stockDear"; readonly factor: number }
+  | {
+      readonly kind: "stockDear";
+      /** Omitted asks after the dearest of them all — the range as a whole. */
+      readonly stock?: StockId;
+      readonly factor: number;
+    }
   | {
       readonly kind: "experience";
       readonly activities: readonly ActivityId[];
