@@ -359,15 +359,28 @@ export const STAGE1: Config = {
       activity: "fishing",
       priority: 80,
       capacityPerOutput: {},
-      // Halved from 1.2. The second axis of the epoch is supposed to catch the
-      // pressure when the land grows dear (E29), and it never could: gathering
-      // costs 0.28 times the price of searching, so at 1.2 the water only paid
-      // once that price passed 4.3 — and every technique on the land pushes it
-      // further down instead. Measured over eight seeds the water carried 0.0 %
-      // of the food while it could sustainably carry a sixth of it. At 0.6 the
-      // switch falls at a price near 2, which is inside the span the range
-      // actually reaches.
-      intermediatesPerOutput: { labor: 0.6, fish: 1.0 },
+      // Level with gathering, on purpose. Whether a community fishes was a
+      // matter of what country it had — the coast makes fishers of people, the
+      // inland forest does not — and both roads are therefore meant to stand
+      // open here rather than one being priced out.
+      //
+      // At 1.2, and then at 0.6, the water simply never paid: gathering costs
+      // 0.28 times the price of searching, so fishing needed that price to pass
+      // 4.3, then 2.1, and the run never got there — every technique on the land
+      // pushes the price back down. Nobody ever fished, so nobody ever learned
+      // to, so the net and the hook that ask for that learning never appeared,
+      // so nobody ever fished. Measured over eight seeds: 0 of experience at
+      // fishing after eighty ticks, 4253 at gathering, and the water carrying a
+      // thousandth of the food.
+      //
+      // At 0.35 both cost about the same on fresh country, and what tells them
+      // apart is what they really are. The greens grow back ten times as fast
+      // as the fish, so the water can carry only the smaller share whatever it
+      // costs — which is also the finding: coastal people fished a great deal
+      // and plant food still fed most of them. And the water is the safer of
+      // the two in a poor tick, 0.4 of exposure against 0.7, which is exactly
+      // why those who had it used it.
+      intermediatesPerOutput: { labor: 0.35, fish: 1.0 },
       // Safer than the land, not immune to it: the drought that costs the
       // harvest lowers the river too. At 0.15 the water carried a quarter of
       // the food and felt nothing, so the worst year of a run never reached
@@ -409,7 +422,7 @@ export const STAGE1: Config = {
       // cord and it is forever being mended, while a line is a thread. What it
       // buys for that is hands — a fifth of the labour. Two kinds of gear with
       // different profiles rather than one that simply replaces the other.
-      intermediatesPerOutput: { labor: 0.24, fish: 1.0, fibre: 0.08 },
+      intermediatesPerOutput: { labor: 0.15, fish: 1.0, fibre: 0.08 },
       exposure: { weather: 0.4 },
       qualityWeight: 0,
       unlockedFromStart: false,
@@ -425,7 +438,7 @@ export const STAGE1: Config = {
       activity: "fishing",
       priority: 82,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.5, fish: 1.0, fibre: 0.05 },
+      intermediatesPerOutput: { labor: 0.3, fish: 1.0, fibre: 0.05 },
       exposure: { weather: 0.4 },
       qualityWeight: 0,
       unlockedFromStart: false,
