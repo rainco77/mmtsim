@@ -2353,7 +2353,7 @@ Die Jagd ist ausdrücklich **nicht** freizuschalten: Der Mensch jagt Großwild s
 hunderttausenden Jahren (Schöninger Speere). Ein Spiel, in dem man sie erfinden muss,
 behauptet Unsinn.
 
-**Die zwölf Projekte der Epoche:**
+**Die dreizehn Projekte der Epoche:**
 
 | Projekt | wirkt auf | Achse | Anker |
 |---|---|---|---|
@@ -2366,8 +2366,9 @@ behauptet Unsinn.
 | **Steinaxt** | Holz sammeln → **Bäume fällen** | je Hand, größter Sprung der Epoche | mesolithische Kernbeile |
 | **Erdofen** | Feuer machen | **je Vorleistung** | Kochgruben und Brandhügel, mesolithischer Massenbefund |
 | **Gerben** | Felle zurichten | je Hand | Rinden- und Hirngerbung |
+| **Zwirnen** | Flechten | je Hand | Zwirnbindung; gedrehte Faser vom Abri du Maras, Schnurabdrücke durchs Mesolithikum |
 | **Knochennadel** | **beide** Kleidungswege | je Hand **und** gegen den Verfall | Öhrnadeln seit dem Jungpaläolithikum |
-| **Landnahme** | Revier | mehr Fläche, mit fallender Güte | Ricardos Differentialrente |
+| **Revierwechsel** | das Revier selbst | **frisches Land**, mit fallender Güte | Ricardos Differentialrente; Wildbeutermobilität |
 | **Sesshaftigkeit** | der Übergang selbst | — | Testart |
 
 Drei Entscheidungen daran sind begründungsbedürftig:
@@ -2435,10 +2436,10 @@ Unterschied zwischen einem Baum und einer Sperre.
 
 | Projekt | Voraussetzung | warum sachlich |
 |---|---|---|
-| Mörser und Stößel, Erdofen, Landnahme | — | Stein auf Stein; eine Grube; man geht weiter |
+| Mörser und Stößel, Erdofen, Revierwechsel | — | Stein auf Stein; eine Grube; man geht weiter |
 | Sichel, Steinaxt, Vorratsgrube | Holz | Schaft, Schaft, Auskleidung |
 | Gerben | Felle | offensichtlich |
-| Fischernetz, Knochennadel | Faser | ein Netz ist Bast, eine Nadel ohne Faden nichts |
+| Fischernetz, Knochennadel, Zwirnen | Faser | ein Netz ist Bast, eine Nadel ohne Faden nichts, und gezwirnt wird Bast |
 | Pfeil und Bogen | Holz **und** Faser | Stave und Sehne |
 | **Boot** | **Steinaxt**, viel Holz | einen Stamm höhlt man nicht mit der Hand aus |
 | Sesshaftigkeit | gebaute Speicherkapazität, 2 je Kopf | siehe unten |
@@ -3083,7 +3084,8 @@ besprochen und vertagt, nicht vergessen:
 | | Punkt | |
 |---|---|---|
 | 0 | ~~Ausschließliche Fläche — der Blocker~~ **Erledigt.** Die Wildnis wird nicht mehr belegt, sondern beerntet: Sammeln, Jagen, Fischen, Holz und Bast ziehen aus Beständen, die auf ihr sitzen, statt Fläche zu bezahlen. Damit sperrt die Nahrung nichts mehr aus, und Feuer, Felle und Kleidung entstehen wieder ab Tick 0 | erledigt |
-| 0a | **Der Druck kommt als Klippe, nicht als Hang.** Der Aufwandszuschlag eines Bestands wird gegen den Stand *nach* dem Nachwachsen gerechnet. Solange das Revier über Nacht wieder volläuft, kostet es also gleich viel, ob ein Zwanzigstel oder vier Fünftel davon genommen werden — gespielt stand der Zuschlag von Tick 0 bis 45 unverändert auf 1,0, während die Entnahme von 31 auf 75 stieg und ein Drittel der Arbeit brachlag. Erst als die Entnahme die **ganze Decke** erreichte, fiel der Stand in drei Ticks von 89 über 82 und 56 auf 12, der Zuschlag sprang auf 6, und die Gemeinschaft war tot. Zu prüfen: ob der Zuschlag gegen den Stand *während* der Entnahme gerechnet gehört, wie Gordon-Schaefer es meint | **vor dem Angehen besprechen** |
+| 0b | **Totholz und stehender Wald sind ein einziger Topf.** Holz sammeln, Bäume fällen und Bast sammeln nehmen alle aus demselben Bestand und gleich tief; die Steinaxt senkt nur die Arbeit je Einheit (0,6 auf 0,24), statt etwas zu erschließen. Totholz ist aber ein **Abfluss** aus dem stehenden Wald — es fällt je Tick an, im Verhältnis zu dem, was steht —, und wer nur aufliest, bekommt nie mehr, als heruntergefallen ist. Diese Decke fehlt, und mit ihr der Unterschied zwischen Restgröße und Vorrat, auf dem die Axt als *Erschließung* begründet ist. Dieselbe Stelle ist von der anderen Seite schon durchbrochen: Bast sammeln nimmt den Baum und steht ohne Axt ab Tick 0 offen | vor dem Austarieren |
+| 0c | **Feuerlegen** — Unterholz abbrennen, damit dieselbe Fläche mehr Wildpflanzen und mehr Wild trägt. Anker: mesolithisches Brennen in Holzkohle- und Pollenprofilen (Mellars). Offen ist, **ob** es hineingehört: Es liegt auf derselben Achse wie der Mörser (mehr je Fläche), und E29 verlangt, dass kein Projekt der Epoche eine andere doppelt. Falls ja, dann mit **Obergrenze**, weil ein Revier endlich und irgendwann ganz niedergebrannt ist; mit **Rücksetzung beim Revierwechsel**, weil das Gebrannte zum Boden gehört und nicht zur Gemeinschaft; und bezahlt mit dem Unterholz, also mit dem erreichbaren Teil des Holzes — was an 0b hängt | vor dem Austarieren |
 | 1 | **Austarieren.** Gemessen wird die Amortisationszeit je Projekt gegen das Zielband aus E29. Erster Befund: über die Hälfte der Arbeit liegt brach, Sesshaftigkeit bei Tick 45 statt 150–200, Ackerbauanteil 44 % — die zwölf Wirkungen sind einzeln vertretbar, ihr **Produkt** nicht | der Baum ist gebaut |
 | 1a | ~~Vorleistungen eines Projekts als Bedingung~~ **Verworfen, gemessen.** Eine Bedingung „halte etwas davon" ist für ein Gut, das vollständig verbraucht wird, keine Schwelle, sondern eine Mauer: Es entsteht nie ein Bestand, neun von zwölf Projekten waren nie startbar, kein Lauf erreichte die Sesshaftigkeit. Ein Projekt zieht seine Vorleistung selbst, sobald es läuft — die Absicht erzeugt die Nachfrage. Verzögert wird statt dessen über **Erfahrung** | erledigt |
 | 1f | **Die Prüfregel der Boserup-Kriterien ist nicht abgestimmt.** Sie steht auf „steigt irgendwo"; ich habe sie am Ergebnis ausgerichtet statt umgekehrt. Zu entscheiden: so lassen oder auf „fällt nirgends" — und falls Letzteres, was am Inhalt geändert wird, damit es zutrifft | Maßstab, nicht Inhalt |
@@ -3098,8 +3100,6 @@ besprochen und vertagt, nicht vergessen:
 | 1c | **Zwei Verbesserer auf einem Verfahren verbinden sich nicht** (Sichel und Mörser stehen nebeneinander). Freischaltung ist eine Menge, „beides fertig" ist darin nicht ausdrückbar. Drei Wege: so lassen; Verfahren Bedingungen geben statt Freischaltung; Projekte Koeffizienten ändern lassen | betrifft heute genau ein Paar |
 | 3 | ~~Speicher bleibt leer~~ **Erledigt mit dem blinden Plan**: Der Speicher füllt sich, weil ein gutes Jahr jetzt mehr liefert, als geplant war (E24) | erledigt |
 | 4 | Verfallsraten fein justieren (Gruben, Wohnraum) | mit dem Austarieren |
-| 5a | **Taktung der Hülle**: Grundeinstellung Schritt für Schritt, dazu automatischer Durchlauf und ein schnellerer — der Spieler soll jederzeit eingreifen können. Ein leerer erster Tick ist dabei ausdrücklich in Ordnung, er gewöhnt langsam an die Anzeige | unabhängig |
-| 5 | Meldungen an den Spieler; Motorbegriffe in der Sicht; i18n. Dazu gehört, dass ein aufgefangenes schlechtes Jahr **lautlos** bleibt — der lehrreichste Moment der Epoche wird nicht benannt | unabhängig |
 | 6 | Heterogenität in einem Sektor: jetzt oder später | unabhängig |
 | 10 | **Nachhaltigkeit als Institution**, für eine spätere Epoche (Industrialisierung, vielleicht als eigene Epoche). Ein Projekt setzt eine **Regel**, die Regel deckelt die Entnahme eines Bestands auf seinen Nachwuchs — Schonzeit und Jagdtabu früh, Allmendeordnung, Fischereirechte und Fangquoten später. Anker: Elinor Ostrom, *Governing the Commons*. Später kann an die Stelle der Regel ein **institutioneller Preis** treten (CO₂-Preis und Verwandtes); noch nicht besprochen. Voraussetzung ist, dass Bestände sichtbar sind — das ist gebaut | spätere Epoche |
 | 11 | **Streuung bei der Güte eines neuen Reviers.** Jedes neue Revier ist heute streng 5 % schlechter als das vorige (E13). Mit einem Wurf statt einer festen Stufe könnte man auch einmal auf reiches Land treffen. Solange es fehlt, kann die Gemeinschaft **nie** an einen besonders reichen Ort kommen — damit erzählt das Modell den Druck-Weg zur Sesshaftigkeit (Bevölkerungsdruck erzwingt Intensivierung und am Ende Vorratshaltung; Binford, Cohen) und schließt Testarts Weg aus, bei dem ein jahreszeitlicher Überfluss einlagerbar wird und man deshalb bleibt. Beide stehen in der Literatur. Kein Umbau nötig, nur ein Wurf an der Stelle, an der die Güte gesetzt wird | **nicht kurzfristig** |
