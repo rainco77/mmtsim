@@ -3046,6 +3046,7 @@ besprochen und vertagt, nicht vergessen:
 | 5 | Meldungen an den Spieler; Motorbegriffe in der Sicht; i18n. Dazu gehört, dass ein aufgefangenes schlechtes Jahr **lautlos** bleibt — der lehrreichste Moment der Epoche wird nicht benannt | unabhängig |
 | 6 | Heterogenität in einem Sektor: jetzt oder später | unabhängig |
 | 10 | **Nachhaltigkeit als Institution**, für eine spätere Epoche (Industrialisierung, vielleicht als eigene Epoche). Ein Projekt setzt eine **Regel**, die Regel deckelt die Entnahme eines Bestands auf seinen Nachwuchs — Schonzeit und Jagdtabu früh, Allmendeordnung, Fischereirechte und Fangquoten später. Anker: Elinor Ostrom, *Governing the Commons*. Später kann an die Stelle der Regel ein **institutioneller Preis** treten (CO₂-Preis und Verwandtes); noch nicht besprochen. Voraussetzung ist, dass Bestände sichtbar sind — das ist gebaut | spätere Epoche |
+| 11 | **Streuung bei der Güte eines neuen Reviers.** Jedes neue Revier ist heute streng 5 % schlechter als das vorige (E13). Mit einem Wurf statt einer festen Stufe könnte man auch einmal auf reiches Land treffen. Solange es fehlt, kann die Gemeinschaft **nie** an einen besonders reichen Ort kommen — damit erzählt das Modell den Druck-Weg zur Sesshaftigkeit (Bevölkerungsdruck erzwingt Intensivierung und am Ende Vorratshaltung; Binford, Cohen) und schließt Testarts Weg aus, bei dem ein jahreszeitlicher Überfluss einlagerbar wird und man deshalb bleibt. Beide stehen in der Literatur. Kein Umbau nötig, nur ein Wurf an der Stelle, an der die Güte gesetzt wird | **nicht kurzfristig** |
 | 7 | GitHub: public, privat oder noch nicht — Issues gäbe es auch privat | unabhängig |
 | 8 | Rechenzeit-Reserven: inkrementelles Planen statt Neuplanung je Rangbisektion, `totalUse` fortschreiben. Gemessen: `tick` 0,18 ms, `derive` 0,60 ms, Botentscheidung 0,003 ms — die volle Kriterienmessung (40 Seeds × 600 Ticks × 3 Spielweisen) dauert rund drei Minuten. Der größte einzelne Posten ist, dass jedes Werkzeug **zusätzlich** zum Tick noch einmal ableitet, also doppelt plant | derzeit nicht nötig: zum Iterieren reichen 5 Seeds × 400 Ticks in acht Sekunden |
 | 9 | Die Zahl der Landnahmen steht an zwei Stellen: als Zähler im Zustand für die fallende Güte, als Obergrenze am Projekt | Kleinigkeit |
@@ -3130,21 +3131,6 @@ Technisch noch offen:
 ---
 
 ## Verworfen
-
-**Streuung bei der Güte eines neuen Reviers.** Jedes neue Revier ist streng 5 % schlechter
-als das vorige (E13). Erwogen und **verworfen** war, die Güte statt dessen zu würfeln, so
-dass man auch einmal Glück hat und auf reiches Land trifft.
-
-Der Preis dafür wäre nicht die Streuung selbst — die Güte reist ohnehin mit der Fläche —,
-sondern eine Festlegung: Ohne sie kann die Gemeinschaft **nie** an einen besonders reichen
-Ort kommen. Damit ist der eine der beiden Wege zur Sesshaftigkeit im Modell ausgeschlossen:
-Testarts Weg, bei dem ein jahreszeitlicher Überfluss einlagerbar wird und man deshalb
-bleibt. Was bleibt, ist der Druck-Weg — Bevölkerungsdruck erzwingt Intensivierung und am
-Ende Vorratshaltung (Binford, Cohen).
-
-**Das ist bewusst so entschieden.** Beide Lesarten stehen in der Literatur; wir erzählen die
-zweite. Wer es später anders will, braucht dafür keinen Umbau — nur einen Wurf an der
-Stelle, an der die Güte gesetzt wird.
 
 Was hier steht, wurde probiert und wieder aufgegeben — **mit dem Grund**, damit niemand
 dieselbe Sackgasse ein zweites Mal baut.
