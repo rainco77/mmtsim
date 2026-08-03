@@ -3077,6 +3077,53 @@ nächste Schritt. Für eine einzige Regel lohnt er nicht.
 
 ## Offen
 
+### Wo die Arbeit gerade steht (Stand dieser Sitzung)
+
+**Alles verbucht, Arbeitsverzeichnis sauber, 39 Tests, `check` und `lint` grün. 11 von
+21 Kriterien grün** (`npx tsx tools/criteria.ts --seeds 8 --cap 300`).
+
+**Was in dieser Sitzung strukturell entschieden und gebaut wurde**, damit niemand es
+erneut aufrollt:
+
+- Fläche wird nicht mehr belegt, sondern beerntet — Wildnis und Wasser sind Träger, die
+  Decken setzen; Belegung beginnt mit Acker und Hütte.
+- Die Suchkosten rechnen mit, **wieviel entnommen wird** (Integral über die Entnahme),
+  stehen an **einer** Stelle im Zustand und werden von Bedingung, Bots, Ordnung und
+  Sicht gemeinsam gelesen.
+- Ausgeteilt wird aus **einem Topf**; geplant wird weiter der volle Bedarf.
+- Was getragen und nicht verbraucht wird, wird nur als **Lücke** nachgefragt.
+- Projekte und Vorräte tragen einen **Rang**, den der Spieler setzt, Vorgabe ganz hinten.
+- Nichtstun tötet nicht, es bleibt stehen; gestraft wird Untätigkeit mit Stillstand.
+- Neue Wirkungsart **„das Revier trägt mehr"**; neues Land bringt mit, was darauf lebt.
+- Das Angebot folgt dem **Rang** statt Schwellen: die zwei wertvollsten ausführbar, die
+  nächsten sichtbar. Der Wert eines Projekts ist, was es von etwas Knappem einspart —
+  Bestände nach Suchkosten, Arbeit nach ihrer Knappheit.
+
+**Offen, in dieser Reihenfolge:**
+
+| | Punkt |
+|---|---|
+| **A** | **Monotonie der Angebote.** Ein Angebot darf nie wieder verschwinden. `GameState.offered` ist angelegt (1 = war sichtbar, 2 = war ausführbar) und wird in `derive` als Untergrenze gelesen, aber **nie geschrieben**. Dafür braucht es eine Phase im Tick — und die Rangfolge muss an eine Stelle, die Tick *und* Sicht erreichen, statt zweimal gerechnet zu werden |
+| **B** | **Erfahrungsschwellen der Techniken entfernen** (Mörser, Bogen, Sichel, Netz, Steinbeil, Angelhaken, Zwirnen, Gerben). Sie sagen nichts mehr, was der Rang nicht besser sagt. Bei **Grube und Sesshaftigkeit bleiben sie** — das sind Dinge, die man erst kennen muss. Danach messen und von Hand durchspielen, mit Blick auf **Zahl und Art der Angebote** |
+| **C** | **Zwei Lehren aus dem selbst gespielten Lauf für den bedachten Bot**: bauen, solange Hände frei sind (ich hatte 17 von 60 frei und baute nichts), und **weiterziehen, wenn die Suchkosten eines Bestands an den Anschlag laufen** (das Wild stand auf 30, der Revierwechsel stand offen, ich sah zu) |
+| **D** | **Warum die Gemeinschaft von Anfang an steht**, statt an einen Wert heranzuwachsen. E29 verlangt das Heranwachsen |
+| **E** | **Feuerlegen** als zweiter Fall von „das Revier trägt mehr" — mehrfach ausführbar, mit Bäumen als Preis (abgebranntes Unterholz ist kein Brennholz) |
+
+**Entschieden und nicht wieder aufzurollen:** Das **Leerfangen des Fischs** bleibt, wie es
+ist. Es ist historisch richtig, und das Modell bietet die Antwort bereits an — der
+Revierwechsel steht in genau diesen Ticks offen. Es ist keine Lücke, sondern eine Lehre
+für Spieler und Bot.
+
+**Merkposten ohne Anspruch:** Vorratshaltung als **Geschäft** — wer halten kann, verdient
+daran, dass andere es nicht können — als Kandidat für die Institution, die den
+Vorratsregler in einer späteren Epoche ablöst.
+
+**Gemessene Zahlen, an denen sich das Austarieren ausrichten kann** (Seed 42, von Hand
+gespielt): Suchkosten der Wildpflanzen liefen 1,25 → 2,36, Wild 1,03 bis an den Anschlag
+30, Bäume 1,01 → 1,56, Fisch springt zwischen 1 und 30. Der Mörser hob den Gipfel von
+40 auf 69 Köpfe. Erfahrung sammelt sich mit etwa 60 je Tick, später 75.
+
+
 **Der Arbeitsstand, in der Reihenfolge, in der es drankommt.** Was hier steht, ist
 besprochen und vertagt, nicht vergessen:
 
