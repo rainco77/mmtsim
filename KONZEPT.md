@@ -2175,7 +2175,11 @@ nicht eine Stimmung, sondern eine Folge von Zuständen, die eintreten müssen:
 1. Eine Gemeinschaft lebt auf einem Revier, das sie in einem **leicht schlechten Jahr** trägt.
 2. **Schlechte Jahre beißen**: Die Nahrung reicht nicht, Menschen sterben, die Gruppe
    schrumpft.
-3. **Gute Jahre lassen sie wachsen.** Im Schnitt wächst sie langsam.
+3. **Gute Jahre lassen sie wachsen.** Im Schnitt wächst sie langsam — und
+   **zwischen den Krisen steht sie**. Sie wächst bis an einen Wert und bleibt dort,
+   statt weiterzuwachsen oder langsam auszubluten. Dieser ruhende Zustand ist der
+   Normalfall der Epoche, nicht die Ausnahme: Alles andere — Wachstum, Einbruch,
+   Erholung — sind Abweichungen davon und kehren dorthin zurück.
 4. Das Wachstum drückt gegen das Revier → **Intensivierung lohnt** → die Grenze steigt →
    die Bevölkerung wächst nach.
 5. **Die Intensivierungen sind aufgebraucht.** Die Grenze bewegt sich nicht mehr, die
