@@ -68,6 +68,8 @@ export function createState(config: Config, options: StartOptions): GameState {
     unownedCapacity,
     // Untouched country carries what the content says and not a fish more.
     rangeCarries: {},
+    // Nothing is put by until the player says to.
+    stockTargets: {},
     landTakings: 0,
     // Nothing has happened yet, so nothing was short: the first tick may save.
     lastCoverage: {},

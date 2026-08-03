@@ -70,6 +70,19 @@ export interface StockDef {
   }[];
 
   /**
+   * This good can be laid by without any building — a woodpile needs no shed —
+   * so the player may say how much of it to hold, and this is where that claim
+   * stands in the ranking (E9).
+   *
+   * Only for goods that keep on their own. Food spoils at nine tenths a tick:
+   * a standing order to hold three ticks of it would command work whose fruit
+   * is gone by the next one, so there the pit is not an improvement on saying
+   * how much to keep — it is the only way to keep anything at all. That
+   * asymmetry is the lesson of the epoch and not a gap in it.
+   */
+  readonly keeping?: { readonly rank: number };
+
+  /**
    * A stock that **grows back** instead of falling apart (E29).
    *
    * Nothing a forager takes is an area. A hectare of forest is not used up by

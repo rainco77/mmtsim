@@ -50,6 +50,18 @@ export interface GameState {
    */
   readonly rangeCarries: Readonly<Record<StockId, number>>;
 
+  /**
+   * How much of a good the player has said to hold in reserve (E1).
+   *
+   * A **fixed amount**, deliberately, not a multiple of what is used: a setting
+   * that grows by itself never has to be looked at again, and then the
+   * institution that later takes it over relieves nobody of anything. A fixed
+   * one goes out of date as the community grows and has to be brought up — and
+   * it is that upkeep the institution removes, which is what makes less control
+   * feel like progress rather than merely being called it.
+   */
+  readonly stockTargets: Readonly<Record<StockId, number>>;
+
   /** How often territory was taken; the quality of the next parcel follows (E13). */
   readonly landTakings: number;
 

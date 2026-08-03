@@ -69,7 +69,20 @@ export const STAGE1: Config = {
     },
     // Labour: made every tick out of the people, gone by the next one.
     { id: "labor", decayPerTick: 1 },
-    { id: "wood", decayPerTick: 0.02 },
+    {
+      // Wood keeps almost by itself, so a pile of it is a reserve that needs no
+      // building — and the one buffer this epoch can have against a hard draw
+      // before the pit exists. Measured, what killed a community at seed 42,
+      // tick 81 was not hunger but the fire going out at 0.04 while hunger
+      // itself held at 0.86: a few ticks of firewood stacked would have carried
+      // it through.
+      //
+      // Just behind putting food by, which is where it belongs: one lays in
+      // food before firewood, and both before eating one's fill.
+      id: "wood",
+      decayPerTick: 0.02,
+      keeping: { rank: 550 },
+    },
     // A fire is out by morning. Warmth is the one stock that cannot be held at
     // all, and that is the point of making it a good of its own rather than a
     // need pointed at wood: it is produced from wood and spent at once.

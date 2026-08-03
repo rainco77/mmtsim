@@ -541,6 +541,29 @@ export function allocate(input: AllocationInput): AllocationResult {
   // seasons, no seed corn, nothing that only food can have. It needs no guard
   // beyond its rank: a community that cannot feed itself never reaches the
   // store's rank at all.
+  // What the player has said to hold of a good that keeps on its own (E1). No
+  // building is needed for a woodpile; what is needed is somebody deciding how
+  // big it should be, and keeping that decision current as the community grows.
+  for (const stockDef of config.stocks) {
+    const keeping = stockDef.keeping;
+    if (keeping === undefined) continue;
+    const want = state.stockTargets[stockDef.id] ?? 0;
+    const gap = want - (pools.stock[stockDef.id] ?? 0);
+    if (gap <= 1e-9) continue;
+    demands.push({
+      tier: {
+        id: `keep:${stockDef.id}`,
+        rank: keeping.rank,
+        stock: stockDef.id,
+        branch: config.branches.find((b) => b.produces === stockDef.id)?.id ?? "",
+        perHead: 0,
+        consumedOnUse: 0,
+      },
+      stock: stockDef.id,
+      amount: gap,
+    });
+  }
+
   for (const stockDef of config.stocks) {
     const shelter = stockDef.protectedBy;
     if (shelter === undefined) continue;

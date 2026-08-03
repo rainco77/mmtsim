@@ -17,7 +17,13 @@ export type Action =
   | { readonly type: "setProjectRank"; readonly id: ProjectId; readonly rank: number }
   | { readonly type: "pauseProject"; readonly id: ProjectId; readonly paused: boolean }
   | { readonly type: "reorderProject"; readonly id: ProjectId; readonly order: number }
-  | { readonly type: "abandonProject"; readonly id: ProjectId };
+  | { readonly type: "abandonProject"; readonly id: ProjectId }
+  /**
+   * How much of a good to hold in reserve (E1). A fixed amount, which goes out
+   * of date as the community grows and has to be brought up — until an
+   * institution takes both the number and the upkeep off the player's hands.
+   */
+  | { readonly type: "setStockTarget"; readonly stock: string; readonly amount: number };
 
 export interface ActionResult {
   readonly state: GameState;
@@ -31,6 +37,17 @@ export function apply(
   index: ConfigIndex,
 ): ActionResult {
   switch (action.type) {
+    case "setStockTarget": {
+      if (index.stock.get(action.stock)?.keeping === undefined) {
+        return { state, rejected: `${action.stock} cannot be laid by without a store` };
+      }
+      return {
+        state: {
+          ...state,
+          stockTargets: { ...state.stockTargets, [action.stock]: Math.max(0, action.amount) },
+        },
+      };
+    }
     case "startProject":
       return startProject(state, action.id, action.rank, index);
     case "setProjectRank":

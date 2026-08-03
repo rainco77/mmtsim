@@ -115,6 +115,14 @@ drankommt. Rainer führt keine Liste; Vertagtes muss von selbst wieder aufgerufe
 
 ### E1 — Fortschritt heißt weniger Kontrolle, nicht mehr Zahlen
 
+**Eine Institution nimmt nicht nur die Entscheidung ab, sondern die laufende Pflege.**
+Was der Spieler einstellt, wird deshalb als **feste Menge** gesetzt und nicht als Vielfaches
+seines Verbrauchs: Eine Einstellung, die von selbst mitwächst, muss er nie wieder ansehen —
+und dann nimmt ihm die Institution, die sie später ablöst, nichts ab, was ihn je gestört
+hätte. Ein fester Wert veraltet dagegen, während die Gemeinschaft wächst, und muss
+nachgezogen werden. Genau diese Mühe ist es, die später wegfällt, und erst dadurch wird
+„weniger Kontrolle" als **Fortschritt erlebbar** statt nur behauptet.
+
 Der Widerspruch zwischen Spielspaß und Korrektheit wird so aufgelöst: Die
 Fortschrittsachse des Spiels ist der **schrittweise Verlust direkter Steuerung**.
 
