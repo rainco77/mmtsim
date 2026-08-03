@@ -62,6 +62,18 @@ export interface GameState {
    */
   readonly stockTargets: Readonly<Record<StockId, number>>;
 
+  /**
+   * Where each reserve's claim stands in the ranking, when the player has moved
+   * it (E18 — the same number a project carries).
+   *
+   * Absent means the content's default, which is the very back: a reserve that
+   * nobody has thought about fills out of what is left over and can never cost
+   * anyone their dinner. Bringing it forward is the whole decision — sooner
+   * than eating one's fill buys safety with fewer children, sooner than the
+   * fire buys it with lives. The danger is chosen, never inflicted.
+   */
+  readonly stockRanks: Readonly<Record<StockId, number>>;
+
   /** How often territory was taken; the quality of the next parcel follows (E13). */
   readonly landTakings: number;
 

@@ -144,6 +144,17 @@ export class SensiblePolicy implements Policy {
       .every((tier) => tier.coverage >= FED);
     if (!alive) return [];
 
+    // Reserves claim at the very back until somebody moves them (E18), so a
+    // player who never touches the rank never lays anything by. This one buys
+    // safety with comfort and never with lives: ahead of eating one's fill,
+    // behind the fire and the food itself.
+    for (const stock of index.config.stocks) {
+      const rank = stock.protectedBy?.rank ?? stock.keeping?.rank;
+      if (rank === undefined) continue;
+      if ((_state.stockRanks[stock.id] ?? rank) <= BOUGHT_WITH_COMFORT) continue;
+      return [{ type: "setStockTarget", stock: stock.id, amount: 0, rank: BOUGHT_WITH_COMFORT }];
+    }
+
     // One thing at a time, unless there are hands genuinely lying idle.
     //
     // This is the plainest lesson of playing by hand: I built the mortar,

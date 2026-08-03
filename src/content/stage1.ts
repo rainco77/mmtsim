@@ -52,10 +52,15 @@ export const STAGE1: Config = {
       // buys: maintenance and a guard.
       protectedBy: {
         capacity: "storage",
-        // Behind everything that costs life or the strength to work, ahead of
-        // comfort alone: one puts by before eating one's fill, and never
-        // before eating at all or being clothed against the winter.
-        rank: 500,
+        // Only the **default**, and it stands at the very back where nothing
+        // can die of it (E18). Where it belongs is a thing to be found: put
+        // ahead of eating one's fill, laying something by costs what it really
+        // costs — eating less well now and fewer children for it — and that is
+        // the bargain storing actually is. But it is the player who strikes it,
+        // not the content that imposes it. Ahead of the fire it would cost
+        // lives, which is exactly the mistake a player is meant to be able to
+        // make and to learn from.
+        rank: PROJECTS_LAST,
         // A pit dug by people who move on. It has to keep distinctly worse
         // than a store in a place someone lives in and guards (0.12), and
         // distinctly better than nothing (0.9) — but at 0.4 it kept so badly
@@ -88,7 +93,7 @@ export const STAGE1: Config = {
       // size is paying more for it than it gets.
       id: "wood",
       decayPerTick: 0.02,
-      keeping: { rank: 550 },
+      keeping: { rank: PROJECTS_LAST },
     },
     // A fire is out by morning. Warmth is the one stock that cannot be held at
     // all, and that is the point of making it a good of its own rather than a

@@ -23,7 +23,13 @@ export type Action =
    * of date as the community grows and has to be brought up — until an
    * institution takes both the number and the upkeep off the player's hands.
    */
-  | { readonly type: "setStockTarget"; readonly stock: string; readonly amount: number };
+  | {
+      readonly type: "setStockTarget";
+      readonly stock: string;
+      readonly amount: number;
+      /** Omitted keeps whatever rank the reserve already claims at. */
+      readonly rank?: number;
+    };
 
 export interface ActionResult {
   readonly state: GameState;
@@ -45,6 +51,10 @@ export function apply(
         state: {
           ...state,
           stockTargets: { ...state.stockTargets, [action.stock]: Math.max(0, action.amount) },
+          stockRanks:
+            action.rank === undefined
+              ? state.stockRanks
+              : { ...state.stockRanks, [action.stock]: action.rank },
         },
       };
     }

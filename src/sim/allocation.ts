@@ -553,7 +553,7 @@ export function allocate(input: AllocationInput): AllocationResult {
     demands.push({
       tier: {
         id: `keep:${stockDef.id}`,
-        rank: keeping.rank,
+        rank: state.stockRanks[stockDef.id] ?? keeping.rank,
         stock: stockDef.id,
         branch: config.branches.find((b) => b.produces === stockDef.id)?.id ?? "",
         perHead: 0,
@@ -577,7 +577,7 @@ export function allocate(input: AllocationInput): AllocationResult {
     demands.push({
       tier: {
         id: `store:${stockDef.id}`,
-        rank: shelter.rank,
+        rank: state.stockRanks[stockDef.id] ?? shelter.rank,
         stock: stockDef.id,
         branch: config.branches.find((b) => b.produces === stockDef.id)?.id ?? "",
         perHead: 0,

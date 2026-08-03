@@ -70,6 +70,7 @@ export function createState(config: Config, options: StartOptions): GameState {
     rangeCarries: {},
     // Nothing is put by until the player says to.
     stockTargets: {},
+    stockRanks: {},
     landTakings: 0,
     // Nothing has happened yet, so nothing was short: the first tick may save.
     lastCoverage: {},
