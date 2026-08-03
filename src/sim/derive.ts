@@ -218,7 +218,20 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
 
   const ctx: ConditionContext = { state, index, unlocks, coverage, population: heads };
 
-  /** What a project would save of whatever has grown dear to search for. */
+  /**
+   * What a project would save of whatever is scarce — and labour is an input
+   * like any other (E4), so it counts here too.
+   *
+   * A stock's scarcity is what searching it costs; labour's is how little of it
+   * lies idle. That is the whole of it, and it settles by itself a thing that
+   * would otherwise want a rule: the sickle, which only makes hands quicker, is
+   * worth almost nothing while a third of them are unused and becomes worth a
+   * great deal once they bind. The mortar, needing less country to the meal, is
+   * the other way about. Neither had to be told when its turn is.
+   */
+  const idleShare =
+    allocation.laborAvailable > 0 ? allocation.laborUnused / allocation.laborAvailable : 1;
+  const laborScarcity = Math.max(0, Math.min(1, 1 - idleShare));
   const worthOf = (def: { readonly effects: readonly Effect[] }): number => {
     let total = 0;
     for (const effect of def.effects) {
@@ -226,8 +239,12 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
       const opened = index.process.get(effect.id);
       if (opened === undefined) continue;
       for (const [stockId, per] of Object.entries(opened.intermediatesPerOutput)) {
-        const price = allocation.effortPerStock[stockId];
-        if (price === undefined || per <= 0) continue;
+        // A stock's price is what searching it costs; labour's is how tightly
+        // it binds. Anything else — a good made by another process — is left
+        // out: its scarcity shows up in the price of what *it* is made from.
+        const price =
+          stockId === "labor" ? laborScarcity : allocation.effortPerStock[stockId];
+        if (price === undefined || price <= 0 || per <= 0) continue;
         let best = Infinity;
         for (const other of index.config.processes) {
           if (other.branch !== opened.branch || !unlocks.processes.has(other.id)) continue;
