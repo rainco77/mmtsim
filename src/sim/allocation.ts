@@ -415,6 +415,10 @@ export function allocate(input: AllocationInput): AllocationResult {
   // Where every renewable stock stands before anything is taken — needed by
   // the ordering as well as by the plan, so it is worked out before both.
   const standing = renewals(state, index);
+  // What this tick means to take out of each stock that grows back. Empty on
+  // the first pass and filled from its draft for the second, so that the
+  // ordering and the plan both cost the searching at what is really intended.
+  let taking: Record<StockId, number> = {};
 
   const pools: Pools = {
     amount: poolCapacities(state, sectorId, config),
@@ -433,6 +437,8 @@ export function allocate(input: AllocationInput): AllocationResult {
   const orderingReason = new Map<BranchId, OrderingReason>();
   const leadProcess = new Map<BranchId, ProcessId>();
 
+  /** Ordered afresh whenever `taking` changes, so it costs what is intended. */
+  const orderAll = (): void => {
   for (const branch of config.branches) {
     if (!input.unlockedBranches.has(branch.id)) continue;
     const forBranch = availableProcesses.filter((process) => process.branch === branch.id);
@@ -441,25 +447,10 @@ export function allocate(input: AllocationInput): AllocationResult {
       available: forBranch,
       buffer,
       quality: (capacity: string) => pools.amount[capacity]?.quality ?? 1,
-      // What searching **last** cost, out of the one figure the state carries.
-      //
-      // It has to be last tick's and cannot be this one's: the ordering runs
-      // before there is a plan, and at the margin — before anything is taken —
-      // every price is one. Measured with the margin, the bow still carried the
-      // whole of the food the moment it was finished, because a herd nobody has
-      // hunted yet reads 1.02 however much is about to be taken from it.
-      //
-      // A tick of lag is also how a community really learns that its country is
-      // thin: by having hunted it. The herd takes one hard tick and the
-      // ordering moves off it afterwards.
-      effort: (process: ProcessDef) => {
-        let worst = effortFactor(process, index, standing, {});
-        for (const id of Object.keys(process.intermediatesPerOutput)) {
-          if (index.stock.get(id)?.regrowth === undefined) continue;
-          worst = Math.max(worst, state.lastEffort[id] ?? 1);
-        }
-        return worst;
-      },
+      // What searching costs, out of `taking` once the draft has said what this
+      // tick means to take — see below. On the first pass that is empty, so the
+      // ordering is priced at the margin; on the second it sees the real thing.
+      effort: (process: ProcessDef) => effortFactor(process, index, standing, taking),
     };
     const resolved = ORDERING_RESOLVER.resolve(branch, orderCtx);
     ordering.set(branch.id, resolved.processes);
@@ -467,6 +458,8 @@ export function allocate(input: AllocationInput): AllocationResult {
     const first = resolved.processes[0];
     if (first !== undefined) leadProcess.set(branch.id, first.id);
   }
+  };
+  orderAll();
 
   // Projects claim first (E18: the player may starve the needs to build). That
   // is a **rank**, not a phase of its own: a project is a consumer of labour
@@ -621,11 +614,17 @@ export function allocate(input: AllocationInput): AllocationResult {
   // to say how much this tick means to take; the second charges what taking
   // that much really costs.
   const draft = makePlan(demands, planCtx);
-  const taking = takingOf(draft.levels, index);
+  taking = takingOf(draft.levels, index);
   const effortPerStock = pricePerStock(standing, taking, index);
-  const effortFor = (process: ProcessDef): number =>
-    effortFactor(process, index, standing, taking);
-  const plan = makePlan(demands, { ...planCtx, effortFor });
+  // Now that the tick has said what it means to take, order and plan again with
+  // what that taking really costs. The ordering used to sit outside this and
+  // read yesterday's cost: harmless for a stand that grows back overnight,
+  // fatal for one that does not. Measured, with fishing level with gathering
+  // the water was the cheapest food, the ordering put it first on the strength
+  // of yesterday, and the fish went from full to nothing in two ticks while the
+  // community fell from 28 to 12.
+  orderAll();
+  const plan = makePlan(demands, planCtx);
 
   // Carry the plan out: consume inputs, book output.
   const produced: Record<StockId, number> = {};
@@ -652,7 +651,7 @@ export function allocate(input: AllocationInput): AllocationResult {
     const planned = margin > 0 ? target / margin : target;
     // Cut back to what the inputs actually there allow — the plan was made
     // before the year was known, and the step above it may have fallen short.
-    const effort = effortFor(process);
+    const effort = effortFactor(process, index, standing, taking);
     const level = planned * feasiblePace(process, planned, pools, effort, index);
     // Labour the plan had earmarked for this process and that it did not take,
     // because the process could not run at the planned level. It is idle, not

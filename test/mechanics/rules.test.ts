@@ -324,8 +324,11 @@ describe("processes and the fallback level (E5)", () => {
     const food = derive(state, plain)
       .runs.map((r) => r.process)
       .filter((id) => plain.branch.get(plain.process.get(id)?.branch ?? "")?.produces === "food");
-    expect(food).toContain("farming");
-    expect(food.filter((id) => id !== "farming").length).toBeGreaterThan(0);
+    // Named processes are deliberately not asserted, as the comment above says:
+    // once the ordering came to cost the searching, the cheapest way of feeding
+    // two hundred people stopped being the fields. What is under test is that a
+    // demand one process cannot carry falls through to further ones at all.
+    expect(new Set(food).size).toBeGreaterThan(1);
   });
 
   it("the declared priority applies while nothing has bound yet (E5)", () => {
@@ -378,7 +381,11 @@ describe("processes and the fallback level (E5)", () => {
     state = {
       ...state,
       completedProjects: { ...state.completedProjects, sedentism: 1 },
-      unownedCapacity: { wilderness: { amount: 30, quality: 1 } },
+      // No water either: the claim is about the fields taking over from the
+      // wild, and since fishing came down to the price of gathering it would
+      // otherwise be the water that absorbs the rest — true, but a different
+      // sentence.
+      unownedCapacity: { wilderness: { amount: 30, quality: 1 }, water: { amount: 0, quality: 1 } },
       sectors: {
         ...state.sectors,
         households: {
