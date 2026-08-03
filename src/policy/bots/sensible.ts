@@ -93,6 +93,9 @@ const BOUGHT_WITH_COMFORT = 450;
  */
 const PRESSED = 1.3;
 
+/** How many ticks of its own use this player keeps of a good that stores itself. */
+const KEEP_TICKS = 3;
+
 /** Hands lying idle before a second building site is worth opening. */
 const SPARE_HANDS = 2;
 
@@ -151,8 +154,28 @@ export class SensiblePolicy implements Policy {
     for (const stock of index.config.stocks) {
       const rank = stock.protectedBy?.rank ?? stock.keeping?.rank;
       if (rank === undefined) continue;
-      if ((_state.stockRanks[stock.id] ?? rank) <= BOUGHT_WITH_COMFORT) continue;
-      return [{ type: "setStockTarget", stock: stock.id, amount: 0, rank: BOUGHT_WITH_COMFORT }];
+      const here = _state.stockRanks[stock.id] ?? rank;
+      // How much to hold of a good that keeps on its own: what the community
+      // gets through in a few ticks. A fixed number goes out of date as the
+      // community grows (E1), so keeping it current is work — and it is exactly
+      // that work a store later takes off the player's hands.
+      const want =
+        stock.keeping === undefined
+          ? (_state.stockTargets[stock.id] ?? 0)
+          : Math.round(
+              derived.runs.reduce(
+                (sum, run) =>
+                  sum +
+                  run.output *
+                    (index.process.get(run.process)?.intermediatesPerOutput[stock.id] ?? 0),
+                0,
+              ) * KEEP_TICKS,
+            );
+      const have = _state.stockTargets[stock.id] ?? 0;
+      if (here <= BOUGHT_WITH_COMFORT && Math.abs(have - want) <= 1) continue;
+      return [
+        { type: "setStockTarget", stock: stock.id, amount: want, rank: BOUGHT_WITH_COMFORT },
+      ];
     }
 
     // One thing at a time, unless there are hands genuinely lying idle.
