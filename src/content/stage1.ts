@@ -405,7 +405,11 @@ export const STAGE1: Config = {
       activity: "fishing",
       priority: 85,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.24, fish: 1.0 },
+      // More fibre to the fish than a line, not less: a net is a great deal of
+      // cord and it is forever being mended, while a line is a thread. What it
+      // buys for that is hands — a fifth of the labour. Two kinds of gear with
+      // different profiles rather than one that simply replaces the other.
+      intermediatesPerOutput: { labor: 0.24, fish: 1.0, fibre: 0.08 },
       exposure: { weather: 0.4 },
       qualityWeight: 0,
       unlockedFromStart: false,
@@ -941,8 +945,15 @@ export const STAGE1: Config = {
       // made of bast. The prerequisite is therefore not a lock but a reckoning:
       // somebody has to be gathering fibre.
       id: "fishing_net",
-      visibleWhen: [{ kind: "experience", activities: ["fishing"], min: 25 }],
-      availableWhen: [{ kind: "experience", activities: ["fishing"], min: 50 }],
+      // Twisting cord comes first: a net is nothing but a great deal of it.
+      visibleWhen: [
+        { kind: "projectDone", id: "twining", min: 1 },
+        { kind: "experience", activities: ["fishing"], min: 25 },
+      ],
+      availableWhen: [
+        { kind: "projectDone", id: "twining", min: 1 },
+        { kind: "experience", activities: ["fishing"], min: 50 },
+      ],
       defaultRank: PROJECTS_LAST,
       laborCost: 48,
       stockCost: { fibre: 30 },
@@ -1030,9 +1041,21 @@ export const STAGE1: Config = {
       // taking land, on the other axis, and the difference is the lesson: land
       // taking is more of the same at falling quality, the boat is a different
       // resource that fails at different times.
+      // Two things are needed and neither will do alone: the axe to hollow the
+      // log, and the net to fish from it. Spearing over the side of a dugout is
+      // barely possible — open water is fished with gear that works away from
+      // the shore, and the net of Antrea was found with its floats and sinkers.
+      // It also makes bast, twisting, net and boat one road instead of four
+      // loose branches.
       id: "boat",
-      visibleWhen: [{ kind: "projectDone", id: "stone_axe", min: 1 }],
-      availableWhen: [{ kind: "projectDone", id: "stone_axe", min: 1 }],
+      visibleWhen: [
+        { kind: "projectDone", id: "stone_axe", min: 1 },
+        { kind: "projectDone", id: "fishing_net", min: 1 },
+      ],
+      availableWhen: [
+        { kind: "projectDone", id: "stone_axe", min: 1 },
+        { kind: "projectDone", id: "fishing_net", min: 1 },
+      ],
       defaultRank: PROJECTS_LAST,
       laborCost: 120,
       stockCost: { wood: 60 },
