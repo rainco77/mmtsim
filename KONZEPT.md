@@ -3131,6 +3131,21 @@ Technisch noch offen:
 
 ## Verworfen
 
+**Streuung bei der Güte eines neuen Reviers.** Jedes neue Revier ist streng 5 % schlechter
+als das vorige (E13). Erwogen und **verworfen** war, die Güte statt dessen zu würfeln, so
+dass man auch einmal Glück hat und auf reiches Land trifft.
+
+Der Preis dafür wäre nicht die Streuung selbst — die Güte reist ohnehin mit der Fläche —,
+sondern eine Festlegung: Ohne sie kann die Gemeinschaft **nie** an einen besonders reichen
+Ort kommen. Damit ist der eine der beiden Wege zur Sesshaftigkeit im Modell ausgeschlossen:
+Testarts Weg, bei dem ein jahreszeitlicher Überfluss einlagerbar wird und man deshalb
+bleibt. Was bleibt, ist der Druck-Weg — Bevölkerungsdruck erzwingt Intensivierung und am
+Ende Vorratshaltung (Binford, Cohen).
+
+**Das ist bewusst so entschieden.** Beide Lesarten stehen in der Literatur; wir erzählen die
+zweite. Wer es später anders will, braucht dafür keinen Umbau — nur einen Wurf an der
+Stelle, an der die Güte gesetzt wird.
+
 Was hier steht, wurde probiert und wieder aufgegeben — **mit dem Grund**, damit niemand
 dieselbe Sackgasse ein zweites Mal baut.
 
