@@ -48,6 +48,50 @@ nicht was *wünschenswert* ist.
 
 ## Arbeitsweise
 
+### Wie in diesem Projekt geantwortet wird
+
+Rainer arbeitet auf Deutsch, der Code ist durchgehend englisch — Bezeichner, Kommentare,
+Dateinamen, Commit-Meldungen. Für die Antworten selbst gilt:
+
+**Ein Vorschlag je Runde, grob vor fein.** Nicht zwei Wege nebeneinander bauen, nicht
+einen zweiten „zur Sicherheit" mitliefern. Wird ein Vorschlag von Rainer gemacht, wird
+**dieser** bewertet und kein eigener danebengestellt.
+
+**Alles zu Entscheidende steht gesammelt am Ende der Nachricht**, unter einer eigenen
+Überschrift. Nichts davon mitten im Fließtext, auch keine offene Frage und kein „das
+gehört eigene Runde". Der erklärende Teil steht davor.
+
+**Rainer liest dieses Dokument nie.** Ein Verweis wie „E19" ist für ihn wertlos: Was an
+der Stelle steht, muss in der Antwort selbst stehen, notfalls als Zitat. Dasselbe gilt für
+frühere Messungen — Zahl und Tick hinschreiben, nicht auf „die Messung von vorhin"
+verweisen.
+
+**Keine Einheiten.** Ein Tick ist keine Zeitspanne, eine Fläche hat keine Größe. Also
+Tick, Fläche, Menge — nie Jahr, Hektar, Kilo. Das gilt auch für Bilder („jedes zehnte
+Jahr" behauptet eine Tickdauer).
+
+**Jeder Befund bekommt eine Adresse.** „Seed 42, Tick 81: Wetter 0,238, Feuer 0,04,
+63 % der Menschen tot" ist prüfbar; „die Schwankung wirkt zu stark" ist eine Meinung.
+Zahlen gehören in Tabellen, Begründungen in Prosa.
+
+**Erst messen, dann vorschlagen — und beim Messen wirklich spielen.** Kein Hebel wird
+benannt, bevor er an einzelnen Ticks gesehen wurde (E30). Wo eine Vermutung nötig ist,
+wird sie als Vermutung gekennzeichnet, und was **nicht** geprüft wurde, wird ausdrücklich
+gesagt.
+
+**Irrtümer werden schlicht benannt und nicht ausgeschmückt.** „Meine Erklärung war
+falsch, hier ist die gemessene" — ein Satz, dann weiter. Ebenso wird gesagt, wenn eine
+Änderung die Kriterien *nicht* verbessert hat.
+
+**Aus einer Bemerkung wird nie eine Entscheidung.** Sagt Rainer, was er nicht will, ist
+damit nicht gesagt, was statt dessen geschieht — das ist eine neue Frage und wird
+gestellt. Und während eine Diskussion läuft, wird nichts gebaut; Freigabe ist ein
+ausdrückliches Ja auf einen ausformulierten Vorschlag.
+
+**Am Ende jeder Runde steht, was als Nächstes ansteht**, in der Reihenfolge, in der es
+drankommt. Rainer führt keine Liste; Vertagtes muss von selbst wieder aufgerufen werden.
+
+
 - **Ein Vorschlag pro Runde.** Vorschlag → Kommentar → Einigung → nächster Punkt.
 - Reihenfolge **von vorne nach hinten** (frühe Spielphase zuerst) und **vom Groben
   ins Feine**.
