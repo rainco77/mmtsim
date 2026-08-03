@@ -746,6 +746,26 @@ export const STAGE1: Config = {
       perHead: 0.07,
       consumedOnUse: 1,
       productivity: { atZero: 1, atFull: 1.1 },
+      // And it carries the children. A small body has a great deal of surface
+      // for its size and cannot hold its warmth, so being cold costs infants
+      // first — and an infant that does not live is, to a model without ages,
+      // very near a birth that did not happen. Folding it in here is therefore
+      // the honest simplification rather than inventing a mortality of its own.
+      //
+      // It is also what regulated these populations. Forager numbers were held
+      // by fertility, not by famine (Wood, Pennington): birth intervals of four
+      // years and more came out of what mothers could carry and spare, and
+      // hunger was the crisis and not the daily rule (E29). Ours did it the
+      // other way about — births stood at their maximum almost always and the
+      // regulator was catastrophe.
+      //
+      // Reckoned against the rest: base births 1.01 against base survival
+      // 1/1.01, so a community with everything covered stands still. With
+      // comfort gone and bellies full, 1.01 × 1.01 × 0.99 against 0.990 stands
+      // still as well — growth simply stops. With both gone it comes to 0.99,
+      // and the community shrinks slowly because too few are born, with nobody
+      // dying of it.
+      birthRate: { atZero: 0.99, atFull: 1.01 },
     },
     {
       // The dispensable third of the food, and the community's whole buffer
