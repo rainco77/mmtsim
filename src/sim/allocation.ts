@@ -629,7 +629,15 @@ export function allocate(input: AllocationInput): AllocationResult {
   // of yesterday, and the fish went from full to nothing in two ticks while the
   // community fell from 28 to 12.
   orderAll();
-  const plan = makePlan(demands, planCtx);
+  // A **fresh** context object, and that is not cosmetic: the planner hangs its
+  // caches — chain coefficients, per-process coefficients, supply — on the
+  // identity of the context it is given. Handed the same one twice, the second
+  // pass silently reuses what the first worked out at the margin and under the
+  // old ordering. It planned the wood and then did not plan the fire it was
+  // for: at seed 42, tick 39, twenty-six of forty-seven hands lay idle, 2.78 of
+  // wood was cut, no input was reported short, and warmth came out at nought —
+  // which costs three in five of the people.
+  const plan = makePlan(demands, { ...planCtx });
 
   // Carry the plan out: consume inputs, book output.
   const produced: Record<StockId, number> = {};
