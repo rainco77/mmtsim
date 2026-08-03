@@ -951,10 +951,24 @@ export const STAGE1: Config = {
       // It is also what makes a range change cheap at first and dear later,
       // without a word being said about it: there is nothing to leave behind.
       visibleWhen: [
-        { kind: "experience", activities: ["gathering", "hunting", "fishing"], min: 1500 },
+        // Reckoned from what a community actually gathers rather than guessed.
+        // Measured, its tally of food won runs at about sixty a tick early and
+        // seventy-five later: 574 by tick 12, 1251 by 24, 1959 by 36, 2821 by
+        // 48. At 1500 and 3000 the pit came into view at tick 36 and could be
+        // had at 57 — and the community was given up at 58. The one answer the
+        // epoch has to a hard draw arrived a tick after it had killed everyone,
+        // and the figures had plainly been reckoned for a far longer run than
+        // the economy carries.
+        //
+        // At 900 and 1800 it shows itself around tick 18 and can be had around
+        // 33, which leaves it time to be dug, filled and still be there. The
+        // gap between seeing and having stays about fifteen ticks, as with the
+        // other techniques: long enough to be a promise, short enough not to be
+        // a tease.
+        { kind: "experience", activities: ["gathering", "hunting", "fishing"], min: 900 },
       ],
       availableWhen: [
-        { kind: "experience", activities: ["gathering", "hunting", "fishing"], min: 3000 },
+        { kind: "experience", activities: ["gathering", "hunting", "fishing"], min: 1800 },
       ],
       defaultRank: PROJECTS_LAST,
       laborCost: 24,
