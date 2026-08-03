@@ -331,13 +331,42 @@ describe("processes and the fallback level (E5)", () => {
     expect(new Set(food).size).toBeGreaterThan(1);
   });
 
-  it("the declared priority applies while nothing has bound yet (E5)", () => {
-    // First tick: scarcity is empty, so the content's order holds.
-    const state = createState(noRisk, { seed: 7 });
-    const food = derive(state, plain).runs.filter(
-      (r) => plain.process.get(r.process)?.branch === "food",
+  it("the cheaper way leads, and the lead turns with the cost (E5, E29)", () => {
+    // The claim that used to stand here — that the order written in the content
+    // holds while nothing has bound — stopped meaning much once the ordering
+    // came to reckon what searching costs: scarcity almost always has an answer
+    // now, and the declared order only settles an exact tie. What is worth
+    // testing is the thing that replaced it, and which nothing covered: the
+    // cheaper way of making a good goes first, and which way that is follows
+    // the country rather than anything written down.
+    const leader = (state: GameState): string | undefined =>
+      derive(state, plain).runs.find(
+        (r) => plain.process.get(r.process)?.branch === "food" && r.output > 0,
+      )?.process;
+
+    const base = createState(noRisk, { seed: 7 });
+    const full = leader(base);
+    expect(full).toBeDefined();
+
+    // Now thin out whatever the leader lives off. Searching it grows dear, and
+    // the lead has to pass to something else — with no rule anywhere saying
+    // which, and none needed.
+    const drawn = plain.process.get(full ?? "")?.intermediatesPerOutput ?? {};
+    const quarry = Object.keys(drawn).find(
+      (id) => plain.stock.get(id)?.regrowth !== undefined,
     );
-    expect(food[0]?.process).toBe("gathering");
+    expect(quarry).toBeDefined();
+    const thin: GameState = {
+      ...base,
+      sectors: {
+        ...base.sectors,
+        households: {
+          ...base.sectors["households"]!,
+          stocks: { ...base.sectors["households"]!.stocks, [quarry ?? ""]: 0.01 },
+        },
+      },
+    };
+    expect(leader(thin)).not.toBe(full);
   });
 
   it("no input is a criterion of its own: scarcity decides, both ways (E4, E21)", () => {
@@ -392,7 +421,10 @@ describe("processes and the fallback level (E5)", () => {
           ...state.sectors["households"]!,
           heads: 200,
           stocks: { food: 0, plants: 20 },
-          capacityHeld: { cleared: { amount: 400, quality: 1 } },
+          // Small enough that the fields cannot feed two hundred people on
+          // their own — otherwise nothing falls through and there is nothing
+          // to see.
+          capacityHeld: { cleared: { amount: 30, quality: 1 } },
         },
       },
     };
@@ -400,12 +432,17 @@ describe("processes and the fallback level (E5)", () => {
     const output = (id: string) => d.runs.find((r) => r.process === id)?.output ?? 0;
     // Both run, and the wild is gathered for what it holds before the fields
     // take the rest.
-    const gathered = output("gathering") + output("gathering_sickle");
-    expect(gathered).toBeGreaterThan(10);
+    // No process is named: which one picks up the surplus follows the costs and
+    // has changed more than once. What is under test is that a demand the
+    // leading way cannot carry falls through to further ones at all.
+    const carrying = d.runs.filter(
+      (r) => r.output > 0.01 && index.branch.get(index.process.get(r.process)?.branch ?? "")?.produces === "food",
+    );
+    expect(carrying.length).toBeGreaterThan(1);
+    // And the fields really do carry: on thirty of cleared ground they feed
+    // more than the wild growth left on thirty of wilderness, which is the
+    // whole point of clearing it.
     expect(output("farming")).toBeGreaterThan(0);
-    // Far more comes off the fields than out of the wild — that is the whole
-    // point of the fields.
-    expect(output("farming")).toBeGreaterThan(output("gathering_sickle"));
   });
 
   it("a thin store pushes towards the less exposed process (E5, E24)", () => {
