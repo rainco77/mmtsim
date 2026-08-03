@@ -147,6 +147,25 @@ export interface ProjectView {
    * better than a rule about which of them counts.
    */
   readonly consequences: readonly Consequence[];
+
+  /**
+   * What this project is worth against what is scarce **right now**: how much
+   * less of a dear stock its new way of working needs, times what searching
+   * that stock costs, times the mouths it would do it for. Nought for anything
+   * that only saves labour lying idle anyway.
+   *
+   * The offers come sorted by it, and that is not a recommendation but a
+   * default: a list has an order whether one is chosen or not, and leaving it
+   * to the order things happen to stand in the content is how the opening came
+   * to lead with the bow — a technique that presses the slowest stock in the
+   * range and spares nothing. Beside it every project says *what* it relieves,
+   * so a player can take the top or look and disagree, which is what the
+   * genre's build-up games do: the default carries the beginner, the knowing
+   * one departs from it.
+   *
+   * Reckoned here and nowhere else. Worked out twice it goes blind twice.
+   */
+  readonly worth: number;
 }
 
 export function derive(state: GameState, index: ConfigIndex): Derived {
@@ -199,6 +218,28 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
 
   const ctx: ConditionContext = { state, index, unlocks, coverage, population: heads };
 
+  /** What a project would save of whatever has grown dear to search for. */
+  const worthOf = (def: { readonly effects: readonly Effect[] }): number => {
+    let total = 0;
+    for (const effect of def.effects) {
+      if (effect.type !== "process") continue;
+      const opened = index.process.get(effect.id);
+      if (opened === undefined) continue;
+      for (const [stockId, per] of Object.entries(opened.intermediatesPerOutput)) {
+        const price = allocation.effortPerStock[stockId];
+        if (price === undefined || per <= 0) continue;
+        let best = Infinity;
+        for (const other of index.config.processes) {
+          if (other.branch !== opened.branch || !unlocks.processes.has(other.id)) continue;
+          const theirs = other.intermediatesPerOutput[stockId] ?? 0;
+          if (theirs > 0) best = Math.min(best, theirs);
+        }
+        if (Number.isFinite(best) && per < best) total += (best - per) * price * heads;
+      }
+    }
+    return total;
+  };
+
   const projects: ProjectView[] = index.config.projects.map((def) => {
     const active = state.activeProjects.find((p) => p.id === def.id);
     const done = state.completedProjects[def.id] ?? 0;
@@ -217,6 +258,7 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
       ...(def.limit === undefined ? {} : { limit: def.limit }),
       missing: unmetConditions(def.availableWhen, ctx),
       consequences: consequencesOf(def, state, index, unlocks),
+      worth: worthOf(def),
     };
   });
 
@@ -266,7 +308,9 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     ...(allocation.bindingTier === undefined
       ? {}
       : { bindingTier: allocation.bindingTier }),
-    projects,
+    // Sorted by what each is worth against what is scarce now, the declared
+    // order breaking ties. A list has an order whether one is chosen or not.
+    projects: [...projects].sort((a, b) => b.worth - a.worth),
     branches: [...unlocks.branches],
     processes: [...unlocks.processes],
     rules: [...unlocks.rules],

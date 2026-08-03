@@ -322,32 +322,9 @@ export class SensiblePolicy implements Policy {
     const gain = (id: string): number => {
       const effect = moves(id, index);
       let total = 0;
-      // What it saves of whatever has grown dear to find. A project that opens
-      // a way of working which needs *less of the country* per unit is worth
-      // exactly what that country costs to search; one that only saves hands is
-      // worth nothing while hands lie idle.
-      //
-      // Played by hand: the greens grew dearer tick by tick — 1.25, 1.34, 1.41,
-      // 1.61 — while a third of the labour lay unused. The mortar, needing 0.75
-      // of them to the meal instead of 1.0, carried the community to 69 where
-      // this player reached 40; the sickle, which only makes hands quicker,
-      // would have bought nothing. Both stood open and only one was right.
-      for (const effect of index.project.get(id)?.effects ?? []) {
-        if (effect.type !== "process") continue;
-        const opened = index.process.get(effect.id);
-        if (opened === undefined) continue;
-        for (const [stockId, per] of Object.entries(opened.intermediatesPerOutput)) {
-          const price = derived.effortPerStock[stockId];
-          if (price === undefined || per <= 0) continue;
-          let best = Infinity;
-          for (const other of index.config.processes) {
-            if (other.branch !== opened.branch || !derived.processes.includes(other.id)) continue;
-            const theirs = other.intermediatesPerOutput[stockId] ?? 0;
-            if (theirs > 0) best = Math.min(best, theirs);
-          }
-          if (Number.isFinite(best) && per < best) total += (best - per) * price * derived.heads;
-        }
-      }
+      // What it saves of a country grown dear is reckoned in the derived view
+      // now, so bot and interface read the one figure (E22).
+      total += derived.projects.find((p) => p.id === id)?.worth ?? 0;
       for (const { stock, short } of wanting) {
         if (short === "") continue;
         for (const [capacity, amount] of effect) {
