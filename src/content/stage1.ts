@@ -79,6 +79,13 @@ export const STAGE1: Config = {
       //
       // Just behind putting food by, which is where it belongs: one lays in
       // food before firewood, and both before eating one's fill.
+      //
+      // Measured with a target of twelve: the pile forms at once — 9.8 by the
+      // first tick — and then rides between five and seven, because the fire
+      // burns some 2.7 a tick and refilling hangs on hands and standing wood.
+      // It costs, too: the run peaks at 26 against 36 without it. That is the
+      // bargain the setting is meant to be, and at twelve the community of this
+      // size is paying more for it than it gets.
       id: "wood",
       decayPerTick: 0.02,
       keeping: { rank: 550 },
