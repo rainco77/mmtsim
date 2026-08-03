@@ -76,6 +76,7 @@ export function createState(config: Config, options: StartOptions): GameState {
     lastCoverage: {},
     // Fresh country: nothing has been searched for yet.
     lastEffort: {},
+    offered: {},
     completedProjects: {},
     activeProjects: [],
     leadProcess: {},
