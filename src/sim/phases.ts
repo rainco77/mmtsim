@@ -131,6 +131,14 @@ export function decayed(state: GameState, index: ConfigIndex, unlocks: Unlocks):
  * without it the thinning of a range is a silent drift in the numbers that
  * nobody, player or bot, can act on.
  */
+/**
+ * How much of a stock a unit of ground holds: what untouched country carries,
+ * plus whatever husbandry has added to it since (E29).
+ */
+export function carriedPerArea(state: GameState, base: number, stockId: StockId): number {
+  return base + (state.rangeCarries[stockId] ?? 0);
+}
+
 export interface Renewal {
   readonly held: number;
   readonly ceiling: number;
@@ -147,7 +155,7 @@ function renewalIn(
   if (rule === undefined) return undefined;
   const owned = carryingArea(capacityOf(sector.capacityHeld, rule.capacity));
   const unowned = carryingArea(capacityOf(state.unownedCapacity, rule.capacity));
-  const ceiling = (owned + unowned) * rule.densityPerArea;
+  const ceiling = (owned + unowned) * carriedPerArea(state, rule.densityPerArea, stockId);
   const held = sector.stocks[stockId] ?? 0;
   if (ceiling <= 0) return { held, ceiling: 0, growth: 0 };
   const raw = rule.ratePerTick * (held + rule.refuge) * (1 - held / ceiling);

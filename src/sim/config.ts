@@ -434,7 +434,22 @@ export type Effect =
    * tax every later epoch, and an option would be a trap. One settles at a
    * chosen place, and whoever wandered widely has seen a great deal of land.
    */
-  | { readonly type: "takings"; readonly set: number };
+  | { readonly type: "takings"; readonly set: number }
+  /**
+   * The range carries more of a stock, per unit of ground (E29).
+   *
+   * The one thing a project could not do: it could add ground, unlock a way of
+   * working, set a stock outright or throw a rule — but not make the same
+   * ground hold more. That is what husbandry *is*, and every later epoch turns
+   * on it: manure, breeding, crop rotation are all "the same field carries
+   * more". This epoch's first case is a hook and line, which reach fish a spear
+   * from the shore never did.
+   *
+   * What is already there grows in the same proportion, so that raising the
+   * ceiling never makes what lives under it read as suddenly scarce — the
+   * mistake the boat made before land learned to bring its stock along.
+   */
+  | { readonly type: "carries"; readonly stock: StockId; readonly addPerArea: number };
 
 export interface ProjectDef {
   readonly id: ProjectId;

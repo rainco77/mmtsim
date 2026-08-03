@@ -7,7 +7,7 @@ import {
   tierEffectAt,
 } from "./config.ts";
 import type { CapacityId, ProjectId, StockId } from "./ids.ts";
-import { decayed, HOUSEHOLDS, regrown, renewals, type Renewal } from "./phases.ts";
+import { carriedPerArea, decayed, HOUSEHOLDS, regrown, renewals, type Renewal } from "./phases.ts";
 import { peek } from "./random.ts";
 import { capacityOf, carryingArea, type Capacity, type GameState } from "./state.ts";
 import {
@@ -402,7 +402,7 @@ function levelOf(
   for (const holder of Object.values(state.sectors)) {
     area += carryingArea(capacityOf(holder.capacityHeld, rule.capacity));
   }
-  return area * rule.densityPerArea;
+  return area * carriedPerArea(state, rule.densityPerArea, stockId);
 }
 
 /** Where the quality of added area would come from (E13), as a number. */

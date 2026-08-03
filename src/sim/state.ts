@@ -38,6 +38,18 @@ export interface GameState {
    */
   readonly unownedCapacity: Readonly<Record<CapacityId, Capacity>>;
 
+  /**
+   * How much more of a stock the range carries than the content says, per unit
+   * of ground — what husbandry has added (E29).
+   *
+   * Land itself is not made better here; what lives on it is made more
+   * plentiful. A hook and line reach fish a spear never did, burning brings on
+   * hazel and browse, and in later epochs manure and breeding do the same thing
+   * again. It is history and so belongs in the state: the content says what
+   * untouched country carries, this says what has been done to it since.
+   */
+  readonly rangeCarries: Readonly<Record<StockId, number>>;
+
   /** How often territory was taken; the quality of the next parcel follows (E13). */
   readonly landTakings: number;
 

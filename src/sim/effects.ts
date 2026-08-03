@@ -1,4 +1,5 @@
 import type { Config, Effect, LevelSource, QualitySource } from "./config.ts";
+import { carriedPerArea } from "./phases.ts";
 import type { CapacityId, SectorId, StockId } from "./ids.ts";
 import {
   capacityOf,
@@ -196,7 +197,7 @@ function levelOf(
   for (const holder of Object.values(state.sectors)) {
     area += carryingArea(capacityOf(holder.capacityHeld, rule.capacity));
   }
-  return area * rule.densityPerArea;
+  return area * carriedPerArea(state, rule.densityPerArea, stockId);
 }
 
 /** Sets a stock outright — what is left behind, and what a fresh country holds. */
@@ -284,9 +285,50 @@ class TakingsEffectHandler implements EffectHandler<TakingsEffect> {
   }
 }
 
+type CarriesEffect = Extract<Effect, { type: "carries" }>;
+
+/**
+ * The range comes to carry more of something, per unit of ground (E29).
+ *
+ * What is already there grows in the same proportion. Raising the ceiling
+ * alone would make what lives under it read as suddenly scarce — the price of
+ * searching is rightly the density, and it would report a herd that nobody had
+ * touched as thinned out. That was the boat's mistake before land learned to
+ * bring its stock along, and it must not be made twice.
+ */
+class CarriesEffectHandler implements EffectHandler<CarriesEffect> {
+  readonly type = "carries" as const;
+
+  apply(state: GameState, effect: CarriesEffect, config: Config): GameState {
+    const rule = config.stocks.find((stock) => stock.id === effect.stock)?.regrowth;
+    if (rule === undefined || effect.addPerArea === 0) return state;
+    const was = carriedPerArea(state, rule.densityPerArea, effect.stock);
+    const now = Math.max(0, was + effect.addPerArea);
+    if (was <= 0) return state;
+    const factor = now / was;
+
+    const sectors: Record<SectorId, SectorState> = {};
+    for (const [id, holder] of Object.entries(state.sectors)) {
+      sectors[id] = {
+        ...holder,
+        stocks: { ...holder.stocks, [effect.stock]: (holder.stocks[effect.stock] ?? 0) * factor },
+      };
+    }
+    return {
+      ...state,
+      sectors,
+      rangeCarries: {
+        ...state.rangeCarries,
+        [effect.stock]: (state.rangeCarries[effect.stock] ?? 0) + effect.addPerArea,
+      },
+    };
+  }
+}
+
 const HANDLERS: readonly EffectHandler[] = [
   new StockEffectHandler() as EffectHandler,
   new SetCapacityEffectHandler() as EffectHandler,
+  new CarriesEffectHandler() as EffectHandler,
   new TakingsEffectHandler() as EffectHandler,
   new CapacityEffectHandler() as EffectHandler,
   new NoStateChangeHandler("process"),

@@ -411,6 +411,22 @@ export const STAGE1: Config = {
       unlockedFromStart: false,
     },
 
+    {
+      // A bone hook on a twisted line reaches what a spear from the shore never
+      // does: deeper water and larger fish. The line is the point of it here —
+      // it wears out and is made again, so the fibre road gets a customer that
+      // does not stop after one purchase, which is what it has always lacked.
+      id: "fishing_line",
+      branch: "food",
+      activity: "fishing",
+      priority: 82,
+      capacityPerOutput: {},
+      intermediatesPerOutput: { labor: 0.5, fish: 1.0, fibre: 0.05 },
+      exposure: { weather: 0.4 },
+      qualityWeight: 0,
+      unlockedFromStart: false,
+    },
+
     // Farming: far more per area, distinctly less per unit of labour — Boserup.
     // It stands above the gathering chain so that cleared land is used, and the
     // chain remains the fallback for whatever the fields cannot carry (E5).
