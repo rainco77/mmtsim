@@ -147,6 +147,7 @@ export class SensiblePolicy implements Policy {
       .every((tier) => tier.coverage >= FED);
     if (!alive) return [];
 
+    const keep: Action[] = [];
     // Reserves claim at the very back until somebody moves them (E18), so a
     // player who never touches the rank never lays anything by. This one buys
     // safety with comfort and never with lives: ahead of eating one's fill,
@@ -173,9 +174,11 @@ export class SensiblePolicy implements Policy {
             );
       const have = _state.stockTargets[stock.id] ?? 0;
       if (here <= BOUGHT_WITH_COMFORT && Math.abs(have - want) <= 1) continue;
-      return [
-        { type: "setStockTarget", stock: stock.id, amount: want, rank: BOUGHT_WITH_COMFORT },
-      ];
+      // Collected, not returned: keeping a reserve current is housekeeping and
+      // must not use up the turn. Returning here meant the player adjusted his
+      // woodpile every tick and never once got as far as deciding what to
+      // build — ten offers stood open and nothing was ever finished.
+      keep.push({ type: "setStockTarget", stock: stock.id, amount: want, rank: BOUGHT_WITH_COMFORT });
     }
 
     // One thing at a time, unless there are hands genuinely lying idle.
@@ -294,7 +297,9 @@ export class SensiblePolicy implements Policy {
             (effect) => effect.type === "stock" && effect.to.kind === "ceiling",
           ),
       );
-      if (move !== undefined) return [{ type: "startProject", id: move.id, rank: BOUGHT_WITH_COMFORT }];
+      if (move !== undefined) {
+        return [...keep, { type: "startProject", id: move.id, rank: BOUGHT_WITH_COMFORT }];
+      }
     }
 
     const open = derived.projects.filter((project) => {
@@ -335,8 +340,8 @@ export class SensiblePolicy implements Policy {
       return (a.completed === 0 ? 0 : 1) - (b.completed === 0 ? 0 : 1);
     });
     const start = ranked[0];
-    if (start === undefined) return [];
+    if (start === undefined) return keep;
 
-    return [{ type: "startProject", id: start.id, rank: BOUGHT_WITH_COMFORT }];
+    return [...keep, { type: "startProject", id: start.id, rank: BOUGHT_WITH_COMFORT }];
   }
 }
