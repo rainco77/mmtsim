@@ -594,8 +594,13 @@ export function allocate(input: AllocationInput): AllocationResult {
     // year — measured, use of the wilderness fell from 100 % to 67 % at a draw
     // of 0.66.
     shockFor: (process: ProcessDef) => shockFactor(process, plannedShocks),
-    // Filled in below, once there is a draft to read the taking off.
-    effortFor: (process: ProcessDef) => effortFactor(process, index, standing, {}),
+    // Reads the mutable `taking`: empty on the first pass, so the draft costs
+    // at the margin, and filled from that draft for the second. It must be the
+    // same figure the production loop below charges — planning at the margin
+    // while production charges the real cost had the plan promise more than it
+    // could pay for, and the ranks below food went away empty while the view,
+    // running the same code, reported them covered.
+    effortFor: (process: ProcessDef) => effortFactor(process, index, standing, taking),
     order: (stock, processes) => {
       const branch = config.branches.find((b) => b.produces === stock);
       const wanted = branch === undefined ? undefined : ordering.get(branch.id);
