@@ -3077,53 +3077,6 @@ nächste Schritt. Für eine einzige Regel lohnt er nicht.
 
 ## Offen
 
-### Wo die Arbeit gerade steht (Stand dieser Sitzung)
-
-**Alles verbucht, Arbeitsverzeichnis sauber, 39 Tests, `check` und `lint` grün. 11 von
-21 Kriterien grün** (`npx tsx tools/criteria.ts --seeds 8 --cap 300`).
-
-**Was in dieser Sitzung strukturell entschieden und gebaut wurde**, damit niemand es
-erneut aufrollt:
-
-- Fläche wird nicht mehr belegt, sondern beerntet — Wildnis und Wasser sind Träger, die
-  Decken setzen; Belegung beginnt mit Acker und Hütte.
-- Die Suchkosten rechnen mit, **wieviel entnommen wird** (Integral über die Entnahme),
-  stehen an **einer** Stelle im Zustand und werden von Bedingung, Bots, Ordnung und
-  Sicht gemeinsam gelesen.
-- Ausgeteilt wird aus **einem Topf**; geplant wird weiter der volle Bedarf.
-- Was getragen und nicht verbraucht wird, wird nur als **Lücke** nachgefragt.
-- Projekte und Vorräte tragen einen **Rang**, den der Spieler setzt, Vorgabe ganz hinten.
-- Nichtstun tötet nicht, es bleibt stehen; gestraft wird Untätigkeit mit Stillstand.
-- Neue Wirkungsart **„das Revier trägt mehr"**; neues Land bringt mit, was darauf lebt.
-- Das Angebot folgt dem **Rang** statt Schwellen: die zwei wertvollsten ausführbar, die
-  nächsten sichtbar. Der Wert eines Projekts ist, was es von etwas Knappem einspart —
-  Bestände nach Suchkosten, Arbeit nach ihrer Knappheit.
-
-**Offen, in dieser Reihenfolge:**
-
-| | Punkt |
-|---|---|
-| **A** | **Monotonie der Angebote.** Ein Angebot darf nie wieder verschwinden. `GameState.offered` ist angelegt (1 = war sichtbar, 2 = war ausführbar) und wird in `derive` als Untergrenze gelesen, aber **nie geschrieben**. Dafür braucht es eine Phase im Tick — und die Rangfolge muss an eine Stelle, die Tick *und* Sicht erreichen, statt zweimal gerechnet zu werden |
-| **B** | **Erfahrungsschwellen der Techniken entfernen** (Mörser, Bogen, Sichel, Netz, Steinbeil, Angelhaken, Zwirnen, Gerben). Sie sagen nichts mehr, was der Rang nicht besser sagt. Bei **Grube und Sesshaftigkeit bleiben sie** — das sind Dinge, die man erst kennen muss. Danach messen und von Hand durchspielen, mit Blick auf **Zahl und Art der Angebote** |
-| **C** | **Zwei Lehren aus dem selbst gespielten Lauf für den bedachten Bot**: bauen, solange Hände frei sind (ich hatte 17 von 60 frei und baute nichts), und **weiterziehen, wenn die Suchkosten eines Bestands an den Anschlag laufen** (das Wild stand auf 30, der Revierwechsel stand offen, ich sah zu) |
-| **D** | **Warum die Gemeinschaft von Anfang an steht**, statt an einen Wert heranzuwachsen. E29 verlangt das Heranwachsen |
-| **E** | **Feuerlegen** als zweiter Fall von „das Revier trägt mehr" — mehrfach ausführbar, mit Bäumen als Preis (abgebranntes Unterholz ist kein Brennholz) |
-
-**Entschieden und nicht wieder aufzurollen:** Das **Leerfangen des Fischs** bleibt, wie es
-ist. Es ist historisch richtig, und das Modell bietet die Antwort bereits an — der
-Revierwechsel steht in genau diesen Ticks offen. Es ist keine Lücke, sondern eine Lehre
-für Spieler und Bot.
-
-**Merkposten ohne Anspruch:** Vorratshaltung als **Geschäft** — wer halten kann, verdient
-daran, dass andere es nicht können — als Kandidat für die Institution, die den
-Vorratsregler in einer späteren Epoche ablöst.
-
-**Gemessene Zahlen, an denen sich das Austarieren ausrichten kann** (Seed 42, von Hand
-gespielt): Suchkosten der Wildpflanzen liefen 1,25 → 2,36, Wild 1,03 bis an den Anschlag
-30, Bäume 1,01 → 1,56, Fisch springt zwischen 1 und 30. Der Mörser hob den Gipfel von
-40 auf 69 Köpfe. Erfahrung sammelt sich mit etwa 60 je Tick, später 75.
-
-
 **Der Arbeitsstand, in der Reihenfolge, in der es drankommt.** Was hier steht, ist
 besprochen und vertagt, nicht vergessen:
 
@@ -3150,6 +3103,7 @@ besprochen und vertagt, nicht vergessen:
 | 6 | Heterogenität in einem Sektor: jetzt oder später | unabhängig |
 | 10 | **Nachhaltigkeit als Institution**, für eine spätere Epoche (Industrialisierung, vielleicht als eigene Epoche). Ein Projekt setzt eine **Regel**, die Regel deckelt die Entnahme eines Bestands auf seinen Nachwuchs — Schonzeit und Jagdtabu früh, Allmendeordnung, Fischereirechte und Fangquoten später. Anker: Elinor Ostrom, *Governing the Commons*. Später kann an die Stelle der Regel ein **institutioneller Preis** treten (CO₂-Preis und Verwandtes); noch nicht besprochen. Voraussetzung ist, dass Bestände sichtbar sind — das ist gebaut | spätere Epoche |
 | 11 | **Streuung bei der Güte eines neuen Reviers.** Jedes neue Revier ist heute streng 5 % schlechter als das vorige (E13). Mit einem Wurf statt einer festen Stufe könnte man auch einmal auf reiches Land treffen. Solange es fehlt, kann die Gemeinschaft **nie** an einen besonders reichen Ort kommen — damit erzählt das Modell den Druck-Weg zur Sesshaftigkeit (Bevölkerungsdruck erzwingt Intensivierung und am Ende Vorratshaltung; Binford, Cohen) und schließt Testarts Weg aus, bei dem ein jahreszeitlicher Überfluss einlagerbar wird und man deshalb bleibt. Beide stehen in der Literatur. Kein Umbau nötig, nur ein Wurf an der Stelle, an der die Güte gesetzt wird | **nicht kurzfristig** |
+| 12 | ~~Fisch wird leergefangen~~ **Entschieden: so lassen.** Ein Bestand, dessen Suchkosten an den Anschlag laufen, ist kein Fehler im Modell — es ist historisch richtig, und die Antwort darauf bietet das Modell bereits an: Der Revierwechsel steht in genau diesen Ticks offen. Eine Lehre für Spieler und Bot, keine Lücke | erledigt |
 | 7 | GitHub: public, privat oder noch nicht — Issues gäbe es auch privat | unabhängig |
 | 8 | Rechenzeit-Reserven: inkrementelles Planen statt Neuplanung je Rangbisektion, `totalUse` fortschreiben. Gemessen: `tick` 0,18 ms, `derive` 0,60 ms, Botentscheidung 0,003 ms — die volle Kriterienmessung (40 Seeds × 600 Ticks × 3 Spielweisen) dauert rund drei Minuten. Der größte einzelne Posten ist, dass jedes Werkzeug **zusätzlich** zum Tick noch einmal ableitet, also doppelt plant | derzeit nicht nötig: zum Iterieren reichen 5 Seeds × 400 Ticks in acht Sekunden |
 | 9 | Die Zahl der Landnahmen steht an zwei Stellen: als Zähler im Zustand für die fallende Güte, als Obergrenze am Projekt | Kleinigkeit |
