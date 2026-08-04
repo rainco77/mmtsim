@@ -264,14 +264,19 @@ Aktivitätsanalyse (Koopmans): Was übrig bleibt, ist die effiziente Grenze — 
 der nicht dominierten Verfahren man nimmt, ist mit Mengen gar nicht entscheidbar. Dafür
 braucht es Preise. Der Plan soll es also nicht entscheiden, und er tut es nicht.
 
-**Wo Dominanz schweigt, entscheidet die Knappheit** — und zwar später: Der Plan beginnt
-mit der Routine (dem im Inhalt erklärten Verfahren) und schiebt Nachfrage von dem weg,
-was nicht reicht (E21 — wie die Zuteilung rechnet). Ist das Land knapp, gewinnt das
-flächensparende Verfahren; ist die Arbeit knapp, das arbeitssparende. Vollkommen
-symmetrisch, ohne vorab genanntes Kriterium. Das ist zugleich Simons
-Anspruchsniveau-Suche und Nelson/Winters **Routinen**: Man macht weiter wie bisher und
-weicht ab, wenn eine Schranke drückt — nicht: man rechnet jeden Tick neu, was optimal
-wäre.
+**Wo Dominanz schweigt, entscheidet die Knappheit.** Zwischen zwei Verfahren, von denen
+eines Fläche spart und Arbeit kostet und das andere umgekehrt, ist mit Mengen allein
+nichts zu entscheiden — es kommt darauf an, was gerade knapp ist. Genau das rechnet die
+Zuteilung aus (E21): Sie stellt den ganzen Tick als **ein** Programm auf und löst es
+nach der Rangfolge. Ist das Land knapp, gewinnt das flächensparende Verfahren; ist die
+Arbeit knapp, das arbeitssparende. Vollkommen symmetrisch, ohne vorab genanntes
+Kriterium.
+
+**Dominanz braucht deshalb keinen eigenen Mechanismus mehr.** Ein dominiertes Verfahren
+hat bei jedem Stand höhere Grenzkosten und bekommt in einer Kostenrechnung ohnehin nie
+einen Anteil; die Ordnung ist der grobe Sonderfall dessen, was die Zuteilung allgemein
+leistet. Sie bleibt als **Begriff** wichtig — sie sagt, warum manche Verfahren einander
+nie ablösen —, aber sie entscheidet nichts mehr.
 
 **Das ist eine Zuteilung, keine Wahl.** In der Geschichte gab es keinen Umstieg von
 Jagd auf Ackerbau — beide liefen jahrtausendelang nebeneinander, und die Anteile
@@ -1178,6 +1183,18 @@ die Regel, die im ganzen Modell gilt und für jede Epoche:
 > nur denen etwas weg, die aus *demselben* Bestand nehmen; was fehlt, fehlt weiter,
 > wächst aus dem Rest nach und kostet je Einheit mehr, je dünner er wird.
 
+**Und was herunterfällt, ist ein anderer Bestand als was steht.** Totholz ist kein
+Vorrat, sondern eine Restgröße: Es fällt je Tick an, und wer nur aufliest, bekommt nie
+mehr, als heruntergekommen ist. Der stehende Wald ist ein Vorrat, aber ohne Beil nicht
+zu erreichen. Zwei Bestände auf derselben Wildnis, mit eigener Dichte und eigener Rate —
+und **darauf** beruht, dass die Steinaxt etwas *erschließt* statt nur zu verbilligen
+(E29). Bast wird vom stehenden Wald geschält und braucht kein Beil; ob man den Stamm
+vorher fällt oder ihn stehend ringelt, der Baum ist danach hin.
+
+> **Benannte Vereinfachung:** Die Decke des Totholzes hängt an der Fläche, nicht am
+> Wald, der darauf steht — wer viel fällt, bekommt dadurch nicht weniger Totholz.
+> Vertretbar, weil der stehende Wald in dieser Epoche kaum bewegt wird (Rate 0,1; E13).
+
 Eine Hand, ein Feld, eine Grube gegen ein Tier, einen Fisch, einen Baum. Maschinenstunden
 und Gebäude sind Kapazität; Erz, Öl und Fischgründe sind Bestände.
 
@@ -1464,13 +1481,12 @@ eine Schemamigration nach T7.
 
 ### E21 — Wie die Zuteilung rechnet
 
-**Gierig, Rang für Rang, in Bündeln.**
+**Alles auf einmal geplant, dann nach Rang bedient.**
 
-Die Reihenfolge je Tick:
-
-1. **Projekte bekommen, was der Spieler ihnen zugewiesen hat** (E18). Nach E10 darf
-   der Spieler der Bedarfsdeckung Arbeit entziehen, also wird das zuerst abgezogen.
-2. **Der Rest geht durch die Rangliste** aus E9, von unten nach oben.
+Ansprüche gibt es dreierlei, und sie stehen alle in **einer** Rangliste (E9): die
+Bedarfsränge, die Vorratsziele, und die Projekte — ein Projekt trägt seinen Rang wie ein
+Bedarf, und der Spieler setzt ihn (E18). Nach E10 darf er der Bedarfsdeckung damit
+Arbeit entziehen; das ist eine Rangfrage, keine eigene Phase.
 
 **Die Regel:**
 
@@ -1521,15 +1537,29 @@ Rang 100 wählte sein Verfahren, bevor überhaupt bekannt war, dass Rang 150 die
 Fläche braucht. Die Rangliste bestimmt, wer zuerst bekommt — sie darf nicht bestimmen,
 wie produziert wird.
 
-**Richtung der Lösung: erst gemeinsam planen, dann nach Rang rationieren.** Der Bedarf
+**Die Lösung, und sie ist gebaut: erst gemeinsam planen, dann nach Rang rationieren.** Der Bedarf
 aller Ränge wird zusammen geplant — dabei sieht die Zuteilung die Konkurrenz um die
 Wildnis —, und reicht es nicht, fällt der höchste Rang und es wird neu geplant. Die
 Rangliste bleibt unverändert; nur wird geplant, **bevor** rationiert wird.
 
 Das ist auch das Wirklichkeitsnähere: Ein bäuerlicher Haushalt plant sein Jahr im
 Ganzen — Brot, Feuer, Dach — und teilt die Hände danach ein. Er plant nicht erst das
-Brot in Unkenntnis des Feuers. Anker: **Tschajanow** zum bäuerlichen Haushalt,
-**Simons** Anspruchsniveau-Suche für „reicht es? nein, eine Stufe tiefer".
+Brot in Unkenntnis des Feuers. Anker: **Tschajanow** zum bäuerlichen Haushalt; und für das Wählen zwischen Revieren
+und Verfahren die **optimale Nahrungssuche** (MacArthur/Pianka, Charnov), die genau das
+behauptet — Sammler und Jäger teilen ihren Einsatz so auf, dass der Ertrag je Suchzeit
+am größten wird.
+
+> **Warum hier optimiert wird und nicht nach Anspruchsniveau gesucht.** Satisficing
+> (Simon, Nelson/Winter) ist das Modell für **Unternehmen unter Neuheit und
+> Unsicherheit** — wer nicht weiß, was möglich ist, kann es nicht ausrechnen. Die
+> Zuteilung dieser Epoche ist das Gegenteil: dieselbe Aufgabe in jedem Tick, über
+> Generationen gelernt, auf einem Revier, das die Gruppe hundertmal begangen hat. Für
+> genau diese Lage ist die optimale Nahrungssuche das bestbestätigte Verhaltensmodell
+> des Feldes, und über lange Zeiträume verschwindet der Unterschied ohnehin: Lernen und
+> Auslese führen zu derselben Mischung, *als ob* gerechnet worden wäre (Alchian).
+>
+> **Nicht optimiert wird die Wahl der Projekte.** Was man noch nicht kennt, kann man
+> nicht ausrechnen — und deshalb ist sie die Entscheidung des Spielers und bleibt es.
 
 **Und das ist keine Planwirtschaft.** Es gibt zurzeit *einen* Haushaltssektor; die
 Siedlung ist eine wirtschaftliche Einheit, und ein Haushalt, der sein eigenes Jahr
@@ -1544,174 +1574,137 @@ Einheiten** zu planen — und genau daran scheitert sie, aus Informationsgründe
 > E1: Der Spieler verliert die Planung nicht, weil man sie ihm nimmt, sondern weil es
 > nichts mehr zu planen gibt.
 
-**Der Planungsalgorithmus.** Das Ergebnis eines Plans ist ein Vektor von
-**Aktivitätsniveaus** — wie viel auf jedem Verfahren läuft. Arbeit und Kapazitäten sind
-Nebenbedingungen, nicht Ergebnis; ein Niveau von null heißt „läuft nicht". Das ist die
-Aktivitätsanalyse, auf die sich E5 ohnehin beruft.
+**Der Planungsalgorithmus: ein einziges Programm, nach Rängen gelöst.**
 
-```
-1. Bedarf aller Ränge zusammen als Ziel
-2. je Verfahren die geforderte Menge je Input, begrenzt durch das Ziel
-3. für jeden Input:
-     Summe passt          → weiter
-     Summe passt nicht    → Überhang verlagern, beginnend bei der
-                            Verlagerung, die am meisten VON DIESEM Input
-                            freimacht; genau so viel, bis es passt
-4. eine Verlagerung erzeugt Bedarf auf einem anderen Input
-   → dieser wird in derselben Runde erneut geprüft
-5. bleibt Ungedecktes → höchsten Rang streichen, ab 1
-```
+Das Ergebnis eines Plans ist ein Vektor von **Aktivitätsniveaus** — wie viel auf
+jedem Verfahren läuft. Arbeit und Kapazitäten sind Nebenbedingungen, nicht
+Ergebnis; ein Niveau von null heißt „läuft nicht". Das ist die Aktivitätsanalyse,
+auf die sich E5 ohnehin beruft.
 
-**Verglichen wird immer nur innerhalb eines Inputs.** Der Konflikt entsteht dort — die
-Wildnis reicht nicht —, also muss auch nur entschieden werden, wer von der Wildnis
-weicht, und das ist in Einheiten Wildnis messbar. **Kein Maßstab über Inputs hinweg, keine
-Gewichte, keine Schattenpreise.** Arbeit ist dabei kein Sonderfall, sondern ein Input wie
-jeder andere.
+Der ganze Tick wird als **ein** Programm hingeschrieben und in einem Zug gelöst:
 
-**Die Arbeitskosten einer Umstellung gehen nicht ein**, weil ungenutzte Arbeit nach E10
-ohnehin verfällt: Ein Bedürfnis zu decken schlägt das Sparen von Arbeit, solange die
-Arbeit da ist. Fehlt sie, scheitert die Verlagerung an ihrer eigenen Grenze und es wird
-nach Rang rationiert.
+| | |
+|---|---|
+| **Spalten** | je Verfahren eine — und für ein Verfahren, das aus einem nachwachsenden Bestand schöpft, eine **je Stufe** dieses Bestands. Dazu je Anspruch eine Spalte: das Bedienen eines Bedarfsrangs, eines Vorratsziels, eines Projekts |
+| **Grenzen** | je Kapazität, je Bestand, je Stufe eines Bestands, und je Anspruch: mehr als verlangt wird nicht bedient |
+| **Zielzeilen** | je Anspruch eine, **in der Rangfolge** aus E9 |
 
-**Abbruch: Eine Nachfrage darf ein Verfahren nur einmal verlassen und kehrt nie
-zurück.** Damit ist die Zahl der Verlagerungen durch `Verfahren × Ränge` beschränkt und
-der Durchgang endet garantiert — ohne Schwelle, ohne Glättung.
+**Die Rangfolge steckt im Verfahren selbst, nicht in einer Reihe von Aufrufen.**
+Die Tafel trägt alle Zielzeilen zugleich, und eine Spalte darf nur einrücken,
+wenn sie den Rang in Arbeit verbessert **und jeden höheren Rang unberührt
+lässt**. Damit wird unter allen gleich guten Wegen, Rang 100 zu decken,
+derjenige gewählt, der für Rang 200 am meisten übriglässt — genau der Fehler,
+den der Abschnitt oben beschreibt, und er kann nicht wiederkehren. Rang 100
+bekommt dabei nie weniger, gleich wie viel ein niedrigerer gewönne.
 
-**Das Ergebnis ist ein gangbarer Plan, kein bestmöglicher.** Ein Optimum bräuchte einen
-Löser, und der scheitert an drei Dingen: eine Abhängigkeit oder mehrere hundert Zeilen
-Simplex; Toleranzen für Rundungsfehler, die E26 ausdrücklich ausschließt; und vor allem
-Undurchsichtigkeit — E5 verlangt, dass die Begründung sichtbar ist, und „weil das Optimum
-es so ergibt" kann man niemandem zeigen. Rechenzeit ist **nicht** der Grund: beides ist
-bei unseren Größen billig.
+**Steigende Suchkosten stehen im Modell, nicht in einer Regel daneben.** Ein
+Bestand wird in **acht Stufen** geschnitten: die erste Scheibe eines vollen
+Reviers ist fast umsonst, die letzte eines ausgedünnten teuer. Ein Verfahren
+erscheint einmal je Stufe — dieselbe Beute je Einheit, mehr Hände fürs Suchen.
+Der Löser nimmt deshalb die billigen Stufen **aller** Bestände, bevor er in einen
+einzelnen tiefer geht, und das ist die Aufteilung nach gleichen Grenzkosten,
+ohne dass sie irgendwo als Regel steht.
 
-Dass der Plan nicht optimal ist, ist zugleich ein Gewinn: **Ein Verschiebeverfahren
-findet eine Lösung, ein Preis findet die beste.** Wäre schon hier optimiert, hätten
-Preise später nichts mehr zu holen.
+> **Eine Stufe ist eine Tiefe, kein Privatvorrat.** Die Grenze gilt je Bestand
+> und Stufe, geteilt von allen, die dort graben. Bekäme jedes Verfahren seine
+> eigene Kopie, könnte die bloße Hand die billige Oberschicht eines Reviers
+> nehmen, das die Sichel längst durchgearbeitet hat — gemessen sammelte sie
+> weiter neben der Sichel, die sie vollständig ablöst.
 
-**Beim Bauen korrigiert.** Schritt 5 oben — „bleibt Ungedecktes → höchsten Rang
-streichen" — war zu grob, und zwar in zwei Punkten. Beide fielen sofort auf: Die
-Siedlung starb in **100 %** der Läufe.
+**Warum acht.** Gemessen gegen die exakte Aufteilung mit überall gleichen
+Grenzkosten, bei drei Bedarfslagen: drei Stufen liegen bis zu 33 % daneben und
+verändern nicht nur *wieviel*, sondern *was* genommen wird — die Muscheln werden
+abgeerntet, die die exakte Lösung nie anrührt. Acht liegen bei rund einem
+Prozent und nehmen dieselben Dinge in denselben Verhältnissen. Zwölf und zwanzig
+kaufen ein weiteres halbes Prozent für ein größeres Programm. Die Abweichung
+geht immer in dieselbe Richtung: Die Stufen lassen das Suchen etwas teurer
+aussehen, als es ist, nie billiger.
 
-- **Der Grenzrang wird zum Teil bedient, nicht ganz gestrichen.** Ein Rang, der zu 90 %
-  ginge, bekam nichts, und die Ränge darunter saßen auf ungenutzter Arbeit — gemessen:
-  Nahrung/Überleben gedeckt, Sättigung bei 0, bei 7,9 freien Arbeitseinheiten.
-  Rationieren heißt einen kleineren Anteil, nicht keinen. Der größte Anteil, der noch
-  passt, wird durch Halbieren gesucht; da der Anteil in [0, 1] liegt, genügt eine feste
-  Zahl Schritte, und es ist keine Toleranz zu stellen (E26).
-- **Und dass ein Rang *teilweise* bedient wird, ist ein Aggregationsbehelf.** Es bildet
-  nicht die Entscheidung eines Haushalts nach, sondern die **Verteilung vieler**. In
-  Wirklichkeit wurde der Übergang von der Jagd zum Ackerbau allmählich, weil viele
-  Haushalte zu verschiedenen Zeitpunkten umstellten — die auf dem schlechtesten Boden
-  zuerst. Die sanfte Aggregatkurve ist die Verteilung vieler Umschaltzeitpunkte, nicht
-  die sanfte Umstellung irgendeines Einzelnen; niemand hat je „zu 37 % Dreifelderwirtschaft"
-  betrieben.
+**Der Mittelwert entscheidet nicht, er bezahlt.** Was eine Entnahme kostet, ist
+der Mittelwert der Suchkosten über sie; ob eine *weitere* Einheit genommen wird,
+entscheidet der Preis der nächsten. Ein Mittelwert kann das nicht: Er bleibt
+klein, wie tief auch genommen wird, weil die ersten Einheiten fast umsonst waren
+und die letzten mitziehen. Gemessen kostete das Ausräumen eines ganzen Gewässers
+im Mittel das 3,5-fache — bezahlbar —, und der Plan räumte es in einem einzigen
+Tick aus, Tick für Tick.
 
-  Wir haben **einen** Haushaltssektor, der keine Verteilung hat. Also muss jede
-  Allmählichkeit von der Regel hergestellt werden. Das ist vertretbar, solange es hier
-  steht — und es ist die Stelle, an der eine spätere Aufteilung in Schichten oder
-  Halter den Behelf ersetzen würde, weil die Verteilung dann aus dem Modell käme statt
-  aus der Zuteilung.
-- **Ein gescheiterter Rang stoppt die niedrigeren nicht.** Ein Rang, den der Wald
-  aufhält, hält keinen Rang auf, der an der Wildnis hängt. Die Rangfolge entscheidet,
-  wer einen *umstrittenen* Input zuerst bekommt — nicht, dass darunter alles leer
-  ausgeht. Gemessen bei der Sesshaftigkeit: Wohnraum 0 **und** Sättigung 0, bei 45
-  freien Arbeitseinheiten.
+**Bei Gleichstand gewinnt die sparsamere Spalte.** Wo Arbeit nicht knapp ist, ist
+eine arbeitssparende Technik genau so viel wert wie die, die sie ablöst, und ein
+Löser ist zu Recht gleichgültig. Gleichgültigkeit ist keine Antwort, die ein
+Spieler versteht — also stehen die sparsamen Spalten vorn, und die Pivotregel
+entscheidet die Gleichheit vernünftig. Es kostet nichts.
 
-**Zwischenprodukte sind kein fester Vorrat.** Der Plan rechnete Holz gegen den
-*Bestand* an Holz. Der ist fast immer null, weil Holz im selben Tick geschlagen und
-verbaut wird — also war Wohnraum bei jedem Anteil unmöglich, und es wurde nie ein Haus
-gebaut. Ein Bestand wird nicht nur entnommen, er wird auch hergestellt: Ein Input, den
-der Plan selbst erzeugt, zählt **netto** (E4). Beim Ausführen folgt daraus die
-Reihenfolge — wer herstellt, läuft vor dem, der verbraucht.
+**Und was den Plan aufgehalten hat, sagt das Programm selbst:** Welche Grenzen
+angespannt sind, steht nach dem Lösen da, und dazu, was eine Einheit mehr davon
+gebracht hätte. Das sind **Opportunitätskosten in realen Mengen** — wieviel mehr
+Deckung eine Hand oder eine Fläche mehr eingebracht hätte —, ausdrücklich **keine
+Preise**: Ein Preis setzt Markt und Währung voraus, und beides gibt es hier
+nicht. Die Größe kostet nichts extra und kann nicht von der Antwort abweichen,
+die sie erklärt.
 
-**Schritt 4 stand da und war nicht gebaut.** „Eine Verlagerung erzeugt Bedarf auf einem
-anderen Input → dieser wird in derselben Runde erneut geprüft" — ich hatte den *Input*
-erneut geprüft, aber den **abgeleiteten Bedarf** nur einmal zu Beginn gerechnet.
+**Es ist kein allgemeiner Löser und soll keiner werden.** Er beantwortet die
+Frage dieser Zuteilung und sonst nichts, und deshalb passt er in eine Datei von
+gut zweihundertfünfzig Zeilen: Alle Grenzen sind Obergrenzen mit nichtnegativer
+rechter Seite, also ist Nichtstun schon zulässig und die ganze erste Phase eines
+Lehrbuch-Simplex entfällt. Die Pivotregel ist durchgehend Blands, damit ein
+entartetes Programm nicht kreisen kann — und Entartung ist bei uns der
+Normalfall, weil viele Grenzen gleichzeitig anliegen.
 
-Die Folge war messbar und groß: Verlagert der Plan Nahrung von der Jagd auf den
-Ackerbau, kostet das mehr Arbeit je Einheit. Diese Mehrarbeit galt dann als Fehlbetrag
-statt als einzuplanende Arbeit, und weil eine Nachfrage nicht zur Jagd zurückkehren
-darf, fand die Verlagerung keinen Ausweg und der ganze Rang fiel. Gemessen bei Tick
-300: Wildnis zu 100 % genutzt, **490 Ackerland zu 0,003 %**, 173 von 355
-Arbeitseinheiten frei, Sättigung 0.
+**Gemessen, weil eine fremde Bibliothek naheläge und nicht trägt:** Für unsere
+Größe — rund hundert Aktivitäten, zwanzig Grenzen, sieben Ränge — braucht der
+eigene Löser **0,081 ms**. Ein ausgereifter Löser als WebAssembly braucht 4,0 ms
+je *einzelner* Lösung, ein reiner JS-Löser 0,44 — und beide bräuchten sieben
+davon. Der ganze Tick kostete vorher 0,305 ms. Ein Löser für große Aufgaben
+zahlt bei winzigen fast nur festen Aufwand je Aufruf.
 
-Richtig ist **eine** Schleife: den eigenen Bedarf decken, einen Input suchen, der nicht
-passt, Nachfrage von ihm wegschieben — und von vorn, weil das Schieben anderswo Bedarf
-erzeugt hat.
+**Was der Umstieg gemessen gebracht hat**, über acht Seeds und zweihundert Ticks,
+ohne jede Entscheidung:
 
-**Abgeleiteter Bedarf gehört in den Planer, gegen die Niveaus selbst.** Außerhalb
-geschätzt verfehlt er sie um einen Rundungsfehler, und ein Rundungsfehler liest sich
-als Fehlbetrag — E26 (Tests prüfen Mechanik, keine Toleranzen) verbietet, ihn
-wegzuglätten. Gemessen: 0,07 Arbeitseinheiten Abweichung schnitten den Plan auf null
-zusammen, und *alle* Siedlungen starben.
+| | vorher | nachher |
+|---|---|---|
+| Fisch, tiefster Stand | 3 % der Decke | **21 %** |
+| Suchkosten Fisch, Spitze | 30 (am Anschlag) | **5,7** |
+| Tief der Bevölkerung | 19 | **24** |
+| schlimmster Einbruch in *einem* Tick | 68 % der Menschen | **39 %** |
+| schlechteste Feuerdeckung | 0,00 | **0,76** |
+| Zeit für dieselben Läufe | 1354 ms | **1007 ms** |
 
-**Eine Endnachfrage zählt im Nettoverbrauch mit.** Der Nettoverbrauch eines Bestands
-ist Verbrauch durch Verfahren **plus Endnachfrage** minus Herstellung. Fehlt der
-mittlere Teil, wird die für einen Anspruch geplante Produktion ein zweites Mal
-vergeben. Das war der Grund, warum Projekte nie Arbeit bekamen: Die für sie geplante
-Arbeit deckte den Bedarf des Sammelns, und `better_tools` stand nach 900 Ticks bei
-Fortschritt 0.
+**Der Vorrat bleibt draußen.** Geplant wird gegen das, was **hergestellt** wird;
+der Speicher fängt den Tick auf, wenn das Herstellen nicht reicht (E19).
+Andersherum wäre er im Programm bloß eine weitere billige Quelle, und dann
+begänne jeder Tick damit, ihn aufzuessen, und endete damit, ihn zu füllen.
 
-**Hersteller vor Verbrauchern braucht eine echte topologische Sortierung.** Ein
-paarweiser Vergleich reicht bei zwei Stufen und ordnet bei drei — Arbeit → Holz →
-Haus — falsch.
+**Der blinde Plan bleibt blind** (E24): Gerechnet wird gegen ein leicht
+schlechtes Durchschnittsjahr, der wirkliche Wurf trifft danach den Ausstoß.
 
-**Die Rechenzeit wächst mit der Zahl der Verfahren, und das ist die Größe, die
-wachsen soll.** Gemessen wurde deshalb nicht der heutige Wert, sondern die
-Wachstumsordnung: mit künstlichen Verfahren, die Fläche gegen Arbeit tauschen und
-einander daher nicht dominieren — der teure Fall, nicht der billige.
+**Was dabei weggefallen ist**, und es ist mehr, als hinzugekommen ist: die
+Ordnung nach Dominanz als Entscheider, das Verschieben von Nachfrage weg von dem,
+was ausgeht, die Regel „eine Nachfrage darf ein Verfahren nur einmal verlassen",
+der Vorlauf, der erst schätzen musste, wieviel der Tick zu nehmen gedenkt, die
+Halbierungssuche um den Grenzrang, und der Sonderweg für Projekte — ein Projekt
+ist jetzt schlicht eine weitere Zielzeile an seiner Stelle in derselben Ordnung
+(E18).
 
-| Verfahren | vorher | nachher |
-|---:|---:|---:|
-| 9 | 0,30 ms | 0,32 ms |
-| 30 | 3,32 ms | 1,18 ms |
-| 60 | 26,7 ms | 2,65 ms |
-| 110 | 226,7 ms | 6,43 ms |
+**Wie weit der oberste erreichbare Rang gedeckt wird, ist damit ein Ergebnis
+statt einer Näherung.** Dass ein Rang *teilweise* bedient wird, bleibt aber ein
+**Aggregationsbehelf**: Es bildet nicht die Entscheidung eines Haushalts nach,
+sondern die Verteilung vieler. In Wirklichkeit wurde der Übergang von der Jagd
+zum Ackerbau allmählich, weil viele Haushalte zu verschiedenen Zeitpunkten
+umstellten — die auf dem schlechtesten Boden zuerst. Niemand hat je „zu 37 %
+Dreifelderwirtschaft" betrieben. Wir haben **einen** Haushaltssektor, der keine
+Verteilung hat; eine spätere Aufteilung in Schichten würde den Behelf ersetzen.
 
-Vorher kostete eine Verdopplung der Verfahrenszahl etwa das Achtfache — kubisch. Der
-Grund lag **nicht** im Planer, sondern in der Reihenfolge nach Dominanz (E5): Aus den
-verbliebenen Verfahren in jeder Runde neu die nicht dominierten zu suchen sind *n*
-Runden mal *n²* Vergleiche, und jeder Vergleich baute seine Schlüsselmengen und die
-Risikobereinigung neu auf. Die Beziehung einmal aufzustellen und dann je Verfahren zu
-zählen, wie viele es noch dominieren, macht daraus *n²*; die Koeffizienten einmal je
-Verfahren zu rechnen nimmt den Rest. Gemessener Exponent danach rund 1,3.
+**Ein gescheiterter Rang stoppt die niedrigeren nicht.** Ein Rang, den der Wald
+aufhält, hält keinen Rang auf, der an der Wildnis hängt. Die Rangfolge
+entscheidet, wer einen *umstrittenen* Input zuerst bekommt — nicht, dass darunter
+alles leer ausgeht.
 
-In der Zeit ist es linear und war es immer — 3200 Ticks kosten je Tick nicht mehr als
-200.
+**Und die Buchhaltung sagt, was geschehen ist, nicht was übrig blieb.** Arbeit,
+die hergestellt und von keinem Verfahren gebraucht wurde, galt als „geht an
+Projekte" — auch wenn jedes Projekt pausiert war. Sie ist **Leerlauf**: gemacht,
+von niemandem gewollt, am Tickende weg (E10). Die Bilanz ging in beiden Fällen
+auf; wahr war nur eine davon.
 
-**Die Welt steht still, während ein Plan gemacht wird.** Welche Inputs es gibt, wer was
-herstellen kann, wieviel ein Verfahren je Einheit braucht, wieviel von einem Input da
-ist: Das folgt aus den freigeschalteten Verfahren, der Flächenqualität und den Schocks
-dieses Ticks, und keines davon ändert sich beim Planen. Es einmal statt zehntausendfach
-je Tick zu rechnen ist deshalb keine Näherung, sondern dieselbe Zahl — belegt durch ein
-bitgleiches Ergebnis über alle Kriterien. Gemessen 3,70 → 0,73 ms je Tick, Faktor 5,1.
-Wichtiger als der Faktor ist die Wachstumsordnung: Die quadratische Stelle (Filtern der
-Reihenfolge mit verschachtelter Suche) und die multiplikative (Koeffizient je Frage neu)
-sind draußen, es bleibt eine Schleife über die laufenden Verfahren.
-
-**Verglichen wird auf Kettenkoeffizienten, nicht auf direkten.** Wieviel von einem
-Input ein Verfahren kostet, heißt: sein eigener Verbrauch **plus** das, was seine
-Vorleistungen davon verbrauchen (Leontief). Auf direkten Koeffizienten zu vergleichen
-war falsch und fiel erst auf, seit Arbeit ein gewöhnlicher Input ist (E4): Ein Feld
-benutzt die Köpfe nicht mehr direkt, es benutzt Arbeit, und Arbeit benutzt die Köpfe.
-Nach den direkten Kosten gefragt, antwortete der Ackerbau „null Köpfe" — also erzeugte
-Arbeitsknappheit **gar keinen** Verlagerungszug, während Landknappheit einen erzeugte.
-Gemessen: Arbeit voll ausgelastet, Land brach, und das arbeitssparende Verfahren kam
-nie zum Zug. Die Mengen laufen durch die Kette, seit es abgeleitete Nachfrage gibt; die
-Entscheidung über diese Mengen muss dieselbe Kette sehen.
-
-**Der eigene Bedarf wird genau gedeckt, in beide Richtungen.** Nur zu erhöhen genügt
-nicht: Nach einer Verlagerung auf ein Verfahren, das weniger Arbeit braucht, blieb die
-schon eingeplante Arbeitsproduktion stehen. Der Überhang verschwand dadurch nie, die
-Verlagerung galt als fruchtlos, und der ganze Rang fiel — gemessen blieb er über
-mehrere Durchgänge bei exakt demselben Wert stehen.
-
-**Der gemessene Defekt ist behoben.** Derselbe Lauf nach 900 Ticks: Ackerland **11 % →
-100 %** genutzt, Wohnraum **0,00 → 0,84**, Bevölkerung **213 → 1707**. Alle acht
-Kriterien bestehen; T4 (Entscheidungen zählen) von zuvor gescheitert auf Faktor 7,3.
-Dass am Ende beide Flächen zu 100 % genutzt sind, ein Teil der Arbeit aber frei bleibt
-und die Sättigung bei 0 liegt, ist kein Fehler mehr, sondern Malthus: Das Land bindet,
-die Arbeit ist im Überschuss (E7).
 
 ### E22 — Was im Zustand steht
 
@@ -1808,7 +1801,8 @@ schlechtes Jahr oder nicht; was hineinging, ist dann für weniger Ertrag verbrau
 Inputkoeffizienten steigen gemeinsam.
 
 **Und der Plan kennt den Wurf nicht.** Geplant wird auf ein **durchschnittliches Jahr**;
-die Vorleistungen werden **verbraucht wie geplant** — man hat gesät, man ist losgezogen —,
+die Vorleistungen werden **verbraucht wie geplant** — man ist losgezogen und hat die Tage
+mit Suchen verbracht —,
 und der **Ertrag** ergibt sich aus dem echten Wurf. Die Nachfrageseite ebenso: geheizt
 wird für einen mittleren Winter, ein harter tut weh.
 
@@ -1820,7 +1814,9 @@ wird für einen mittleren Winter, ein harter tut weh.
 > Speicher hatte nichts zu bewahren, und der Rückschlag eines schlechten Jahres kam
 > allein daher, dass die Arbeit ausging.
 >
-> Man sät, und danach entscheidet das Wetter. **Der unerwartete Überfluss guter Jahre ist
+> Man zieht los, und danach entscheidet das Jahr, was man findet; der Aufwand ist so oder
+> so ausgegeben. (Gesät wird erst in der nächsten Epoche — das Bild gehört nicht hierher.)
+> **Der unerwartete Überfluss guter Jahre ist
 > der Grund, warum Speicher erfunden wurden**, und er kann nicht existieren, wo niemand
 > überrascht wird.
 
@@ -2363,7 +2359,7 @@ behauptet Unsinn.
 | **Fischernetz** | Fischen | je Hand | Netz von Antrea ~8300 v. Chr., aus Bastfaser |
 | **Boot** | Fischen | **mehr Fläche** — nutzbares Wasser | Einbaum von Pesse ~8000 v. Chr. |
 | **Vorratsgrube** | Speicher | gegen den Verfall | Dhra' ~9500 v. Chr. (Kuijt & Finlayson 2009) |
-| **Steinaxt** | Holz sammeln → **Bäume fällen** | je Hand, größter Sprung der Epoche | mesolithische Kernbeile |
+| **Steinaxt** | Holz sammeln → **Bäume fällen** | **je Fläche** — erschließt den stehenden Wald, größter Sprung der Epoche | mesolithische Kernbeile |
 | **Erdofen** | Feuer machen | **je Vorleistung** | Kochgruben und Brandhügel, mesolithischer Massenbefund |
 | **Gerben** | Felle zurichten | je Hand | Rinden- und Hirngerbung |
 | **Zwirnen** | Flechten | je Hand | Zwirnbindung; gedrehte Faser vom Abri du Maras, Schnurabdrücke durchs Mesolithikum |
@@ -2375,8 +2371,16 @@ Drei Entscheidungen daran sind begründungsbedürftig:
 
 - **Die Steinaxt ist der einzige Verfahrenswechsel** statt einer Verbesserung — von
   „auflesen, was liegt" zu „nehmen, was steht". Totholz ist eine Restgröße, ein
-  stehender Wald ein Vorrat. Derselbe Satz wie beim Boot: **Technik schafft die
-  Ressource nicht, sie erschließt sie.**
+  stehender Wald ein Vorrat, und im Modell sind es zwei Bestände (E19). Derselbe Satz
+  wie beim Boot: **Technik schafft die Ressource nicht, sie erschließt sie.**
+
+  Und sie kostet je Einheit **mehr** Arbeit, nicht weniger — anderthalbmal so viel. Ein
+  Steinbeil fällt schnell (die Draved-Versuche), aber danach kommt spalten, tragen und
+  **trocknen**, was ein trockener Ast am Boden alles nicht braucht. Jede
+  Brennholzstudie an subsistenzwirtschaftenden Gruppen findet dieselbe Reihenfolge:
+  aufgelesen wird zuerst, gefällt wird, wenn das Tote knapp ist. Damit ist die Axt
+  **Boserup mit beiden Hälften** — mehr aus demselben Land, mehr Hände je Einheit —, was
+  kein anderes Projekt der Epoche leistet.
 - **Die Knochennadel wirkt auf beide Kleidungswege**, sonst macht sie die Alternative
   kaputt. Das Gerben stärkt den Fellweg — das ist gewollt und gibt der Wahl Gewicht.
   Bevorzugte aber *jedes* Kleidungsprojekt einen Weg, wäre der andere nach zwei
@@ -2437,7 +2441,8 @@ Unterschied zwischen einem Baum und einer Sperre.
 | Projekt | Voraussetzung | warum sachlich |
 |---|---|---|
 | Mörser und Stößel, Erdofen, Revierwechsel | — | Stein auf Stein; eine Grube; man geht weiter |
-| Sichel, Steinaxt, Vorratsgrube | Holz | Schaft, Schaft, Auskleidung |
+| Sichel, Steinaxt | Holz | Schaft und Schaft |
+| **Vorratsgrube** | **Steinaxt**, dazu Holz | Auskleidung und Pfosten kommen vom stehenden Stamm; aufgelesenes Totholz ist kurz und mürbe, und der Erdofen spart Brennstoff, erschließt aber kein Bauholz |
 | Gerben | Felle | offensichtlich |
 | Fischernetz, Knochennadel, Zwirnen | Faser | ein Netz ist Bast, eine Nadel ohne Faden nichts, und gezwirnt wird Bast |
 | Pfeil und Bogen | Holz **und** Faser | Stave und Sehne |
@@ -2456,8 +2461,13 @@ verschiedene Antworten auf dieselbe Enge — mehr aus der Fläche holen, weniger
 verschwenden, mehr Fläche nehmen.
 
 > **Das Rückgrat der Epoche, in einem Satz:** Um zu bleiben, brauchst du Gruben. Für
-> Gruben brauchst du Holz übrig. Für Holz übrig brauchst du entweder eine Axt oder ein
-> Feuer, das weniger verschwendet.
+> Gruben brauchst du eine Axt — und Holz übrig, wofür entweder die Axt selbst sorgt oder
+> ein Feuer, das weniger verschwendet.
+
+Die Axt steht damit **materiell** vor der Sesshaftigkeit, ohne dass diese eine zweite
+Bedingung bekäme: Sie behält ihre eine — gebaute Speicherkapazität — und erbt die Axt
+über die Grube. Der Erdofen bleibt eine echte Alternative im *Wie*, weil er Hände frei
+macht; ein zweiter Weg aus der Epoche ist er nicht mehr.
 
 Danach öffnet sich der Rest von selbst: Die Axt gibt so viel Holz, dass das Boot möglich
 wird; wer Hände in den Bast steckt, bekommt Netz, Bogen und Nadel dazu. **Was du als
@@ -3084,7 +3094,7 @@ besprochen und vertagt, nicht vergessen:
 | | Punkt | |
 |---|---|---|
 | 0 | ~~Ausschließliche Fläche — der Blocker~~ **Erledigt.** Die Wildnis wird nicht mehr belegt, sondern beerntet: Sammeln, Jagen, Fischen, Holz und Bast ziehen aus Beständen, die auf ihr sitzen, statt Fläche zu bezahlen. Damit sperrt die Nahrung nichts mehr aus, und Feuer, Felle und Kleidung entstehen wieder ab Tick 0 | erledigt |
-| 0b | **Totholz und stehender Wald sind ein einziger Topf.** Holz sammeln, Bäume fällen und Bast sammeln nehmen alle aus demselben Bestand und gleich tief; die Steinaxt senkt nur die Arbeit je Einheit (0,6 auf 0,24), statt etwas zu erschließen. Totholz ist aber ein **Abfluss** aus dem stehenden Wald — es fällt je Tick an, im Verhältnis zu dem, was steht —, und wer nur aufliest, bekommt nie mehr, als heruntergefallen ist. Diese Decke fehlt, und mit ihr der Unterschied zwischen Restgröße und Vorrat, auf dem die Axt als *Erschließung* begründet ist. Dieselbe Stelle ist von der anderen Seite schon durchbrochen: Bast sammeln nimmt den Baum und steht ohne Axt ab Tick 0 offen | vor dem Austarieren |
+| 0b | ~~**Totholz und stehender Wald sind ein einziger Topf.**~~ **Erledigt:** zwei Bestände, das Fällen kostet anderthalbmal so viel Arbeit wie das Auflesen, und die Axt erschließt statt zu verbilligen (E19, E29). Die Grube verlangt sie jetzt. Der ursprüngliche Befund zur Erinnerung: Holz sammeln, Bäume fällen und Bast sammeln nehmen alle aus demselben Bestand und gleich tief; die Steinaxt senkt nur die Arbeit je Einheit (0,6 auf 0,24), statt etwas zu erschließen. Totholz ist aber ein **Abfluss** aus dem stehenden Wald — es fällt je Tick an, im Verhältnis zu dem, was steht —, und wer nur aufliest, bekommt nie mehr, als heruntergefallen ist. Diese Decke fehlt, und mit ihr der Unterschied zwischen Restgröße und Vorrat, auf dem die Axt als *Erschließung* begründet ist. Dieselbe Stelle ist von der anderen Seite schon durchbrochen: Bast sammeln nimmt den Baum und steht ohne Axt ab Tick 0 offen | vor dem Austarieren |
 | 0c | **Feuerlegen** — Unterholz abbrennen, damit dieselbe Fläche mehr Wildpflanzen und mehr Wild trägt. Anker: mesolithisches Brennen in Holzkohle- und Pollenprofilen (Mellars). Offen ist, **ob** es hineingehört: Es liegt auf derselben Achse wie der Mörser (mehr je Fläche), und E29 verlangt, dass kein Projekt der Epoche eine andere doppelt. Falls ja, dann mit **Obergrenze**, weil ein Revier endlich und irgendwann ganz niedergebrannt ist; mit **Rücksetzung beim Revierwechsel**, weil das Gebrannte zum Boden gehört und nicht zur Gemeinschaft; und bezahlt mit dem Unterholz, also mit dem erreichbaren Teil des Holzes — was an 0b hängt | vor dem Austarieren |
 | 1 | **Austarieren.** Gemessen wird die Amortisationszeit je Projekt gegen das Zielband aus E29. Erster Befund: über die Hälfte der Arbeit liegt brach, Sesshaftigkeit bei Tick 45 statt 150–200, Ackerbauanteil 44 % — die zwölf Wirkungen sind einzeln vertretbar, ihr **Produkt** nicht | der Baum ist gebaut |
 | 1a | ~~Vorleistungen eines Projekts als Bedingung~~ **Verworfen, gemessen.** Eine Bedingung „halte etwas davon" ist für ein Gut, das vollständig verbraucht wird, keine Schwelle, sondern eine Mauer: Es entsteht nie ein Bestand, neun von zwölf Projekten waren nie startbar, kein Lauf erreichte die Sesshaftigkeit. Ein Projekt zieht seine Vorleistung selbst, sobald es läuft — die Absicht erzeugt die Nachfrage. Verzögert wird statt dessen über **Erfahrung** | erledigt |
@@ -3107,6 +3117,9 @@ besprochen und vertagt, nicht vergessen:
 | 7 | GitHub: public, privat oder noch nicht — Issues gäbe es auch privat | unabhängig |
 | 8 | Rechenzeit-Reserven: inkrementelles Planen statt Neuplanung je Rangbisektion, `totalUse` fortschreiben. Gemessen: `tick` 0,18 ms, `derive` 0,60 ms, Botentscheidung 0,003 ms — die volle Kriterienmessung (40 Seeds × 600 Ticks × 3 Spielweisen) dauert rund drei Minuten. Der größte einzelne Posten ist, dass jedes Werkzeug **zusätzlich** zum Tick noch einmal ableitet, also doppelt plant | derzeit nicht nötig: zum Iterieren reichen 5 Seeds × 400 Ticks in acht Sekunden |
 | 9 | Die Zahl der Landnahmen steht an zwei Stellen: als Zähler im Zustand für die fallende Güte, als Obergrenze am Projekt | Kleinigkeit |
+
+| 19 | **Den alten Planer entfernen.** Das Verschieben steht noch neben dem Programm; welches läuft, ist eine Zeile Inhalt. Es bleibt, bis die Bots nachgezogen sind und ein paar Punkte mehr gelöst — dann ersatzlos raus | nach den Bots |
+| 20 | **Die Kriterien passen nicht mehr zum Modell.** „Leerlauf über 15 % ist zu viel" stammt aus der Zeit, als Arbeit binden sollte; gemessen liegen 32 % brach, und genau das sagen Kelly und Sahlins über Wildbeuter. Ebenso zu prüfen: das Wasser trägt nur 1,4 % der Nahrung, und der Faserweg zur Kleidung ist tot (Fell 100 %) | mit dem Austarieren |
 
 Dazu die unentschiedenen Ideen weiter unten und die vertagte Kuppelproduktion.
 
@@ -3272,6 +3285,8 @@ Jede Mechanik braucht eine Entsprechung in der Lehre. Stand jetzt:
 |---|---|
 | Zweischichtigkeit, Identitäten | Godley/Lavoie, stock-flow-konsistente Modellierung |
 | Verfahren mit Rückfallebene | Aktivitätsanalyse (Koopmans); Sraffa, von Neumann |
+| Wie die Zuteilung wählt | optimale Nahrungssuche (MacArthur/Pianka, Charnov); Alchian zur Auslese über lange Zeiträume |
+| Ein dünner Bestand ist teuer zu ernten | Gordon-Schaefer; fallende Begegnungsrate |
 | Vorleistungen, Lieferketten | Input-Output-Analyse (Leontief); VGR |
 | Extensiv vs. intensiv, fallende Grenzgüte | Ricardo, Differentialrente |
 | Konsumgut vs. Produktionsmittel | Standardunterscheidung der VGR |
