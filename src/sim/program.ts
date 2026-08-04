@@ -26,7 +26,7 @@ import type { ConfigIndex, ProcessDef } from "./config.ts";
 import type { CapacityId, ProcessId, StockId } from "./ids.ts";
 import type { Renewal } from "./phases.ts";
 import type { Demand, Plan, Supplies } from "./plan.ts";
-import { solve, type Limit, type Objective, type Program } from "./simplex.ts";
+import { solve, type Limit, type Objective } from "./simplex.ts";
 
 /**
  * How many steps a stand is cut into.
