@@ -44,6 +44,9 @@ const STEPS = 8;
 /** Never quite the last of it: the final unit is unfindable, hence the cap. */
 const REACH = 0.999;
 
+/** The one stock the engine still names, as the allocation does. */
+const LABOUR: StockId = "labor";
+
 export interface ProgramInput {
   readonly demands: readonly Demand[];
   readonly available: readonly ProcessDef[];
@@ -67,6 +70,9 @@ export interface ProgramInput {
  */
 interface Column {
   readonly process?: ProcessDef;
+  /** Which stand this column digs into, and how deep — shared across processes. */
+  readonly quarry?: StockId;
+  readonly step?: number;
   /** What one unit costs of each input, this step's search included. */
   readonly inputs: ReadonlyMap<string, number>;
   /** What a process column makes; a claim column makes nothing. */
@@ -124,10 +130,20 @@ function columnsOf(input: ProgramInput): Column[] {
       const effort = searchCost(renewal, from, to, rule.maxEffort);
       // How much *output* this slice of the stand can carry.
       const ceiling = perOutput > 0 ? (to - from) / perOutput : Infinity;
-      columns.push(column(process, branch.produces, input, shock, effort, ceiling, quarry));
+      columns.push(column(process, branch.produces, input, shock, effort, ceiling, quarry, step));
     }
   }
-  return columns;
+  // **Among equally good answers, prefer the one that spends fewer hands.**
+  // Where labour is not short, a technique that saves it is worth exactly as
+  // much as the one it supersedes, and the solver is then indifferent — it took
+  // whichever column it met first, so bare hands kept gathering beside the
+  // sickle. Bland's rule takes the lowest column, so putting the thrifty ones
+  // first settles the tie the sensible way and costs nothing (E5).
+  const labourOf = (c: Column): number => c.inputs.get(`stock:${LABOUR}`) ?? 0;
+  return columns
+    .map((c, i) => ({ c, i }))
+    .sort((a, b) => labourOf(a.c) - labourOf(b.c) || a.i - b.i)
+    .map((x) => x.c);
 }
 
 function column(
@@ -138,6 +154,7 @@ function column(
   effort: number,
   ceiling: number,
   quarry: StockId | undefined,
+  step?: number,
 ): Column {
   const inputs = new Map<string, number>();
   for (const [id, base] of Object.entries(process.capacityPerOutput)) {
@@ -153,7 +170,14 @@ function column(
     const scale = id === quarry ? 1 : effort;
     inputs.set(`stock:${id}`, (base * scale) / shock);
   }
-  return { process, inputs, produces, ceiling };
+  return {
+    process,
+    inputs,
+    produces,
+    ceiling,
+    ...(quarry === undefined ? {} : { quarry }),
+    ...(step === undefined ? {} : { step }),
+  };
 }
 
 export function planByProgram(input: ProgramInput): Plan {
@@ -178,6 +202,7 @@ export function planByProgram(input: ProgramInput): Plan {
 
   const capacities = new Map<CapacityId, number[]>();
   const stocks = new Map<StockId, number[]>();
+  const depths = new Map<string, { coefficients: number[]; limit: number }>();
   for (let j = 0; j < n; j += 1) {
     const col = columns[j]!;
     for (const [id, per] of col.inputs) {
@@ -198,13 +223,31 @@ export function planByProgram(input: ProgramInput): Plan {
       row[j] = (row[j] ?? 0) - 1;
       stocks.set(col.produces, row);
     }
-    if (Number.isFinite(col.ceiling)) {
-      const row = zero();
-      row[j] = 1;
-      limits.push({ id: `carry:${j}`, coefficients: row, limit: col.ceiling });
+    if (col.quarry === undefined || col.step === undefined) {
+      // A column with no stand behind it — the serving of a claim — is capped
+      // on its own: nobody asks for more than was claimed.
+      if (Number.isFinite(col.ceiling)) {
+        const row = zero();
+        row[j] = 1;
+        limits.push({ id: `carry:${j}`, coefficients: row, limit: col.ceiling });
+      }
+    } else {
+      // **One limit per step of a stand, shared by every process that digs
+      // there.** A step is a depth, not a private allowance: sickle and bare
+      // hands reach into the same first slice of the same plants. Given a copy
+      // each, a process could take the cheap top of a stand another had already
+      // worked through — measured, the bare hand kept running beside the sickle
+      // that supersedes it entirely (E5).
+      const key = `${col.quarry}#${col.step}`;
+      const row = depths.get(key)?.coefficients ?? zero();
+      row[j] = (row[j] ?? 0) + (col.inputs.get(`stock:${col.quarry}`) ?? 0);
+      depths.set(key, { coefficients: row, limit: col.ceiling * (col.inputs.get(`stock:${col.quarry}`) ?? 1) });
     }
   }
 
+  for (const [key, row] of depths) {
+    limits.push({ id: `depth:${key}`, coefficients: row.coefficients, limit: row.limit });
+  }
   for (const [id, row] of capacities) {
     limits.push({
       id: `capacity:${id}`,
@@ -244,14 +287,27 @@ export function planByProgram(input: ProgramInput): Plan {
   }
 
   const droppedTiers: string[] = [];
-  const shortfall = new Map<string, number>();
+  let missing = 0;
   claims.forEach((claim, r) => {
     const got = answer.values[r] ?? 0;
     if (got < claim.amount - 1e-9) {
       droppedTiers.push(claim.tier.id);
-      shortfall.set(claim.tier.id, claim.amount - got);
+      missing += claim.amount - got;
     }
   });
+  // What stopped it is asked of the program, not of the claim: whichever limits
+  // are pressed right up against are the ones holding the answer back, and the
+  // solver has them already. A step of a stand answers as the stand itself —
+  // the depth is a working detail, the country is what the reader wants named.
+  const shortfall = new Map<string, number>();
+  if (missing > 1e-9) {
+    for (const id of answer.binding) {
+      const input = id.startsWith("depth:") ? `stock:${id.slice(6).split("#")[0] ?? ""}` : id;
+      if (input.startsWith("capacity:") || input.startsWith("stock:")) {
+        shortfall.set(input, (shortfall.get(input) ?? 0) + missing);
+      }
+    }
+  }
 
   return { levels, output, droppedTiers, shortfall };
 }

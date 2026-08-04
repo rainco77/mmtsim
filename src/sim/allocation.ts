@@ -743,6 +743,15 @@ export function allocate(input: AllocationInput): AllocationResult {
   const laborUsed = consumed[LABOR_STOCK] ?? 0;
   const laborReserve = Math.max(0, laborMade - laborUsed);
   const laborStoodStill = Math.min(laborFreed, laborReserve);
+  // What the plan actually set aside for building. The leftover used to be
+  // called that by default — whatever was made and not used by a process was
+  // booked as going to projects, even when every project was paused. It is
+  // idle: made, wanted by nobody, and gone at the tick's end (E10).
+  const laborWanted = demands
+    .filter((demand) => demand.tier.id.startsWith("project:") && demand.stock === LABOR_STOCK)
+    .reduce((sum, demand) => sum + demand.amount, 0);
+  const laborToProjects = Math.min(Math.max(0, laborReserve - laborStoodStill), laborWanted);
+  const laborSpilled = Math.max(0, laborReserve - laborStoodStill) - laborToProjects;
   const withShares = runs.map((run) => ({
     ...run,
     share: totalOutput > 0 ? run.output / totalOutput : 0,
@@ -807,11 +816,11 @@ export function allocate(input: AllocationInput): AllocationResult {
     // What no process took is what the projects claimed — they hold the top
     // rank, so it is set aside for them. Counting that as idle said "labour
     // binds" and "1.8 free" in the same breath.
-    laborToProjects: laborReserve - laborStoodStill,
+    laborToProjects,
     laborToProduction: laborUsed,
     // Clamped only against float noise: the labour process is capped by the
     // people, so it cannot really make more than the hands can perform.
-    laborUnused: Math.max(0, laborAvailable - laborMade + laborStoodStill),
+    laborUnused: Math.max(0, laborAvailable - laborMade + laborStoodStill) + laborSpilled,
     tiers,
     produced,
     consumed,

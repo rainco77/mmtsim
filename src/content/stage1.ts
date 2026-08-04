@@ -28,6 +28,10 @@ import type { Config } from "../sim/config.ts";
 const PROJECTS_LAST = 1000;
 
 export const STAGE1: Config = {
+  // The whole tick as one ranked program, solved (E21). Under trial against the
+  // older way, which is still here and still a line away.
+  planner: "program",
+
   // ------------------------------------------------------------------ stocks
   //
   // Three of them are E19's three ways a stock can behave, and the epoch was
