@@ -605,6 +605,14 @@ export interface CarriedConfig {
 // ---------------------------------------------------------------- whole
 
 export interface Config {
+  /**
+   * Which way the tick's allocation is worked out. Content, not code, so that
+   * one and the same economy can be run through either and the two held against
+   * each other — "shift" starts on a declared order and moves demand off
+   * whatever runs out, "program" states the whole tick as one ranked program.
+   */
+  readonly planner?: "shift" | "program";
+
   readonly stocks: readonly StockDef[];
   readonly capacities: readonly CapacityDef[];
   readonly branches: readonly BranchDef[];

@@ -21,6 +21,7 @@ const LABOR_STOCK: StockId = "labor";
 
 
 
+import { planByProgram } from "./program.ts";
 import {
   makePlan,
   type Demand,
@@ -397,6 +398,14 @@ export interface AllocationInput {
   /** Per-head cost of a need where a project changed it (E9, E23). */
   readonly tierPerHead: ReadonlyMap<string, number>;
   readonly unlockedProcesses: ReadonlySet<ProcessId>;
+  /**
+   * Which way the plan is worked out. "shift" is the older one — start on a
+   * declared order and move demand off whatever runs out; "program" states the
+   * whole tick as one ranked program and solves it. Both answer the same
+   * question and hand back the same plan, so a tick can be run through either
+   * and the two held against each other.
+   */
+  readonly planner?: "shift" | "program";
 }
 
 export function allocate(input: AllocationInput): AllocationResult {
@@ -641,7 +650,23 @@ export function allocate(input: AllocationInput): AllocationResult {
   // prices at the margin — the cost of the first unit — and its only purpose is
   // to say how much this tick means to take; the second charges what taking
   // that much really costs.
-  const draft = makePlan(demands, planCtx);
+  // The ranked program answers the same question in one go: because the rising
+  // search cost is written into it as steps, it never has to guess first how
+  // much this tick means to take. Kept side by side with the old way while the
+  // two are being held against each other.
+  const byProgram =
+    (input.planner ?? config.planner ?? "shift") === "program"
+      ? planByProgram({
+          demands,
+          available: availableProcesses,
+          index,
+          supplies: planCtx.supplies,
+          standing,
+          shockFor: planCtx.shockFor,
+        })
+      : undefined;
+
+  const draft = byProgram ?? makePlan(demands, planCtx);
   taking = takingOf(draft.levels, index);
   const effortPerStock = pricePerStock(standing, taking, index);
   // Now that the tick has said what it means to take, order and plan again with
@@ -660,7 +685,7 @@ export function allocate(input: AllocationInput): AllocationResult {
   // for: at seed 42, tick 39, twenty-six of forty-seven hands lay idle, 2.78 of
   // wood was cut, no input was reported short, and warmth came out at nought —
   // which costs three in five of the people.
-  const plan = makePlan(demands, { ...planCtx });
+  const plan = byProgram ?? makePlan(demands, { ...planCtx });
 
   // Carry the plan out: consume inputs, book output.
   const produced: Record<StockId, number> = {};
