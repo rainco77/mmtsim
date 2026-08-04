@@ -53,6 +53,28 @@ export function createState(config: Config, options: StartOptions): GameState {
     stocks[stock.id] = (range === undefined ? 0 : carryingArea(range)) * rule.densityPerArea;
   }
 
+  // **What is worn rather than used up is already there.** The community is
+  // taken over, not born: nobody in it was made this tick, so it stands in the
+  // clothes it has always stood in. A store is saved-up future and is withheld
+  // on purpose; a hide on somebody's back is present fact.
+  //
+  // Reckoned from the need itself, so it cannot drift from it, and only where
+  // the branch is open from the start — a wandering community has no houses,
+  // whatever the roof tier asks for.
+  //
+  // Without it the first tick clothed twenty-five naked people at once and then
+  // never came near that again: 0.155 of everyone's day against 0.008 to
+  // replace what wears out. Anything measured against that first tick was
+  // measured against a thing that happens exactly once, and the three clothing
+  // projects were never once offered in three hundred ticks. The community also
+  // began at 0.58 covered and lost work for it, having lived there all along.
+  for (const tier of config.needTiers) {
+    const kept = tier.perHead * (1 - tier.consumedOnUse);
+    if (kept <= 0) continue;
+    if (config.branches.find((b) => b.id === tier.branch)?.unlockedFromStart !== true) continue;
+    stocks[tier.stock] = (stocks[tier.stock] ?? 0) + heads * kept;
+  }
+
   return {
     tick: 0,
     random: createRandomState(options.seed),

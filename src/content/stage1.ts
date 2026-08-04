@@ -1250,7 +1250,12 @@ export const STAGE1: Config = {
       // It also makes bast, twisting, net and boat one road instead of four
       // loose branches.
       id: "boat",
-      visibleWhen: [{ kind: "strain", measure: { utilisation: "water" }, factor: 0.9 }],
+      // What a boat answers is not a full shore but a thin one: the water no
+      // longer gives what it did from the bank. Utilisation cannot say it — no
+      // process of this epoch pays for area at all, the wilderness and the water
+      // are carriers and nothing else (E19), so their utilisation is nought in
+      // every tick of every run and a mark on it can never be met.
+      visibleWhen: [{ kind: "strain", measure: { searchCost: "fish" }, factor: 1.5 }],
 
       availableWhen: [
         { kind: "projectDone", id: "stone_axe", min: 1 },
