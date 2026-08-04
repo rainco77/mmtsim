@@ -884,7 +884,10 @@ export const STAGE1: Config = {
       // so more of what already grows there counts as food: the same ground
       // yields more. Not a smaller appetite — the need is physiology (E29).
       id: "mortar",
-      visibleWhen: [{ kind: "experience", activities: ["gathering"], min: 200 }],
+      visibleWhen: [
+        { kind: "strain", measure: { labourPerHead: "fishing" }, factor: 1.3 },
+      ],
+
       availableWhen: [{ kind: "experience", activities: ["gathering"], min: 400 }],
       defaultRank: PROJECTS_LAST,
       laborCost: 32,
@@ -953,7 +956,12 @@ export const STAGE1: Config = {
       minTicks: 6,
       effects: [
         // Left behind: what is in the ground and what is stacked.
-        { type: "setCapacity", capacity: "storage", sector: "households", to: { kind: "fixed", value: 0 } },
+        {
+          type: "setCapacity",
+          capacity: "storage",
+          sector: "households",
+          to: { kind: "fixed", value: 0 },
+        },
         { type: "stock", id: "food", to: { kind: "fixed", value: 0 } },
         { type: "stock", id: "wood", to: { kind: "fixed", value: 0 } },
         // Same size, a little poorer — and the good ranges of the world are
@@ -963,7 +971,11 @@ export const STAGE1: Config = {
         // drawing again would count the move as two takings and make the new
         // country twice as poor.
         { type: "setCapacity", capacity: "wilderness", quality: { kind: "nextTaking" } },
-        { type: "setCapacity", capacity: "water", quality: { kind: "from", capacity: "wilderness" } },
+        {
+          type: "setCapacity",
+          capacity: "water",
+          quality: { kind: "from", capacity: "wilderness" },
+        },
         // Found: a country nobody has been over — every one of the six, or the
         // community would move into a range it had already gathered bare. After the
         // quality, so that what it finds is the full measure of the *new*
@@ -982,7 +994,10 @@ export const STAGE1: Config = {
     {
       // Natufian blades with sickle gloss.
       id: "sickle",
-      visibleWhen: [{ kind: "experience", activities: ["gathering"], min: 50 }],
+      visibleWhen: [
+        { kind: "strain", measure: { labourPerHead: "gathering" }, factor: 1.15 },
+      ],
+
       availableWhen: [{ kind: "experience", activities: ["gathering"], min: 100 }],
       defaultRank: PROJECTS_LAST,
       laborCost: 48,
@@ -996,7 +1011,10 @@ export const STAGE1: Config = {
       // Mesolithic core axes. Stone and not simply "axe", so the name says
       // which world this is and leaves room for an iron one later.
       id: "stone_axe",
-      visibleWhen: [{ kind: "experience", activities: ["woodcutting"], min: 15 }],
+      visibleWhen: [
+        { kind: "strain", measure: { searchCost: "deadwood" }, factor: 1.15 },
+      ],
+
       availableWhen: [{ kind: "experience", activities: ["woodcutting"], min: 30 }],
       defaultRank: PROJECTS_LAST,
       laborCost: 48,
@@ -1043,7 +1061,11 @@ export const STAGE1: Config = {
         { kind: "projectDone", id: "stone_axe", min: 1 },
       ],
       availableWhen: [
-        { kind: "experience", activities: ["gathering", "hunting", "fishing"], min: 1800 },
+        {
+          kind: "experience",
+          activities: ["gathering", "hunting", "fishing"],
+          min: 1800,
+        },
         { kind: "projectDone", id: "stone_axe", min: 1 },
       ],
       defaultRank: PROJECTS_LAST,
@@ -1113,7 +1135,10 @@ export const STAGE1: Config = {
       // Stellmoor arrow shafts, the bows of Holmegaard. Stave and string: wood
       // and fibre.
       id: "bow_and_arrow",
-      visibleWhen: [{ kind: "experience", activities: ["hunting"], min: 3 }],
+      visibleWhen: [
+        { kind: "strain", measure: { labourPerHead: "hunting" }, factor: 1.3 },
+      ],
+
       availableWhen: [{ kind: "experience", activities: ["hunting"], min: 5 }],
       defaultRank: PROJECTS_LAST,
       laborCost: 48,
@@ -1171,10 +1196,8 @@ export const STAGE1: Config = {
       // It also makes bast, twisting, net and boat one road instead of four
       // loose branches.
       id: "boat",
-      visibleWhen: [
-        { kind: "projectDone", id: "stone_axe", min: 1 },
-        { kind: "projectDone", id: "fishing_net", min: 1 },
-      ],
+      visibleWhen: [{ kind: "strain", measure: { utilisation: "water" }, factor: 0.9 }],
+
       availableWhen: [
         { kind: "projectDone", id: "stone_axe", min: 1 },
         { kind: "projectDone", id: "fishing_net", min: 1 },

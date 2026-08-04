@@ -362,6 +362,34 @@ export type Condition =
    * intensifying postpones the move, exactly as it should.
    */
   | {
+      /**
+       * **The strain a project answers, measured against a fresh range.**
+       *
+       * Every project is there to ease one particular strain, and it should
+       * come into view as that strain draws near — early enough to be got ready
+       * before it bites. Which strain it is follows from the axis the project
+       * works on (E29): one that saves hands is called for when its activity
+       * eats more of everybody's day; one that opens country, when the country
+       * grows dear; one that adds country, when what there is is full.
+       *
+       * The content holds only a **factor**, never a figure. The figure it is
+       * measured against is worked out once from the starting position, so a
+       * change to a density, a coefficient or the range per head carries the
+       * marks along instead of leaving them behind as stale claims about a
+       * model that has moved. `1.2` means *a fifth dearer than on fresh
+       * country* and goes on meaning that.
+       *
+       * Utilisation is the exception and needs no reference: it already lies
+       * between nought and one, so its factor is a plain share.
+       */
+      readonly kind: "strain";
+      readonly measure:
+        | { readonly labourPerHead: ActivityId }
+        | { readonly searchCost: StockId }
+        | { readonly utilisation: CapacityId };
+      readonly factor: number;
+    }
+  | {
       readonly kind: "stockDear";
       /** Omitted asks after the dearest of them all — the range as a whole. */
       readonly stock?: StockId;

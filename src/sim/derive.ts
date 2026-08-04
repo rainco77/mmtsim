@@ -18,6 +18,7 @@ import {
   type Unlocks,
   type Unmet,
 } from "./unlocks.ts";
+import { freshMarks } from "./fresh.ts";
 import type { OrderingReason } from "./ordering.ts";
 
 /**
@@ -216,7 +217,14 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     utilization[type.id] = total > 0 ? (allocation.capacityUsed[type.id] ?? 0) / total : 0;
   }
 
-  const ctx: ConditionContext = { state, index, unlocks, coverage, population: heads };
+  const ctx: ConditionContext = {
+    state,
+    index,
+    unlocks,
+    coverage,
+    population: heads,
+    fresh: freshMarks(index),
+  };
 
   /**
    * What a project would save of whatever is scarce — and labour is an input
@@ -273,10 +281,14 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     // It decides nothing: it used to hide the way out of the epoch, since the
     // pit, the boat, the needle and the range change spare no process and were
     // therefore worth nothing.
+    // Once shown, always shown — the phase wrote down when it first was, and
+    // that cannot come undone. And nothing is startable that is not on the
+    // screen: availability is the second gate, not a separate door.
+    const visible = state.seenProjects[def.id] !== undefined || allHold(def.visibleWhen, ctx);
     return {
       id: def.id,
-      visible: allHold(def.visibleWhen, ctx),
-      available: startable && allHold(def.availableWhen, ctx),
+      visible,
+      available: visible && startable && allHold(def.availableWhen, ctx),
       running: active !== undefined,
       paused: active?.paused ?? false,
       progress: active?.progress ?? 0,

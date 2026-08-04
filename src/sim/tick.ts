@@ -1,6 +1,7 @@
 import type { ConfigIndex } from "./config.ts";
 import { PIPELINE, type TickContext } from "./phases.ts";
 import { computeUnlocks } from "./unlocks.ts";
+import { freshMarks } from "./fresh.ts";
 import type { GameState } from "./state.ts";
 
 /**
@@ -22,6 +23,7 @@ export function tick(state: GameState, index: ConfigIndex): GameState {
   const ctx: TickContext = {
     shocks: {},
     unlocks: computeUnlocks(state, index),
+    fresh: freshMarks(index),
     laborAvailable: 0,
     laborToProjects: 0,
     completed: [],

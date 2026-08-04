@@ -1,7 +1,7 @@
 import { allocate, type AllocationResult } from "./allocation.ts";
 import { type ConfigIndex, tierEffectAt } from "./config.ts";
 import { applyEffect } from "./effects.ts";
-import type { ActivityId, CapacityId, SectorId, StockId } from "./ids.ts";
+import type { ActivityId, ProjectId, CapacityId, SectorId, StockId } from "./ids.ts";
 import { drawShocks, type Shocks } from "./risk.ts";
 import {
   capacityOf,
@@ -12,7 +12,7 @@ import {
   type GameState,
   type SectorState,
 } from "./state.ts";
-import { computeUnlocks, type Unlocks } from "./unlocks.ts";
+import { allHold, computeUnlocks, type ConditionContext, type Unlocks } from "./unlocks.ts";
 
 /**
  * The tick is an ordered list of phases (T2). Introducing money later means one
@@ -25,6 +25,8 @@ import { computeUnlocks, type Unlocks } from "./unlocks.ts";
 export interface TickContext {
   shocks: Shocks;
   unlocks: Unlocks;
+  /** What the strain measures read on fresh country — see `fresh.ts`. */
+  fresh: Readonly<Record<string, number>>;
   laborAvailable: number;
   laborToProjects: number;
   allocation?: AllocationResult;
@@ -388,9 +390,36 @@ export class ProductionPhase implements Phase {
       leadProcess: result.leadProcess,
       lastCoverage: Object.fromEntries(result.tiers.map((t) => [t.tier, t.coverage])),
       lastEffort: result.effortPerStock,
+      lastLabourPerHead: labourPerHead(result, index, sector.heads),
+      lastUtilisation: utilisationOf(result),
       experience,
     };
   }
+}
+
+/** What each activity cost, per head — the strain a labour-saving technique eases. */
+function labourPerHead(
+  result: AllocationResult,
+  index: ConfigIndex,
+  heads: number,
+): Record<string, number> {
+  const out: Record<string, number> = {};
+  if (heads <= 0) return out;
+  for (const run of result.runs) {
+    const activity = index.process.get(run.process)?.activity;
+    if (activity === undefined) continue;
+    out[activity] = (out[activity] ?? 0) + run.labor / heads;
+  }
+  return out;
+}
+
+/** How hard each capacity was worked, in [0, 1] — the strain more country eases. */
+function utilisationOf(result: AllocationResult): Record<CapacityId, number> {
+  const out: Record<CapacityId, number> = {};
+  for (const [id, total] of Object.entries(result.capacityTotal)) {
+    out[id] = total > 0 ? Math.min(1, (result.capacityUsed[id] ?? 0) / total) : 0;
+  }
+  return out;
 }
 
 // --------------------------------------------------------------- population
@@ -481,6 +510,37 @@ export class CarryPhase implements Phase {
   }
 }
 
+/**
+ * What has come into view is written down, and never taken back (E12, E31).
+ *
+ * Last of all, so that it reads the tick that has just happened rather than the
+ * one before it. A strain eases again — a range change, a bad year passing —
+ * and an offer that vanishes while the player is weighing it up punishes him
+ * for thinking about it.
+ */
+export class OfferPhase implements Phase {
+  readonly id = "offers";
+
+  run(state: GameState, index: ConfigIndex, ctx: TickContext): GameState {
+    const ctxFor: ConditionContext = {
+      state,
+      index,
+      unlocks: ctx.unlocks,
+      coverage: state.lastCoverage,
+      population: state.sectors[HOUSEHOLDS]?.heads ?? 0,
+      fresh: ctx.fresh,
+    };
+    let seen: Record<ProjectId, number> | undefined;
+    for (const project of index.config.projects) {
+      if (state.seenProjects[project.id] !== undefined) continue;
+      if (!allHold(project.visibleWhen, ctxFor)) continue;
+      seen ??= { ...state.seenProjects };
+      seen[project.id] = state.tick;
+    }
+    return seen === undefined ? state : { ...state, seenProjects: seen };
+  }
+}
+
 export const PIPELINE: readonly Phase[] = [
   new ShockPhase(),
   new DecayPhase(),
@@ -490,5 +550,6 @@ export const PIPELINE: readonly Phase[] = [
   new ProjectPhase(),
   new PopulationPhase(),
   new CarryPhase(),
+  new OfferPhase(),
   // new MoneyPhase(),  ← later, one line, nothing above is touched
 ];

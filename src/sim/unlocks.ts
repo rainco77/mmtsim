@@ -1,4 +1,10 @@
 import type { Condition, ConfigIndex } from "./config.ts";
+import type { ActivityId, CapacityId, StockId } from "./ids.ts";
+
+type StrainMeasure =
+  | { readonly labourPerHead: ActivityId }
+  | { readonly searchCost: StockId }
+  | { readonly utilisation: CapacityId };
 import type { BranchId, ProcessId, RuleId } from "./ids.ts";
 import { capacityOf, completedCount, type GameState } from "./state.ts";
 
@@ -80,6 +86,8 @@ export interface ConditionContext {
   /** Coverage per tier from the previous tick's outcome. */
   readonly coverage: Readonly<Record<string, number>>;
   readonly population: number;
+  /** What the strain measures read on fresh country — see `fresh.ts`. */
+  readonly fresh: Readonly<Record<string, number>>;
 }
 
 export function conditionHolds(condition: Condition, ctx: ConditionContext): boolean {
@@ -122,7 +130,34 @@ export function conditionHolds(condition: Condition, ctx: ConditionContext): boo
       return practised(ctx, condition.activities) >= condition.min;
     case "stockDear":
       return dearest(ctx, condition.stock) >= condition.factor;
+    case "strain":
+      return strainOf(ctx, condition.measure) >= markOf(ctx, condition);
   }
+}
+
+/** What the measure stands at now — read out of what the allocation wrote. */
+function strainOf(ctx: ConditionContext, measure: StrainMeasure): number {
+  if ("labourPerHead" in measure) {
+    return ctx.state.lastLabourPerHead[measure.labourPerHead] ?? 0;
+  }
+  if ("searchCost" in measure) return Math.max(1, ctx.state.lastEffort[measure.searchCost] ?? 1);
+  return ctx.state.lastUtilisation[measure.utilisation] ?? 0;
+}
+
+/** The mark: the factor against what the same measure reads on a fresh range. */
+function markOf(
+  ctx: ConditionContext,
+  condition: { readonly measure: StrainMeasure; readonly factor: number },
+): number {
+  if ("utilisation" in condition.measure) return condition.factor;
+  const reference = ctx.fresh[keyOf(condition.measure)] ?? 1;
+  return reference * condition.factor;
+}
+
+function keyOf(measure: StrainMeasure): string {
+  if ("labourPerHead" in measure) return `labour:${measure.labourPerHead}`;
+  if ("searchCost" in measure) return `search:${measure.searchCost}`;
+  return `use:${measure.utilisation}`;
 }
 
 /**
@@ -212,6 +247,8 @@ function standing(condition: Condition, ctx: ConditionContext): Unmet {
       return at(practised(ctx, condition.activities), condition.min);
     case "stockDear":
       return at(dearest(ctx, condition.stock), condition.factor);
+    case "strain":
+      return at(strainOf(ctx, condition.measure), markOf(ctx, condition));
   }
 }
 

@@ -119,6 +119,28 @@ export interface GameState {
    */
   readonly lastEffort: Readonly<Record<StockId, number>>;
 
+  /**
+   * What one head's share of an activity cost last tick, and how hard each
+   * capacity was worked — history beside `lastEffort` and for the same reason.
+   *
+   * Between them and the search costs, every strain a project answers is
+   * measurable: a technique that saves hands is called for when the activity it
+   * belongs to eats more of everybody's day; one that opens country, when the
+   * country grows dear; one that adds country, when what there is is full.
+   */
+  /**
+   * The tick each project was first shown at.
+   *
+   * **What has once been offered is never withdrawn.** A strain eases again —
+   * after a range change, after a bad year passes — and an offer that vanishes
+   * while the player is weighing it up punishes him for thinking. History, so
+   * it is kept (E22): the mark said "this is coming", and that stays true.
+   */
+  readonly seenProjects: Readonly<Record<ProjectId, number>>;
+
+  readonly lastLabourPerHead: Readonly<Record<string, number>>;
+  readonly lastUtilisation: Readonly<Record<CapacityId, number>>;
+
   /** Which process led per branch last tick — shown, not used to decide (E5). */
   readonly leadProcess: Readonly<Record<BranchId, ProcessId>>;
 
