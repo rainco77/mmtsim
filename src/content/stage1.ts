@@ -624,15 +624,38 @@ export const STAGE1: Config = {
     },
     {
       // Bast is the inner bark of a lime, and taking it takes the tree — so it
-      // draws on the same standing wood the firewood does, and dearly: two and
-      // a half trees' worth of drawing for one of fibre, the relation the areas
-      // used to carry.
+      // draws on the same standing wood the firewood does. But **one lime gives
+      // a great deal of bast**: retted and stripped, a single stem yields cord
+      // and cloth for several people. Two and a half trees to the unit was
+      // carried over from an older relation between areas and was wrong by more
+      // than an order of magnitude — and it made the fibre road **dominated**
+      // rather than dear: twice the labour of hides *and* more country for it,
+      // so there was no state in which it paid and no bast was ever gathered in
+      // any tick of any run.
+      //
+      // At 0.8 the two roads are the trade E29 describes. Per unit of clothing:
+      // hides want 0.8 labour and yield 0.225 an area for ever; fibre wants 1.6
+      // and yields 0.625. Twice the hands, a third of the country — so a thin
+      // herd turns people to plants, which is exactly what happened.
+      //
+      // The labour is 0.6 and not 1.0, and where it sits matters. **Stripping
+      // bast is quick** — one rings the stem and pulls it off. What takes the
+      // time is retting, scraping and spinning, and in this model that sits in
+      // the plaiting (0.6), not in the gathering. At 1.0 for the mere stripping
+      // against 0.3 for bringing down a deer, the fibre road only paid once the
+      // herd had grown 3.7 times dearer to hunt — which happened in spikes and
+      // never long enough for anybody to learn the craft. At 0.6 the roads meet
+      // at 2.3, which a growing community reaches and stays at.
+      //
+      // The labour side keeps its gap all the same, at three to two, and it is
+      // well attested: textile work is the great time sink of pre-industrial
+      // life (Barber, *Women's Work*). Tanning is hard work too, but shorter.
       id: "bast_gathering",
       branch: "fibre",
       activity: "bastgathering",
       priority: 100,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 1.0, trees: 2.5 },
+      intermediatesPerOutput: { labor: 0.6, trees: 0.8 },
       exposure: { weather: 0.4 },
       qualityWeight: 0,
       unlockedFromStart: true,
@@ -884,10 +907,8 @@ export const STAGE1: Config = {
       // so more of what already grows there counts as food: the same ground
       // yields more. Not a smaller appetite — the need is physiology (E29).
       id: "mortar",
-      visibleWhen: [
-        { kind: "strain", measure: { labourPerHead: "fishing" }, factor: 1.3 },
-      ],
-
+      // It answers the ground growing thin, so that is what calls for it.
+      visibleWhen: [{ kind: "strain", measure: { searchCost: "plants" }, factor: 1.15 }],
       availableWhen: [{ kind: "experience", activities: ["gathering"], min: 400 }],
       defaultRank: PROJECTS_LAST,
       laborCost: 32,
@@ -900,7 +921,9 @@ export const STAGE1: Config = {
     {
       // Cooking pits and burnt mounds are among the commonest Mesolithic finds.
       id: "earth_oven",
-      visibleWhen: [{ kind: "experience", activities: ["firemaking"], min: 5 }],
+      // It answers the fuel running short, and earlier than the axe does: it
+      // needs no timber, only the wit to cover the fire over.
+      visibleWhen: [{ kind: "strain", measure: { searchCost: "deadwood" }, factor: 1.08 }],
       availableWhen: [{ kind: "experience", activities: ["firemaking"], min: 10 }],
       defaultRank: PROJECTS_LAST,
       laborCost: 32,
@@ -1090,11 +1113,11 @@ export const STAGE1: Config = {
       // made of bast. The prerequisite is therefore not a lock but a reckoning:
       // somebody has to be gathering fibre.
       id: "fishing_net",
+      // The larger of the two answers on the water, so it is called for later
+      // than the hook: the strain has to have grown before a whole net is worth
+      // the fibre it costs.
+      visibleWhen: [{ kind: "strain", measure: { labourPerHead: "fishing" }, factor: 1.3 }],
       // Twisting cord comes first: a net is nothing but a great deal of it.
-      visibleWhen: [
-        { kind: "projectDone", id: "twining", min: 1 },
-        { kind: "experience", activities: ["fishing"], min: 25 },
-      ],
       availableWhen: [
         { kind: "projectDone", id: "twining", min: 1 },
         { kind: "experience", activities: ["fishing"], min: 50 },
@@ -1108,6 +1131,35 @@ export const STAGE1: Config = {
       sector: "households",
     },
     {
+      // **The first, cheap step onto the water.** A bone hook on a twisted line
+      // costs a fifth of what a net does in fibre and reaches deeper water than
+      // a spear from the shore; the net is the great leap after it. Without the
+      // hook the water is one step instead of a stair — the process was in the
+      // content already and no project opened it, so it could never run.
+      //
+      // Both gears want fibre *every tick they work*, which is what the fibre
+      // road has always lacked: a customer that does not stop after one
+      // purchase. The demand pulls the bast out of the wood; nobody has to hold
+      // a store of it.
+      //
+      // Anchor: barbed points and hooks of bone and antler are a Mesolithic
+      // mass find, and the line is twisted bast — the same craft as the net of
+      // Antrea.
+      id: "fish_hook",
+      visibleWhen: [{ kind: "strain", measure: { labourPerHead: "fishing" }, factor: 1.15 }],
+      availableWhen: [
+        { kind: "projectDone", id: "twining", min: 1 },
+        { kind: "experience", activities: ["fishing"], min: 20 },
+      ],
+      defaultRank: PROJECTS_LAST,
+      laborCost: 12,
+      stockCost: { fibre: 8 },
+      minTicks: 4,
+      limit: 1,
+      effects: [{ type: "process", id: "fishing_line" }],
+      sector: "households",
+    },
+    {
       // Eyed needles since the Upper Palaeolithic. It acts on both roads to
       // clothing on purpose: were every clothing project to favour one of them,
       // the other would be strictly worse after two of them and the alternative
@@ -1118,7 +1170,9 @@ export const STAGE1: Config = {
       // pieces per head, and half the wear. Both reach every road, so neither
       // needs a process of its own.
       id: "bone_needle",
-      visibleWhen: [{ kind: "experience", activities: ["clothmaking"], min: 15 }],
+      // What all three clothing projects answer is the same strain: keeping
+      // people clothed eats more and more of everybody's day.
+      visibleWhen: [{ kind: "strain", measure: { labourPerHead: "clothmaking" }, factor: 1.3 }],
       availableWhen: [{ kind: "experience", activities: ["clothmaking"], min: 30 }],
       defaultRank: PROJECTS_LAST,
       laborCost: 48,
@@ -1155,7 +1209,7 @@ export const STAGE1: Config = {
       // whoever plaits is shown tanning and invited to hides, whoever dresses
       // skins is shown twining and invited to fibre.
       id: "twining",
-      visibleWhen: [{ kind: "experience", activities: ["clothmaking"], min: 8 }],
+      visibleWhen: [{ kind: "strain", measure: { labourPerHead: "clothmaking" }, factor: 1.1 }],
       availableWhen: [{ kind: "experience", activities: ["clothmaking"], min: 15 }],
       defaultRank: PROJECTS_LAST,
       laborCost: 48,
@@ -1167,7 +1221,7 @@ export const STAGE1: Config = {
     },
     {
       id: "tanning",
-      visibleWhen: [{ kind: "experience", activities: ["clothmaking"], min: 8 }],
+      visibleWhen: [{ kind: "strain", measure: { labourPerHead: "clothmaking" }, factor: 1.1 }],
       availableWhen: [{ kind: "experience", activities: ["clothmaking"], min: 15 }],
       defaultRank: PROJECTS_LAST,
       laborCost: 48,
