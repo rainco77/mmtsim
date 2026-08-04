@@ -168,10 +168,6 @@ export interface ProjectView {
   readonly worth: number;
 }
 
-/** How many of the worthiest can be started, and how many more are shown (E31). */
-const OFFER_STARTABLE = 2;
-const OFFER_SHOWN = 6;
-
 export function derive(state: GameState, index: ConfigIndex): Derived {
   const unlocks = computeUnlocks(state, index);
   const sector = state.sectors[HOUSEHOLDS];
@@ -261,31 +257,26 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     return total;
   };
 
-  // Ordered by what each is worth against what is scarce now — but only among
-  // those whose prerequisites are met, since offering something that cannot be
-  // built is no offer.
-  const ranked = [...index.config.projects]
-    .filter((def) => allHold(def.availableWhen, ctx))
-    .sort((a, b) => worthOf(b) - worthOf(a))
-    .map((def) => def.id);
-
   const projects: ProjectView[] = index.config.projects.map((def) => {
     const active = state.activeProjects.find((p) => p.id === def.id);
     const done = state.completedProjects[def.id] ?? 0;
     // A finished one-off project is not available any more, and neither is one
     // already under way. Otherwise a strategy would keep reaching for it.
     const startable = active === undefined && (def.limit === undefined || done < def.limit);
-    // What the content demands is a prerequisite — a thing that must be known
-    // or built first. Whether it is *offered* is decided by rank: the worthiest
-    // one or two can be started, the next few are shown. And an offer once made
-    // is never withdrawn, so weighing it up costs nothing (see `offered`).
-    const rank = ranked.indexOf(def.id);
-    const now = rank < 0 ? 0 : rank < OFFER_STARTABLE ? 2 : rank < OFFER_SHOWN ? 1 : 0;
-    const reach = Math.max(now, state.offered[def.id] ?? 0);
+    // **What the content demands is the whole of it.** A ceiling on how many
+    // may stand open at once is gone: where several needs are short, several
+    // answers have to be there. What keeps the opening from being a wall of
+    // buttons is that little is affordable yet — the hands, not a shortlist.
+    //
+    // The worth below still orders the list, because a list has an order
+    // whether one is chosen or not, and the order should at least roughly fit.
+    // It decides nothing: it used to hide the way out of the epoch, since the
+    // pit, the boat, the needle and the range change spare no process and were
+    // therefore worth nothing.
     return {
       id: def.id,
-      visible: reach >= 1 && allHold(def.visibleWhen, ctx),
-      available: startable && reach >= 2 && allHold(def.availableWhen, ctx),
+      visible: allHold(def.visibleWhen, ctx),
+      available: startable && allHold(def.availableWhen, ctx),
       running: active !== undefined,
       paused: active?.paused ?? false,
       progress: active?.progress ?? 0,

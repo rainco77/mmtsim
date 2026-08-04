@@ -90,18 +90,6 @@ export interface GameState {
    */
   readonly abandonedAt?: number;
 
-  /**
-   * How far each project has ever been offered: 1 once it was shown, 2 once it
-   * could be started (E31).
-   *
-   * It only ever rises. What is offered follows from what is scarce now, and
-   * scarcity moves — but an offer that vanishes while the player is weighing it
-   * punishes him for thinking, and makes the game hurried instead of
-   * considered. So the ranking decides what comes *next*, never what is taken
-   * away: the pressure is that better things arrive, not that worse ones leave.
-   */
-  readonly offered: Readonly<Record<ProjectId, number>>;
-
   /** How often each project was finished — covers one-off and repeatable alike. */
   readonly completedProjects: Readonly<Record<ProjectId, number>>;
 
