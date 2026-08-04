@@ -726,8 +726,9 @@ describe("supply chains (E4)", () => {
   });
 
   it("names the upstream bottleneck, not the missing intermediate", () => {
-    // Wood is short because there are no trees left — that is what should be
-    // reported, not "wood is missing".
+    // Wood is short because there is nothing left to pick up — that is what
+    // should be reported, not "wood is missing". Without the axe the standing
+    // wood is out of reach, so the fallen wood is the whole of the supply.
     let state = finish(createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600 }), "sickle");
     state = {
       ...state,
@@ -740,7 +741,15 @@ describe("supply chains (E4)", () => {
           // Everything else the country carries is there in plenty, so the one
           // thing that can be short is the wood — otherwise two exhausted
           // stocks compete for the report and the answer says nothing.
-          stocks: { food: 4000, plants: 4000, game: 4000, fish: 4000, shellfish: 4000, trees: 0 },
+          stocks: {
+            food: 4000,
+            plants: 4000,
+            game: 4000,
+            fish: 4000,
+            shellfish: 4000,
+            trees: 4000,
+            deadwood: 0,
+          },
           capacityHeld: { cleared: { amount: 400, quality: 1 } },
         },
       },
@@ -749,6 +758,6 @@ describe("supply chains (E4)", () => {
     const d = derive(state, index);
     expect(d.coverage["shelter_roof"] ?? 1).toBeLessThan(1);
     expect(d.binding.kind).toBe("stock");
-    expect(d.binding.what).toBe("trees");
+    expect(d.binding.what).toBe("deadwood");
   });
 });

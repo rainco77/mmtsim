@@ -181,10 +181,42 @@ export const STAGE1: Config = {
       },
     },
     {
-      // What stands and what lies: the wood of the range, and the bast that is
-      // stripped off it. Slowest of them all — which is why the epoch cannot
-      // deforest its country whatever it does, and why clearing and afforesting
-      // belong to the settlers who come after (E13).
+      // What has fallen. Not a store but a leftover: it comes down of itself,
+      // and whoever only picks up can never have more than came down. That
+      // ceiling is the wall a community without an axe runs into, and taking it
+      // away is what the axe is for — the difference between a leftover and a
+      // store, which the model has to hold if the project is to open anything.
+      //
+      // A named simplification: its ceiling hangs on the ground, not on the
+      // wood standing on it, so felling does not thin the fall. Bearable
+      // because the standing wood barely moves in this epoch (rate 0.1, E13).
+      id: "deadwood",
+      decayPerTick: 0,
+      regrowth: {
+        ratePerTick: 0.2,
+        capacity: "wilderness",
+        // Provisional, and known to be so. Reckoned, three would leave the
+        // comfort at about half at twenty-five heads — the pinch the epoch was
+        // to open on. Played, it kills: every seed was given up between tick 28
+        // and 88, because a stock whose steady yield lies under what a life-and-
+        // death rank demands is not rationed but stripped, and the fire goes out
+        // with it. Ten is the lowest value at which no seed died over eight
+        // seeds and two hundred ticks. The figure belongs to the balancing.
+        densityPerArea: 10.0,
+        refuge: 2,
+        maxEffort: 30,
+      },
+    },
+    {
+      // What stands, and the bast that is stripped off it — taking either uses
+      // the tree up, whether it is felled first or ring-barked where it grows.
+      // That a felled tree gives bast *and* wood is joint production, which is
+      // deferred until there are prices; until then two processes on the one
+      // stock, as the national accounts themselves do it.
+      //
+      // Slowest of them all — which is why the epoch cannot deforest its
+      // country whatever it does, and why clearing and afforesting belong to
+      // the settlers who come after (E13).
       id: "trees",
       decayPerTick: 0,
       regrowth: {
@@ -501,14 +533,16 @@ export const STAGE1: Config = {
 
     // ---- wood: the one change of technique in the epoch ----
     {
-      // Picking up deadwood: much walking for little wood. A leftover, not a
-      // stock.
+      // Picking up what has fallen: much walking for little wood, and dry
+      // already. This is what every fuelwood study finds people do first — the
+      // principle of least effort — and it is why felling must cost more, not
+      // less, per unit.
       id: "wood_gathering",
       branch: "wood",
       activity: "woodcutting",
       priority: 100,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.6, trees: 1.0 },
+      intermediatesPerOutput: { labor: 0.6, deadwood: 1.0 },
       exposure: { weather: 0.2 },
       qualityWeight: 0,
       unlockedFromStart: true,
@@ -517,12 +551,18 @@ export const STAGE1: Config = {
       // Taking what stands instead of what lies. The biggest single jump of the
       // epoch, and the same sentence as the boat: technology does not create
       // the resource, it opens it.
+      //
+      // And it costs *more* per unit, not less — half again. A flint axe fells
+      // quickly (the Draved experiments), but then the wood must be bucked,
+      // split, hauled and seasoned, none of which a dry fallen branch needs.
+      // More out of the same country for more hands to the unit: Boserup with
+      // both halves, which no other project of the epoch has.
       id: "felling",
       branch: "wood",
       activity: "woodcutting",
       priority: 110,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.24, trees: 1.0 },
+      intermediatesPerOutput: { labor: 0.9, trees: 1.0 },
       exposure: { weather: 0.2 },
       qualityWeight: 0,
       unlockedFromStart: false,
@@ -920,12 +960,13 @@ export const STAGE1: Config = {
         // country twice as poor.
         { type: "setCapacity", capacity: "wilderness", quality: { kind: "nextTaking" } },
         { type: "setCapacity", capacity: "water", quality: { kind: "from", capacity: "wilderness" } },
-        // Found: a country nobody has been over — every one of the five, or the
+        // Found: a country nobody has been over — every one of the six, or the
         // community would move into a range it had already gathered bare. After the
         // quality, so that what it finds is the full measure of the *new*
         // country and not of the one it left.
         { type: "stock", id: "plants", to: { kind: "ceiling" } },
         { type: "stock", id: "game", to: { kind: "ceiling" } },
+        { type: "stock", id: "deadwood", to: { kind: "ceiling" } },
         { type: "stock", id: "trees", to: { kind: "ceiling" } },
         { type: "stock", id: "fish", to: { kind: "ceiling" } },
         { type: "stock", id: "shellfish", to: { kind: "ceiling" } },
@@ -991,9 +1032,15 @@ export const STAGE1: Config = {
         // other techniques: long enough to be a promise, short enough not to be
         // a tease.
         { kind: "experience", activities: ["gathering", "hunting", "fishing"], min: 900 },
+        // Lining and posts come off a standing stem: short brittle deadwood
+        // will not do it, and the earth oven — which spares fuel — opens no
+        // timber. So the axe stands materially before the pit, and thereby
+        // before sedentism, without sedentism needing a second condition.
+        { kind: "projectDone", id: "stone_axe", min: 1 },
       ],
       availableWhen: [
         { kind: "experience", activities: ["gathering", "hunting", "fishing"], min: 1800 },
+        { kind: "projectDone", id: "stone_axe", min: 1 },
       ],
       defaultRank: PROJECTS_LAST,
       laborCost: 24,
