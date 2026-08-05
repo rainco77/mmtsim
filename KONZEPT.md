@@ -1,7 +1,7 @@
 # Konzept — festgelegte Entscheidungen
 
-Lebendes Dokument. Wird nach **jeder** Einigung fortgeschrieben, bevor der nächste
-Vorschlag kommt. Wer hier neu einsteigt, liest nur diese Datei.
+Lebendes Dokument. Hier steht ausschließlich, was über **das Spiel** entschieden ist.
+Wie in diesem Projekt gearbeitet und geantwortet wird, steht in `CLAUDE.md`.
 
 ---
 
@@ -44,101 +44,8 @@ beide Wege tragen und beide auf ihre eigene Art zusammenbrechen, braucht keine A
 darüber, welche Seite wirtschaften kann. Das Spiel sagt, was *möglich* ist,
 nicht was *wünschenswert* ist.
 
----
-
-## Arbeitsweise
-
-### Wie in diesem Projekt geantwortet wird
-
-Rainer arbeitet auf Deutsch, der Code ist durchgehend englisch — Bezeichner, Kommentare,
-Dateinamen, Commit-Meldungen. Für die Antworten selbst gilt:
-
-**Ein Vorschlag je Runde, grob vor fein.** Nicht zwei Wege nebeneinander bauen, nicht
-einen zweiten „zur Sicherheit" mitliefern. Wird ein Vorschlag von Rainer gemacht, wird
-**dieser** bewertet und kein eigener danebengestellt.
-
-**Alles zu Entscheidende steht gesammelt am Ende der Nachricht**, unter einer eigenen
-Überschrift. Nichts davon mitten im Fließtext, auch keine offene Frage und kein „das
-gehört eigene Runde". Der erklärende Teil steht davor.
-
-**Rainer liest dieses Dokument nie.** Ein Verweis wie „E19" ist für ihn wertlos: Was an
-der Stelle steht, muss in der Antwort selbst stehen, notfalls als Zitat. Dasselbe gilt für
-frühere Messungen — Zahl und Tick hinschreiben, nicht auf „die Messung von vorhin"
-verweisen.
-
-**Keine Einheiten.** Ein Tick ist keine Zeitspanne, eine Fläche hat keine Größe. Also
-Tick, Fläche, Menge — nie Jahr, Hektar, Kilo. Das gilt auch für Bilder („jedes zehnte
-Jahr" behauptet eine Tickdauer).
-
-**Jeder Befund bekommt eine Adresse.** „Seed 42, Tick 81: Wetter 0,238, Feuer 0,04,
-63 % der Menschen tot" ist prüfbar; „die Schwankung wirkt zu stark" ist eine Meinung.
-Zahlen gehören in Tabellen, Begründungen in Prosa.
-
-**Erst messen, dann vorschlagen — und beim Messen wirklich spielen.** Kein Hebel wird
-benannt, bevor er an einzelnen Ticks gesehen wurde (E30). Wo eine Vermutung nötig ist,
-wird sie als Vermutung gekennzeichnet, und was **nicht** geprüft wurde, wird ausdrücklich
-gesagt.
-
-**Irrtümer werden schlicht benannt und nicht ausgeschmückt.** „Meine Erklärung war
-falsch, hier ist die gemessene" — ein Satz, dann weiter. Ebenso wird gesagt, wenn eine
-Änderung die Kriterien *nicht* verbessert hat.
-
-**Aus einer Bemerkung wird nie eine Entscheidung.** Sagt Rainer, was er nicht will, ist
-damit nicht gesagt, was statt dessen geschieht — das ist eine neue Frage und wird
-gestellt. Und während eine Diskussion läuft, wird nichts gebaut; Freigabe ist ein
-ausdrückliches Ja auf einen ausformulierten Vorschlag.
-
-**Am Ende jeder Runde steht, was als Nächstes ansteht**, in der Reihenfolge, in der es
-drankommt. Rainer führt keine Liste; Vertagtes muss von selbst wieder aufgerufen werden.
-
-### Die offenen Punkte stehen als Issues, nicht in diesem Dokument
-
-**github.com/rainco77/mmtsim/issues** — dort und nirgends sonst. Eine Liste in diesem
-Dokument hat kein Kennzeichen dafür, ob ein Punkt noch offen ist; sie verkommt zu
-durchgestrichenen Zeilen und veralteter Reihenfolge, und irgendwann weiß niemand mehr,
-worauf ein Punkt eigentlich beruhte. Ein Issue ist offen oder geschlossen, und man kann
-fragen, was offen ist, ohne alles zu lesen.
-
-**Drei Etiketten für die Dringlichkeit:** `now` — in Arbeit, höchstens eine Handvoll.
-`next` — als Nächstes, aber nicht angefangen. `later` — aufgehoben, nicht vergessen. Dazu
-je eines für den Bereich: Modell, Inhalt, Werkzeuge, Konzept.
-
-**Jedes Issue trägt dieselben Abschnitte**, und zwar in dieser Reihenfolge:
-
-| | |
-|---|---|
-| **Stand** | der Commit, auf den es sich bezieht, und ob das Arbeitsverzeichnis sauber war. Ohne ihn ist keine Zahl darin nachvollziehbar — derselbe Lauf gibt bei geändertem Inhalt andere Zahlen |
-| **Spielprotokoll** | wenn es auf einer gespielten Beobachtung beruht: Seed und jede Handlung mit ihrem Tick, dazu die Zeile zum Einfügen und der Befehl zum schrittweisen Nachspielen |
-| **Beobachtung** | was zu sehen ist, mit Adresse — Tick, Zahl, Deckung. Nicht die Innereien, sondern das, was das Modell meldet |
-| **Was daran falsch ist** | welche Festlegung verletzt wird, wörtlich zitiert. Keine erfundene Einordnung |
-| **Was offen ist** | die Frage, die zu entscheiden bleibt. Keine neuen Messungen darin |
-| **Was schon ausgeschlossen ist** | Sackgassen, die schon begangen wurden, damit niemand sie ein zweites Mal geht |
-| **Hängt an** | welche anderen Issues davor kommen müssen |
-
-**„Von Hand gespielt" ist keine Beobachtung.** Eine andere Sitzung, die von Hand spielt,
-tut etwas anderes. Deshalb schreibt die Sitzung (T4) jede Handlung mit, während sie
-geschieht — `log()` gibt das Protokoll aus, `step(protokoll, zustand)` spielt es Schritt
-für Schritt nach, und nach jedem Schritt steht der volle Zustand zum Ansehen bereit. Wurde
-der Zustand von Hand verändert, sagt das Protokoll das selbst; dann spielt es nichts nach
-und behauptet es auch nicht.
-
-
-- **Ein Vorschlag pro Runde.** Vorschlag → Kommentar → Einigung → nächster Punkt.
-- Reihenfolge **von vorne nach hinten** (frühe Spielphase zuerst) und **vom Groben
-  ins Feine**.
-- Der Anfang muss super simpel sein. Komplexität kommt ausschließlich schrittweise
-  im Spielverlauf dazu.
-- Nach jeder Einigung: dieses Dokument fortschreiben, dann committen.
-- **Auch die Umsetzung schreibt fort.** Was beim Bauen oder Austarieren entschieden
-  wird — weil ein Lauf einen Fehler zeigt oder eine Festlegung sich als unvollständig
-  erweist —, kommt hier hinein, mit dem Befund, der dazu geführt hat. Sonst weiß bald
-  niemand mehr, warum der Code etwas anderes tut als das Konzept.
-- **Der Entwicklungsbogen wird nicht am Schreibtisch entworfen.** Nach E28 muss ein
-  Übergang einen Schmerz beantworten — und ein Schmerz wird **gefunden, nicht
-  erfunden**. Der Versuch, die Stufen bis zur galaktischen Zivilisation vorab
-  durchzuplanen, ist gescheitert: Jeder am Schreibtisch konstruierte Engpass hielt der
-  Prüfung nicht stand. Gebaut wird die nächste Stufe; der übernächste Übergang ergibt
-  sich daraus, was beim Spielen tatsächlich stört.
+**Der Anfang muss super simpel sein.** Komplexität kommt ausschließlich schrittweise im
+Spielverlauf dazu, nie schon zu Beginn.
 
 ---
 
@@ -2194,6 +2101,13 @@ der Übergang nicht ins Spiel. Ein Mechanismus, der historisch stimmt, aber im S
 keinen Druck beantwortet, bleibt Dekoration — mit leerem Feld 1 fällt das vorher auf
 statt hinterher.
 
+**Der Entwicklungsbogen wird darum nicht am Schreibtisch entworfen.** Ein Übergang muss
+einen Schmerz beantworten — und ein Schmerz wird **gefunden, nicht erfunden**. Der
+Versuch, die Stufen bis zur galaktischen Zivilisation vorab durchzuplanen, ist
+gescheitert: Jeder am Schreibtisch konstruierte Engpass hielt der Prüfung nicht stand.
+Gebaut wird die nächste Stufe; der übernächste Übergang ergibt sich daraus, was beim
+Spielen tatsächlich stört.
+
 ### E29 — Übergang 1: Jäger und Sammler → Siedlung
 
 **Die Erzählung der Epoche.** Sie ist der Maßstab, gegen den alles andere geprüft wird —
@@ -2947,6 +2861,13 @@ Synchron, interaktiv, ohne Zustandsdatei und ohne Neuanfang: Der Zustand ist ein
 Variable in einem laufenden Prozess. Nach jedem Tick lässt sich sehen, was passiert
 ist, und der nächste Befehl baut darauf auf.
 
+**Die Sitzung schreibt jede Handlung mit, während sie geschieht.** `log()` gibt das
+Protokoll aus — den Seed und jede Handlung mit ihrem Tick. `step(protokoll, zustand)`
+spielt es Schritt für Schritt nach, und nach jedem Schritt steht der volle Zustand zum
+Ansehen bereit. Wurde der Zustand von Hand verändert, sagt das Protokoll das selbst; dann
+spielt es nichts nach und behauptet es auch nicht. Ohne das ist „von Hand gespielt" keine
+Beobachtung, denn eine andere Sitzung, die von Hand spielt, tut etwas anderes.
+
 **Ein einziger Endpunkt genügt.** Ticken, handeln, in den Zustand schauen, eine
 Schleife laufen lassen, eine Zwischenrechnung anstellen — alles derselbe Weg. Eine
 feste Befehlsliste könnte immer nur das, woran beim Entwurf gedacht wurde. HTTP statt
@@ -3121,7 +3042,7 @@ nächste Schritt. Für eine einzige Regel lohnt er nicht.
 
 **Die offenen Punkte stehen als Issues:** github.com/rainco77/mmtsim/issues
 
-Nicht hier. Warum, und nach welchem Schema, steht oben unter „Arbeitsweise".
+Nicht hier. Warum, und nach welchem Schema ein Issue aufgebaut ist, steht in `CLAUDE.md`.
 
 ## Verworfen
 
