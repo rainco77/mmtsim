@@ -451,23 +451,19 @@ describe("processes and the fallback level (E5)", () => {
     // decided by risk-adjusted cost rather than by exposure on its own — a
     // process that is safer *and* dearer is a different question, and the
     // answer to it is properly "it depends how much dearer".
+    //
+    // So it is **copied** from gathering rather than written out. Written out,
+    // its coefficients froze at whatever the content held on the day, and the
+    // day the content moved the twin quietly stopped being one: it was then
+    // safer *and* cheaper, and won for the wrong reason while the test still
+    // read green about the right one.
+    const twinOf = STAGE1.processes.find((p) => p.id === "gathering")!;
     const twin: Config = {
       ...STAGE1,
       risk: { aversion: 0.9, caution: 0 },
       processes: [
         ...STAGE1.processes,
-        {
-          id: "gathering_safe",
-          branch: "food",
-          priority: 5,
-          intermediatesPerOutput: { labor: 0.42, plants: 1.0 },
-          capacityPerOutput: {},
-          exposure: { weather: 0.05 },
-          qualityWeight: 0.5,
-          yield: "found",
-          activity: "gathering",
-          unlockedFromStart: true,
-        },
+        { ...twinOf, id: "gathering_safe", priority: 5, exposure: { weather: 0.05 } },
       ],
     };
     const local = indexConfig(twin);
