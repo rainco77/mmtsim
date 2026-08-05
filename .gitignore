@@ -1,4 +1,4 @@
-node_modules/
+.claude/worktrees/
 dist/
 .DS_Store
-.claude/worktrees/
+node_modules/

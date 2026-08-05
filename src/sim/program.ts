@@ -17,10 +17,15 @@
  * a rule of its own and without the guessing pass the old planner needed to
  * find out how much this tick meant to take.
  *
- * **The store stays out of it** (E19). What is planned for is what will be
- * *made*; the store is what catches the tick when the making falls short. The
- * other way round was measured: every tick began by eating the pits and ended
- * by refilling them, so they held one tick's saving however large they were.
+ * **A store is on offer, and what it is to hold is asked as a stand** (E19).
+ * Both halves are needed and neither works alone. A store exists to be lived
+ * off in a bad year, so the plan may draw on it; but a plan that only draws
+ * would begin every tick by eating the pits and end it by refilling them, and
+ * they would hold one tick's saving however large they were. What keeps that
+ * from happening is the second half: the target is not a consumer of the good
+ * but a claim on the **closing** balance — make at least as much as this tick
+ * spends, plus what is still missing. In a hard tick that claim loses to the
+ * ranks above it, and then the store is eaten, which is what it is for.
  */
 import type { ConfigIndex, ProcessDef } from "./config.ts";
 import type { CapacityId, ProcessId, StockId } from "./ids.ts";
@@ -79,6 +84,8 @@ interface Column {
   readonly produces?: StockId;
   /** How much this column can carry at all; Infinity where nothing caps it. */
   readonly ceiling: number;
+  /** What searching cost on this column — kept so the doing charges the same. */
+  readonly effort: number;
 }
 
 /** The natural stock a process draws on, if any — there is never more than one. */
@@ -175,6 +182,7 @@ function column(
     inputs,
     produces,
     ceiling,
+    effort,
     ...(quarry === undefined ? {} : { quarry }),
     ...(step === undefined ? {} : { step }),
   };
@@ -191,8 +199,12 @@ export function planByProgram(input: ProgramInput): Plan {
     .sort((a, b) => a.tier.rank - b.tier.rank);
   for (const claim of claims) {
     columns.push({
-      inputs: new Map([[`stock:${claim.stock}`, 1]]),
+      // A claim on a good that is used up takes it; a claim on one that is only
+      // *held* takes nothing, and is tied to the closing balance further down.
+      inputs: claim.tier.consumedOnUse > 1e-9 ? new Map([[`stock:${claim.stock}`, 1]]) : new Map(),
       ceiling: claim.amount,
+      // A claim searches for nothing; it only asks.
+      effort: 1,
     });
   }
   const n = columns.length;
@@ -256,16 +268,60 @@ export function planByProgram(input: ProgramInput): Plan {
     });
   }
   for (const [id, row] of stocks) {
-    // Net: what is drawn on beyond what this same plan makes. The store is not
-    // offered here — the tick lives on what it makes (E19). A stand that grows
-    // back is different: it is there to be taken from, all but the last of it.
+    // **What is held is on offer.** A store exists to be lived off in a bad
+    // year, and whether the good is an intermediate or something a need is
+    // served from makes no difference to that. So the limit is what lies
+    // there: net drawing may go up to the opening balance, which is the same
+    // as saying no stock may close below nothing. A stand that grows back is
+    // different again — it is there to be taken from, all but the last of it.
+    //
+    // Held back from the plan, a store cannot be reached at all where the good
+    // is spent by a *process* rather than handed to a need: nothing later in
+    // the tick can put it to use, because what was never planned is never run.
+    // Measured at seed 42, tick 57: 4.90 of wood lay there, searching for
+    // deadwood cost 1.26 — no scarcity anywhere — and the fire still came out
+    // at nought, which cost three in five of the people.
     const natural = input.index.stock.get(id)?.regrowth !== undefined;
     limits.push({
       id: `stock:${id}`,
       coefficients: row,
-      limit: natural ? (input.standing[id]?.held ?? 0) * REACH : 0,
+      limit: natural ? (input.standing[id]?.held ?? 0) * REACH : (input.supplies.stocks[id] ?? 0),
     });
   }
+
+  // **And what the plan must leave standing is asked as a stand, not as a
+  // taking.** A claim on a good that is not used up — clothing, which is worn,
+  // or a store target, which is the player saying how much he means to keep —
+  // is not a consumer of that good. It asks that so much be *there* when the
+  // tick is done:
+  //
+  //     claim ≤ opening balance + what is made − what is spent
+  //
+  // and no further than the level asked for, which its own ceiling says. Both
+  // right-hand sides are non-negative, so doing nothing stays lawful and the
+  // solver needs nothing added to it.
+  //
+  // **Reckoned on the closing balance and not on yesterday's gap**, which is
+  // what makes it bite in the tick that matters. Measured against the opening
+  // balance the claim vanishes in any tick that begins full — and when that
+  // same tick then empties the store, nothing is left to pull it back. Seed 42
+  // with a target of twelve: the store stood at 12.08 when tick 51 began, so no
+  // claim was raised at all; the tick spent it down to 0.56 while a quarter of
+  // the labour was never called on and deadwood was the cheapest thing in the
+  // range at 1.44. The same again at tick 54. On the closing balance the claim
+  // stands in every tick, so the hands that are free go into putting the store
+  // back — and its rank still decides everything else: where comfort ranks
+  // above it, comfort may eat the store first.
+  claims.forEach((claim, r) => {
+    if (claim.tier.consumedOnUse > 1e-9) return;
+    const row = Array.from(stocks.get(claim.stock) ?? zero());
+    row[made + r] = (row[made + r] ?? 0) + 1;
+    limits.push({
+      id: `balance:${claim.tier.id}`,
+      coefficients: row,
+      limit: input.supplies.stocks[claim.stock] ?? 0,
+    });
+  });
 
   const objectives: Objective[] = claims.map((claim, r) => {
     const row = zero();
@@ -277,13 +333,21 @@ export function planByProgram(input: ProgramInput): Plan {
 
   const levels = new Map<ProcessId, number>();
   const output: Record<StockId, number> = {};
+  // What each process was charged for searching, weighted by how much ran on
+  // each step of the stand. This is the figure the doing must charge too.
+  const weighted = new Map<ProcessId, number>();
   for (let j = 0; j < made; j += 1) {
     const level = answer.levels[j] ?? 0;
     if (level <= 1e-12) continue;
     const col = columns[j]!;
     if (col.process === undefined || col.produces === undefined) continue;
     levels.set(col.process.id, (levels.get(col.process.id) ?? 0) + level);
+    weighted.set(col.process.id, (weighted.get(col.process.id) ?? 0) + level * col.effort);
     output[col.produces] = (output[col.produces] ?? 0) + level;
+  }
+  const effortPerProcess = new Map<ProcessId, number>();
+  for (const [id, level] of levels) {
+    if (level > 1e-12) effortPerProcess.set(id, (weighted.get(id) ?? 0) / level);
   }
 
   const droppedTiers: string[] = [];
@@ -309,5 +373,5 @@ export function planByProgram(input: ProgramInput): Plan {
     }
   }
 
-  return { levels, output, droppedTiers, shortfall };
+  return { levels, output, droppedTiers, shortfall, effortPerProcess };
 }

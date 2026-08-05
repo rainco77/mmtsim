@@ -1221,6 +1221,38 @@ war. Gemessen: 42 Nahrung erzeugt, 69 ausgeteilt, davon 27 aus einem Lager mit B
 null. Hunger war damit unmöglich, jeder Rang meldete Deckung, die Geburten liefen voll
 weiter — und die Gemeinschaft wuchs, bis das Revier selbst nachgab.
 
+**Der Plan darf aus dem Vorrat nehmen — und was zu halten ist, verlangt er als
+Schlussbestand.** Beide Hälften werden gebraucht, und keine trägt allein.
+
+Ein Vorrat ist da, um in schlechten Zeiten benutzt zu werden, und ob das Gut eine
+Vorleistung ist oder an einen Bedarf ausgeteilt wird, ändert daran nichts. Wo der Plan ihn
+nicht sieht, ist er unerreichbar, sobald ein **Verfahren** das Gut verbraucht statt eines
+Bedarfs: Bei der Nahrung fällt es nicht auf, weil am Tickende ohnehin aus einem Topf
+ausgeteilt wird, in dem Vorrat und Erzeugung zusammenliegen. Beim Holz fällt es auf —
+gemessen bei Seed 42, Tick 57 lagen 4,90 Holz da, Totholz war mit 1,26 das Billigste im
+Revier, und das Feuer kam trotzdem auf 0,00, was drei von fünf Menschen das Leben kostete.
+
+Genommen wird dann aber, was am billigsten ist, und ein liegender Vorrat kostet keine Hand.
+Was ihn davor bewahrt, aufgezehrt zu werden, ist die zweite Hälfte: **Die Vorgabe ist kein
+Verbraucher des Guts, sondern ein Anspruch auf den Stand am Ende des Ticks** — mach so viel,
+wie dieser Tick ausgibt, und dazu, was noch fehlt. Innerhalb eines Ticks ist es gleichgültig,
+ob zuerst der Vorrat oder zuerst die Erzeugung genutzt wird; es zählt allein, was am Ende
+steht.
+
+**Und gemessen wird am Schlussbestand, nicht an der Lücke von gestern.** An der Anfangslücke
+gemessen stellt ein Tick, der voll beginnt, überhaupt keinen Anspruch — leert er sich dann,
+holt ihn nichts zurück. Gemessen mit einer Vorgabe von zwölf: Der Vorrat stand bei Tick 51
+auf 12,08, es wurde kein Anspruch erhoben, der Tick gab ihn auf 0,56 aus, und dabei wurde ein
+Viertel der Arbeit gar nicht abgerufen. Dasselbe bei Tick 54. Der Bestand sägezahnte
+zwischen voll und leer, statt zu halten.
+
+**Was für einen Vorrat gilt, gilt für jedes Gut, das in der Nutzung nicht aufgebraucht
+wird.** Kleidung wird getragen, nicht gegessen; ihr Rang verlangt also ebenfalls einen
+Stand und keine Entnahme. Als Fehlbetrag geschrieben — Bedarf minus Bestand — wäre der
+Vorrat zweimal gezählt: einmal beim Abziehen und einmal als Angebot an den Plan. Ein Rang
+könnte sich dann aus genau dem Bestand bedienen, den er halten soll, und sich als gedeckt
+melden, ohne dass irgendetwas hergestellt wurde.
+
 **Was in der Nutzung nicht aufgebraucht wird, wird nur zum Fehlbetrag nachgefragt.**
 Nahrung fließt durch und muss jeden Tick ganz neu erzeugt werden; Kleidung wird getragen,
 nicht gegessen, und Erhalt ist Neubau dessen, was zerfallen ist. Ohne diese
@@ -1357,9 +1389,17 @@ lebensnotwendigen Rang und einen Behaglichkeitsrang darüber geteilt. Nahrung un
 sind beide so gebaut — halbe Rationen sind Hunger, halbes Brennholz ist ein kalter
 Winter.
 
-**Die beiden Grundfaktoren sind reziprok.** Eine Gruppe, deren Bedarfe genau gedeckt
-sind, wächst nicht und schrumpft nicht; sie wächst, wenn es ihr **besser** geht, als sie
-braucht. Das ist der Malthus-Punkt aus E7, exakt definiert statt Gefühlssache.
+**Nur der Puffer trägt das Wachstum.** Die Grundfaktoren waren einmal Kehrwerte
+voneinander, so dass eine Gruppe mit gerade gedeckten Bedarfen stehenblieb. Das ist
+aufgehoben: Wer nur die tödlichen Ränge deckt, **schrumpft** — langsam und ohne dass
+jemand daran stirbt. Gewachsen wird ausschließlich, solange Sättigung und
+Behaglichkeit bedient werden. Das ist der Malthus-Punkt aus E7, und er sitzt jetzt an
+der Stelle, an der er hingehört: nicht am Verhungern, sondern am Verzicht.
+
+Gemessen war der Grund handfest: Mit Kehrwerten blieb die Gruppe stehen, sobald der
+Hunger gedeckt war, und ein schlechter Wurf hatte keine Folge, die über den Tick
+hinausreichte. Jetzt kostet ein Tick ohne Puffer Nachwuchs, und mehrere hintereinander
+kosten Größe.
 
 **Der Regler ist immer genau ein Bedarf.** Die Bevölkerung pendelt sich dort ein, wo
 Überleben × Geburten = 1 wird — und dahin kommt sie, indem sie so lange wächst, bis
@@ -1383,11 +1423,17 @@ Arbeitsteilung, kein Puffer gegen ein schlechtes Jahr, kein Ersatz für Ausfäll
 klein gewordene Siedlungen aufgegeben oder gingen in anderen auf. Bis auf den letzten
 Menschen zu rechnen wäre die unrealistischere Variante.
 
-**Die Schwelle liegt bei 25, die Startgruppe bei 50.** Der Anker sind Birdsells „magic
-numbers": Eine Gemeinschaft von rund 25 ist die kleinste, die sich selbst trägt — darunter muss
-eine Gruppe in einer anderen aufgehen oder sie verschwindet. Und aus einer zu kleinen
-Gruppe erholt sich nichts mehr, also muss der Lauf **davor** enden und nicht erst, wenn
-niemand mehr da ist.
+**Die Schwelle liegt bei zwölf, die Startgruppe bei fünfundzwanzig** — dieselben Zahlen wie
+in E14 („Startaufstellung"), und der Anker ist Birdsells *magic number*: Fünfundzwanzig
+**ist** die Gemeinschaft, die zusammen lebt und zieht, also kann sie nicht zugleich der
+Boden sein, unter dem es nicht weitergeht. Unter etwa einem Dutzend hört eine Gemeinschaft
+auf zu funktionieren — zu wenige Jäger, niemand übrig für Kinder und Kranke, kein
+Ausgleich für einen einzelnen Todesfall. Und aus einer zu kleinen Gruppe erholt sich nichts
+mehr, also muss der Lauf **davor** enden und nicht erst, wenn niemand mehr da ist.
+
+> *Hier stand vorher „Die Schwelle liegt bei 25, die Startgruppe bei 50" — im Widerspruch
+> zu E14 und zum Inhalt, der schon immer zwölf sagt. Der Satz stammte aus der Zeit vor der
+> Messung, die das Revier und die Gruppengröße aneinander gebunden hat.*
 
 **Die Aufgabe steht im Zustand, und danach steht die Uhr.** Der Tick, an dem es geschah,
 wird festgehalten; von da an gibt es keinen nächsten Tick mehr — auch keinen leeren, die
@@ -1607,10 +1653,21 @@ ohne jede Entscheidung:
 | schlechteste Feuerdeckung | 0,00 | **0,76** |
 | Zeit für dieselben Läufe | 1354 ms | **1007 ms** |
 
-**Der Vorrat bleibt draußen.** Geplant wird gegen das, was **hergestellt** wird;
-der Speicher fängt den Tick auf, wenn das Herstellen nicht reicht (E19).
-Andersherum wäre er im Programm bloß eine weitere billige Quelle, und dann
-begänne jeder Tick damit, ihn aufzuessen, und endete damit, ihn zu füllen.
+**Der Vorrat steht im Programm als Angebot, und die Vorgabe als Anspruch auf den
+Schlussbestand** (E19). In Zeilen: Die Grenze je Bestand ist nicht null, sondern
+das, was daliegt — netto verbraucht werden darf bis zum Anfangsbestand, was
+dasselbe ist wie „kein Bestand schließt unter null". Und ein Anspruch auf ein Gut,
+das nicht aufgebraucht wird, bekommt eine eigene Zeile:
+
+```
+Anspruch  ≤  Anfangsbestand + Erzeugung − Verbrauch
+Anspruch  ≤  das verlangte Niveau
+```
+
+Beide rechten Seiten sind nicht negativ, also bleibt Nichtstun zulässig und der
+Löser braucht dafür nichts Zusätzliches. Der Rang des Anspruchs entscheidet weiter
+alles Übrige: Steht die Behaglichkeit darüber, darf sie den Vorrat aufzehren — nur
+greift die Auffüllung danach nach der Arbeit, die noch frei ist.
 
 **Der blinde Plan bleibt blind** (E24): Gerechnet wird gegen ein leicht
 schlechtes Durchschnittsjahr, der wirkliche Wurf trifft danach den Ausstoß.
@@ -1933,13 +1990,23 @@ Lauf, keine Eindrücke:
 | **Kommt schlechtes Spiel genauso weit wie gutes?** | T4 |
 | Gibt es Zustände ohne Weg zurück? | E20 |
 
-**Der Komfort ist der Puffer, und er muss der richtige sein.** Hunger 1,2 und Sättigung
-0,6 je Kopf heißt: Ein Drittel des Nahrungsbedarfs ist entbehrlich. Ein schlechtes Jahr
+**Der Komfort ist der Puffer, und er muss der richtige sein.** Hunger 0,9 und Sättigung
+0,9 je Kopf heißt: Die Hälfte des Nahrungsbedarfs ist entbehrlich. Ein schlechtes Jahr
 frisst zuerst diesen Teil, und erst wenn es mehr nimmt, sterben Menschen.
 
-Bei 1,0 gegen 0,8 — also 44 % entbehrlich — war eine Hungersnot **unmöglich**: Der
-schlechteste Wurf eines langen Laufs blieb unter dem Polster. Eine Gesellschaft mit
-44 % Luft ist auch keine Subsistenzgesellschaft mehr.
+**Die Hälfte, weil der Abstand zwischen zwei Rängen der Puffer selbst ist.** Gerechnet:
+Bei 1,2 gegen 0,6 liegt zwischen „die Sättigung gibt nach" und „das Feuer geht aus" nur
+der Faktor drei in der Häufigkeit — sobald der Puffer oft genug nachgibt, um spürbar zu
+sein, geht in jedem zwanzigsten Tick das Feuer aus, und das tötet einen großen Teil der
+Gruppe. Bei 0,9 gegen 0,9 wird daraus der Faktor dreißig. Der entbehrliche Teil ist
+nicht Komfort im Nebensatz, er ist der Abstand zwischen Verzicht und Katastrophe.
+
+Weiter als bis zur Hälfte geht es nicht: Bei 1,0 gegen 0,8 — 44 % entbehrlich — war eine
+Hungersnot **unmöglich**, und eine Gesellschaft mit mehr Luft ist keine
+Subsistenzgesellschaft mehr. Extern gestützt ist die Teilung dadurch, dass der
+Grundumsatz eines Menschen etwa zwei Drittel seines Verbrauchs ausmacht und Bewegung
+und Arbeit den Rest, und dadurch, dass Menschen eine lange Strecke auf etwa der Hälfte
+ihrer üblichen Aufnahme überlebt haben — schwer geschädigt, aber lebend.
 
 Wo das Polster liegt, sagt eine Schwelle, die sich ausrechnen lässt und nicht geraten
 werden muss. Geplant wird gegen einen Wurf von 0,9; der Hunger wird also berührt,
@@ -2155,17 +2222,36 @@ Was braucht ein Mensch, damit er nicht stirbt, Kinder bekommt und arbeiten kann.
 
 | Rang | Bedarf | Gut | je Kopf | Wirkung bei Nulldeckung |
 |---|---|---|---|---|
-| 100 | **Hunger** | Nahrung | 1,2 | Überleben **0,10** — neun von zehn sterben |
-| 200 | **Feuer** | Wärme, aus Holz | 0,03 | Überleben **0,40** |
+| 100 | **Hunger** | Nahrung | 0,9 | Überleben **0,10** — neun von zehn sterben |
+| 200 | **Feuer** | Wärme, aus Holz | 0,03 | Überleben **0,75** |
 | 300 | **Kleidung** | Kleidung, aus Fell oder Faser | 0,3 | Arbeitsfähigkeit **0,60** |
 | 400 | *Wohnraum* | Wohnraum | 0,3 | Überleben 0,90 · Geburten ×1,003 bei voller Deckung |
 | 500 | *Vorrat anlegen* | — | — | siehe E19: Ziel ist die Speicherkapazität |
-| 600 | **Sättigung** | Nahrung | 0,6 | Geburten ×1,01 · Produktivität ×1,2 bei voller Deckung |
+| 600 | **Sättigung** | Nahrung | 0,9 | Geburten ×1,01 · Produktivität ×1,2 bei voller Deckung |
 | 700 | **geheizt** | Wärme | 0,07 | Produktivität ×1,1 bei voller Deckung |
 
 *Wohnraum kommt erst mit der Sesshaftigkeit.* Die Ränge stehen in **Hunderterschritten**,
 weil die Projektränge im selben Zahlenraum liegen (E18) — dazwischen bleiben
 neunundneunzig Plätze für sie.
+
+**Der Feuerausfall muss überlebbar sein.** Bei Nulldeckung stand das Überleben einmal
+auf 0,40 — drei Fünftel der Menschen in einem Tick. Aus so etwas erholt sich keine
+Gruppe, und ein Rang, dessen Ausfall das Spiel beendet, lehrt nichts. Bei 0,75 kostet er
+rund ein Viertel: hart genug, dass der Holzvorrat sich lohnt, mild genug, dass die
+Gruppe die Lehre daraus noch anwenden kann. Die Ordnung bleibt: Hunger tötet mit 0,10
+ungleich schneller, denn gegen Kälte helfen Kleidung und Zusammenrücken, gegen fehlende
+Nahrung hilft nichts.
+
+**Die Arbeit je Nahrung ist um die Hälfte teurer als zuerst angesetzt.** Vorher lag die
+Hälfte der Arbeitsfähigkeit dauerhaft brach; damit konnte kein schlechter Wurf wehtun
+und keine Technik sich lohnen, denn eine neue Technik kostet gerade mehr Arbeit, und wo
+Arbeit übrig ist, ist das kein Tausch. Extern gestützt ist die Richtung dadurch, dass
+der niedrige Wert aus der Behauptung von der ursprünglichen Wohlstandsgesellschaft
+stammt und zurückgewiesen wurde, sobald Verarbeitung, Werkzeugbau und Wege mitgezählt
+wurden. Gemessen ist der Betrag: Beim Doppelten setzt sich die Gruppe in der niedrigen
+Lage fest — ohne Sättigung fällt die Produktivität um ein Viertel, und mit weniger
+Arbeit kommt sie nicht mehr heraus, kein Projekt wird je fertig. Bei der Hälfte mehr
+kommt sie heraus, und acht von acht Läufen erreichen die Sesshaftigkeit.
 
 **Wärme steht zweimal darin, und Nahrung auch**, aus demselben Grund (E20): Kälte ist
 eine Schwelle, kein Hang. Halbe Rationen sind Hunger; halbes Brennholz ist ein kalter
