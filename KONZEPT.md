@@ -91,6 +91,37 @@ ausdrückliches Ja auf einen ausformulierten Vorschlag.
 **Am Ende jeder Runde steht, was als Nächstes ansteht**, in der Reihenfolge, in der es
 drankommt. Rainer führt keine Liste; Vertagtes muss von selbst wieder aufgerufen werden.
 
+### Die offenen Punkte stehen als Issues, nicht in diesem Dokument
+
+**github.com/rainco77/mmtsim/issues** — dort und nirgends sonst. Eine Liste in diesem
+Dokument hat kein Kennzeichen dafür, ob ein Punkt noch offen ist; sie verkommt zu
+durchgestrichenen Zeilen und veralteter Reihenfolge, und irgendwann weiß niemand mehr,
+worauf ein Punkt eigentlich beruhte. Ein Issue ist offen oder geschlossen, und man kann
+fragen, was offen ist, ohne alles zu lesen.
+
+**Drei Etiketten für die Dringlichkeit:** `now` — in Arbeit, höchstens eine Handvoll.
+`next` — als Nächstes, aber nicht angefangen. `later` — aufgehoben, nicht vergessen. Dazu
+je eines für den Bereich: Modell, Inhalt, Werkzeuge, Konzept.
+
+**Jedes Issue trägt dieselben Abschnitte**, und zwar in dieser Reihenfolge:
+
+| | |
+|---|---|
+| **Stand** | der Commit, auf den es sich bezieht, und ob das Arbeitsverzeichnis sauber war. Ohne ihn ist keine Zahl darin nachvollziehbar — derselbe Lauf gibt bei geändertem Inhalt andere Zahlen |
+| **Spielprotokoll** | wenn es auf einer gespielten Beobachtung beruht: Seed und jede Handlung mit ihrem Tick, dazu die Zeile zum Einfügen und der Befehl zum schrittweisen Nachspielen |
+| **Beobachtung** | was zu sehen ist, mit Adresse — Tick, Zahl, Deckung. Nicht die Innereien, sondern das, was das Modell meldet |
+| **Was daran falsch ist** | welche Festlegung verletzt wird, wörtlich zitiert. Keine erfundene Einordnung |
+| **Was offen ist** | die Frage, die zu entscheiden bleibt. Keine neuen Messungen darin |
+| **Was schon ausgeschlossen ist** | Sackgassen, die schon begangen wurden, damit niemand sie ein zweites Mal geht |
+| **Hängt an** | welche anderen Issues davor kommen müssen |
+
+**„Von Hand gespielt" ist keine Beobachtung.** Eine andere Sitzung, die von Hand spielt,
+tut etwas anderes. Deshalb schreibt die Sitzung (T4) jede Handlung mit, während sie
+geschieht — `log()` gibt das Protokoll aus, `step(protokoll, zustand)` spielt es Schritt
+für Schritt nach, und nach jedem Schritt steht der volle Zustand zum Ansehen bereit. Wurde
+der Zustand von Hand verändert, sagt das Protokoll das selbst; dann spielt es nichts nach
+und behauptet es auch nicht.
+
 
 - **Ein Vorschlag pro Runde.** Vorschlag → Kommentar → Einigung → nächster Punkt.
 - Reihenfolge **von vorne nach hinten** (frühe Spielphase zuerst) und **vom Groben
@@ -3088,117 +3119,9 @@ nächste Schritt. Für eine einzige Regel lohnt er nicht.
 
 ## Offen
 
-**Der Arbeitsstand, in der Reihenfolge, in der es drankommt.** Was hier steht, ist
-besprochen und vertagt, nicht vergessen:
+**Die offenen Punkte stehen als Issues:** github.com/rainco77/mmtsim/issues
 
-| | Punkt | |
-|---|---|---|
-| 0 | ~~Ausschließliche Fläche — der Blocker~~ **Erledigt.** Die Wildnis wird nicht mehr belegt, sondern beerntet: Sammeln, Jagen, Fischen, Holz und Bast ziehen aus Beständen, die auf ihr sitzen, statt Fläche zu bezahlen. Damit sperrt die Nahrung nichts mehr aus, und Feuer, Felle und Kleidung entstehen wieder ab Tick 0 | erledigt |
-| 0b | ~~**Totholz und stehender Wald sind ein einziger Topf.**~~ **Erledigt:** zwei Bestände, das Fällen kostet anderthalbmal so viel Arbeit wie das Auflesen, und die Axt erschließt statt zu verbilligen (E19, E29). Die Grube verlangt sie jetzt. Der ursprüngliche Befund zur Erinnerung: Holz sammeln, Bäume fällen und Bast sammeln nehmen alle aus demselben Bestand und gleich tief; die Steinaxt senkt nur die Arbeit je Einheit (0,6 auf 0,24), statt etwas zu erschließen. Totholz ist aber ein **Abfluss** aus dem stehenden Wald — es fällt je Tick an, im Verhältnis zu dem, was steht —, und wer nur aufliest, bekommt nie mehr, als heruntergefallen ist. Diese Decke fehlt, und mit ihr der Unterschied zwischen Restgröße und Vorrat, auf dem die Axt als *Erschließung* begründet ist. Dieselbe Stelle ist von der anderen Seite schon durchbrochen: Bast sammeln nimmt den Baum und steht ohne Axt ab Tick 0 offen | vor dem Austarieren |
-| 0c | **Feuerlegen** — Unterholz abbrennen, damit dieselbe Fläche mehr Wildpflanzen und mehr Wild trägt. Anker: mesolithisches Brennen in Holzkohle- und Pollenprofilen (Mellars). Offen ist, **ob** es hineingehört: Es liegt auf derselben Achse wie der Mörser (mehr je Fläche), und E29 verlangt, dass kein Projekt der Epoche eine andere doppelt. Falls ja, dann mit **Obergrenze**, weil ein Revier endlich und irgendwann ganz niedergebrannt ist; mit **Rücksetzung beim Revierwechsel**, weil das Gebrannte zum Boden gehört und nicht zur Gemeinschaft; und bezahlt mit dem Unterholz, also mit dem erreichbaren Teil des Holzes — was an 0b hängt | vor dem Austarieren |
-| 1 | **Austarieren.** Gemessen wird die Amortisationszeit je Projekt gegen das Zielband aus E29. Erster Befund: über die Hälfte der Arbeit liegt brach, Sesshaftigkeit bei Tick 45 statt 150–200, Ackerbauanteil 44 % — die zwölf Wirkungen sind einzeln vertretbar, ihr **Produkt** nicht | der Baum ist gebaut |
-| 1a | ~~Vorleistungen eines Projekts als Bedingung~~ **Verworfen, gemessen.** Eine Bedingung „halte etwas davon" ist für ein Gut, das vollständig verbraucht wird, keine Schwelle, sondern eine Mauer: Es entsteht nie ein Bestand, neun von zwölf Projekten waren nie startbar, kein Lauf erreichte die Sesshaftigkeit. Ein Projekt zieht seine Vorleistung selbst, sobald es läuft — die Absicht erzeugt die Nachfrage. Verzögert wird statt dessen über **Erfahrung** | erledigt |
-| 1f | **Die Prüfregel der Boserup-Kriterien ist nicht abgestimmt.** Sie steht auf „steigt irgendwo"; ich habe sie am Ergebnis ausgerichtet statt umgekehrt. Zu entscheiden: so lassen oder auf „fällt nirgends" — und falls Letzteres, was am Inhalt geändert wird, damit es zutrifft | Maßstab, nicht Inhalt |
-| 1j | ~~Die Kost verengt sich unter Druck~~ **Erledigt**: Es fehlte eine Quelle, die genau dann lohnt, wenn die besseren dünn werden — die Muscheln. Seitdem verbreitert sich die Kost unter Druck | erledigt |
-| 1k | **Ein erschöpfter Bestand bleibt nach der Sesshaftigkeit erschöpft.** Die Zuteilung fischt weiter genau den Nachwuchs ab und hält ihn unten; der Revierwechsel steht dann nicht mehr zur Verfügung. Gewollt als Spannung — die Institution der späteren Epoche ist die Antwort darauf —, aber es darf sich nicht als stille Sackgasse anfühlen (E20). **Nur das Durchspielen kann das entscheiden** | nach dem Austarieren durchspielen |
-| 1g | ~~Keine Intensivierung auf dem Wasser~~ **Erledigt** durch die Muscheln: mehr Ertrag je Uferstrecke für viel mehr Arbeit. Der ursprüngliche Text zur Erinnerung: | Der Ertrag je Hektar Wasser ist bei jeder Dichte und jedem Technikstand gleich: Das Netz spart Arbeit, das Boot fügt Fläche hinzu, keines holt mehr aus derselben Stelle. Ein Fischwehr wäre die naheliegende Antwort und ist **verworfen** — eine feste Anlage bindet an den Ort und wirkt damit wie die Gruben, was der Sesshaftigkeit gehört | später, wenn überhaupt |
-| 1i | **Sichtbarkeit und Ausführbarkeit noch etwas herunterdrücken.** Gemessen: bis zu **7 gleichzeitig ausführbar** (E31 will drei bis fünf) und **13 sichtbar**. Beides zu viel. Gestellt wird es über die Erfahrungsschwellen — die Ausführbarkeitsschwelle hoch, die Sichtbarkeitsschwelle (heute die Hälfte davon) ebenfalls | mit dem Austarieren |
-| 1h | **Schlechtes Spiel scheitert nie.** Untätig, unbedacht und umsichtig liegen alle bei 0 % aufgegebener Siedlungen; bestraft wird nur mit Zeit (39 gegen 87 Ticks). Ob das reicht, ist unentschieden | mit dem Austarieren |
-| 1b | ~~Fischen führt die Eröffnung an~~ Die Exposition des Fischens steht jetzt bei 0,4 statt 0,15 — sicherer als das Land, aber nicht immun. Ursprünglich: | und kostet dabei das Vierfache an Händen je Einheit Nahrung. E5 erklärt es (dünner Vorrat, sicheres Verfahren führt) — ob es in dieser Höhe richtig ist, ist ungeprüft | beim Austarieren nachsehen |
-| 1e | **Agenten als Spieler**, nicht als Ersatz für die Bots: Bots messen (reproduzierbar, gleicher Seed gleiche Zahl), Agenten prüfen, was kein Bot kann — ist das Spiel **lesbar**, ist es **plausibel**, hält es **akademisch**, und **trägt die Spieldynamik**. Ein Bot bekommt die Antwort von dem, der ihn geschrieben hat. Kostenfalle des letzten Versuchs war ein Aufruf je Tick; geweckt wird stattdessen nur an Entscheidungspunkten — Projekt fertig, neues möglich, Deckung bricht | einzeln, mit benannter Frage |
-| 1d | Die Versuche auch auf **Momentaufnahmen aus echten Läufen** wiederholen — deckt Kombinationen ab, auf die beim Bauen niemand kommt. Hält der gesetzte Stand und der gespielte nicht, liegt der Unterschied im Pfad oder im Bot | erst wenn die vier gesetzten Stände einmal gelaufen sind |
-| 1c | **Zwei Verbesserer auf einem Verfahren verbinden sich nicht** (Sichel und Mörser stehen nebeneinander). Freischaltung ist eine Menge, „beides fertig" ist darin nicht ausdrückbar. Drei Wege: so lassen; Verfahren Bedingungen geben statt Freischaltung; Projekte Koeffizienten ändern lassen | betrifft heute genau ein Paar |
-| 3 | ~~Speicher bleibt leer~~ **Erledigt mit dem blinden Plan**: Der Speicher füllt sich, weil ein gutes Jahr jetzt mehr liefert, als geplant war (E24) | erledigt |
-| 4 | Verfallsraten fein justieren (Gruben, Wohnraum) | mit dem Austarieren |
-| 6 | Heterogenität in einem Sektor: jetzt oder später | unabhängig |
-| 10 | **Nachhaltigkeit als Institution**, für eine spätere Epoche (Industrialisierung, vielleicht als eigene Epoche). Ein Projekt setzt eine **Regel**, die Regel deckelt die Entnahme eines Bestands auf seinen Nachwuchs — Schonzeit und Jagdtabu früh, Allmendeordnung, Fischereirechte und Fangquoten später. Anker: Elinor Ostrom, *Governing the Commons*. Später kann an die Stelle der Regel ein **institutioneller Preis** treten (CO₂-Preis und Verwandtes); noch nicht besprochen. Voraussetzung ist, dass Bestände sichtbar sind — das ist gebaut | spätere Epoche |
-| 11 | **Streuung bei der Güte eines neuen Reviers.** Jedes neue Revier ist heute streng 5 % schlechter als das vorige (E13). Mit einem Wurf statt einer festen Stufe könnte man auch einmal auf reiches Land treffen. Solange es fehlt, kann die Gemeinschaft **nie** an einen besonders reichen Ort kommen — damit erzählt das Modell den Druck-Weg zur Sesshaftigkeit (Bevölkerungsdruck erzwingt Intensivierung und am Ende Vorratshaltung; Binford, Cohen) und schließt Testarts Weg aus, bei dem ein jahreszeitlicher Überfluss einlagerbar wird und man deshalb bleibt. Beide stehen in der Literatur. Kein Umbau nötig, nur ein Wurf an der Stelle, an der die Güte gesetzt wird | **nicht kurzfristig** |
-| 12 | ~~Fisch wird leergefangen~~ **Entschieden: so lassen.** Ein Bestand, dessen Suchkosten an den Anschlag laufen, ist kein Fehler im Modell — es ist historisch richtig, und die Antwort darauf bietet das Modell bereits an: Der Revierwechsel steht in genau diesen Ticks offen. Eine Lehre für Spieler und Bot, keine Lücke | erledigt |
-| 7 | GitHub: public, privat oder noch nicht — Issues gäbe es auch privat | unabhängig |
-| 8 | Rechenzeit-Reserven: inkrementelles Planen statt Neuplanung je Rangbisektion, `totalUse` fortschreiben. Gemessen: `tick` 0,18 ms, `derive` 0,60 ms, Botentscheidung 0,003 ms — die volle Kriterienmessung (40 Seeds × 600 Ticks × 3 Spielweisen) dauert rund drei Minuten. Der größte einzelne Posten ist, dass jedes Werkzeug **zusätzlich** zum Tick noch einmal ableitet, also doppelt plant | derzeit nicht nötig: zum Iterieren reichen 5 Seeds × 400 Ticks in acht Sekunden |
-| 9 | Die Zahl der Landnahmen steht an zwei Stellen: als Zähler im Zustand für die fallende Güte, als Obergrenze am Projekt | Kleinigkeit |
-
-| 19 | **Den alten Planer entfernen.** Das Verschieben steht noch neben dem Programm; welches läuft, ist eine Zeile Inhalt. Es bleibt, bis die Bots nachgezogen sind und ein paar Punkte mehr gelöst — dann ersatzlos raus | nach den Bots |
-| 20 | **Die Kriterien passen nicht mehr zum Modell.** „Leerlauf über 15 % ist zu viel" stammt aus der Zeit, als Arbeit binden sollte; gemessen liegen 32 % brach, und genau das sagen Kelly und Sahlins über Wildbeuter. Ebenso zu prüfen: das Wasser trägt nur 1,4 % der Nahrung, und der Faserweg zur Kleidung ist tot (Fell 100 %) | mit dem Austarieren |
-
-Dazu die unentschiedenen Ideen weiter unten und die vertagte Kuppelproduktion.
-
-Aufgeworfen, noch nicht besprochen — grob in der Reihenfolge, in der es drankommt:
-
-- ~~**Ein Bedarf, mehrere Güter.**~~ **Erledigt: dafür braucht es nichts.** Wo mehrere
-  Güter einen Bedarf decken könnten, ist der Bedarf in Wahrheit auf ein Gut *eine Stufe
-  höher* gerichtet, und die Güter sind Eingänge verschiedener **Verfahren**, die es
-  herstellen. Wärme ist das Beispiel: nicht „Holz oder Kohle deckt den Wärmebedarf",
-  sondern „Wärme wird aus Holz oder aus Kohle gemacht". Damit erledigt die
-  Verfahrensebene die Substitution, und die Zuteilung wählt ohnehin nach Knappheit — der
-  Umstieg auf Kohle geschieht, wenn das Holz knapp wird.
-
-  Ein Sammelgut „Energie" wäre dagegen falsch: Wärme, Antrieb und Schmelzhitze sind
-  verschiedene Dinge mit verschiedenen Quellen, und ein gemeinsamer Bestand behauptete
-  eine Austauschbarkeit, die es nicht gibt.
-- **Kuppelproduktion — ein Verfahren, mehrere Erzeugnisse.** *Vertagt bis zu den Preisen.*
-  Ein erlegtes Tier gibt Fleisch und Fell, Getreide gibt Korn und Stroh, die Raffinerie
-  gibt alles zugleich. Heute stellt eine Branche genau einen Bestand her. Bis dahin wird
-  aufgeteilt — zwei Verfahren auf derselben Fläche, eines auf Fleisch, eines auf Felle —,
-  und das ist keine Notlösung, sondern was die Volkswirtschaftliche Gesamtrechnung selbst
-  tut, wenn sie Kuppelproduktion in eine Input-Output-Tabelle bringt (*commodity* und
-  *industry technology assumption*).
-
-  Die Aufteilung behauptet, man könne Felle ohne Fleisch bekommen. Folgenlos ist das,
-  solange es **keine Preise** gibt: Der ganze Gehalt von „ein Nebenprodukt ist billig"
-  steckt in einem Preis. Erst dort sagt die Kupplung etwas, was sich sonst nicht sagen
-  lässt — und dort ist sie auch fachlich schwierig (Sraffa).
-- **Natürlicher Nachwuchs auf Brachland.** *Idee, nicht entschieden.* Ungenutztes
-  Ackerland fiele langsam an die Wildnis zurück — ökologisch die Sukzession, und
-  genutztes Land bliebe unangetastet, es träfe also nur, wer Land hält, ohne es zu
-  bestellen. Es löst den gemessenen Fall allerdings **nicht**: Dort waren Ackerland und
-  Wildnis beide zu 100 % genutzt, es lag nichts brach. Der Rückweg aus der Entwaldung
-  musste deshalb eine Handlung sein (Aufforstung, E13), nicht ein Naturvorgang.
-- **Volkswirtschaftliche Kennzahlen.** Welche sind je Entwicklungsstufe sinnvoll?
-  Ändert sich vermutlich mit dem Fortschritt.
-- **Prognose.** Der Spieler braucht Vorausschau, um bei **trägen** Branchen
-  rechtzeitig zu handeln — er muss sehen können, dass Wohnraum knapp *werden wird*.
-- **Branchen ohne Überlebensbezug** — Kultur, Freizeit. Nach der Grundregel in E9
-  muss jede Bedarfsstufe in eine reale Größe zurückzahlen. Für Kultur ist unklar,
-  worin. Bloße Legitimität reicht als Begründung nicht; wird bei den Politikfeldern
-  geklärt.
-- ~~**Wodurch die Verfahrensordnung aus der Hand des Spielers gleitet** (E5).~~
-  **Erledigt:** Sie war nie in seiner Hand, ohne zu schaden. Die Messung in E5 zeigt,
-  dass die Handreihenfolge zwischen nicht dominierten Verfahren nichts bewirkt und bei
-  einem dominierten 39 % kostet; sie ist entfernt. Die Frage nach dem auslösenden
-  Projekt entfällt damit.
-- **Preise.** Der Engpass steht (E21): Sobald der Haushaltssektor sich aufteilt, gibt es
-  keinen gemeinsamen Plan mehr. Offen bleibt, ob der Spieler Preise durch ein Projekt
-  einführt. Die manuelle Steuerung der Zuteilung ist inzwischen ausgemessen und
-  entfernt (E5); die Frage nach ihrem Verbleib stellt sich also nicht mehr.
-- **Geldeinführung.** Der wichtigste Moment des Spiels. Merkposten für später, **keine
-  Entscheidung**: Die amerikanischen Kolonien sind der bestdokumentierte Fall für
-  „ausgeben vor besteuern" — Massachusetts 1690 druckt Papierscheine, um heimkehrende
-  Soldaten zu bezahlen, die es weder befehlen noch in Korn entlohnen kann, und macht sie
-  durch Steuerannahme gültig; Pennsylvania 1723 ebenso (Farley Grubb). Der europäische
-  Gegenfall zeigt dieselbe Ursache von der anderen Seite: Grundherren wandelten
-  Frondienst in Geldzins um, weil sie Güter brauchten, die auf dem eigenen Gut nicht
-  wuchsen. *(Nicht unbestritten — Quantitätstheoretiker halten die Kolonien für
-  silberbasierter. Die Aktenlage zu Ausgabe und Steuerannahme ist unstrittig.)*
-- **Auslastung und Inflation.**
-- **Ungleichheit.** Braucht einen echten *wirtschaftlichen* Effekt (höhere Sparquote
-  oben → Nachfrageausfall), nicht nur eine Anzeige.
-- **Banken und Kredit.** Merkposten: Mit dem Giralgeld **zerbricht** die Regel
-  „Umlaufmenge = kumuliertes Staatsdefizit", die vorher gilt. Das ist kein Fehler,
-  sondern der beabsichtigte Lerneffekt — der Spieler sieht eine Regel fallen, die er für
-  ein Gesetz gehalten hat, und sie wird durch die vollständige Saldenmechanik ersetzt.
-- **Außenhandel und Währung.**
-- **Politikfelder.**
-- **Oberfläche.**
-- **Ob und wie das Spiel endet.**
-
-Technisch noch offen:
-
-- **Konkrete Zahlen** — Startbevölkerung, Erträge, Projektkosten, Wachstumsraten.
-- **Veröffentlichung** — wo das Spiel am Ende liegt. Statische Dateien, also
-  unkritisch; zum Schluss.
-
----
+Nicht hier. Warum, und nach welchem Schema, steht oben unter „Arbeitsweise".
 
 ## Verworfen
 
