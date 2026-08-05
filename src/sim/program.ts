@@ -46,8 +46,34 @@ import { solve, type Limit, type Objective } from "./simplex.ts";
  */
 const STEPS = 8;
 
-/** Never quite the last of it: the final unit is unfindable, hence the cap. */
-const REACH = 0.999;
+/**
+ * How much of what stands may go in a single tick.
+ *
+ * It is **not** a claim that a tenth always survives. What it says is that a
+ * community cannot comb its whole range between one tick and the next: the
+ * range is large, what ripens does not ripen at once, and what lies far from
+ * where people are does not get carried home. Taking nine tenths again from
+ * what is left, tick after tick, still runs a slow-growing stand into the
+ * ground — what keeps a range from being emptied for good is the floor in the
+ * regrowth, and that is set per stock and decided there.
+ *
+ * It has to be a limit and cannot be a cost, because the ranks are an order and
+ * not a bargain: a rank covers itself as far as it can and never asks the
+ * price. Measured — raising the ceiling on what one unit may cost to find from
+ * 30 to 300 changed the outcome in not one of eight runs, and cutting the stand
+ * into 32 or 128 steps instead of 8 changed it just as little. In the world
+ * this stands in for, what spares the last of a thinning stock is a *decision*:
+ * the return falls off, and the community turns to something else long before
+ * the last one is found. The ordering cannot make that decision, so the limit
+ * makes it instead.
+ *
+ * Played, eight seeds: at 0.999 the worst single tick took 51 % of the people
+ * and the thinnest a stand ever stood was 0.10 of what it carries. At 0.90 it
+ * is 33 % and 0.18 to 0.29, and the epoch is barely longer — sedentism at tick
+ * 89 against 81. At 0.80 the fall is milder again, 11 %, but the epoch takes
+ * twice as long, which is the worse bargain.
+ */
+const REACH = 0.9;
 
 /** The one stock the engine still names, as the allocation does. */
 const LABOUR: StockId = "labor";

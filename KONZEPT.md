@@ -1172,6 +1172,33 @@ Zuwachs      = Rate × (Bestand + Rückzugssockel) × (1 − Bestand / K)
 Der **Rückzugssockel** hält E20: Bei Bestand null wäre auch der Zuwachs null, und ein
 leergejagtes Revier käme nie zurück. Es gibt immer Winkel, die niemand erreicht.
 
+**In einem Tick darf höchstens neun Zehntel des Stehenden genommen werden.** Das sagt
+nicht, dass ein Zehntel immer überlebt: Wer Tick für Tick neun Zehntel des Rests nimmt,
+bringt einen langsam nachwachsenden Bestand trotzdem herunter — was ein Revier davor
+bewahrt, endgültig leer zu sein, ist allein der Rückzugssockel. Was die Grenze sagt, ist
+etwas über die Gruppe: Sie kann ihr Revier zwischen zwei Ticks nicht durchkämmen. Das
+Revier ist groß, es reift nicht auf einmal, und was weit von den Menschen liegt, wird
+nicht getragen.
+
+**Es muss eine Grenze sein und kann kein Aufwand sein**, weil die Ränge eine Ordnung
+sind und kein Abwägen: Ein Rang deckt sich, so weit er kann, und fragt nie, was es
+kostet. Gemessen — die Obergrenze dessen, was eine Einheit beim Suchen kosten darf, von
+30 auf 300 zu heben änderte in keinem von acht Läufen etwas, und den Bestand in 32 oder
+128 Stufen zu schneiden statt in 8 ebenso wenig. In der Wirklichkeit verschont den Rest
+eines dünnen Bestands eine **Entscheidung**: Der Ertrag fällt, und man wendet sich
+anderem zu, lange bevor der letzte gefunden ist. Diese Entscheidung kann die Rangordnung
+nicht treffen, also trifft die Grenze sie an ihrer Stelle.
+
+Gespielt, acht Seeds: Ohne die Grenze nahm der schlimmste Tick 51 % der Menschen, und
+der dünnste je erreichte Bestand stand bei 0,10 seiner Decke. Mit ihr sind es 33 % und
+0,12 bis 0,25, und die Epoche dauert kaum länger — sesshaft bei Tick 87 gegen 81.
+Schärfer wäre milder (11 % bei vier Fünfteln), verdoppelt aber die Dauer der Epoche.
+
+Der Einbruch fällt dabei in jeder Einstellung auf einen **guten** Wurf nach einem
+schlechten, nie auf den schlechten selbst. Das bleibt so und ist richtig: Ein magerer
+Tick wird nicht überstanden, er wird auf Kredit bezahlt — erst wird aufgezehrt, was
+steht, und gestorben wird danach. Zu ändern war nicht der Verzug, sondern der Betrag.
+
 **Ein dünner Bestand ist teuer zu ernten.** Ohne das sieht der Plan einen vorhandenen
 Bestand als kostenlosen Vorrat und nimmt ihn bis auf null, sobald das der billigste Weg
 ist — gemessen war ein Gewässer binnen zwanzig Ticks tot, und keine Bremse erreichte es
