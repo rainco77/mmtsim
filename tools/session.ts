@@ -42,6 +42,34 @@ const session: Session = {
   idx: index,
 };
 
+/**
+ * **The play log.** What was done, and at which tick — enough to play the very
+ * same game again, step by step, and stop wherever one likes.
+ *
+ * A finding without one is not a finding: "played by hand" cannot be checked,
+ * because another session playing by hand would do something else. So every
+ * action goes down here as it is taken, rather than being written out
+ * afterwards from memory — a log that is remembered is a log that is wrong.
+ *
+ * What it does **not** hold is the content: change a coefficient and the same
+ * log gives other numbers. That is why a finding names its commit as well.
+ */
+interface PlayLog {
+  seed: number;
+  readonly actions: [number, Action][];
+  /**
+   * Set once the state was changed by something other than an action or a tick
+   * — an experiment writing into `s` by hand. From that moment the log no
+   * longer reproduces what was seen, and it says so instead of pretending.
+   */
+  handEdited: boolean;
+}
+
+const play: PlayLog = { seed: 42, actions: [], handEdited: false };
+
+/** What the state should look like if only actions and ticks have touched it. */
+let expected: GameState = session.s;
+
 /** Helpers put into scope of every expression. */
 const scope = {
   tick: (state: GameState) => tick(state, session.idx),
@@ -49,15 +77,55 @@ const scope = {
   act: (state: GameState, action: Action) => {
     const result = apply(state, action, session.idx);
     if (result.rejected !== undefined) throw new Error(result.rejected);
+    play.actions.push([state.tick, action]);
+    expected = result.state;
     return result.state;
   },
   // Returns the fresh state; the caller assigns it (`s = reset(42)`). Setting
   // it here would be overwritten by the write-back at the end of the call.
-  reset: (seed: number) => createState(session.cfg, { seed }),
+  reset: (seed: number) => {
+    const fresh = createState(session.cfg, { seed });
+    play.seed = seed;
+    play.actions.length = 0;
+    play.handEdited = false;
+    expected = fresh;
+    return fresh;
+  },
   run: (state: GameState, ticks: number) => {
     let next = state;
     for (let i = 0; i < ticks; i += 1) next = tick(next, session.idx);
+    expected = next;
     return next;
+  },
+
+  /** The log as it belongs in a finding: readable, and a line to paste. */
+  log: () => ({
+    text: [
+      `Spielprotokoll — Seed ${play.seed}`,
+      ...play.actions.map(([t, a]) => `${String(t).padStart(3)}  ${a.type} ${"id" in a ? a.id : JSON.stringify(a)}`),
+      play.actions.length === 0 ? "(keine Handlungen)" : "(sonst nichts)",
+      ...(play.handEdited
+        ? ["ACHTUNG: der Zustand wurde von Hand verändert — dieses Protokoll spielt den Lauf NICHT nach"]
+        : []),
+    ].join("\n"),
+    json: { seed: play.seed, actions: play.actions },
+    handEdited: play.handEdited,
+  }),
+
+  /**
+   * One step of a recorded game: whatever the log holds for *this* tick, then a
+   * tick. After it the whole state is there to be looked at, which is the point
+   * — a replay one can only run to the end tells nothing about the way there.
+   */
+  step: (log: { seed: number; actions: [number, Action][] }, state: GameState) => {
+    let next = state;
+    for (const [t, action] of log.actions) {
+      if (t !== state.tick) continue;
+      const result = apply(next, action, session.idx);
+      if (result.rejected !== undefined) throw new Error(`Tick ${t}: ${result.rejected}`);
+      next = result.state;
+    }
+    return tick(next, session.idx);
   },
   bots,
   config: () => session.cfg,
@@ -191,6 +259,13 @@ function evaluate(source: string): unknown {
   if (fn === undefined) throw new Error("could not compile");
 
   const out = fn(...values);
+  // Anything that reached the state other than through `act`, `reset`, `run` or
+  // a plain `tick` — an experiment writing into `s` — is noted, because from
+  // then on the log no longer reproduces what is on the screen.
+  if (out.__state !== expected && out.__state !== tick(expected, session.idx)) {
+    play.handEdited = true;
+  }
+  expected = out.__state;
   session.s = out.__state;
   return out.__result;
 }
