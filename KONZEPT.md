@@ -2928,8 +2928,14 @@ test("forest + farmland = total area", ...)
 
 ### T6 — Code ist Englisch, die Oberfläche wird übersetzt
 
-**Der gesamte Code ist Englisch** — Bezeichner, Kommentare, Dateinamen, Commits. Nur
-`KONZEPT.md` und die Oberfläche sind Deutsch.
+**Der gesamte Code ist Englisch** — Bezeichner, Kommentare, Dateinamen, Commits. Deutsch
+ist allein `KONZEPT.md`.
+
+**Die Oberfläche bekommt keine Sprache vorgeschrieben.** Sie wird von Anfang an übersetzbar
+gebaut, mit einer Übersetzungsschicht statt fest eingebauter Texte; welche Sprachen sie
+anbietet, ist nicht entschieden und wird hier nicht entschieden. Der Kern gibt ihr davon
+nichts vor: Er erzeugt keinen Text und trifft keine Annahme darüber, wie eine Anzeige
+später formuliert oder formatiert wird.
 
 | Konzept | Code |
 |---|---|
