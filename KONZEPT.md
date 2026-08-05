@@ -1314,6 +1314,38 @@ war. Gemessen: 42 Nahrung erzeugt, 69 ausgeteilt, davon 27 aus einem Lager mit B
 null. Hunger war damit unmöglich, jeder Rang meldete Deckung, die Geburten liefen voll
 weiter — und die Gemeinschaft wuchs, bis das Revier selbst nachgab.
 
+**Der Plan darf aus dem Vorrat nehmen — und was zu halten ist, verlangt er als
+Schlussbestand.** Beide Hälften werden gebraucht, und keine trägt allein.
+
+Ein Vorrat ist da, um in schlechten Zeiten benutzt zu werden, und ob das Gut eine
+Vorleistung ist oder an einen Bedarf ausgeteilt wird, ändert daran nichts. Wo der Plan ihn
+nicht sieht, ist er unerreichbar, sobald ein **Verfahren** das Gut verbraucht statt eines
+Bedarfs: Bei der Nahrung fällt es nicht auf, weil am Tickende ohnehin aus einem Topf
+ausgeteilt wird, in dem Vorrat und Erzeugung zusammenliegen. Beim Holz fällt es auf —
+gemessen bei Seed 42, Tick 57 lagen 4,90 Holz da, Totholz war mit 1,26 das Billigste im
+Revier, und das Feuer kam trotzdem auf 0,00, was drei von fünf Menschen das Leben kostete.
+
+Genommen wird dann aber, was am billigsten ist, und ein liegender Vorrat kostet keine Hand.
+Was ihn davor bewahrt, aufgezehrt zu werden, ist die zweite Hälfte: **Die Vorgabe ist kein
+Verbraucher des Guts, sondern ein Anspruch auf den Stand am Ende des Ticks** — mach so viel,
+wie dieser Tick ausgibt, und dazu, was noch fehlt. Innerhalb eines Ticks ist es gleichgültig,
+ob zuerst der Vorrat oder zuerst die Erzeugung genutzt wird; es zählt allein, was am Ende
+steht.
+
+**Und gemessen wird am Schlussbestand, nicht an der Lücke von gestern.** An der Anfangslücke
+gemessen stellt ein Tick, der voll beginnt, überhaupt keinen Anspruch — leert er sich dann,
+holt ihn nichts zurück. Gemessen mit einer Vorgabe von zwölf: Der Vorrat stand bei Tick 51
+auf 12,08, es wurde kein Anspruch erhoben, der Tick gab ihn auf 0,56 aus, und dabei wurde ein
+Viertel der Arbeit gar nicht abgerufen. Dasselbe bei Tick 54. Der Bestand sägezahnte
+zwischen voll und leer, statt zu halten.
+
+**Was für einen Vorrat gilt, gilt für jedes Gut, das in der Nutzung nicht aufgebraucht
+wird.** Kleidung wird getragen, nicht gegessen; ihr Rang verlangt also ebenfalls einen
+Stand und keine Entnahme. Als Fehlbetrag geschrieben — Bedarf minus Bestand — wäre der
+Vorrat zweimal gezählt: einmal beim Abziehen und einmal als Angebot an den Plan. Ein Rang
+könnte sich dann aus genau dem Bestand bedienen, den er halten soll, und sich als gedeckt
+melden, ohne dass irgendetwas hergestellt wurde.
+
 **Was in der Nutzung nicht aufgebraucht wird, wird nur zum Fehlbetrag nachgefragt.**
 Nahrung fließt durch und muss jeden Tick ganz neu erzeugt werden; Kleidung wird getragen,
 nicht gegessen, und Erhalt ist Neubau dessen, was zerfallen ist. Ohne diese
@@ -1476,11 +1508,17 @@ Arbeitsteilung, kein Puffer gegen ein schlechtes Jahr, kein Ersatz für Ausfäll
 klein gewordene Siedlungen aufgegeben oder gingen in anderen auf. Bis auf den letzten
 Menschen zu rechnen wäre die unrealistischere Variante.
 
-**Die Schwelle liegt bei 25, die Startgruppe bei 50.** Der Anker sind Birdsells „magic
-numbers": Eine Gemeinschaft von rund 25 ist die kleinste, die sich selbst trägt — darunter muss
-eine Gruppe in einer anderen aufgehen oder sie verschwindet. Und aus einer zu kleinen
-Gruppe erholt sich nichts mehr, also muss der Lauf **davor** enden und nicht erst, wenn
-niemand mehr da ist.
+**Die Schwelle liegt bei zwölf, die Startgruppe bei fünfundzwanzig** — dieselben Zahlen wie
+in E14 („Startaufstellung"), und der Anker ist Birdsells *magic number*: Fünfundzwanzig
+**ist** die Gemeinschaft, die zusammen lebt und zieht, also kann sie nicht zugleich der
+Boden sein, unter dem es nicht weitergeht. Unter etwa einem Dutzend hört eine Gemeinschaft
+auf zu funktionieren — zu wenige Jäger, niemand übrig für Kinder und Kranke, kein
+Ausgleich für einen einzelnen Todesfall. Und aus einer zu kleinen Gruppe erholt sich nichts
+mehr, also muss der Lauf **davor** enden und nicht erst, wenn niemand mehr da ist.
+
+> *Hier stand vorher „Die Schwelle liegt bei 25, die Startgruppe bei 50" — im Widerspruch
+> zu E14 und zum Inhalt, der schon immer zwölf sagt. Der Satz stammte aus der Zeit vor der
+> Messung, die das Revier und die Gruppengröße aneinander gebunden hat.*
 
 **Die Aufgabe steht im Zustand, und danach steht die Uhr.** Der Tick, an dem es geschah,
 wird festgehalten; von da an gibt es keinen nächsten Tick mehr — auch keinen leeren, die
@@ -1700,10 +1738,21 @@ ohne jede Entscheidung:
 | schlechteste Feuerdeckung | 0,00 | **0,76** |
 | Zeit für dieselben Läufe | 1354 ms | **1007 ms** |
 
-**Der Vorrat bleibt draußen.** Geplant wird gegen das, was **hergestellt** wird;
-der Speicher fängt den Tick auf, wenn das Herstellen nicht reicht (E19).
-Andersherum wäre er im Programm bloß eine weitere billige Quelle, und dann
-begänne jeder Tick damit, ihn aufzuessen, und endete damit, ihn zu füllen.
+**Der Vorrat steht im Programm als Angebot, und die Vorgabe als Anspruch auf den
+Schlussbestand** (E19). In Zeilen: Die Grenze je Bestand ist nicht null, sondern
+das, was daliegt — netto verbraucht werden darf bis zum Anfangsbestand, was
+dasselbe ist wie „kein Bestand schließt unter null". Und ein Anspruch auf ein Gut,
+das nicht aufgebraucht wird, bekommt eine eigene Zeile:
+
+```
+Anspruch  ≤  Anfangsbestand + Erzeugung − Verbrauch
+Anspruch  ≤  das verlangte Niveau
+```
+
+Beide rechten Seiten sind nicht negativ, also bleibt Nichtstun zulässig und der
+Löser braucht dafür nichts Zusätzliches. Der Rang des Anspruchs entscheidet weiter
+alles Übrige: Steht die Behaglichkeit darüber, darf sie den Vorrat aufzehren — nur
+greift die Auffüllung danach nach der Arbeit, die noch frei ist.
 
 **Der blinde Plan bleibt blind** (E24): Gerechnet wird gegen ein leicht
 schlechtes Durchschnittsjahr, der wirkliche Wurf trifft danach den Ausstoß.

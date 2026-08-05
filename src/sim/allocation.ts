@@ -517,32 +517,29 @@ export function allocate(input: AllocationInput): AllocationResult {
     return factor > 0 ? base / factor : base;
   };
 
-  // What the community means to live on this tick, and it asks for what it
-  // will really use — reckoned against a normal year with a little caution, so
-  // that a good year leaves something over and a poor one is felt.
+  // What the community means to live on this tick, reckoned against a normal
+  // year with a little caution, so that a good year leaves something over and a
+  // poor one is felt.
   //
-  // What that comes to depends on whether the good is used up, and the tier
-  // says so itself (E19). Food flows through: the whole ration has to be made
-  // afresh every tick, and the store is **not** drawn on here — one lives off
-  // what is being made and reaches into the store when that falls short.
-  // Taking from it first was what kept it empty: the pits held one tick's
-  // saving and no more, however large they were, because every tick began by
-  // eating them and ended by refilling them.
+  // **Every rank asks for its whole need**, and what that means is settled
+  // where the program is written, not here (E19). A good that is used up —
+  // food, warmth — is asked for as a taking: the whole ration has to be made
+  // afresh. A good that is only worn — clothing — is asked for as a level to
+  // stand at the tick's end, which comes to the same thing without the second
+  // subtraction: the store is counted once, in the closing balance, instead of
+  // being taken off the ask here *and* offered to the plan as supply. Counted
+  // twice, a rank could report itself served out of the very stock that was
+  // already there while nothing at all was made.
   //
-  // Clothing is worn, not eaten, and what is worn is already there. Keeping it
-  // is rebuilding what fell apart and nothing else (E19) — so the ask is the
-  // gap. Without that distinction a community of thirty sewed eight new garments
-  // every tick while wearing ninety-two, and since bast costs two and a half
-  // trees to the fibre, the whole forest went into clothes nobody needed and
-  // the community then froze.
+  // What the older shape got right and this one keeps: a coat is not eaten, so
+  // only what fell apart is ever rebuilt. Without that a community of thirty
+  // sewed eight new garments every tick while wearing ninety-two, and since
+  // bast costs two and a half trees to the fibre, the whole forest went into
+  // clothes nobody needed and the community then froze.
   for (const tier of tierList) {
     const need = heads * perHead(tier, plannedShocks);
     if (need <= 1e-9) continue;
-    const used = need * tier.consumedOnUse;
-    const worn = need - used;
-    const missing = Math.max(0, worn - (pools.stock[tier.stock] ?? 0));
-    const amount = used + missing;
-    if (amount > 1e-9) demands.push({ tier, stock: tier.stock, amount });
+    demands.push({ tier, stock: tier.stock, amount: need });
   }
 
   // Putting something by (E19). A stock is held because output is uncertain,
@@ -553,12 +550,21 @@ export function allocate(input: AllocationInput): AllocationResult {
   // What the player has said to hold of a good that keeps on its own (E1). No
   // building is needed for a woodpile; what is needed is somebody deciding how
   // big it should be, and keeping that decision current as the community grows.
+  //
+  // **Asked as a closing balance, not as yesterday's gap.** Measured against
+  // what lay there at the start, a tick that begins full asks for nothing at
+  // all — and when that same tick then empties the store, there is no claim
+  // left to pull it back. Played at seed 42 with a target of twelve, the store
+  // sawtoothed: full at tick 51, down to 0.56 in that one tick with a quarter
+  // of the labour never called on, refilled over ticks 52 and 53, full again,
+  // emptied again at 54. What the player asked for is a level to stand at the
+  // tick's end, so that is what the claim says, and it stands in every tick the
+  // target is set.
   for (const stockDef of config.stocks) {
     const keeping = stockDef.keeping;
     if (keeping === undefined) continue;
     const want = state.stockTargets[stockDef.id] ?? 0;
-    const gap = want - (pools.stock[stockDef.id] ?? 0);
-    if (gap <= 1e-9) continue;
+    if (want <= 1e-9) continue;
     demands.push({
       tier: {
         id: `keep:${stockDef.id}`,
@@ -569,7 +575,7 @@ export function allocate(input: AllocationInput): AllocationResult {
         consumedOnUse: 0,
       },
       stock: stockDef.id,
-      amount: gap,
+      amount: want,
     });
   }
 
@@ -580,8 +586,7 @@ export function allocate(input: AllocationInput): AllocationResult {
     // figure is needed to say so: beyond it a good spoils at the ordinary rate,
     // and how large the store is, is what the player decided when he dug.
     const target = pools.amount[shelter.capacity]?.available ?? 0;
-    const gap = target - (pools.stock[stockDef.id] ?? 0);
-    if (gap <= 1e-9) continue;
+    if (target <= 1e-9) continue;
 
     demands.push({
       tier: {
@@ -593,7 +598,7 @@ export function allocate(input: AllocationInput): AllocationResult {
         consumedOnUse: 0,
       },
       stock: stockDef.id,
-      amount: gap,
+      amount: target,
     });
   }
 
