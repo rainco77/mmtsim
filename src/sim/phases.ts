@@ -118,8 +118,8 @@ export function decayed(state: GameState, index: ConfigIndex, unlocks: Unlocks):
 
 /**
  * What grows back, grows back (E29) — the mirror of the decay above, and it
- * runs beside it at the head of the tick: the herd breeds out of what last
- * year's hunting left standing, and only then is this year reckoned.
+ * runs beside it at the head of the tick: the herd breeds out of what the
+ * last tick's hunting left standing, and only then is this one reckoned.
  */
 /**
  * Where a renewable stock stands: what is held, what the range can carry, and
@@ -188,8 +188,8 @@ export function renewals(state: GameState, index: ConfigIndex): Record<StockId, 
 
 /**
  * What grows back, grows back (E29) — the mirror of the decay below, and it
- * runs beside it at the head of the tick: the herd breeds out of what last
- * year's hunting left standing, and only then is this year reckoned.
+ * runs beside it at the head of the tick: the herd breeds out of what the
+ * last tick's hunting left standing, and only then is this one reckoned.
  */
 export function regrown(state: GameState, index: ConfigIndex): GameState {
   const sectors: Record<SectorId, SectorState> = {};
@@ -514,7 +514,7 @@ export class CarryPhase implements Phase {
  * What has come into view is written down, and never taken back (E12, E31).
  *
  * Last of all, so that it reads the tick that has just happened rather than the
- * one before it. A strain eases again — a range change, a bad year passing —
+ * one before it. A strain eases again — a range change, a poor draw passing —
  * and an offer that vanishes while the player is weighing it up punishes him
  * for thinking about it.
  */

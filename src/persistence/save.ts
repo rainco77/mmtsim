@@ -6,7 +6,7 @@ import type { GameState } from "../sim/index.ts";
  * game needs one at all is open.
  *
  * 1. The state is a plain serialisable value; the content is not in it.
- * 2. An envelope around it, from the first day.
+ * 2. An envelope around it, from the start.
  * 3. Saving goes through an interface, asynchronous from the start.
  */
 

@@ -80,7 +80,7 @@ export interface Derived {
   /**
    * What lay in store when the tick began and what lies there when it ends, per
    * good. The difference is the one thing a reader needs in order to tell a
-   * year that was put by from one that was lived through — and since making and
+   * draw that was put by from one that was lived through — and since making and
    * keeping share one pot (E19), it is the only place that answer comes from.
    */
   /**

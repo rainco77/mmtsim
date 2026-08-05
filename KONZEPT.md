@@ -2308,13 +2308,18 @@ Was braucht ein Mensch, damit er nicht stirbt, Kinder bekommt und arbeiten kann.
 | 200 | **Feuer** | Wärme, aus Holz | 0,03 | Überleben **0,94** |
 | 300 | *Wohnraum* | Wohnraum | 0,3 | Überleben 0,90 · Geburten ×1,003 bei voller Deckung |
 | 400 | **Kleidung** | Kleidung, aus Fell oder Faser | 0,3 | Arbeitsfähigkeit **0,60** |
-| 500 | *Vorrat anlegen* | — | — | siehe E19: Ziel ist die Speicherkapazität |
+| ganz hinten | *Vorrat anlegen* | — | — | siehe E19: Ziel ist die Speicherkapazität |
 | 600 | **Sättigung** | Nahrung | 0,9 | Geburten ×1,01 · Produktivität ×1,2 bei voller Deckung |
 | 700 | **geheizt** | Wärme | 0,07 | Produktivität ×1,1 bei voller Deckung |
 
-*Wohnraum kommt erst mit der Sesshaftigkeit.* Die Ränge stehen in **Hunderterschritten**,
-weil die Projektränge im selben Zahlenraum liegen (E18) — dazwischen bleiben
-neunundneunzig Plätze für sie.
+*Wohnraum kommt erst mit der Sesshaftigkeit.* Er steht **vor** der Kleidung, weil sein
+Ausfall tötet und ihrer nur die Arbeitsfähigkeit kostet: Der tödliche Rang geht voran.
+
+*Der Vorrat trägt keine Rangzahl.* Seine Vorgabe steht hinter jedem Bedarf, wo niemand
+daran sterben kann; wohin er gehört, rückt der Spieler selbst (E1, E18).
+
+Die Ränge stehen in **Hunderterschritten**, weil die Projektränge im selben Zahlenraum
+liegen (E18) — dazwischen bleiben neunundneunzig Plätze für sie.
 
 **Wohnraum steht über der Kleidung, und zwar nach dem, was ihr Ausfall kostet.** Kein Dach
 nimmt ein Zehntel der Menschen, keine Kleidung nimmt niemanden, kostet aber die Kraft zu

@@ -15,7 +15,7 @@ import type { CapacityId, ProcessId, StockId } from "./ids.ts";
  * not suffice*; it must not decide *how things are produced*.
  *
  * This is not central planning. There is one household sector; a household
- * planning its own year plans for nobody else. Planning for many independent
+ * planning its own tick plans for nobody else. Planning for many independent
  * units is what fails, and that is where prices come in.
  */
 

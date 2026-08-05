@@ -26,7 +26,7 @@ export function freshMarks(index: ConfigIndex): Readonly<Record<string, number>>
   if (known !== undefined) return known;
 
   const out: Record<string, number> = {};
-  // The seed does not matter: the plan reckons with an average year whatever
+  // The seed does not matter: the plan reckons with an average draw whatever
   // the draw, and the first tick is planned before anything has been taken.
   const state = createState(index.config, { seed: 1 });
   const unlocks = computeUnlocks(state, index);

@@ -85,7 +85,7 @@ export interface StockDef {
   /**
    * A stock that **grows back** instead of falling apart (E29).
    *
-   * Nothing a forager takes is an area. A hectare of forest is not used up by
+   * Nothing a forager takes is an area. A stretch of forest is not used up by
    * hunting over it, or by gathering on it, or by picking up the deadwood that
    * lies on it — all three happen on the same ground at once. What is used up
    * is the deer, the growth and the wood, and each of those is taken and comes
@@ -227,7 +227,7 @@ export interface ProcessDef {
    * **"committed"** — the effort goes out before the draw is known and cannot
    * be taken back. One sows what one means to reap, and what the weather then
    * makes of it is settled without anybody being able to answer. The plan
-   * reckons with an average year less a little caution, and the difference
+   * reckons with an average draw less a little caution, and the difference
    * lands in the output — which is what makes the plenty of a good draw
    * unexpected, and unexpected plenty is why stores were invented.
    *
@@ -273,7 +273,7 @@ export interface ProcessDef {
  * tidier, it is the exact composition — independent causes of death combine
  * multiplicatively in *survival*, and adding their mortalities is a
  * approximation that only happens to be close while the rates are small. It
- * also cannot produce a negative population or a negative day's work, which
+ * also cannot produce a negative population or negative work, which
  * adding could and once did.
  *
  * The non-linearity that a threshold needs does not live here but in the
@@ -295,7 +295,7 @@ export interface NeedTierDef {
 
   /**
    * How strongly this need moves with a random stream (E24) — the demand side
-   * of a shock. A cold year yields less firewood *and* calls for more of it, so
+   * of a shock. A cold draw yields less firewood *and* calls for more of it, so
    * hardship compounds instead of adding up.
    *
    * The direction is the opposite of a process's: there a bad draw lowers the
@@ -347,7 +347,7 @@ export type Condition =
   | { readonly kind: "stockPerHead"; readonly stock: StockId; readonly min: number }
   /**
    * Capacity built, per head. Unlike a stock it does not move with the weather,
-   * so a run of bad years delays a transition but can never block it — and it
+   * so a run of poor draws delays a transition but can never block it — and it
    * is exactly what the player decided, not what luck left in the store.
    */
   | {
@@ -358,9 +358,9 @@ export type Condition =
   /**
    * How much has been produced with these processes, all told (E29).
    *
-   * One improves what one does: the sickle comes out of many harvests, the net
+   * One improves what one does: the sickle comes out of much gathering, the net
    * out of many hauls. This **delays and never blocks** — keep at the activity
-   * and the improvement arrives, and a bad year costs a few ticks. It also
+   * and the improvement arrives, and a poor draw costs a few ticks. It also
    * orders itself by what the player actually does, so the tree grows out of
    * the community's own economy rather than being laid down in advance.
    *
@@ -400,7 +400,7 @@ export type Condition =
        * come into view as that strain draws near — early enough to be got ready
        * before it bites. Which strain it is follows from the axis the project
        * works on (E29): one that saves hands is called for when its activity
-       * eats more of everybody's day; one that opens country, when the country
+       * eats more of everybody's work; one that opens country, when the country
        * grows dear; one that adds country, when what there is is full.
        *
        * The content holds only a **factor**, never a figure. The figure it is
@@ -590,8 +590,8 @@ export interface PopulationConfig {
 
 /**
  * The shape of one random stream (E24): mean 1, an upper bound, rare severe
- * failures downwards. Harvests have a biological ceiling but no counterpart
- * below, so a bad year is the left edge of this distribution and needs no
+ * failures downwards. What grows has a biological ceiling but no counterpart
+ * below, so a poor draw is the left edge of this distribution and needs no
  * second mechanism.
  */
 export interface ShockShape {
@@ -611,15 +611,15 @@ export interface RiskConfig {
   /** 0 switches the risk term off entirely. */
   readonly aversion: number;
   /**
-   * How cautiously the plan reckons with a year it cannot know (E24).
+   * How cautiously the plan reckons with a draw it cannot know (E24).
    *
-   * The plan is blind, so it aims at a year slightly **worse** than the mean —
-   * and in an ordinary year it therefore produces a little more than is needed.
+   * The plan is blind, so it aims at a draw slightly **worse** than the mean —
+   * and in an ordinary draw it therefore produces a little more than is needed.
    * That surplus is what a store is for, and it is what a project finds waiting
    * when it wants an intermediate nobody has yet asked for.
    *
    * Scaled by each process's own exposure, so it costs nothing where nothing
-   * varies: a fire lit indoors needs no margin, a harvest does. One number for
+   * varies: a fire lit indoors needs no margin, the gathering does. One number for
    * the whole economy rather than one per branch — it is a temperament, not a
    * technical datum. Later, when there are firms, this is where the sales
    * forecast sits, and then it may well differ between them.

@@ -12,7 +12,7 @@ import { draw, type RandomState } from "./random.ts";
  * smaller number.
  */
 
-/** The realised factor per stream this tick; 1 means "an average year". */
+/** The realised factor per stream this tick; 1 means "an average draw". */
 export type Shocks = Readonly<Record<RandomStreamId, number>>;
 
 /**
@@ -45,9 +45,9 @@ export function drawShocks(
 
 /**
  * `powerLeftSkewed`: `u^(1/exponent) · (exponent+1)/exponent`. Mean exactly 1,
- * an upper bound, and a long left tail (E24) — harvests have a ceiling but no
- * counterpart below, so a bad year is the left edge of this distribution and
- * needs no second mechanism.
+ * an upper bound, and a long left tail (E24) — what the country gives has a
+ * ceiling but no counterpart below, so a poor draw is the left edge of this
+ * distribution and needs no second mechanism.
  */
 function shapeValue(
   uniform: number,
@@ -63,7 +63,7 @@ function shapeValue(
  *
  * Both a process and a need may declare one, because a draw reaches supply and
  * demand alike. What differs is the direction, and that is settled where it is
- * used: a process gets *less* out of a bad year, a need asks for *more*.
+ * used: a process gets *less* out of a poor draw, a need asks for *more*.
  */
 export function shockFactor(
   exposed: { readonly exposure: Readonly<Record<RandomStreamId, number>> },

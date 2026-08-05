@@ -125,14 +125,14 @@ export interface GameState {
    *
    * Between them and the search costs, every strain a project answers is
    * measurable: a technique that saves hands is called for when the activity it
-   * belongs to eats more of everybody's day; one that opens country, when the
+   * belongs to eats more of everybody's work; one that opens country, when the
    * country grows dear; one that adds country, when what there is is full.
    */
   /**
    * The tick each project was first shown at.
    *
    * **What has once been offered is never withdrawn.** A strain eases again —
-   * after a range change, after a bad year passes — and an offer that vanishes
+   * after a range change, after a poor draw passes — and an offer that vanishes
    * while the player is weighing it up punishes him for thinking. History, so
    * it is kept (E22): the mark said "this is coming", and that stays true.
    */
@@ -148,10 +148,10 @@ export interface GameState {
    * How much has ever been produced at each activity — a counter that only
    * grows (E29).
    *
-   * One improves what one does. A sickle comes out of many harvests and a net
+   * One improves what one does. A sickle comes out of much gathering and a net
    * out of many hauls, so a project that betters an activity asks that the
    * activity has been carried on for a while. That **delays and never blocks**:
-   * keep gathering and the sickle comes, and a bad year costs a few ticks and
+   * keep gathering and the sickle comes, and a poor draw costs a few ticks and
    * nothing more. And it orders itself by what the player actually does — fish
    * a great deal and the net arrives first — so the tree grows out of the
    * community's own economy instead of being laid down in advance.
@@ -217,7 +217,7 @@ export function capacityOf(capacityHeld: Readonly<Record<CapacityId, Capacity>>,
  *
  * Before there are fields, nobody occupies ground: it is walked over, and what
  * is taken from it grows back. Quality therefore cannot show itself by making a
- * hectare dearer — no process pays hectares at all. It shows itself in what the
+ * area dearer — no process pays for area at all. It shows itself in what the
  * ground **carries**: poorer country holds fewer deer, less growth, fewer
  * trees. That is Ricardo unchanged, at the only place left where it can bite,
  * and it is what keeps a change of range costly: the next range is the same

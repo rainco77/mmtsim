@@ -63,7 +63,7 @@ export function createState(config: Config, options: StartOptions): GameState {
   // whatever the roof tier asks for.
   //
   // Without it the first tick clothed twenty-five naked people at once and then
-  // never came near that again: 0.155 of everyone's day against 0.008 to
+  // never came near that again: 0.155 of everyone's work against 0.008 to
   // replace what wears out. Anything measured against that first tick was
   // measured against a thing that happens exactly once, and the three clothing
   // projects were never once offered in three hundred ticks. The community also

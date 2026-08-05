@@ -43,8 +43,8 @@ function worth(capacity: string, stock: string, index: ConfigIndex): number {
  *
  * That is the whole difference between clearing and deforesting. Food has an
  * alternative — farmland — so turning wilderness into fields is right, and the
- * margin says so loudly: an acre of field carries thirteen times the food of an
- * acre of wild. Wood has no alternative; it grows on standing wilderness and
+ * margin says so loudly: the same area of field carries thirteen times the food of
+ * wilderness. Wood has no alternative; it grows on standing wilderness and
  * nowhere else. Clearing the last of it therefore does not trade one source for
  * a better one, it ends the source — and the community then carries a death
  * penalty it can never lift, and bleeds out over hundreds of ticks.

@@ -102,7 +102,7 @@ export interface AllocationResult {
    * What lay in store when the tick began, and what lies there when it ends —
    * per good, after decay and regrowth have had their say.
    *
-   * The pair is what tells a reader whether a good year was put by or a bad one
+   * The pair is what tells a reader whether a good draw was put by or a bad one
    * lived through, and it is the only honest way to say it now that making and
    * keeping share one pot.
    */
@@ -178,7 +178,7 @@ function poolCapacities(
 /**
  * Land quality works on the **area**, not on the labour: E13 puts it as
  * `yield = area × quality × process yield`. Poor ground means more ground
- * for the same harvest — that is Ricardo's differential rent, and it is what
+ * for the same yield — that is Ricardo's differential rent, and it is what
  * makes the fixed factor bite.
  */
 function effectiveCapacityPerOutput(
@@ -195,11 +195,11 @@ function effectiveCapacityPerOutput(
 
 
 /**
- * The year the plan reckons with (E24) — not the one that happens.
+ * The draw the plan reckons with (E24) — not the one that happens.
  *
- * The plan is blind: nobody knows the draw before the harvest is in. What it
- * aims at is a year a little **worse** than the mean, by `risk.caution`, so that
- * an ordinary year leaves something over. That surplus is what a store is for,
+ * The plan is blind: nobody knows the draw before the taking is in. What it
+ * aims at is a draw a little **worse** than the mean, by `risk.caution`, so that
+ * an ordinary draw leaves something over. That surplus is what a store is for,
  * and what a project finds waiting when it wants an intermediate nobody has
  * asked for yet.
  *
@@ -207,11 +207,11 @@ function effectiveCapacityPerOutput(
  * scales it by each thing's own exposure — a process and a need alike. Where
  * nothing varies, the caution costs nothing.
  */
-function plannedYear(config: Config): Shocks {
+function plannedDraw(config: Config): Shocks {
   const caution = Math.max(0, Math.min(1, config.risk.caution));
-  const year: Record<string, number> = {};
-  for (const stream of Object.keys(config.shocks)) year[stream] = 1 - caution;
-  return year;
+  const draw: Record<string, number> = {};
+  for (const stream of Object.keys(config.shocks)) draw[stream] = 1 - caution;
+  return draw;
 }
 
 /**
@@ -343,7 +343,7 @@ function takingOf(
 /**
  * Puts in what the plan meant to put in. **The inputs are committed** — one has
  * sown, one has set out — so they are spent at the planned level whatever the
- * year turns out to be. What the year decides is the *output*, and that is
+ * draw turns out to be. What the draw decides is the *output*, and that is
  * booked by the caller.
  */
 function consume(
@@ -385,8 +385,8 @@ function consume(
 /**
  * How much of a planned level the intermediates actually there can carry.
  *
- * Needed only because the plan is blind: a process upstream may have had a bad
- * year and delivered less than the plan counted on, and then the one downstream
+ * Needed only because the plan is blind: a process upstream may have had a poor
+ * draw and delivered less than the plan counted on, and then the one downstream
  * cannot run at full level. The same partial pace that a project runs at when
  * one of its inputs is short (E18), one step earlier.
  */
@@ -432,7 +432,7 @@ export interface AllocationInput {
 export function allocate(input: AllocationInput): AllocationResult {
   const { state, index, sectorId, shocks } = input;
   const config = index.config;
-  const plannedShocks = plannedYear(config);
+  const plannedShocks = plannedDraw(config);
 
   /**
    * The draw a process is planned against — and the very same figure is charged
@@ -443,7 +443,7 @@ export function allocate(input: AllocationInput): AllocationResult {
    * A process that **finds** its return sees the draw while it works, so it is
    * planned against what really fell: a poor draw makes a unit dearer and the
    * answer is more hands. A **committed** one is planned against an average
-   * year less a little caution, and the real draw then decides the output (E24).
+   * draw less a little caution, and the real draw then decides the output (E24).
    */
   const planningShocks = (process: ProcessDef): Shocks =>
     process.yield === "found" ? shocks : plannedShocks;
@@ -557,15 +557,15 @@ export function allocate(input: AllocationInput): AllocationResult {
   // than anyone needs, which is then gone, warmth keeping not at all. A hard
   // cold still hurts, and more honestly: it costs hands for wood, and those
   // hands are missing elsewhere.
-  const perHead = (tier: NeedTierDef, year: Shocks): number => {
+  const perHead = (tier: NeedTierDef, draw: Shocks): number => {
     const base = input.tierPerHead.get(tier.id) ?? tier.perHead;
     if (tier.exposure === undefined) return base;
-    const factor = shockFactor({ exposure: tier.exposure }, year);
+    const factor = shockFactor({ exposure: tier.exposure }, draw);
     return factor > 0 ? base / factor : base;
   };
 
   // What the community means to live on this tick, reckoned against a normal
-  // year with a little caution, so that a good year leaves something over and a
+  // draw with a little caution, so that a good draw leaves something over and a
   // poor one is felt.
   //
   // **Every rank asks for its whole need**, and what that means is settled
@@ -590,7 +590,7 @@ export function allocate(input: AllocationInput): AllocationResult {
   }
 
   // Putting something by (E19). A stock is held because output is uncertain,
-  // which is as true of a delivery that fails as of a harvest that does — no
+  // which is as true of a delivery that fails as of a search that does — no
   // seasons, no seed corn, nothing that only food can have. It needs no guard
   // beyond its rank: a community that cannot feed itself never reaches the
   // store's rank at all.
@@ -661,21 +661,21 @@ export function allocate(input: AllocationInput): AllocationResult {
       stocks: { ...pools.stock },
     },
     available: availableProcesses,
-    // **The plan reckons with an average year** (E24). It used to be handed the
+    // **The plan reckons with an average draw** (E24). It used to be handed the
     // real draw, which was clairvoyance: it then covered the same needs with
-    // less labour in a good year instead of harvesting more, so no surplus could
+    // less labour in a good draw instead of bringing in more, so no surplus could
     // ever arise — measured, wood, fibre and hides stood at exactly 0,00 for
     // sixty ticks together, the store had nothing to keep, and the setback of a
-    // bad year came only from labour running out.
+    // poor draw came only from labour running out.
     //
     // One sows and the weather decides afterwards. The unexpected plenty of a
-    // good year is the reason stores were invented, and it cannot exist where
+    // good draw is the reason stores were invented, and it cannot exist where
     // nobody is ever surprised.
     //
     // Where the draw does land is on the **output**, and there it hits every
-    // input alike: a failed harvest wastes the acres it grew on exactly as it
-    // wastes the labour. Reaching only the labour used to *free* land in a bad
-    // year — measured, use of the wilderness fell from 100 % to 67 % at a draw
+    // input alike: a poor draw wastes the ground it was worked on exactly as it
+    // wastes the labour. Reaching only the labour used to *free* land in a poor
+    // draw — measured, use of the wilderness fell from 100 % to 67 % at a draw
     // of 0.66.
     shockFor: (process: ProcessDef) => shockFactor(process, planningShocks(process)),
     // Reads the mutable `taking`: empty on the first pass, so the draft costs
@@ -758,12 +758,12 @@ export function allocate(input: AllocationInput): AllocationResult {
     const process = index.process.get(id);
     if (process === undefined || target <= 1e-12) continue;
     // What the plan actually commits: enough to reach its target even in the
-    // year it cautiously reckons with. In an ordinary year that leaves a
+    // draw it cautiously reckons with. In an ordinary draw that leaves a
     // surplus, which is the whole point (E24).
     const margin = shockFactor(process, planningShocks(process));
     const planned = margin > 0 ? target / margin : target;
     // Cut back to what the inputs actually there allow — the plan was made
-    // before the year was known, and the step above it may have fallen short.
+    // before the draw was known, and the step above it may have fallen short.
     //
     // **What the plan charged for searching is what is charged here.** Worked
     // out afresh, the two drift apart, and then the plan is undone in the
@@ -781,8 +781,8 @@ export function allocate(input: AllocationInput): AllocationResult {
     laborFreed += (planned - level) * (process.intermediatesPerOutput[LABOR_STOCK] ?? 0);
     if (level <= 1e-12) continue;
     const labor = consume(process, level, pools, effort, index, capacityUsed, consumed);
-    // And here the year has its say: the inputs went in as committed, the
-    // harvest is what it is.
+    // And here the draw has its say: the inputs went in as committed, and what
+    // comes back is what it is.
     const output = level * shockFactor(process, shocks);
     const stock = index.branch.get(process.branch)?.produces;
     if (stock !== undefined) {
@@ -797,7 +797,7 @@ export function allocate(input: AllocationInput): AllocationResult {
   // idle (E10 reads exactly these numbers).
   //
   // `laborFreed` is labour the plan had earmarked for a process that then could
-  // not run at its planned level, because the one above it had a bad year. It
+  // not run at its planned level, because the one above it had a poor draw. It
   // stands still rather than going anywhere, and it can only ever be as large
   // as what was set aside in the first place.
   const laborMade = produced[LABOR_STOCK] ?? 0;
@@ -835,15 +835,15 @@ export function allocate(input: AllocationInput): AllocationResult {
   //
   // One pot cannot double-count, and it does not weaken E19: that rule bites on
   // the **planning** side, which is untouched — the ask is still the whole need
-  // reckoned against a cautious year, never the need less the store. So a good
-  // year leaves something over and a bad one eats into it.
+  // reckoned against a cautious draw, never the need less the store. So a good
+  // draw leaves something over and a bad one eats into it.
   const tiers: TierOutcome[] = [];
   let overallBinding: Binding = { kind: "none" };
   let bindingTier: string | undefined;
 
   for (const tier of tierList) {
-    // What the year really asked for, against what the plan set aside for an
-    // average one. A hard winter therefore shows up as a gap, not as extra work.
+    // What the draw really asked for, against what the plan set aside for an
+    // average one. A hard draw therefore shows up as a gap, not as extra work.
     const need = heads * perHead(tier, shocks);
     const served = Math.min(need, Math.max(0, pools.stock[tier.stock] ?? 0));
     pools.stock[tier.stock] = (pools.stock[tier.stock] ?? 0) - served;

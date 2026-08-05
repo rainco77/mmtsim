@@ -231,7 +231,7 @@ export class DominanceOrdering implements ProcessOrdering {
  *
  * Compared on **risk-adjusted** coefficients: a process that fails often costs
  * more per unit *delivered*, because the ground and the labour are spent in the
- * failed years too. That is the same reasoning as a shock (E24 — risk as named
+ * failed ticks too. That is the same reasoning as a shock (E24 — risk as named
  * random streams), taken as an expectation instead of as a draw. And it is what
  * the old rule already did to labour: ordering by yield per labour times
  * `1 - weight × exposure` is ordering by the labour coefficient divided by it.

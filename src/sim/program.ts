@@ -19,7 +19,7 @@
  *
  * **A store is on offer, and what it is to hold is asked as a stand** (E19).
  * Both halves are needed and neither works alone. A store exists to be lived
- * off in a bad year, so the plan may draw on it; but a plan that only draws
+ * off in a poor draw, so the plan may draw on it; but a plan that only draws
  * would begin every tick by eating the pits and end it by refilling them, and
  * they would hold one tick's saving however large they were. What keeps that
  * from happening is the second half: the target is not a consumer of the good
@@ -38,7 +38,7 @@ import { solve, type Limit, type Objective } from "./simplex.ts";
  *
  * Measured against the exact equal-marginal-cost split on the starting range,
  * at three levels of demand: three steps are off by up to 33 % and, worse,
- * change *what* is taken — the shore gets harvested where the exact answer
+ * change *what* is taken — the shore gets picked over where the exact answer
  * never touches it. Eight are within about one per cent and take the same
  * things in the same proportions. Twelve and twenty buy another half per cent
  * for a bigger program. The error is always in the same direction: the steps
@@ -85,7 +85,7 @@ export interface ProgramInput {
   readonly supplies: Supplies;
   /** Where every renewable stock stands before anything is taken. */
   readonly standing: Readonly<Record<StockId, Renewal>>;
-  /** The year the plan reckons with — blind to the real draw (E24). */
+  /** The draw the plan reckons with — blind to the real draw (E24). */
   readonly shockFor: (process: ProcessDef) => number;
 }
 
@@ -294,8 +294,8 @@ export function planByProgram(input: ProgramInput): Plan {
     });
   }
   for (const [id, row] of stocks) {
-    // **What is held is on offer.** A store exists to be lived off in a bad
-    // year, and whether the good is an intermediate or something a need is
+    // **What is held is on offer.** A store exists to be lived off in a poor
+    // draw, and whether the good is an intermediate or something a need is
     // served from makes no difference to that. So the limit is what lies
     // there: net drawing may go up to the opening balance, which is the same
     // as saying no stock may close below nothing. A stand that grows back is

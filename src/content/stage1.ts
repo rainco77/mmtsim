@@ -17,7 +17,7 @@ import type { Config } from "../sim/config.ts";
  * It used to stand in front of everything, and that was a trap rather than a
  * decision. Played twice by hand, starting two projects at the default killed
  * the community within a single tick: the claim outranks hunger, so the hands
- * went to the pit instead of the harvest and nobody was warned.
+ * went to the pit instead of the food and nobody was warned.
  *
  * The best place is almost certainly neither end — above the ranks that only
  * cost comfort and children, below the ones that cost lives. That is exactly
@@ -125,8 +125,8 @@ export const STAGE1: Config = {
       // Fast and shallow, and that is the whole point of it. A herd and a
       // forest are capital: what stands is many times what comes in over a
       // tick, because it grew over many ticks. The growth of a range is not —
-      // one cannot gather next season's berries now. Set deep like the others,
-      // it became a **larder**: a community of twenty-five found a hundred and
+      // one cannot gather berries that have not grown yet. Set deep like the
+      // others, it became a **larder**: a community of twenty-five found a hundred and
       // twenty standing against thirty of growth, feasted for four ticks and
       // grew all the while, and then the larder was empty. Gathering turned
       // four times dearer, food ate every hand there was, rank 200 got nothing,
@@ -277,7 +277,7 @@ export const STAGE1: Config = {
     { id: "fibre", decayPerTick: 0.04 },
     {
       // Clothing is not eaten and not burnt — it wears out. Sewing with an eyed
-      // needle is what turns wrapped skins into garments that survive a season,
+      // needle is what turns wrapped skins into garments that last,
       // so the needle acts here and not on any process (E19).
       id: "clothing",
       decayPerTick: 0.03,
@@ -291,7 +291,7 @@ export const STAGE1: Config = {
   // -------------------------------------------------------------- capacities
   capacities: [
     // Wilderness and water are carriers, not pots: no process of this epoch
-    // pays a hectare of either. What they do is set the ceilings of what lives
+    // pays for ground on either. What they do is set the ceilings of what lives
     // on them, and their quality says how much that is. Occupying ground begins
     // with the field and the hut — which is exactly the break the epoch is
     // about, now in the mechanism and not only in the telling.
@@ -351,8 +351,8 @@ export const STAGE1: Config = {
     //
     // Gathering is good per hand and poor per area; hunting is worse on both
     // counts until the bow, but it is what puts hides on the ground; fishing is
-    // poor per hand and almost untouched by the year. The last is the whole
-    // point of the water: it does not fail when the harvest fails.
+    // poor per hand and almost untouched by the draw. The last is the whole
+    // point of the water: it does not fail when the gathering fails.
     {
       id: "gathering",
       branch: "food",
@@ -410,8 +410,8 @@ export const STAGE1: Config = {
       unlockedFromStart: false,
     },
     {
-      // Hunting used to pay a hectare *and* a deer for the same meal — the same
-      // nature counted twice, and it was the hectare that bound.
+      // Hunting used to pay ground *and* a deer for the same meal — the same
+      // nature counted twice, and it was the ground that bound.
       id: "hunting",
       branch: "food",
       activity: "hunting",
@@ -468,8 +468,8 @@ export const STAGE1: Config = {
       // why those who had it used it.
       intermediatesPerOutput: { labor: 0.525, fish: 1.0 },
       // Safer than the land, not immune to it: the drought that costs the
-      // harvest lowers the river too. At 0.15 the water carried a quarter of
-      // the food and felt nothing, so the worst year of a run never reached
+      // gathering lowers the river too. At 0.15 the water carried a quarter of
+      // the food and felt nothing, so the worst draw of a run never reached
       // hunger at all and a store had no work to do. The shore keeps its low
       // figure — mussels lie there whether it rains or not, and that is what
       // made it the last reliable thing to fall back on.
@@ -501,8 +501,8 @@ export const STAGE1: Config = {
     },
     {
       // A set net fishes while you sleep. Still worse per hand than gathering —
-      // but it does not touch the wilderness and it does not fail in a bad
-      // year, and once the land is full that is what decides.
+      // but it does not touch the wilderness and it does not fail in a poor
+      // draw, and once the land is full that is what decides.
       id: "fishing_net",
       branch: "food",
       activity: "fishing",
@@ -814,17 +814,25 @@ export const STAGE1: Config = {
       // asked for here is the part whose failure kills, the rest only costs
       // births and the strength to work.
       //
-      // The plan aims at a draw of 0.9, so a poorer one reaches this rank as
-      // soon as the harvest falls below 1.2 of the 1.8. That puts the first
-      // deaths at a draw of 0.6 instead of 0.7 — one tick in nineteen rather
-      // than one in ten. At 1.4 against 0.4 only a fifth was dispensable, and
-      // played, two draws (0.44 and 0.24) took 28 % and 52 % of the people and
-      // ended the run at tick 82.
+      // Half and half, so this rank is reached only once what is brought in
+      // falls below half of what the two together ask. Nothing softens that on
+      // the way: no process of this epoch settles its inputs in advance — one
+      // sets out and finds what one finds — so the caution the plan carries
+      // never reaches food here, and what is short is short.
       //
-      // A society with half its food to spare would not be a subsistence
-      // society, so this cannot go much further: measured at 1.0 against 0.8,
-      // famine became impossible — the worst draw of a whole run still left
-      // this rank fully covered.
+      // Both ends have been played. At 1.4 against 0.4 only a fifth was
+      // dispensable, and two draws of 0.44 and 0.24 took 28 % and 52 % of the
+      // people and ended the run at tick 82. At 1.0 against 0.8 the worry ran
+      // the other way — a community with half its food to spare is no longer a
+      // subsistence community — and famine looked impossible: the worst draw of
+      // a whole run still left this rank fully covered.
+      //
+      // Neither reading was the reason to stop at half and half, and neither is
+      // still worth much: both were taken before the ordering was solved as one
+      // program, before what lies fallen was told apart from what stands, and
+      // before a tick was kept from combing nine tenths of a range. What the
+      // split has to deliver is unchanged — hunger as the crisis and not the
+      // daily rule (E29) — and what it delivers now wants measuring afresh.
       perHead: 0.9,
       consumedOnUse: 1,
       // **How hard a shortfall lands, not how often one happens.** With the draw
@@ -848,7 +856,7 @@ export const STAGE1: Config = {
       //
       // Warmth is split as food is, and for the same reason (E8): cold is a
       // *threshold*, not a slope. Half rations of food are starvation; half the
-      // firewood is a cold winter, not a fatal one. A single tier interpolating
+      // firewood is being cold, not fatally so. A single tier interpolating
       // linearly said the opposite — at 0.44 coverage it charged more than half
       // the mortality of having no fire at all, and cold then regulated the
       // population long before hunger ever could. Two ranks say it without
@@ -856,9 +864,9 @@ export const STAGE1: Config = {
       // exactly where E8 puts it.
       id: "warmth_fire",
       rank: 200,
-      // A cold year takes the harvest and calls for more firewood at the same
-      // time (E24). Less exposed than the harvest itself: one heats against the
-      // winter one has, and a poor summer is not a hard winter.
+      // A cold draw takes the gathering and calls for more firewood at the same
+      // time (E24). Less exposed than the gathering itself: one heats against the
+      // cold one has, and a poor draw for the gathering is not a cold one.
       exposure: { weather: 0.4 },
       stock: "warmth",
       branch: "warmth",
@@ -876,11 +884,11 @@ export const STAGE1: Config = {
     },
     {
       // Clothing does not kill, it costs *work ability* (E16). The honest
-      // effect is not "you die without a coat" but "you can work fewer days
+      // effect is not "you die without a coat" but "you can work less
       // outdoors" — arithmetically the same multiplication, but kept apart so
       // the view can later say how much was worked and how productive it was.
       //
-      // Also exposed on the demand side: a cold year asks for more of it.
+      // Also exposed on the demand side: a cold draw asks for more of it.
       id: "clothing_cover",
       rank: 400,
       exposure: { weather: 0.3 },
@@ -1133,13 +1141,13 @@ export const STAGE1: Config = {
     {
       // Repeatable, because the pits fall in: keeping a capacity is building it
       // again (E19). It is also the only one that pays nothing at all today —
-      // it pays in the years that would otherwise have killed people. Dhra',
+      // it pays in the ticks that would otherwise have killed people. Dhra',
       // about a thousand years before domestication (Kuijt & Finlayson 2009).
       id: "storage_pit",
       // The road to the end of the epoch, so it must not open early (E29). It
       // waits on the food getting *ample* — practice at winning it, which grows
       // with the yield and so comes sooner to a community that built the sickle, the
-      // mortar and the net. By then several bad years have been through, so the
+      // mortar and the net. By then several poor draws have been through, so the
       // player knows what a store is for without anything having to count them.
       //
       // It is also what makes a range change cheap at first and dear later,
@@ -1254,7 +1262,7 @@ export const STAGE1: Config = {
       // needs a process of its own.
       id: "bone_needle",
       // What all three clothing projects answer is the same strain: keeping
-      // people clothed eats more and more of everybody's day.
+      // people clothed eats more and more of everybody's work.
       visibleWhen: [{ kind: "strain", measure: { labourPerHead: "clothmaking" }, factor: 1.3 }],
       availableWhen: [{ kind: "experience", activities: ["clothmaking"], min: 30 }],
       defaultRank: PROJECTS_LAST,
@@ -1360,9 +1368,9 @@ export const STAGE1: Config = {
       id: "sedentism",
       visibleWhen: [{ kind: "projectDone", id: "storage_pit", min: 1 }],
       // Not a population that arrives by itself, and not a store that happens
-      // to be full after a good year — but pits actually dug. What ties people
-      // to a place is capital they cannot carry (Testart): a full granary after
-      // a good harvest makes nobody sedentary, a pit does.
+      // to be full after a good draw — but pits actually dug. What ties people
+      // to a place is capital they cannot carry (Testart): a store filled by a
+      // good draw makes nobody sedentary, a pit does.
       //
       // It also has to be this and not the held stock, because a held stock
       // moves with the weather: bad luck may delay a transition, never block it.
@@ -1547,7 +1555,7 @@ export const STAGE1: Config = {
 
   // Risk aversion: how strongly a thin store pushes towards the reliable
   // process (E5). Caution: how far below the mean the plan aims, so that an
-  // ordinary year leaves something over (E24).
+  // ordinary draw leaves something over (E24).
   risk: { aversion: 0.5, caution: 0.1 },
 
   // The player may set the order by hand from the start; a later institution
