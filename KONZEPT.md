@@ -115,7 +115,7 @@ Konfiguration, nie neue Mechanik.
 | **Verfallsrate** | Wie schnell zerfällt der Bestand? | Bestimmt, ob Puffer möglich sind (Pflege 100 %/Tick, Wohnraum sehr langsam) |
 | **Sättigung** | Wieviel braucht ein Mensch, bis genug ist? | Motor des Strukturwandels — Wachstum muss woandershin, wenn Grundbedarf gedeckt ist |
 | **Trägheit** | Wie lange von Entscheidung bis Wirkung? | Grund, warum Wirtschaftspolitik schwer ist |
-| **Empfindlichkeit** | Wie stark schlägt die Jahresgüte durch? | Wetter trifft Acker stark, Bau gar nicht (E24) |
+| **Empfindlichkeit** | Wie stark schlägt der Wurf durch? | Die Witterung trifft Acker stark, Bau gar nicht (E24) |
 
 **Produktivität ist keine Branchenmerkmal**, sondern Ergebnis der oberen Schichten (E2)
 und der verfügbaren Verfahren (E5).
@@ -337,7 +337,7 @@ Kapitalkontroverse — die schärfste methodische Kritik in dem Feld.
 **Einheitenregel: Was in die Wahl der Einheit hineinrechenbar ist, braucht keinen
 eigenen Mechanismus.** Nahrung wird in **Nährwert** gemessen, nicht in Masse. Damit ist
 Kochen ein gewöhnliches Verfahren, das den Ertrag hebt — dieselbe Sammelarbeit liefert
-mehr verwertbare Kalorien. Ohne die richtige Einheit hätte man eine Verbrauchssenkung
+mehr verwertbaren Nährwert. Ohne die richtige Einheit hätte man eine Verbrauchssenkung
 als Produktivitätsgewinn tarnen müssen, was eine Verdrehung wäre. Dasselbe gilt für
 Sperrigkeit bei Lagerkapazität.
 
@@ -1110,7 +1110,7 @@ wird: Nahrung 1, Wohnraum 0. Das ist eine Eigenschaft der **Bedarfsbeziehung**, 
 der Branche.
 
 **Und manches wächst nach, statt zu verfallen.** Wild und Fisch sind keine Fläche: Ein
-Hektar Wald wird nicht verbraucht, wenn man darüber jagt — die Rehe darauf schon. Daraus
+Stück Wald wird nicht verbraucht, wenn man darüber jagt — die Rehe darauf schon. Daraus
 die Regel, die im ganzen Modell gilt und für jede Epoche:
 
 > **Fläche wird belegt: ausschließlich, ohne Gedächtnis** — wer sie nimmt, nimmt sie
@@ -1143,8 +1143,8 @@ Solange all das Fläche kostete, nahm die Nahrung als höchster Rang das ganze R
 Holz, Bast und Felle waren nicht knapp, sondern **ausgesperrt** — es wurde in keinem Tick
 davon etwas gewonnen, die Gemeinschaft fror und ging nackt. Wo Verdrängung sachlich
 richtig ist, bildet das Modell sie weiter ab: Jagen auf Fleisch und Jagen auf Felle ziehen
-aus demselben Wild und konkurrieren dort hart. Die Konkurrenz sitzt am Wild statt am
-Hektar, und dort gehört sie hin.
+aus demselben Wild und konkurrieren dort hart. Die Konkurrenz sitzt am Wild statt an der
+Fläche, und dort gehört sie hin.
 
 **Fläche ist deshalb nicht der Grenzfall eines schnell nachwachsenden Bestands.** Bei
 Rate 1 kommt ein halb entnommener Bestand auf drei Viertel zurück, nicht auf voll; um
@@ -1366,7 +1366,7 @@ braucht. Das ist der Malthus-Punkt aus E7, exakt definiert statt Gefühlssache.
 *ein* Bedarf so weit unterdeckt ist, dass er es allein ausgleicht. Welcher das ist,
 entscheidet allein die Größe seines Faktors, **nicht** die Menge, die er verlangt:
 Gemessen wuchs die Siedlung immer wieder genau so weit, bis die Wärme bei 0,45 stand,
-gleich ob der Bedarf 0,1 oder 0,03 je Kopf war und ob Holz 0,6 oder 0,2 Hektar kostete.
+gleich ob der Bedarf 0,1 oder 0,03 je Kopf war und ob Holz 0,6 oder 0,2 Fläche kostete.
 Wer den Regler wechseln will, ändert Faktoren, keine Mengen.
 
 **Die Bevölkerung wird intern als Bruchzahl geführt** und gerundet angezeigt. Bei
@@ -1452,7 +1452,7 @@ Bestände, Fortschritt der Projekte.
 
 **Die gemessene Grenze dieses Verfahrens: geteilte Kapazitäten kann es nicht abwägen.**
 
-Ein Lauf nach 900 Ticks: 213 Menschen, die Wildnis zu 100 % genutzt, **560 ha
+Ein Lauf nach 900 Ticks: 213 Menschen, die Wildnis zu 100 % genutzt, **560 Fläche
 Ackerland zu 11 % genutzt**, 49 Arbeitseinheiten frei — und trotzdem Wärme bei 0,69 und
 Wohnraum bei 0,00.
 
@@ -1718,8 +1718,8 @@ einpassen, sondern nur in Projektwirkungen und Schalter.
 
 ### E24 — Schwankung
 
-**Die Jahresgüte** — eine Zahl je Tick mit Mittelwert 1, auf die jedes **Verfahren** mit
-seiner **eigenen Empfindlichkeit** reagiert:
+**Der Wurf** — eine Zahl je Tick und Strom mit Mittelwert 1, auf die jedes **Verfahren**
+mit seiner **eigenen Empfindlichkeit** reagiert:
 
 | Verfahren | Empfindlichkeit |
 |---|---|
@@ -1865,7 +1865,7 @@ Ein **Hauptseed**, daraus mehrere unabhängige Ströme:
 
 | Strom | Wofür |
 |---|---|
-| `weather` | Jahresgüte für die inländische Produktion (E24) |
+| `weather` | die Witterung für die inländische Produktion (E24) |
 | `events` | zufällige Ereignisse |
 | `foreign` | Weltmarktpreise, Wechselkurs |
 
@@ -2147,7 +2147,7 @@ Verfahrenskette der Branche Nahrung über das ganze Spiel:
 `Sammeln` → `Ackerbau` → `Pflug` → `Maschinell`
 
 Sammeln braucht **Wildnis**, kein erschlossenes Land: guter Ertrag je Arbeitsleistung,
-sehr geringer je Fläche, hohe Empfindlichkeit gegen die Jahresgüte. Nahrung hat eine
+sehr geringer je Fläche, hohe Empfindlichkeit gegen die Witterung. Nahrung hat eine
 sehr hohe Verfallsrate — **kein Vorrat möglich** (E19).
 
 **Die Bedarfe dieser Epoche.** Von der Physiologie her bestimmt, nicht von der Technik:
@@ -2626,7 +2626,7 @@ irgendwohin gehen kann; „Leerlauf über 15 % ab Tick 14, Seed 231" ist eine Ad
 **Zwei Messfehler, die dabei aufgefallen sind, und beide waren Fehler im Maß, nicht im
 Modell:**
 
-- *Fläche* je Einheit Nahrung addierte Hektar Wald und Hektar Wasser. Bei fünfzig Köpfen
+- *Fläche* je Einheit Nahrung addierte Fläche Wald und Fläche Wasser. Bei fünfzig Köpfen
   trägt das kleine Gewässer viel, also fiel die Zahl, ohne dass irgendetwas
   intensiviert worden wäre. Boserup gehört auf **eine** Kapazität gemessen — und mit
   beiden Hälften: Der Ertrag je Fläche steigt *und* es kostet mehr Hände je Einheit.
@@ -2835,8 +2835,8 @@ interface Policy { decide(state: GameState): Action[] }
 | Headless-Lauf | `ExpansionistPolicy`, `IntensifierPolicy`, `PassivePolicy` |
 
 Dieselbe Schleife, dieselbe Simulation, nur der Entscheider wird getauscht. Damit sind
-Headless-Läufe (`npm run simulate -- --years 300 --seed 42`) ein erstklassiges
-Werkzeug: 300 Spieljahre in einer Sekunde, um etwa den wandernden Engpass aus E14 zu
+Headless-Läufe (`npm run simulate -- --ticks 300 --seeds 20`) ein erstklassiges
+Werkzeug: 300 Ticks in einer Sekunde, um etwa den wandernden Engpass aus E14 zu
 prüfen, ohne eine halbe Stunde zu spielen.
 
 Und es ist ein **Konzeptprüfer**: Kommt `PassivePolicy` genauso weit wie eine
@@ -2947,6 +2947,8 @@ später formuliert oder formatiert wird.
 | Vorleistung | `intermediate` |
 | Kapazität | `capacity` |
 | Güte | `quality` |
+| Wurf | `shock` |
+| Witterung | `weather` |
 | Rodung / Landnahme | `clearForest` / `expandTerritory` |
 
 **Die Simulation erzeugt weder Text noch Meldungen.** Sie liefert ihren Zustand; alles,
@@ -2956,11 +2958,11 @@ Eine Meldung an den Spieler ist ein **i18n-Schlüssel plus ein paar Zahlen**, au
 von der Oberfläche:
 
 ```ts
-t("forest_cleared", { hectares: 10, remaining: 170 })
+t("forest_cleared", { area: 10, remaining: 170 })
 ```
 
 ```
-de: forest_cleared: "Wald gerodet: {hectares} ha, {remaining} ha verbleiben."
+de: forest_cleared: "Wald gerodet: {area}, {remaining} verbleiben."
 ```
 
 Mehr braucht es nicht: eine flache Schlüsseltabelle je Sprache, eine `t()`-Funktion,
