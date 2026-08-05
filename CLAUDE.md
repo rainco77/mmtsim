@@ -199,9 +199,9 @@ das** geliefert — nicht eine Auswahl daraus, nicht eine andere Aufbereitung, n
 das ich für aussagekräftiger halte, und auch nicht „das plus etwas anderes". Sonst lässt
 sich nicht beurteilen, was beurteilt werden sollte, und dieselbe Vorgabe muss mehrfach
 wiederholt werden. Vor
-dem ersten Werkzeugaufruf schreibe ich die Vorgabe **in eigenen Worten** hin und schicke
-sie mit. Weicht das Geplante in irgendeinem Punkt davon ab — auch nur in der Darstellung,
-auch wenn ich es für besser halte —, wird gefragt statt getan.
+dem ersten Werkzeugaufruf schreibe ich die Vorgabe **in eigenen Worten** hin und **warte auf
+Bestätigung**. Weicht das Geplante in irgendeinem Punkt davon ab — auch nur in der
+Darstellung, auch wenn ich es für besser halte —, wird gefragt statt getan.
 
 **Auch das Zurücknehmen einer Änderung ist eine Handlung** und wird vorher angekündigt.
 Was ich vorhabe, wird vorher gesagt und nicht hinterher.
