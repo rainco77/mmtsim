@@ -329,6 +329,8 @@ export const STAGE1: Config = {
       intermediatesPerOutput: {},
       exposure: {},
       qualityWeight: 1,
+      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      yield: "found",
       unlockedFromStart: true,
     },
 
@@ -344,9 +346,11 @@ export const STAGE1: Config = {
       activity: "gathering",
       priority: 100,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.28, plants: 1.0 },
+      intermediatesPerOutput: { labor: 0.42, plants: 1.0 },
       exposure: { weather: 0.7 },
       qualityWeight: 0,
+      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      yield: "found",
       unlockedFromStart: true,
     },
     {
@@ -359,9 +363,11 @@ export const STAGE1: Config = {
       activity: "gathering",
       priority: 105,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.182, plants: 1.0 },
+      intermediatesPerOutput: { labor: 0.273, plants: 0.7 },
       exposure: { weather: 0.7 },
       qualityWeight: 0,
+      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      yield: "found",
       unlockedFromStart: false,
     },
     {
@@ -383,9 +389,11 @@ export const STAGE1: Config = {
       activity: "gathering",
       priority: 103,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.28, plants: 0.75 },
+      intermediatesPerOutput: { labor: 0.42, plants: 0.75 },
       exposure: { weather: 0.7 },
       qualityWeight: 0,
+      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      yield: "found",
       unlockedFromStart: false,
     },
     {
@@ -396,9 +404,11 @@ export const STAGE1: Config = {
       activity: "hunting",
       priority: 90,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.45, game: 1.0 },
+      intermediatesPerOutput: { labor: 0.675, game: 1.0 },
       exposure: { weather: 0.8 },
       qualityWeight: 0,
+      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      yield: "found",
       unlockedFromStart: true,
     },
     {
@@ -407,9 +417,11 @@ export const STAGE1: Config = {
       activity: "hunting",
       priority: 95,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.27, game: 1.0 },
+      intermediatesPerOutput: { labor: 0.405, game: 1.0 },
       exposure: { weather: 0.8 },
       qualityWeight: 0,
+      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      yield: "found",
       unlockedFromStart: false,
     },
     {
@@ -441,7 +453,7 @@ export const STAGE1: Config = {
       // and plant food still fed most of them. And the water is the safer of
       // the two in a poor tick, 0.4 of exposure against 0.7, which is exactly
       // why those who had it used it.
-      intermediatesPerOutput: { labor: 0.35, fish: 1.0 },
+      intermediatesPerOutput: { labor: 0.525, fish: 1.0 },
       // Safer than the land, not immune to it: the drought that costs the
       // harvest lowers the river too. At 0.15 the water carried a quarter of
       // the food and felt nothing, so the worst year of a run never reached
@@ -450,6 +462,8 @@ export const STAGE1: Config = {
       // made it the last reliable thing to fall back on.
       exposure: { weather: 0.4 },
       qualityWeight: 0,
+      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      yield: "found",
       unlockedFromStart: true,
     },
     {
@@ -465,9 +479,11 @@ export const STAGE1: Config = {
       activity: "fishing",
       priority: 75,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 3.0, shellfish: 1.0 },
+      intermediatesPerOutput: { labor: 4.5, shellfish: 1.0 },
       exposure: { weather: 0.1 },
       qualityWeight: 0,
+      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      yield: "found",
       unlockedFromStart: true,
     },
     {
@@ -483,9 +499,11 @@ export const STAGE1: Config = {
       // cord and it is forever being mended, while a line is a thread. What it
       // buys for that is hands — a fifth of the labour. Two kinds of gear with
       // different profiles rather than one that simply replaces the other.
-      intermediatesPerOutput: { labor: 0.15, fish: 1.0, fibre: 0.08 },
+      intermediatesPerOutput: { labor: 0.225, fish: 1.0, fibre: 0.08 },
       exposure: { weather: 0.4 },
       qualityWeight: 0,
+      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      yield: "found",
       unlockedFromStart: false,
     },
 
@@ -499,9 +517,11 @@ export const STAGE1: Config = {
       activity: "fishing",
       priority: 82,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.3, fish: 1.0, fibre: 0.05 },
+      intermediatesPerOutput: { labor: 0.45, fish: 1.0, fibre: 0.05 },
       exposure: { weather: 0.4 },
       qualityWeight: 0,
+      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      yield: "found",
       unlockedFromStart: false,
     },
 
@@ -517,6 +537,11 @@ export const STAGE1: Config = {
       intermediatesPerOutput: { labor: 0.625 },
       exposure: { weather: 0.9 },
       qualityWeight: 0.9,
+      // **Sowing is committed** (E24): the seed goes into the ground before the
+      // draw is known and nothing can answer for it afterwards. This is the one
+      // kind the epoch before it does not have, and it is why the property sits
+      // on the process rather than on the model.
+      yield: "committed",
       unlockedFromStart: false,
     },
 
@@ -532,6 +557,8 @@ export const STAGE1: Config = {
       intermediatesPerOutput: { labor: 0.740741 },
       exposure: { weather: 0.8 },
       qualityWeight: 0.9,
+      // Sown like the plain field above, and committed in the same way (E24).
+      yield: "committed",
       unlockedFromStart: false,
     },
 
@@ -549,6 +576,8 @@ export const STAGE1: Config = {
       intermediatesPerOutput: { labor: 0.6, deadwood: 1.0 },
       exposure: { weather: 0.2 },
       qualityWeight: 0,
+      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      yield: "found",
       unlockedFromStart: true,
     },
     {
@@ -569,6 +598,8 @@ export const STAGE1: Config = {
       intermediatesPerOutput: { labor: 0.9, trees: 1.0 },
       exposure: { weather: 0.2 },
       qualityWeight: 0,
+      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      yield: "found",
       unlockedFromStart: false,
     },
 
@@ -582,6 +613,8 @@ export const STAGE1: Config = {
       intermediatesPerOutput: { labor: 0.3, wood: 1.5 },
       exposure: {},
       qualityWeight: 0,
+      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      yield: "found",
       unlockedFromStart: true,
     },
     {
@@ -596,6 +629,8 @@ export const STAGE1: Config = {
       intermediatesPerOutput: { labor: 0.3, wood: 0.9 },
       exposure: {},
       qualityWeight: 0,
+      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      yield: "found",
       unlockedFromStart: false,
     },
 
@@ -620,6 +655,8 @@ export const STAGE1: Config = {
       intermediatesPerOutput: { labor: 0.3, game: 1.0 },
       exposure: { weather: 0.8 },
       qualityWeight: 0,
+      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      yield: "found",
       unlockedFromStart: true,
     },
     {
@@ -658,6 +695,8 @@ export const STAGE1: Config = {
       intermediatesPerOutput: { labor: 0.6, trees: 0.8 },
       exposure: { weather: 0.4 },
       qualityWeight: 0,
+      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      yield: "found",
       unlockedFromStart: true,
     },
     {
@@ -669,6 +708,8 @@ export const STAGE1: Config = {
       intermediatesPerOutput: { labor: 0.5, hides: 1.0 },
       exposure: {},
       qualityWeight: 0,
+      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      yield: "found",
       unlockedFromStart: true,
     },
     {
@@ -681,6 +722,8 @@ export const STAGE1: Config = {
       intermediatesPerOutput: { labor: 0.35, hides: 1.0 },
       exposure: {},
       qualityWeight: 0,
+      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      yield: "found",
       unlockedFromStart: false,
     },
     {
@@ -700,6 +743,8 @@ export const STAGE1: Config = {
       intermediatesPerOutput: { labor: 0.42, fibre: 1.0 },
       exposure: {},
       qualityWeight: 0,
+      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      yield: "found",
       activity: "clothmaking",
       unlockedFromStart: false,
     },
@@ -712,6 +757,8 @@ export const STAGE1: Config = {
       intermediatesPerOutput: { labor: 0.6, fibre: 1.0 },
       exposure: {},
       qualityWeight: 0,
+      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      yield: "found",
       unlockedFromStart: true,
     },
 
@@ -724,6 +771,8 @@ export const STAGE1: Config = {
       intermediatesPerOutput: { labor: 2.857143, wood: 1.4 },
       exposure: { weather: 0.0 },
       qualityWeight: 0.0,
+      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      yield: "found",
       unlockedFromStart: false,
     },
   ],
@@ -758,7 +807,7 @@ export const STAGE1: Config = {
       // society, so this cannot go much further: measured at 1.0 against 0.8,
       // famine became impossible — the worst draw of a whole run still left
       // this rank fully covered.
-      perHead: 1.2,
+      perHead: 0.9,
       consumedOnUse: 1,
       // Without any food at all, nine in ten are gone. Twenty per cent short of
       // the bare ration costs eighteen per cent — the order of magnitude of a
@@ -789,7 +838,7 @@ export const STAGE1: Config = {
       consumedOnUse: 1,
       // No fire at all in a Mesolithic winter kills a great many — less than
       // starving, because clothing and huddling take part of it.
-      survival: { atZero: 0.4, atFull: 1 },
+      survival: { atZero: 0.75, atFull: 1 },
     },
     {
       // Clothing does not kill, it costs *work ability* (E16). The honest
@@ -868,7 +917,7 @@ export const STAGE1: Config = {
       rank: 600,
       stock: "food",
       branch: "food",
-      perHead: 0.6,
+      perHead: 0.9,
       consumedOnUse: 1,
       birthRate: { atZero: 1, atFull: 1.01 },
       productivity: { atZero: 1, atFull: 1.2 },
@@ -976,7 +1025,7 @@ export const STAGE1: Config = {
       defaultRank: PROJECTS_LAST,
       laborCost: 24,
       stockCost: {},
-      minTicks: 6,
+      minTicks: 1,
       effects: [
         // Left behind: what is in the ground and what is stacked.
         {
@@ -1430,8 +1479,8 @@ export const STAGE1: Config = {
   population: {
     // Reciprocal: a community whose needs are all met neither grows nor shrinks. It
     // grows when it is better off than it needs to be.
-    baseBirthFactor: 1.01,
-    baseSurvival: 1 / 1.01,
+    baseBirthFactor: 1.0308,
+    baseSurvival: 0.97,
     // Below about a dozen a community stops working: too few hunters, nobody spare
     // to carry children or the sick, and no cover at all for a single death. It
     // does not die out — it joins a neighbour, and as *this* community it is over.

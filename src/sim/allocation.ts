@@ -306,14 +306,35 @@ function pricePerStock(
 function takingOf(
   levels: ReadonlyMap<ProcessId, number>,
   index: ConfigIndex,
+  shockOf: (process: ProcessDef) => number,
 ): Record<StockId, number> {
   const out: Record<StockId, number> = {};
   for (const [id, level] of levels) {
     const process = index.process.get(id);
     if (process === undefined) continue;
+    // **The level is an output; what is taken is the input behind it.** The
+    // plan's own coefficients carry the draw — a good one means fewer plants
+    // stripped for the same nutrition — so reading the raw coefficient here
+    // reports a taking the plan never intended, and by exactly the draw.
+    //
+    // It matters far more than the size of the error suggests, because the
+    // price of searching is logarithmic and blows up at the edge of a stand.
+    // Measured: the plan meant to take 91.6 of a stand holding 104.33 and this
+    // reported 104.23 — 88 % against 99.9 %, which is the difference between a
+    // search cost of 5.5 and one of 15.9. Charged the higher figure, the first
+    // process in the running order ate all 220 of the labour and every process
+    // after it stood still: farming, hunting, bast, wood, fire and plaiting all
+    // came out at nought while cleared land lay unused. The plan the solver had
+    // worked out over eight steps of the stand was undone in the carrying out.
+    //
+    // It was there before and pointed the harmless way: planning against a draw
+    // a little *worse* than the mean made this understate the taking, so
+    // searching looked slightly cheap. As soon as a process is planned against
+    // the draw that really fell, the sign turns over.
+    const shock = shockOf(process);
     for (const [stockId, per] of Object.entries(process.intermediatesPerOutput)) {
       if (per <= 0 || index.stock.get(stockId)?.regrowth === undefined) continue;
-      out[stockId] = (out[stockId] ?? 0) + level * per;
+      out[stockId] = (out[stockId] ?? 0) + (shock > 0 ? (level * per) / shock : level * per);
     }
   }
   return out;
@@ -412,6 +433,20 @@ export function allocate(input: AllocationInput): AllocationResult {
   const { state, index, sectorId, shocks } = input;
   const config = index.config;
   const plannedShocks = plannedYear(config);
+
+  /**
+   * The draw a process is planned against — and the very same figure is charged
+   * when the plan is carried out further down. One helper for both, because the
+   * two must never differ: planning against one and committing against another
+   * is how a plan comes to promise more than it can pay for.
+   *
+   * A process that **finds** its return sees the draw while it works, so it is
+   * planned against what really fell: a poor draw makes a unit dearer and the
+   * answer is more hands. A **committed** one is planned against an average
+   * year less a little caution, and the real draw then decides the output (E24).
+   */
+  const planningShocks = (process: ProcessDef): Shocks =>
+    process.yield === "found" ? shocks : plannedShocks;
   const sector = state.sectors[sectorId];
 
   const heads = sector?.heads ?? 0;
@@ -505,11 +540,23 @@ export function allocate(input: AllocationInput): AllocationResult {
   const consumed: Record<StockId, number> = {};
   const tierList = index.tiersByRank.filter((tier) => input.unlockedBranches.has(tier.branch));
 
-  // The demand side of a shock (E24): a bad year asks for more, where a process
-  // would deliver less. Same draw, opposite direction — and blind in the same
-  // way: one heats for an average winter, and a hard one hurts. So the plan uses
-  // the planned year and the coverage is reckoned against what the winter really
-  // asked for.
+  // The demand side of a shock (E24): a poor draw asks for more, where a
+  // process would deliver less. Same draw, opposite direction.
+  //
+  // **A need is never blind.** Whether a return is settled in advance is a
+  // property of the process — one sows and cannot answer afterwards — but
+  // nobody settles in advance how cold he will be. Cold, hunger, a coat worn
+  // through are felt while they happen, and the answer is to fetch more wood,
+  // not to freeze at a ration fixed beforehand. So the ask is reckoned against
+  // the draw that really fell, the same one the coverage is measured against.
+  //
+  // Planned against a cautious draw instead, the community heated for a mild
+  // tick and came out short although its plan had been met in full: at a draw
+  // of 0.19 the fire really wants 0.0444 a head where the plan set aside
+  // 0.0313 — half again as much — and at 1.23 it makes an eighth more warmth
+  // than anyone needs, which is then gone, warmth keeping not at all. A hard
+  // cold still hurts, and more honestly: it costs hands for wood, and those
+  // hands are missing elsewhere.
   const perHead = (tier: NeedTierDef, year: Shocks): number => {
     const base = input.tierPerHead.get(tier.id) ?? tier.perHead;
     if (tier.exposure === undefined) return base;
@@ -537,7 +584,7 @@ export function allocate(input: AllocationInput): AllocationResult {
   // bast costs two and a half trees to the fibre, the whole forest went into
   // clothes nobody needed and the community then froze.
   for (const tier of tierList) {
-    const need = heads * perHead(tier, plannedShocks);
+    const need = heads * perHead(tier, shocks);
     if (need <= 1e-9) continue;
     demands.push({ tier, stock: tier.stock, amount: need });
   }
@@ -630,7 +677,7 @@ export function allocate(input: AllocationInput): AllocationResult {
     // wastes the labour. Reaching only the labour used to *free* land in a bad
     // year — measured, use of the wilderness fell from 100 % to 67 % at a draw
     // of 0.66.
-    shockFor: (process: ProcessDef) => shockFactor(process, plannedShocks),
+    shockFor: (process: ProcessDef) => shockFactor(process, planningShocks(process)),
     // Reads the mutable `taking`: empty on the first pass, so the draft costs
     // at the margin, and filled from that draft for the second. It must be the
     // same figure the production loop below charges — planning at the margin
@@ -672,7 +719,7 @@ export function allocate(input: AllocationInput): AllocationResult {
       : undefined;
 
   const draft = byProgram ?? makePlan(demands, planCtx);
-  taking = takingOf(draft.levels, index);
+  taking = takingOf(draft.levels, index, (process) => shockFactor(process, planningShocks(process)));
   const effortPerStock = pricePerStock(standing, taking, index);
   // Now that the tick has said what it means to take, order and plan again with
   // what that taking really costs. The ordering used to sit outside this and
@@ -713,11 +760,20 @@ export function allocate(input: AllocationInput): AllocationResult {
     // What the plan actually commits: enough to reach its target even in the
     // year it cautiously reckons with. In an ordinary year that leaves a
     // surplus, which is the whole point (E24).
-    const margin = shockFactor(process, plannedShocks);
+    const margin = shockFactor(process, planningShocks(process));
     const planned = margin > 0 ? target / margin : target;
     // Cut back to what the inputs actually there allow — the plan was made
     // before the year was known, and the step above it may have fallen short.
-    const effort = effortFactor(process, index, standing, taking);
+    //
+    // **What the plan charged for searching is what is charged here.** Worked
+    // out afresh, the two drift apart, and then the plan is undone in the
+    // doing: the program shares one pool of hands out to the last decimal, so a
+    // process charged more than it was planned for takes what was meant for the
+    // next one, and whoever runs first wins. Measured at seed 42, tick 1 — the
+    // plan held warmth at 0.94 of 0.94 with the wood for it, gathering ran
+    // first and spent those hands, the fire came out at nought and the
+    // community was given up in its first tick.
+    const effort = plan.effortPerProcess?.get(id) ?? effortFactor(process, index, standing, taking);
     const level = planned * feasiblePace(process, planned, pools, effort, index);
     // Labour the plan had earmarked for this process and that it did not take,
     // because the process could not run at the planned level. It is idle, not

@@ -84,6 +84,8 @@ interface Column {
   readonly produces?: StockId;
   /** How much this column can carry at all; Infinity where nothing caps it. */
   readonly ceiling: number;
+  /** What searching cost on this column — kept so the doing charges the same. */
+  readonly effort: number;
 }
 
 /** The natural stock a process draws on, if any — there is never more than one. */
@@ -180,6 +182,7 @@ function column(
     inputs,
     produces,
     ceiling,
+    effort,
     ...(quarry === undefined ? {} : { quarry }),
     ...(step === undefined ? {} : { step }),
   };
@@ -200,6 +203,8 @@ export function planByProgram(input: ProgramInput): Plan {
       // *held* takes nothing, and is tied to the closing balance further down.
       inputs: claim.tier.consumedOnUse > 1e-9 ? new Map([[`stock:${claim.stock}`, 1]]) : new Map(),
       ceiling: claim.amount,
+      // A claim searches for nothing; it only asks.
+      effort: 1,
     });
   }
   const n = columns.length;
@@ -328,13 +333,21 @@ export function planByProgram(input: ProgramInput): Plan {
 
   const levels = new Map<ProcessId, number>();
   const output: Record<StockId, number> = {};
+  // What each process was charged for searching, weighted by how much ran on
+  // each step of the stand. This is the figure the doing must charge too.
+  const weighted = new Map<ProcessId, number>();
   for (let j = 0; j < made; j += 1) {
     const level = answer.levels[j] ?? 0;
     if (level <= 1e-12) continue;
     const col = columns[j]!;
     if (col.process === undefined || col.produces === undefined) continue;
     levels.set(col.process.id, (levels.get(col.process.id) ?? 0) + level);
+    weighted.set(col.process.id, (weighted.get(col.process.id) ?? 0) + level * col.effort);
     output[col.produces] = (output[col.produces] ?? 0) + level;
+  }
+  const effortPerProcess = new Map<ProcessId, number>();
+  for (const [id, level] of levels) {
+    if (level > 1e-12) effortPerProcess.set(id, (weighted.get(id) ?? 0) / level);
   }
 
   const droppedTiers: string[] = [];
@@ -360,5 +373,5 @@ export function planByProgram(input: ProgramInput): Plan {
     }
   }
 
-  return { levels, output, droppedTiers, shortfall };
+  return { levels, output, droppedTiers, shortfall, effortPerProcess };
 }

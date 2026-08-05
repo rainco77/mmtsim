@@ -1482,9 +1482,17 @@ lebensnotwendigen Rang und einen Behaglichkeitsrang darüber geteilt. Nahrung un
 sind beide so gebaut — halbe Rationen sind Hunger, halbes Brennholz ist ein kalter
 Winter.
 
-**Die beiden Grundfaktoren sind reziprok.** Eine Gruppe, deren Bedarfe genau gedeckt
-sind, wächst nicht und schrumpft nicht; sie wächst, wenn es ihr **besser** geht, als sie
-braucht. Das ist der Malthus-Punkt aus E7, exakt definiert statt Gefühlssache.
+**Nur der Puffer trägt das Wachstum.** Die Grundfaktoren waren einmal Kehrwerte
+voneinander, so dass eine Gruppe mit gerade gedeckten Bedarfen stehenblieb. Das ist
+aufgehoben: Wer nur die tödlichen Ränge deckt, **schrumpft** — langsam und ohne dass
+jemand daran stirbt. Gewachsen wird ausschließlich, solange Sättigung und
+Behaglichkeit bedient werden. Das ist der Malthus-Punkt aus E7, und er sitzt jetzt an
+der Stelle, an der er hingehört: nicht am Verhungern, sondern am Verzicht.
+
+Gemessen war der Grund handfest: Mit Kehrwerten blieb die Gruppe stehen, sobald der
+Hunger gedeckt war, und ein schlechter Wurf hatte keine Folge, die über den Tick
+hinausreichte. Jetzt kostet ein Tick ohne Puffer Nachwuchs, und mehrere hintereinander
+kosten Größe.
 
 **Der Regler ist immer genau ein Bedarf.** Die Bevölkerung pendelt sich dort ein, wo
 Überleben × Geburten = 1 wird — und dahin kommt sie, indem sie so lange wächst, bis
@@ -2075,13 +2083,23 @@ Lauf, keine Eindrücke:
 | **Kommt schlechtes Spiel genauso weit wie gutes?** | T4 |
 | Gibt es Zustände ohne Weg zurück? | E20 |
 
-**Der Komfort ist der Puffer, und er muss der richtige sein.** Hunger 1,2 und Sättigung
-0,6 je Kopf heißt: Ein Drittel des Nahrungsbedarfs ist entbehrlich. Ein schlechtes Jahr
+**Der Komfort ist der Puffer, und er muss der richtige sein.** Hunger 0,9 und Sättigung
+0,9 je Kopf heißt: Die Hälfte des Nahrungsbedarfs ist entbehrlich. Ein schlechtes Jahr
 frisst zuerst diesen Teil, und erst wenn es mehr nimmt, sterben Menschen.
 
-Bei 1,0 gegen 0,8 — also 44 % entbehrlich — war eine Hungersnot **unmöglich**: Der
-schlechteste Wurf eines langen Laufs blieb unter dem Polster. Eine Gesellschaft mit
-44 % Luft ist auch keine Subsistenzgesellschaft mehr.
+**Die Hälfte, weil der Abstand zwischen zwei Rängen der Puffer selbst ist.** Gerechnet:
+Bei 1,2 gegen 0,6 liegt zwischen „die Sättigung gibt nach" und „das Feuer geht aus" nur
+der Faktor drei in der Häufigkeit — sobald der Puffer oft genug nachgibt, um spürbar zu
+sein, geht in jedem zwanzigsten Tick das Feuer aus, und das tötet einen großen Teil der
+Gruppe. Bei 0,9 gegen 0,9 wird daraus der Faktor dreißig. Der entbehrliche Teil ist
+nicht Komfort im Nebensatz, er ist der Abstand zwischen Verzicht und Katastrophe.
+
+Weiter als bis zur Hälfte geht es nicht: Bei 1,0 gegen 0,8 — 44 % entbehrlich — war eine
+Hungersnot **unmöglich**, und eine Gesellschaft mit mehr Luft ist keine
+Subsistenzgesellschaft mehr. Extern gestützt ist die Teilung dadurch, dass der
+Grundumsatz eines Menschen etwa zwei Drittel seines Verbrauchs ausmacht und Bewegung
+und Arbeit den Rest, und dadurch, dass Menschen eine lange Strecke auf etwa der Hälfte
+ihrer üblichen Aufnahme überlebt haben — schwer geschädigt, aber lebend.
 
 Wo das Polster liegt, sagt eine Schwelle, die sich ausrechnen lässt und nicht geraten
 werden muss. Geplant wird gegen einen Wurf von 0,9; der Hunger wird also berührt,
@@ -2290,17 +2308,36 @@ Was braucht ein Mensch, damit er nicht stirbt, Kinder bekommt und arbeiten kann.
 
 | Rang | Bedarf | Gut | je Kopf | Wirkung bei Nulldeckung |
 |---|---|---|---|---|
-| 100 | **Hunger** | Nahrung | 1,2 | Überleben **0,10** — neun von zehn sterben |
-| 200 | **Feuer** | Wärme, aus Holz | 0,03 | Überleben **0,40** |
+| 100 | **Hunger** | Nahrung | 0,9 | Überleben **0,10** — neun von zehn sterben |
+| 200 | **Feuer** | Wärme, aus Holz | 0,03 | Überleben **0,75** |
 | 300 | **Kleidung** | Kleidung, aus Fell oder Faser | 0,3 | Arbeitsfähigkeit **0,60** |
 | 400 | *Wohnraum* | Wohnraum | 0,3 | Überleben 0,90 · Geburten ×1,003 bei voller Deckung |
 | 500 | *Vorrat anlegen* | — | — | siehe E19: Ziel ist die Speicherkapazität |
-| 600 | **Sättigung** | Nahrung | 0,6 | Geburten ×1,01 · Produktivität ×1,2 bei voller Deckung |
+| 600 | **Sättigung** | Nahrung | 0,9 | Geburten ×1,01 · Produktivität ×1,2 bei voller Deckung |
 | 700 | **geheizt** | Wärme | 0,07 | Produktivität ×1,1 bei voller Deckung |
 
 *Wohnraum kommt erst mit der Sesshaftigkeit.* Die Ränge stehen in **Hunderterschritten**,
 weil die Projektränge im selben Zahlenraum liegen (E18) — dazwischen bleiben
 neunundneunzig Plätze für sie.
+
+**Der Feuerausfall muss überlebbar sein.** Bei Nulldeckung stand das Überleben einmal
+auf 0,40 — drei Fünftel der Menschen in einem Tick. Aus so etwas erholt sich keine
+Gruppe, und ein Rang, dessen Ausfall das Spiel beendet, lehrt nichts. Bei 0,75 kostet er
+rund ein Viertel: hart genug, dass der Holzvorrat sich lohnt, mild genug, dass die
+Gruppe die Lehre daraus noch anwenden kann. Die Ordnung bleibt: Hunger tötet mit 0,10
+ungleich schneller, denn gegen Kälte helfen Kleidung und Zusammenrücken, gegen fehlende
+Nahrung hilft nichts.
+
+**Die Arbeit je Nahrung ist um die Hälfte teurer als zuerst angesetzt.** Vorher lag die
+Hälfte der Arbeitsfähigkeit dauerhaft brach; damit konnte kein schlechter Wurf wehtun
+und keine Technik sich lohnen, denn eine neue Technik kostet gerade mehr Arbeit, und wo
+Arbeit übrig ist, ist das kein Tausch. Extern gestützt ist die Richtung dadurch, dass
+der niedrige Wert aus der Behauptung von der ursprünglichen Wohlstandsgesellschaft
+stammt und zurückgewiesen wurde, sobald Verarbeitung, Werkzeugbau und Wege mitgezählt
+wurden. Gemessen ist der Betrag: Beim Doppelten setzt sich die Gruppe in der niedrigen
+Lage fest — ohne Sättigung fällt die Produktivität um ein Viertel, und mit weniger
+Arbeit kommt sie nicht mehr heraus, kein Projekt wird je fertig. Bei der Hälfte mehr
+kommt sie heraus, und acht von acht Läufen erreichen die Sesshaftigkeit.
 
 **Wärme steht zweimal darin, und Nahrung auch**, aus demselben Grund (E20): Kälte ist
 eine Schwelle, kein Hang. Halbe Rationen sind Hunger; halbes Brennholz ist ein kalter

@@ -41,6 +41,26 @@ export interface Plan {
   readonly droppedTiers: readonly string[];
   /** Which input stopped the lowest tier that stayed uncovered. */
   readonly shortfall: ReadonlyMap<string, number>;
+  /**
+   * What the plan **charged** each process for searching, so that carrying it
+   * out charges the very same thing.
+   *
+   * Without it the two prices drift apart, and then the plan is undone in the
+   * doing: the ranked program shares one pool of hands out to the last decimal,
+   * so a process that is charged more when it runs than when it was planned
+   * takes what the plan meant for the next one, and whoever runs first wins.
+   * Measured at seed 42, tick 1: the plan had wood and a fire in it — warmth
+   * 0.94 of 0.94 — and gathering, running first, spent the hands meant for
+   * them. The fire came out at nought, three in five of the people died and the
+   * community was given up in its first tick, while the plan on paper had been
+   * right.
+   *
+   * The program knows the figure exactly: a process appears once per step of
+   * the stand it works, each step with its own cost, so what it was charged is
+   * the average over the steps it actually ran on. Recomputing it afterwards
+   * from the totals cannot reproduce that — the steps are gone by then.
+   */
+  readonly effortPerProcess?: ReadonlyMap<ProcessId, number>;
 }
 
 /** An input, named so that labour, area and stock can be handled alike. */

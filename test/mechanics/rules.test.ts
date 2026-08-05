@@ -460,10 +460,11 @@ describe("processes and the fallback level (E5)", () => {
           id: "gathering_safe",
           branch: "food",
           priority: 5,
-          intermediatesPerOutput: { labor: 0.28, plants: 1.0 },
+          intermediatesPerOutput: { labor: 0.42, plants: 1.0 },
           capacityPerOutput: {},
           exposure: { weather: 0.05 },
           qualityWeight: 0.5,
+          yield: "found",
           activity: "gathering",
           unlockedFromStart: true,
         },
@@ -533,10 +534,23 @@ describe("allocation runs rank by rank (E21)", () => {
 });
 
 describe("population (E20)", () => {
-  it("stands when every need is met and nothing is over-met", () => {
-    // Everything is a factor and the two base ones are reciprocal, so a community
-    // whose needs are exactly covered neither grows nor shrinks (E20).
-    expect(STAGE1.population.baseBirthFactor * STAGE1.population.baseSurvival).toBeCloseTo(1, 6);
+  it("grows only when the buffer above the deadly ranks is served (E20)", () => {
+    // The base rates used to be reciprocal, so that a community with the deadly
+    // ranks covered stood still. It no longer stands still: what carries growth
+    // is the buffer — being sated and warm beyond the minimum. With the buffer
+    // gone but nobody dying, the community shrinks, slowly and without a
+    // catastrophe; with it served, it grows. That is the regulator this epoch
+    // is meant to have, and the number it settles at is a matter of balance,
+    // not of this test.
+    const { baseBirthFactor: b, baseSurvival: s } = STAGE1.population;
+    const satiety = STAGE1.needTiers.find((t) => t.id === "food_satiety")!;
+    const comfort = STAGE1.needTiers.find((t) => t.id === "warmth_comfort")!;
+
+    const served = b * (satiety.birthRate?.atFull ?? 1) * (comfort.birthRate?.atFull ?? 1) * s;
+    const starved = b * (satiety.birthRate?.atZero ?? 1) * (comfort.birthRate?.atZero ?? 1) * s;
+
+    expect(served).toBeGreaterThan(1);
+    expect(starved).toBeLessThan(1);
   });
 
   it("shrinks under famine and grows when sated", () => {

@@ -214,6 +214,37 @@ export interface ProcessDef {
   readonly qualityWeight: number;
 
   /**
+   * Whether the draw is known while the work is being done (E24).
+   *
+   * **"found"** — the return shows itself as one goes. A gatherer sees whether
+   * the bushes bear and keeps looking while there is not enough; a hunter sees
+   * whether the herd is there. The plan may therefore reckon with the draw that
+   * really fell: a poor draw makes a unit dearer to find, and the answer to
+   * that is more hands, not sitting still. That is optimal foraging as this
+   * model already invokes it — a falling encounter rate widens the diet and
+   * lengthens the search.
+   *
+   * **"committed"** — the effort goes out before the draw is known and cannot
+   * be taken back. One sows what one means to reap, and what the weather then
+   * makes of it is settled without anybody being able to answer. The plan
+   * reckons with an average year less a little caution, and the difference
+   * lands in the output — which is what makes the plenty of a good draw
+   * unexpected, and unexpected plenty is why stores were invented.
+   *
+   * It belongs to the **process** and not to the model, because both kinds
+   * exist side by side as soon as tillage arrives, and this epoch is entirely
+   * of the first: nobody in it sows.
+   *
+   * > *Measured before this was split:* with every process blind, a poor draw
+   * > left hands idle beside an uncovered rank 100. Over five seeds and 200
+   * > ticks without a single decision, every such tick — ten of them — had a
+   * > draw between 0.19 and 0.43 and reported *nothing* as binding: no
+   * > capacity, no stock. The community sat out the bad tick instead of
+   * > searching harder, which is the one thing a foraging community does not do.
+   */
+  readonly yield: "found" | "committed";
+
+  /**
    * What is being *done* here, as against what comes out (E29).
    *
    * Not the same as the branch: hunting for meat and hunting for hides deliver
