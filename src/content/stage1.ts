@@ -146,16 +146,25 @@ export const STAGE1: Config = {
       // With the price charged as the stand runs down, the figure that decides
       // everything is what the range yields per head: `need ÷ (ground per head
       // × density)` is the share taken at the start, and the head count cancels
-      // out of it. At 6.0 that share was a half, so twenty-five people already
-      // paid 1.38 for their food on wholly untouched country and the room to
-      // grow ran out at about thirty-three — seventy-seven per cent of what the
-      // range carried, with almost no space in which the epoch's story could
-      // happen at all. At 8.0 they start at three eighths and 1.25, and the
-      // room reaches to about forty-four.
+      // out of it. At 8.0 the two food ranks together take three eighths of it
+      // and the room to grow reaches to about forty-five.
       //
-      // It is also nearer what is claimed of foragers: they sat at a fifth to
-      // two fifths of what their land could have carried (Kelly), not at three
-      // quarters of it.
+      // **It stands at 4.8, and the room to grow is what the figure is for.**
+      // At 8.0 a community that decides nothing grows to about forty-five and
+      // sits there — and over twenty seeds and three hundred ticks the rank
+      // that kills was **never once short**, the sharpest fall in a single tick
+      // being two per cent. A range that cannot produce a hunger leaves the
+      // store nothing to do, and with the store the whole road out of the
+      // epoch: one digs a pit against a bad tick one has lived through, not
+      // against one the range can no longer deliver.
+      //
+      // At 4.8 the same measurement gives about twenty-seven, staying near the
+      // band it starts in, and the rank that kills goes short in four ticks in
+      // a hundred. That is the group as it is taken up: it has lived on this
+      // range for generations and is at its resting point, not on its way to
+      // one — E14's sentence that the group sits *at* the carrying capacity of
+      // its land and not far below it. It also keeps the community near the
+      // size a band actually has.
       //
       // The upper end is not set here and cannot be: it is wherever food comes
       // to need every hand. Every labour-saving technique lifts it — with the
@@ -168,18 +177,20 @@ export const STAGE1: Config = {
       regrowth: {
         ratePerTick: 4.0,
         capacity: "wilderness",
-        densityPerArea: 8.0,
+        densityPerArea: 4.8,
         refuge: 3,
         maxEffort: 30,
       },
     },
     {
+      // Cut with the greens and for the same reason: the range has to be able
+      // to run short, or nothing in the epoch has anything to answer.
       id: "game",
       decayPerTick: 0,
       regrowth: {
         ratePerTick: 0.3,
         capacity: "wilderness",
-        densityPerArea: 3.0,
+        densityPerArea: 1.8,
         refuge: 2,
         maxEffort: 30,
       },
@@ -232,12 +243,14 @@ export const STAGE1: Config = {
       },
     },
     {
+      // Cut with the rest of what the country carries — the water is the
+      // steadier road, not a richer one.
       id: "fish",
       decayPerTick: 0,
       regrowth: {
         ratePerTick: 0.4,
         capacity: "water",
-        densityPerArea: 4.0,
+        densityPerArea: 2.4,
         refuge: 2,
         maxEffort: 30,
       },
@@ -255,7 +268,7 @@ export const STAGE1: Config = {
       regrowth: {
         ratePerTick: 0.35,
         capacity: "water",
-        densityPerArea: 10.0,
+        densityPerArea: 6.0,
         refuge: 3,
         maxEffort: 30,
       },
@@ -347,7 +360,7 @@ export const STAGE1: Config = {
       priority: 100,
       capacityPerOutput: {},
       intermediatesPerOutput: { labor: 0.42, plants: 1.0 },
-      exposure: { weather: 0.7 },
+      exposure: { weather: 0.88 },
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
       yield: "found",
@@ -364,7 +377,7 @@ export const STAGE1: Config = {
       priority: 105,
       capacityPerOutput: {},
       intermediatesPerOutput: { labor: 0.273, plants: 0.7 },
-      exposure: { weather: 0.7 },
+      exposure: { weather: 0.88 },
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
       yield: "found",
@@ -390,7 +403,7 @@ export const STAGE1: Config = {
       priority: 103,
       capacityPerOutput: {},
       intermediatesPerOutput: { labor: 0.42, plants: 0.75 },
-      exposure: { weather: 0.7 },
+      exposure: { weather: 0.88 },
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
       yield: "found",
@@ -405,7 +418,7 @@ export const STAGE1: Config = {
       priority: 90,
       capacityPerOutput: {},
       intermediatesPerOutput: { labor: 0.675, game: 1.0 },
-      exposure: { weather: 0.8 },
+      exposure: { weather: 0.92 },
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
       yield: "found",
@@ -418,7 +431,7 @@ export const STAGE1: Config = {
       priority: 95,
       capacityPerOutput: {},
       intermediatesPerOutput: { labor: 0.405, game: 1.0 },
-      exposure: { weather: 0.8 },
+      exposure: { weather: 0.92 },
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
       yield: "found",
@@ -653,7 +666,12 @@ export const STAGE1: Config = {
       priority: 100,
       capacityPerOutput: {},
       intermediatesPerOutput: { labor: 0.3, game: 1.0 },
-      exposure: { weather: 0.8 },
+      // The same hunt as the one that brings meat, on the same range and out of
+      // the same herd, so it hangs on the draw exactly as hard. Left behind at a
+      // lower figure it would turn *relatively* cheaper in a poor tick, and
+      // clothing would move towards hides just as the herd thinned — the
+      // opposite of what the two roads above are built to say.
+      exposure: { weather: 0.92 },
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
       yield: "found",
@@ -809,10 +827,20 @@ export const STAGE1: Config = {
       // this rank fully covered.
       perHead: 0.9,
       consumedOnUse: 1,
-      // Without any food at all, nine in ten are gone. Twenty per cent short of
-      // the bare ration costs eighteen per cent — the order of magnitude of a
-      // historical famine.
-      survival: { atZero: 0.1, atFull: 1 },
+      // **How hard a shortfall lands, not how often one happens.** With the draw
+      // reaching far enough down to produce a hunger several times over an epoch
+      // (see `shocks`), what this figure decides is whether such a tick is a
+      // setback or the end of the community. At 0.1 it was the end: one deep
+      // draw took most of the people at once, and a crisis nobody survives
+      // teaches nothing, because there is no afterwards in which the pit one
+      // failed to dig would have helped.
+      //
+      // At 0.65 a tick with nothing to eat costs a third. Measured over twenty
+      // seeds and three hundred ticks, the sharpest fall in a single tick is
+      // twenty-seven per cent and all twenty communities are still there at the
+      // end. That is the shape the epoch wants: a crisis with a before, a during
+      // and an after — the group is smaller afterwards, and it goes on.
+      survival: { atZero: 0.65, atFull: 1 },
     },
     {
       // Fire, in the amount it takes not to freeze. Small, and high in the
@@ -836,9 +864,15 @@ export const STAGE1: Config = {
       branch: "warmth",
       perHead: 0.03,
       consumedOnUse: 1,
-      // No fire at all in a Mesolithic winter kills a great many — less than
-      // starving, because clothing and huddling take part of it.
-      survival: { atZero: 0.75, atFull: 1 },
+      // No fire at all in a Mesolithic winter kills — less than starving,
+      // because clothing and huddling take part of it, and now much less again.
+      // The fire fails in the same tick as the food, both hanging on the one
+      // draw and hunger claiming every hand first; charged heavily it therefore
+      // did not add to the crisis, it *was* the crisis, and the community died
+      // of cold while it was still feeding itself. At 0.94 the fire going out
+      // costs six per cent, and the deaths of a bad tick are the hunger's, which
+      // is where the epoch means them to be.
+      survival: { atZero: 0.94, atFull: 1 },
     },
     {
       // Clothing does not kill, it costs *work ability* (E16). The honest
@@ -1493,7 +1527,23 @@ export const STAGE1: Config = {
     minimumViableSize: 12,
   },
 
-  shocks: { weather: { shape: "powerLeftSkewed", exponent: 4 } },
+  // **How often the draw goes deep enough to matter.** The shape is fixed by
+  // E24 — mean one, an upper bound, a long left tail — and the exponent says how
+  // long that tail is: `P(draw < x) = (x / scale)^exponent` with
+  // `scale = (exponent + 1) / exponent`.
+  //
+  // At 4 a draw below a half comes up in one tick in thirty-eight. Over an epoch
+  // a community leaves in something under two hundred ticks that is a handful of
+  // deep draws at best, and measured it was none at all: the rank that kills was
+  // never short in three hundred. A store is dug against a bad tick one has
+  // lived through — if the epoch can be crossed without ever living through one,
+  // nothing asks for it.
+  //
+  // At 2 it is one tick in nine, so a community meets several before it can
+  // settle, and each is survivable rather than final (see the survival of rank
+  // 100). The price is that the good side widens too: the draw now reaches 1.5
+  // instead of 1.25.
+  shocks: { weather: { shape: "powerLeftSkewed", exponent: 2 } },
 
   // Risk aversion: how strongly a thin store pushes towards the reliable
   // process (E5). Caution: how far below the mean the plan aims, so that an

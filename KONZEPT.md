@@ -868,7 +868,19 @@ die Erholung dauert — die Sterberate bei Hunger und die Geburtenrate.
 Beides gehört deshalb zusammen austariert, und die Zahl folgt aus den Koeffizienten der
 Epoche — sie muss jedes Mal neu gemessen werden, wenn die sich ändern. Gemessen wird sie
 an einer Siedlung, die **nichts entscheidet**: Wo deren Bevölkerung stehen bleibt, das
-ist die Tragfähigkeit des Reviers, und sie soll nahe bei fünfzig liegen.
+ist die Tragfähigkeit des Reviers.
+
+**Sie soll dort liegen, wo die Gemeinschaft anfängt.** Wer die Gruppe übernimmt,
+übernimmt keine, die eben erst in die Welt gesetzt wurde: Sie lebt seit Generationen auf
+diesem Revier und steht an dessen Tragfähigkeit — genau das, was weiter oben über die
+Startaufstellung steht. Ohne jede Entscheidung soll sie deshalb ungefähr bleiben, wo sie
+ist, und nicht von allein auf das Doppelte wachsen. Gemessen liegt sie bei rund
+siebenundzwanzig gegen eine Startgruppe von fünfundzwanzig.
+
+> *Hier stand vorher „sie soll nahe bei fünfzig liegen".* Das war die Zahl aus der Zeit,
+> als die Startgruppe fünfzig war; mit einer Gruppe von fünfundzwanzig hieße es, dass sich
+> die Gemeinschaft ohne einen einzigen Handgriff verdoppelt — und dann hat das Wachstum
+> nichts mehr mit dem Spielen zu tun.
 
 | Revier | Plateau ohne Entscheidungen | ungenutzte Arbeit |
 |---|---|---|
@@ -1925,10 +1937,24 @@ niemand — es wäre Rauschen ohne Entscheidung, und Rauschen verdeckt in einem 
 ob eine Entscheidung gewirkt hat. Angewandt wird sie multiplikativ in der
 Produktionsphase.
 
-**Die Verteilung hat einen langen linken Rand:** Mittelwert 1, eine Obergrenze, seltene
-starke Ausfälle nach unten. Das ist die empirisch richtige Form — Ernten haben eine
-biologische Obergrenze, aber nach unten kein Gegenstück; es gibt Missernten, aber keine
-Ernten mit dreifachem Ertrag. Eine symmetrische Streuung wäre die unrealistischere Wahl.
+**Die Verteilung hat einen langen linken Rand:** Mittelwert 1, eine Obergrenze, starke
+Ausfälle nach unten. Das ist die empirisch richtige Form — Ernten haben eine biologische
+Obergrenze, aber nach unten kein Gegenstück; es gibt Missernten, aber keine Ernten mit
+dreifachem Ertrag. Eine symmetrische Streuung wäre die unrealistischere Wahl.
+
+**Wie lang der Rand ist, entscheidet, ob die Epoche ihre Krise überhaupt bekommt.** Die
+Wahrscheinlichkeit ist `P(Wurf < x) = (x / Maßstab)^Exponent` mit
+`Maßstab = (Exponent + 1) / Exponent`. Bei einem Exponenten von 4 fällt der Wurf in einem
+von achtunddreißig Ticks unter die Hälfte — auf einer Strecke von wenigen hundert Ticks
+also eine Handvoll Mal, und gemessen kein einziges Mal so, dass der tödliche Rang knapp
+wurde. Eine Epoche, die sich ohne eine einzige erlebte Not durchqueren lässt, verlangt
+keinen Vorrat, und ohne Vorrat gibt es keinen Weg hinaus.
+
+Bei einem Exponenten von 2 ist es jeder neunte Tick. Damit erlebt eine Gemeinschaft
+mehrere Nöte, bevor sie sesshaft werden kann — und jede davon ist zu überstehen statt
+endgültig, weil die Überlebenszahl des Hungers das trägt (E29). Der Preis ist, dass auch
+die gute Seite breiter wird: Der Wurf reicht dann bis 1,5 statt bis 1,25. Häufigkeit und
+Härte gehören deshalb immer zusammen eingestellt, nie einzeln.
 
 Daraus folgt: **kein zweiter Mechanismus für Missernten.** Eine Missernte ist der linke
 Rand derselben Verteilung, kein eigenes Ereignissystem. Die genaue Kurve ist Balancing.
@@ -2043,7 +2069,14 @@ sobald der Ertrag unter seinen Anteil an den 1,8 fällt:
 |---|---|---|
 | 1,4 / 0,4 (ein Fünftel entbehrlich) | 0,70 | jeder 10. Tick |
 | 1,2 / 0,6 (ein Drittel entbehrlich) | 0,60 | jeder 19. Tick |
-| dazu Sammeln mit Exposition 0,7 | **0,46** | **jeder 56. Tick** |
+| dazu Sammeln mit Exposition 0,7 | 0,46 | jeder 56. Tick |
+| **0,9 / 0,9, Exposition 0,88, Exponent 2** | **0,38** | **jeder 15. Tick** |
+
+Die letzte Zeile ist der Stand. Die Häufigkeit steigt gegenüber der Zeile darüber um das
+Dreieinhalbfache — nicht weil das Polster kleiner wäre, sondern weil der linke Rand der
+Verteilung länger geworden ist (E24) und das Sammeln härter am Wurf hängt. Gemessen über
+zwanzig Seeds und dreihundert Ticks kommt der tödliche Rang in vier von hundert Ticks zu
+kurz; die Rechnung und die Messung sagen dasselbe.
 
 Gespielt bei 1,4 / 0,4: Zwei Würfe, 0,44 bei Tick 73 und 0,24 bei Tick 81, kosteten
 28 % und 52 % der Menschen und beendeten den Lauf. Dieselben Würfe kosten mit dem
@@ -2234,8 +2267,12 @@ Vorrat übrig, und heraus kommt eine Gesellschaft, die satt, nackt und frierend 
 > waren im Mittel gut ernährt (Sahlins). Der Hunger ist die **Krise**, nicht der Alltag.
 
 **Epoche „Jäger und Sammler".** Auf dem Bildschirm: Bevölkerung, Wildnis, Nahrung,
-Deckung von Rang 100 und Rang 300. Kein Wohnraum, kein Holz, keine erschlossene Fläche,
-kein Vorrat.
+Deckung von Rang 100 und Rang 600 — Hunger und Sättigung, die beiden Nahrungsränge. Kein
+Wohnraum, kein Holz, keine erschlossene Fläche, kein Vorrat.
+
+> *Hier stand „Rang 100 und Rang 300".* Rang 300 ist der Wohnraum, und derselbe Satz sagt
+> zwei Zeilen weiter, dass es in dieser Epoche keinen gibt. Gemeint war der zweite
+> Nahrungsrang.
 
 Verfahrenskette der Branche Nahrung über das ganze Spiel:
 `Sammeln` → `Ackerbau` → `Pflug` → `Maschinell`
@@ -2249,10 +2286,10 @@ Was braucht ein Mensch, damit er nicht stirbt, Kinder bekommt und arbeiten kann.
 
 | Rang | Bedarf | Gut | je Kopf | Wirkung bei Nulldeckung |
 |---|---|---|---|---|
-| 100 | **Hunger** | Nahrung | 0,9 | Überleben **0,10** — neun von zehn sterben |
-| 200 | **Feuer** | Wärme, aus Holz | 0,03 | Überleben **0,75** |
-| 300 | **Kleidung** | Kleidung, aus Fell oder Faser | 0,3 | Arbeitsfähigkeit **0,60** |
-| 400 | *Wohnraum* | Wohnraum | 0,3 | Überleben 0,90 · Geburten ×1,003 bei voller Deckung |
+| 100 | **Hunger** | Nahrung | 0,9 | Überleben **0,65** — ein Drittel stirbt |
+| 200 | **Feuer** | Wärme, aus Holz | 0,03 | Überleben **0,94** |
+| 300 | *Wohnraum* | Wohnraum | 0,3 | Überleben 0,90 · Geburten ×1,003 bei voller Deckung |
+| 400 | **Kleidung** | Kleidung, aus Fell oder Faser | 0,3 | Arbeitsfähigkeit **0,60** |
 | 500 | *Vorrat anlegen* | — | — | siehe E19: Ziel ist die Speicherkapazität |
 | 600 | **Sättigung** | Nahrung | 0,9 | Geburten ×1,01 · Produktivität ×1,2 bei voller Deckung |
 | 700 | **geheizt** | Wärme | 0,07 | Produktivität ×1,1 bei voller Deckung |
@@ -2260,6 +2297,24 @@ Was braucht ein Mensch, damit er nicht stirbt, Kinder bekommt und arbeiten kann.
 *Wohnraum kommt erst mit der Sesshaftigkeit.* Die Ränge stehen in **Hunderterschritten**,
 weil die Projektränge im selben Zahlenraum liegen (E18) — dazwischen bleiben
 neunundneunzig Plätze für sie.
+
+**Wohnraum steht über der Kleidung, und zwar nach dem, was ihr Ausfall kostet.** Kein Dach
+nimmt ein Zehntel der Menschen, keine Kleidung nimmt niemanden, kostet aber die Kraft zu
+arbeiten. Der tödliche Rang geht vor — die beiden standen einmal umgekehrt und wurden
+getauscht, als sie nebeneinander gelesen wurden.
+
+**Die beiden Überlebenszahlen sagen, wie hart eine Not landet — nicht, wie oft eine
+eintritt.** Wie oft, sagt die Verteilung der Würfe (E24); wie hart, sagen diese Zahlen,
+und beide gehören zusammen eingestellt. Ein tiefer Wurf, der die Gemeinschaft auf einmal
+zerreißt, lehrt nichts: Es gibt kein Danach, in dem die nicht gegrabene Grube geholfen
+hätte. Deshalb steht der Hunger bei 0,65 und nicht bei 0,10 — ein Tick ohne Essen kostet
+ein Drittel der Menschen, und die Krise hat ein Vorher, ein Währenddessen und ein Nachher.
+
+**Und das Feuer trägt die Not nicht, es begleitet sie.** Es fällt im selben Tick aus wie
+die Nahrung, weil beide am selben Wurf hängen und der Hunger jede Hand zuerst nimmt.
+Schwer bewertet war es deshalb nicht ein Teil der Krise, sondern *die* Krise — die
+Gemeinschaft erfror, während sie sich noch ernährte. Bei 0,94 kostet ein ausgefallenes
+Feuer sechs Hundertstel, und die Toten eines schlechten Ticks sind die des Hungers.
 
 **Der Feuerausfall muss überlebbar sein.** Bei Nulldeckung stand das Überleben einmal
 auf 0,40 — drei Fünftel der Menschen in einem Tick. Aus so etwas erholt sich keine
