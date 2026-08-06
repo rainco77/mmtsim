@@ -174,6 +174,50 @@ Kriterien *nicht* verbessert hat.
 
 ---
 
+## Wie ein Tickverlauf ausgegeben wird
+
+Sobald Ticks gezeigt werden, gilt dieses Format — sofern nicht ausdrücklich etwas anderes
+verlangt wird. Eine Tabelle, nicht mehrere. Eine Zeile je Tick **und Bedarfsrang**, dazu je
+Tick eine Zeile für die Arbeit, die niemand abgerufen hat:
+
+| Tick | Wurf | Bev. | Bedarf | Deckung | Arbeit | Suchkosten | Bestand |
+|---|---|---|---|---|---|---|---|
+| 34 | 0.59 | 47.25 → 47.24 | 100 Hunger | 1.00 | 60.0 % | Pflanzen 2.39 (Stand 120.00/120.00, +0.00) · Fisch 2.27 (Stand 14.02/24.00, +2.66) | food 0.00 |
+| | | | 200 Feuer | 1.00 | 4.5 % | Totholz 1.31 (Stand 115.68/150.00, +5.38) | warmth 0.00 |
+| | | | 400 Kleidung | 1.00 | 6.0 % | Wild 1.86 (Stand 29.94/45.00, +3.21) | clothing 16.17 |
+| | | | 600 Sättigung | 0.98 | 29.5 % | Pflanzen 2.39 · Fisch 2.27 · Wild 1.86 | food 0.00 |
+| | | | 700 Behaglichkeit | 0.00 | 0.0 % | Totholz 1.31 | warmth 0.00 |
+| | | | *frei* | | 0.0 % | | |
+| 35 **aufgegeben** | 0.44 | 47.24 → 5.39 | … | | | | |
+
+Was in die Spalten gehört:
+
+| | |
+|---|---|
+| **Tick** | die Ticknummer, einmal je Tick — und **aufgegeben**, wo der Lauf endet |
+| **Wurf** | der Zufallswurf dieses Ticks, je Strom |
+| **Bev.** | Kopfzahl zu Beginn **und** am Ende. Nur mit beiden ist der Tick zu sehen, in dem die Bevölkerung einbricht |
+| **Bedarf** | **jeder** Rang, mit seiner Rangzahl, in der Rangfolge — auch die auf 1,00, auch die, die nichts bekommen. Steht eine Vorratsvorgabe, bekommt sie eine eigene Zeile |
+| **Deckung** | was der Rang bekommen hat, geteilt durch das, was er verlangt hat |
+| **Arbeit** | Anteil der Arbeitsleistung dieses Ticks, der in diesen Rang geflossen ist, samt der Vorleistungen dahinter |
+| **Suchkosten** | je Revier, aus dem sich der Rang speist: der Suchpreis dieses Ticks, dazu Stand und Zuwachs des Reviers, damit Erholung sichtbar ist. Ein Revier, das der Tick nicht angerührt hat, fehlt |
+| **Bestand** | der Bestand des Guts hinter diesem Rang am Tickende |
+| ***frei*** | die Arbeitsleistung, die kein Verfahren und kein Projekt abgerufen hat |
+
+**Welche Ticks gezeigt werden:** nicht der ganze Lauf, sondern der Tick, an dem zwei Läufe
+**auseinanderlaufen**, und der Tick, an dem ein Lauf **aufgegeben** wird — jeweils mit drei
+davor und drei danach. Gekürzt wird über die Auswahl der Ticks, **nie innerhalb eines
+Ticks**: Jeder gezeigte Tick steht vollständig da, mit allen Rängen und allen Spalten.
+
+**Ein Vergleich sind zwei Tabellen desselben Zuschnitts**, nicht eine Tabelle und eine
+Zusammenfassung daneben. Bei gleichem Seed ist die Wurffolge identisch, also sind die Ticks
+Zeile für Zeile vergleichbar.
+
+**Und die Tabelle steht in der Antwort.** Werkzeugausgaben sind auf der anderen Seite nicht
+sichtbar; ein Verweis auf eine Tabelle, die nur dort steht, ist keine Antwort.
+
+---
+
 ## Wann gebaut wird und wann nicht
 
 **Während eine Diskussion läuft, wird nichts gebaut.** Auch nicht, wenn in derselben

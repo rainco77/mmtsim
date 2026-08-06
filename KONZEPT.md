@@ -835,13 +835,13 @@ Eine Gemeinschaft unter zwölf stirbt übrigens nicht aus — sie schließt sich
 Als *diese* Gemeinschaft ist sie vorbei, und das genügt: eine weitere Regel dafür braucht es
 nicht. Die Gruppe sitzt *an* der
 Tragfähigkeit ihres Landes, nicht weit darunter — das ist die Lage einer
-Wildbeutergemeinschaft, und nur so ist ein schlechtes Jahr existentiell, lohnt Vorratshaltung
+Wildbeutergemeinschaft, und nur so ist ein schlechter Tick existentiell, lohnt Vorratshaltung
 und entsteht Druck zur Intensivierung. Mit einem Revier, das ein Vielfaches des Bedarfs
-hergibt, drückt jahrhundertelang nichts, und dann hat weder der Speicher noch die Rodung
+hergibt, drückt über hunderte Ticks nichts, und dann hat weder der Speicher noch die Rodung
 eine Aufgabe.
 
-**Aber „an der Tragfähigkeit" heißt: an der eines *leicht* schlechten Jahres.** Wörtlich
-am Durchschnittsjahr genommen wäre nie etwas übrig — kein Vorrat, kein Projekt, keine
+**Aber „an der Tragfähigkeit" heißt: an der eines *leicht* schlechten Ticks.** Wörtlich
+am Durchschnitt genommen wäre nie etwas übrig — kein Vorrat, kein Projekt, keine
 Entwicklung, und die Epoche wäre unspielbar. Die Bevölkerung von Wildbeutern pendelt sich
 auch tatsächlich nicht am Mittel ein, sondern an dem, was die mageren Jahre zulassen;
 genau deshalb war in guten Jahren etwas übrig, und genau davon handelt der *normal
@@ -850,19 +850,19 @@ surplus* von Halstead und O'Shea.
 Daraus wird ein **messbares Ziel** für das Austarieren, und zugleich der Prüfstein für
 die Lehre der Epoche:
 
-| Jahr | ohne Speicher | mit Speicher |
+| Tick | ohne Speicher | mit Speicher |
 |---|---|---|
 | leicht schlecht (Wurf um 0,85) | niemand stirbt | — |
 | **sehr schlecht (Wurf um 0,50)** | **Menschen sterben** | **niemand stirbt** |
 
-Das schlechte Jahr muss also **wehtun, solange es keinen Speicher gibt** — und der
+Der schlechte Tick muss also **wehtun, solange es keinen Speicher gibt** — und der
 Speicher ist genau das, was aus „es sterben Menschen" ein „es wird knapp" macht. Fällt
 die erste Zeile aus, hat der Speicher keine Aufgabe; fällt die zweite aus, hat er keine
 Wirkung.
 
 **Die Stellschrauben dafür sind nicht die Wachstumsgeschwindigkeit.** Wie schnell die
 Bevölkerung wächst, verschiebt nur, wann das Gleichgewicht erreicht ist, nicht wo es
-liegt. Wo es liegt, hängt daran, wie hart ein schlechtes Jahr zurückwirft und wie lange
+liegt. Wo es liegt, hängt daran, wie hart ein schlechter Tick zurückwirft und wie lange
 die Erholung dauert — die Sterberate bei Hunger und die Geburtenrate.
 
 Beides gehört deshalb zusammen austariert, und die Zahl folgt aus den Koeffizienten der
@@ -1246,7 +1246,7 @@ Gemeinschaft nahm weiter, bis der Stand kippte.
 
 **Ein Speicher ist ein Rückfall, keine erste Quelle — und das entscheidet sich beim
 Planen, nicht beim Austeilen.** Nachgefragt wird immer der **volle** Bedarf, gerechnet
-gegen ein normales Jahr mit etwas Vorsicht. Andersherum — Bedarfe ziehen schon beim
+gegen einen normalen Tick mit etwas Vorsicht. Andersherum — Bedarfe ziehen schon beim
 Planen den Vorrat ab und bestellen nur den Rest — beginnt jeder Tick damit, den Speicher
 aufzuessen, und endet damit, ihn wieder zu füllen; er steht dann dauerhaft bei *einem*
 Tick Ersparnis, wie groß die Gruben auch sind.
@@ -1457,7 +1457,7 @@ Mindestgröße, gilt die Siedlung als aufgegeben und der Lauf ist zu Ende.
 
 Das ist kein Zugeständnis an die Spielbarkeit, sondern fachlich das Richtigere: Eine
 Gemeinschaft unterhalb einer bestimmten Größe ist nicht überlebensfähig — keine
-Arbeitsteilung, kein Puffer gegen ein schlechtes Jahr, kein Ersatz für Ausfälle.
+Arbeitsteilung, kein Puffer gegen einen schlechten Tick, kein Ersatz für Ausfälle.
 **Mindestlebensfähige Größe** ist ein etablierter Begriff, und historisch wurden zu
 klein gewordene Siedlungen aufgegeben oder gingen in anderen auf. Bis auf den letzten
 Menschen zu rechnen wäre die unrealistischere Variante.
@@ -1825,16 +1825,16 @@ mit seiner **eigenen Empfindlichkeit** reagiert:
 | Waldwirtschaft | gering |
 | Bau | keine |
 
-Ein gemeinsamer Wurf statt einer je Branche, weil **Wetter gemeinsam ist**: Ein schlechtes
-Jahr trifft Acker und Waldwirtschaft zusammen, nur unterschiedlich stark. Bei
+Ein gemeinsamer Wurf statt einer je Branche, weil **Wetter gemeinsam ist**: Ein schlechter
+Tick trifft Acker und Waldwirtschaft zusammen, nur unterschiedlich stark. Bei
 unabhängigen Würfen wäre genau das unmöglich. Nebenbei ergibt es eine lesbare Zahl („ein
-schlechtes Jahr") statt eines Bündels unsichtbarer Störungen.
+schlechter Tick") statt eines Bündels unsichtbarer Störungen.
 
-**Der Wurf senkt den Ausstoß, nicht einen einzelnen Input.** Ein Verfahren hatte ein
-schlechtes Jahr oder nicht; was hineinging, ist dann für weniger Ertrag verbraucht — alle
+**Der Wurf senkt den Ausstoß, nicht einen einzelnen Input.** Ein Verfahren hatte einen
+schlechten Tick oder nicht; was hineinging, ist dann für weniger Ertrag verbraucht — alle
 Inputkoeffizienten steigen gemeinsam.
 
-**Und der Plan kennt den Wurf nicht.** Geplant wird auf ein **durchschnittliches Jahr**;
+**Und der Plan kennt den Wurf nicht.** Geplant wird auf einen **durchschnittlichen Tick**;
 die Vorleistungen werden **verbraucht wie geplant** — man ist losgezogen und hat die Tage
 mit Suchen verbracht —,
 und der **Ertrag** ergibt sich aus dem echten Wurf. Die Nachfrageseite ebenso: geheizt
@@ -1842,20 +1842,20 @@ wird für einen mittleren Winter, ein harter tut weh.
 
 > *Befund aus der Umsetzung:* Vorher fiel der Wurf in einer Phase **vor** der Planung und
 > wurde der Zuteilung übergeben. Das war Hellsehen, und es hatte eine Folge, die lange
-> unerklärt blieb: In einem guten Jahr deckte der Plan denselben Bedarf mit *weniger
+> unerklärt blieb: In einem guten Tick deckte der Plan denselben Bedarf mit *weniger
 > Arbeit*, statt mehr zu ernten. **Es konnte also nie ein Überschuss entstehen** —
 > gemessen standen Holz, Faser und Felle über sechzig Ticks gemeinsam auf 0,00, der
-> Speicher hatte nichts zu bewahren, und der Rückschlag eines schlechten Jahres kam
+> Speicher hatte nichts zu bewahren, und der Rückschlag eines schlechten Ticks kam
 > allein daher, dass die Arbeit ausging.
 >
-> Man zieht los, und danach entscheidet das Jahr, was man findet; der Aufwand ist so oder
+> Man zieht los, und danach entscheidet der Tick, was man findet; der Aufwand ist so oder
 > so ausgegeben. (Gesät wird erst in der nächsten Epoche — das Bild gehört nicht hierher.)
-> **Der unerwartete Überfluss guter Jahre ist
+> **Der unerwartete Überfluss guter Ticks ist
 > der Grund, warum Speicher erfunden wurden**, und er kann nicht existieren, wo niemand
 > überrascht wird.
 
 **Ein blinder Plan braucht ein Teiltempo eine Stufe früher.** Hat ein Verfahren weiter
-oben ein schlechtes Jahr, fehlt der Stufe darunter ihre Vorleistung; sie läuft dann so
+oben einen schlechten Tick, fehlt der Stufe darunter ihre Vorleistung; sie läuft dann so
 weit, wie das Vorhandene trägt — dieselbe Regel wie bei einem Projekt, dem eine Zutat
 fehlt (E18). Die dabei nicht abgerufene Arbeit steht still und wird als **ungenutzt**
 gebucht, nicht als Arbeit für Projekte.
@@ -1875,7 +1875,7 @@ Lagerzyklen.
 > getroffen wird als jeder andere Input.
 
 **Zufall trifft Angebot oder Nachfrage — beides.** Ein schlechter Wurf senkt den Ertrag
-eines Verfahrens *und* hebt den Bedarf, der am selben Wetter hängt: Ein kaltes Jahr
+eines Verfahrens *und* hebt den Bedarf, der am selben Wetter hängt: Ein kalter Tick
 bringt weniger Holz und verlangt zugleich mehr davon. Deshalb erklärt auch eine
 **Bedarfsstufe** ihre Empfindlichkeit je Strom, so wie ein Verfahren es tut.
 
@@ -1883,7 +1883,7 @@ bringt weniger Holz und verlangt zugleich mehr davon. Deshalb erklärt auch eine
 das Vorzeichen stolpert: Beim Verfahren *senkt* ein schlechter Wurf den Ertrag, beim
 Bedarf *hebt* er ihn.
 
-Das ist es, was ein schlechtes Jahr gefährlich macht: Not addiert sich nicht, sie
+Das ist es, was einen schlechten Tick gefährlich macht: Not addiert sich nicht, sie
 verstärkt sich. Historisch ist genau das der Zusammenhang — Kältejahre brachten
 Hungersnot und Brennstoffnot zugleich, und die Arbeit fürs Holz fehlte dann bei der
 Nahrung.
@@ -1894,8 +1894,8 @@ weiterer Fall auftaucht:
 | Angriffspunkt | Beispiel | |
 |---|---|---|
 | Ertrag eines Verfahrens | schlechte Ernte | gebaut |
-| Bedarf je Kopf | kaltes Jahr braucht mehr Holz | gebaut |
-| Verfall eines Bestands | nasses Jahr lässt Korn verderben | zweitrangig; die Vorratsgeschichte trägt ohne |
+| Bedarf je Kopf | kalter Tick braucht mehr Holz | gebaut |
+| Verfall eines Bestands | nasser Tick lässt Korn verderben | zweitrangig; die Vorratsgeschichte trägt ohne |
 | Kapazität, Geburten, Tode | Hochwasser, Seuche | anderer Mechanismus, siehe unten |
 | Projekte, Bodengüte | Einsturz, Schwemmland | kein überzeugender Fall |
 
@@ -2044,7 +2044,7 @@ Lauf, keine Eindrücke:
 | Gibt es Zustände ohne Weg zurück? | E20 |
 
 **Der Komfort ist der Puffer, und er muss der richtige sein.** Hunger 0,9 und Sättigung
-0,9 je Kopf heißt: Die Hälfte des Nahrungsbedarfs ist entbehrlich. Ein schlechtes Jahr
+0,9 je Kopf heißt: Die Hälfte des Nahrungsbedarfs ist entbehrlich. Ein schlechter Tick
 frisst zuerst diesen Teil, und erst wenn es mehr nimmt, sterben Menschen.
 
 **Die Hälfte, weil der Abstand zwischen zwei Rängen der Puffer selbst ist.** Gerechnet:
@@ -2183,7 +2183,7 @@ Anteil und Preis lässt sich daraus die Kopfzahl am Ruhepunkt zurückrechnen.
 **4. Was ein Bestand dauerhaft hergibt.** Die logistische Kurve hat ihr Maximum bei halber
 Decke: `Rate × Decke ÷ 4`. Wird mehr genommen, fällt der Stand, bis der Preis die
 Entnahme bremst. Bei Rate 4 ist dieses Maximum ungefähr so groß wie die Decke selbst —
-deshalb nimmt eine Gemeinschaft von einem Jahreswuchs zwangsläufig den größten Teil, und
+deshalb nimmt eine Gemeinschaft von einem Zuwachs je Tick zwangsläufig den größten Teil, und
 das ist bei einem Wuchs richtig und bei einer Herde alarmierend.
 
 **5. Ab welchem Wurf Menschen sterben.** Geplant wird gegen `1 − Vorsicht`. Der tödliche
@@ -2240,10 +2240,10 @@ Spielen tatsächlich stört.
 **Die Erzählung der Epoche.** Sie ist der Maßstab, gegen den alles andere geprüft wird —
 nicht eine Stimmung, sondern eine Folge von Zuständen, die eintreten müssen:
 
-1. Eine Gemeinschaft lebt auf einem Revier, das sie in einem **leicht schlechten Jahr** trägt.
-2. **Schlechte Jahre beißen**: Die Nahrung reicht nicht, Menschen sterben, die Gruppe
+1. Eine Gemeinschaft lebt auf einem Revier, das sie in einem **leicht schlechten Tick** trägt.
+2. **Schlechte Ticks beißen**: Die Nahrung reicht nicht, Menschen sterben, die Gruppe
    schrumpft.
-3. **Gute Jahre lassen sie wachsen.** Im Schnitt wächst sie langsam — und
+3. **Gute Ticks lassen sie wachsen.** Im Schnitt wächst sie langsam — und
    **zwischen den Krisen steht sie**. Sie wächst bis an einen Wert und bleibt dort,
    statt weiterzuwachsen oder langsam auszubluten. Dieser ruhende Zustand ist der
    Normalfall der Epoche, nicht die Ausnahme: Alles andere — Wachstum, Einbruch,
@@ -2252,14 +2252,14 @@ nicht eine Stimmung, sondern eine Folge von Zuständen, die eintreten müssen:
    die Bevölkerung wächst nach.
 5. **Die Intensivierungen sind aufgebraucht.** Die Grenze bewegt sich nicht mehr, die
    Enge bleibt.
-6. **Jetzt lohnt der Speicher.** Er hebt die tragbare Bevölkerung vom schlechten Jahr auf
-   das mittlere — der einzige verbliebene Weg zu wachsen.
+6. **Jetzt lohnt der Speicher.** Er hebt die tragbare Bevölkerung vom schlechten Tick auf
+   den mittleren — der einzige verbliebene Weg zu wachsen.
 7. Der Speicher ist Kapital im Boden → man kann nicht mehr weiterziehen → **man ist
    sesshaft, bevor man es beschließt** (Testart).
 
 Zwischen 2 und 6 liegt der **Revierwechsel**: die Antwort auf ein ausgezehrtes Revier,
 früh billig, später teuer. Und über die ganze Strecke muss die Gruppe **deutlich unter
-dem sitzen, was ein gutes Jahr trüge** — sonst bleibt nichts für Feuer, Kleidung und
+dem sitzen, was ein guter Tick trüge** — sonst bleibt nichts für Feuer, Kleidung und
 Vorrat übrig, und heraus kommt eine Gesellschaft, die satt, nackt und frierend ist.
 
 > Die Bevölkerung soll **nicht chronisch am Verhungern** sein. Wildbeuter saßen bei
@@ -2440,7 +2440,7 @@ andere:
 | **je Hand** | dieselbe Fläche, weniger Arbeit |
 | **je Fläche** | dieselbe Arbeit, mehr aus dem Land — Boserups Intensivierung |
 | **je Vorleistung** | dieselbe Einheit, weniger Material — der Urahn jeder Energieeffizienz |
-| **gegen das Jahr** | dieselbe Menge, geringere Schwankung |
+| **gegen den Wurf** | dieselbe Menge, geringere Schwankung |
 | **gegen den Verfall** | dieselbe Ernte, länger haltbar |
 
 **Verfahren ab Tick 0**, keines freizuschalten. Der Anfang ist damit nicht leer, und die
@@ -2449,7 +2449,7 @@ an der Malthus-Druck der Epoche:
 
 | Gut | Verfahren | Eigenart |
 |---|---|---|
-| Nahrung | **Sammeln** | Wildnis; gut je Hand, mager je Fläche, ganz dem Jahr ausgeliefert |
+| Nahrung | **Sammeln** | Wildnis; gut je Hand, mager je Fläche, ganz dem Wurf ausgeliefert |
 | Nahrung | **Jagen** | Wildnis; mager je Hand, sehr mager je Fläche, schwankt stark |
 | Nahrung | **Fischen** | Wasser; mager je Hand, aber vom Wetter kaum berührt |
 | Holz | **Holz sammeln** | Totholz auflesen: viel Laufen, wenig Holz |
@@ -2498,7 +2498,7 @@ Drei Entscheidungen daran sind begründungsbedürftig:
   kaputt. Das Gerben stärkt den Fellweg — das ist gewollt und gibt der Wahl Gewicht.
   Bevorzugte aber *jedes* Kleidungsprojekt einen Weg, wäre der andere nach zwei
   Projekten nur noch schlechter, und die Alternative war eine Falle.
-- **Wärme braucht kein Projekt „gegen das Jahr"**, weil der Wärmebedarf selbst am Wetter
+- **Wärme braucht kein Projekt „gegen den Wurf"**, weil der Wärmebedarf selbst am Wetter
   hängt: Ein kalter Winter verlangt mehr. Das ist die Nachfrageseite des Zufalls (E24).
 
 > **Ein Projekt heißt, wie ein Laie die Sache nennt** — der Fachbegriff steht im Anker,
@@ -2514,7 +2514,7 @@ Fischzügen. Der Zustand zählt je **Tätigkeit** mit, wieviel damit erzeugt wur
 Projekt, das eine Tätigkeit verbessert, verlangt Übung darin.
 
 Das **verzögert und blockiert nie**: Wer weiter sammelt, bekommt die Sichel, und ein
-schlechtes Jahr kostet ein paar Ticks. Und es ordnet sich nach dem, was der Spieler
+schlechter Tick kostet ein paar weitere. Und es ordnet sich nach dem, was der Spieler
 tatsächlich tut — wer viel fischt, bekommt zuerst das Netz. Der Baum wächst aus der
 eigenen Wirtschaft, statt vorgeschrieben zu sein. Anker: Arrow, *Learning by Doing* —
 Stückkosten fallen mit der kumulierten Menge, nicht mit der Zeit.
@@ -2535,7 +2535,7 @@ Sesshaftigkeit verlangen keine Übung — eine Grube gräbt man, man erfindet si
 
 Die Grube wartet statt dessen darauf, dass die **Nahrungsgewinnung ergiebig** geworden
 ist. Sie ist der Weg aus der Epoche und **darf nicht zu früh aufgehen**; und weil sie
-spät kommt, hat der Spieler bis dahin ohnehin mehrere schlechte Jahre erlebt und weiß,
+spät kommt, hat der Spieler bis dahin ohnehin mehrere schlechte Ticks erlebt und weiß,
 wofür ein Speicher da ist — **das erledigt der Zufall von allein**, es muss nichts
 gezählt werden. Nebenbei ist der Revierwechsel dadurch früh billig und später teuer,
 ohne dass ein Wort darüber verloren wird: Wer noch nichts gegraben hat, lässt nichts
@@ -2609,7 +2609,7 @@ braucht, trifft eine Entscheidung, deren Nutzen er nie erlebt.
 
 Dass die Entscheidung dadurch nicht wertlos wird, liegt nicht an der Rechnung, sondern
 am **Zeitpunkt**: Ein Fünftel der Hände zwölf Ticks lang heißt, die Nahrung fällt
-*jetzt* und der Gewinn kommt *später* — und dazwischen liegt ein Jahr, das schlecht sein
+*jetzt* und der Gewinn kommt *später* — und dazwischen liegt ein Tick, der schlecht sein
 kann. Die Disziplin kommt aus dem Risiko, nicht aus der Amortisationsdauer.
 
 **An der ersten Fassung gemessen, und darum steht es hier: Die Kosten beißen bei 90
@@ -2620,12 +2620,12 @@ stirbt eine Siedlung, die alle drei sofort anfängt, in **100 %** der Läufe. �
 alles nehmen" ist damit keine entschlossenere Spielweise, sondern eine schlechtere.
 
 **Der Schmerz, gegen den der Vorrat hilft.** Vorher konnte das Überleben gar nicht
-ausfallen: Die Sättigung machte 44 % des Nahrungsbedarfs aus und das schlechteste Jahr
+ausfallen: Die Sättigung machte 44 % des Nahrungsbedarfs aus und der schlechteste Tick
 in 2000 Ticks nahm 40 % des Ertrags — der Puffer war größer als der schlimmste Sturm,
-und die Schwankung war Rauschen. Jetzt ist das Sammeln ganz dem Jahr ausgeliefert
+und die Schwankung war Rauschen. Jetzt ist das Sammeln ganz dem Wurf ausgeliefert
 (Exposition 1,0 statt 0,7) und die Verteilung hat einen echten Schwanz (Exponent 4 statt
 8). Eine Bevölkerung ohne Speicher hängt damit nicht an der **mittleren** Tragfähigkeit,
-sondern an der **schlechtesten** — jedes gute Jahr bringt Kinder, die das nächste
+sondern an der **schlechtesten** — jeder gute Tick bringt Kinder, die der nächste
 schlechte tötet. Genau deshalb ist ein Speicher umwälzend: Er lässt eine Gesellschaft am
 Mittelwert leben statt am Minimum.
 
@@ -2684,9 +2684,9 @@ Messung, nicht hierher, weil sie sich mit jeder Änderung bewegen:
 | | |
 |---|---|
 | Tragfähigkeit ohne Entscheidungen | nahe der Startbande |
-| leicht schlechtes Jahr, ohne Speicher | niemand stirbt |
-| **sehr schlechtes Jahr, ohne Speicher** | **Menschen sterben** |
-| sehr schlechtes Jahr, mit Speicher | niemand stirbt |
+| leicht schlechter Tick, ohne Speicher | niemand stirbt |
+| **sehr schlechter Tick, ohne Speicher** | **Menschen sterben** |
+| sehr schlechter Tick, mit Speicher | niemand stirbt |
 | alle Intensivierungen gebaut | Tragfähigkeit **deutlich** höher |
 
 Fällt die dritte Zeile aus, hat der Speicher keine Aufgabe. Fällt die vierte aus, hat er
@@ -2705,10 +2705,16 @@ Intuition, die er später für Arbeitslosigkeit und Unterauslastung braucht.
 ### V2 — Zeit läuft von selbst
 
 Kein „Runde beenden"-Knopf; Pause ist erlaubt. Der Takt in Echtzeit bleibt konstant
-(grob ein Tick pro Sekunde), aber **was ein Tick bedeutet, dehnt sich mit der Epoche**
-— anfangs ein Jahrzehnt, später ein Jahr, am Ende ein Quartal. Das ist die
-realistische Variante, nicht die bequeme: Politikverzögerungen *sind* in einer
-neolithischen Siedlung Jahrzehnte und in einer modernen Volkswirtschaft Monate.
+(grob ein Tick pro Sekunde).
+
+**Was ein Tick bedeutet, wird nicht gesagt** — hier so wenig wie sonst irgendwo (E17).
+Hier stand einmal, er dehne sich mit der Epoche und sei anfangs ein Jahrzehnt, später ein
+Jahr, am Ende ein Quartal. Das widersprach E17 unmittelbar, und E17 hat recht: Sobald
+irgendwo eine Dauer steht, ist sie festgelegt, und jede spätere Epoche ist daran gebunden.
+Was der Satz treffen wollte, bleibt trotzdem wahr und ist ohne Dauer zu haben — die
+Verhältnisse ändern sich mit der Epoche: In einer frühen Gemeinschaft dauert es viele
+Ticks, bis eine Entscheidung wirkt, in einer entwickelten wenige. Das steckt in den
+Mindestdauern der Projekte und in den Trägheiten der Branchen, nicht in einer Uhr.
 
 Direkte Folge, die eingehalten werden muss: **In jeder laufenden Wartezeit muss es
 etwas zu entscheiden geben.** Sonst wird Zuschauen zum Spiel.
@@ -2853,9 +2859,9 @@ dreißig Projekte sieht, lernt keine Schleife, sondern klickt sich durch. Späte
 dürfen reicher werden, weil der Spieler dann weiß, worauf er achtet.
 
 **Lehren fallen auf allen Größen an, nicht eine je Epoche.** An einem einzelnen Tick
-(„der Speicher hat das schlechte Jahr aufgefangen"), an einer Mechanik („Arbeit, die
+(„der Speicher hat den schlechten Tick aufgefangen"), an einer Mechanik („Arbeit, die
 niemand nutzt, ist am Tickende weg"), an einem Bogen über hunderte Ticks („ein Vorrat
-lässt eine Gesellschaft vom Durchschnitt leben statt vom schlechtesten Jahr"). Alle
+lässt eine Gesellschaft vom Durchschnitt leben statt vom schlechtesten Tick"). Alle
 zusammen tragen den Zweck aus dem Ziel: die Mythenliste, an Mechanik zerbrochen statt
 an Text.
 
@@ -2958,7 +2964,7 @@ Spielstand aus einem Fehlerbericht dieselbe Lage ergibt (T7).
 nie mehr als den vorigen Stand — kein Rückblick über mehrere Ticks.
 
 Verzögerungen werden deshalb als **mitgeführter Zustand** abgebildet, nicht als Blick
-in die Vergangenheit. Ein Bau, der drei Jahre dauert, ist ein Eintrag „noch 12 Ticks"
+in die Vergangenheit. Ein Bau, der lange dauert, ist ein Eintrag „noch 12 Ticks"
 im aktuellen Zustand, kein Blick 36 Ticks zurück. Das ist die Standardform dynamischer
 Modelle: Jedes System mit endlichem Gedächtnis lässt sich in ein Modell erster Ordnung
 überführen, indem man den Zustand erweitert.
