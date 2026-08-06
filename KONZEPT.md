@@ -1834,25 +1834,43 @@ schlechter Tick") statt eines Bündels unsichtbarer Störungen.
 schlechten Tick oder nicht; was hineinging, ist dann für weniger Ertrag verbraucht — alle
 Inputkoeffizienten steigen gemeinsam.
 
-**Und der Plan kennt den Wurf nicht.** Geplant wird auf einen **durchschnittlichen Tick**;
-die Vorleistungen werden **verbraucht wie geplant** — man ist losgezogen und hat die Tage
-mit Suchen verbracht —,
-und der **Ertrag** ergibt sich aus dem echten Wurf. Die Nachfrageseite ebenso: geheizt
-wird für einen mittleren Winter, ein harter tut weh.
+**Ob der Plan den Wurf kennt, entscheidet das Verfahren und nicht das Modell.** Es gibt
+zwei Arten, und beide werden gebraucht.
+
+**Ein Verfahren, das seinen Ertrag verpflichtet, kennt den Wurf nicht.** Der Same liegt in
+der Erde, bevor irgendetwas feststeht, und danach ist nichts mehr zu richten. Geplant wird
+deshalb auf einen **durchschnittlichen Tick**, abzüglich einer Vorsicht; die Vorleistungen
+werden **verbraucht wie geplant**, und der **Ertrag** ergibt sich aus dem echten Wurf. Ein
+guter Tick bringt dann mehr, als der Plan vorsah — der **unerwartete Überfluss**, und der
+ist einer der beiden Gründe, warum Speicher erfunden wurden.
+
+**Ein Verfahren, das seinen Ertrag findet, sieht den Tick, während es arbeitet.** Man geht
+sammeln und geht weiter, bis man hat, was man wollte. Geplant wird deshalb gegen den Wurf,
+der wirklich fällt: Ein schlechter macht die Einheit teurer in Arbeit, und die Antwort
+darauf sind **mehr Hände**, nicht weniger Ertrag. Überrascht wird hier niemand, und übrig
+bleibt auch nichts.
+
+**Die Bedarfsseite ist nie verpflichtet.** Niemand legt vorher fest, wie kalt ihm sein
+wird. Geheizt wird gegen den Tick, der wirklich kommt; ein harter tut weh.
+
+**Was daraus für den Vorrat folgt.** Wo jedes Verfahren seinen Ertrag findet, gewinnt eine
+Gemeinschaft genau das, was ein Rang verlangt hat — es entsteht kein Rest, aus dem sich ein
+Vorrat von selbst ergäbe. Ein Vorrat entsteht dort nur, weil er **selbst ein Rang ist** und
+mit den übrigen um dieselbe Arbeit ringt: Wer anlegt, isst schlechter oder friert mehr.
+Das ist der zweite Grund für Speicher, und er ist der einzige, der ohne Säen trägt.
 
 > *Befund aus der Umsetzung:* Vorher fiel der Wurf in einer Phase **vor** der Planung und
-> wurde der Zuteilung übergeben. Das war Hellsehen, und es hatte eine Folge, die lange
-> unerklärt blieb: In einem guten Tick deckte der Plan denselben Bedarf mit *weniger
-> Arbeit*, statt mehr zu ernten. **Es konnte also nie ein Überschuss entstehen** —
-> gemessen standen Holz, Faser und Felle über sechzig Ticks gemeinsam auf 0,00, der
-> Speicher hatte nichts zu bewahren, und der Rückschlag eines schlechten Ticks kam
-> allein daher, dass die Arbeit ausging.
+> wurde der Zuteilung für **jedes** Verfahren übergeben. Für ein verpflichtetes ist das
+> Hellsehen, und es hatte eine Folge, die lange unerklärt blieb: In einem guten Tick deckte
+> der Plan denselben Bedarf mit *weniger Arbeit*, statt mehr zu ernten. **Es konnte also
+> nie ein Überschuss entstehen** — gemessen standen Holz, Faser und Felle über sechzig
+> Ticks gemeinsam auf 0,00, der Speicher hatte nichts zu bewahren, und der Rückschlag eines
+> schlechten Ticks kam allein daher, dass die Arbeit ausging.
 >
-> Man zieht los, und danach entscheidet der Tick, was man findet; der Aufwand ist so oder
-> so ausgegeben. (Gesät wird erst in der nächsten Epoche — das Bild gehört nicht hierher.)
-> **Der unerwartete Überfluss guter Ticks ist
-> der Grund, warum Speicher erfunden wurden**, und er kann nicht existieren, wo niemand
-> überrascht wird.
+> Für ein gefundenes Verfahren ist dasselbe Verhalten richtig: Wer sammelt, hört auf, wenn
+> er genug hat, und braucht in einem guten Tick weniger Hände dafür. Der Fehler lag nicht
+> darin, den Wurf zu kennen, sondern darin, ihn **allen** Verfahren zu geben. Seitdem trägt
+> jedes Verfahren die Eigenschaft selbst.
 
 **Ein blinder Plan braucht ein Teiltempo eine Stufe früher.** Hat ein Verfahren weiter
 oben einen schlechten Tick, fehlt der Stufe darunter ihre Vorleistung; sie läuft dann so
