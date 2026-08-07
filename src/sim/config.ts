@@ -647,6 +647,33 @@ export interface LandConfig {
   readonly baseQuality: number;
   /** Each taking yields land this much worse than the previous one (E13). */
   readonly qualityDecayPerTaking: number;
+  /**
+   * How far what is on offer strays from that falling mean, up or down.
+   *
+   * A community does not walk blind, but neither does it know what it will
+   * find: it watches its surroundings and hears from kin and partners how
+   * things stand elsewhere, and what comes back is a report about one stretch
+   * of country. The next report reads differently. So the offer is drawn afresh
+   * every tick, and waiting for a better one is a decision with a cost — the
+   * range one is standing in goes on thinning meanwhile.
+   *
+   * The draw is even about its mean, so the mean itself is untouched and goes on
+   * falling with each taking exactly as it did before. What a lucky report
+   * changes is this offer, never the run of them.
+   */
+  readonly qualitySpread: number;
+  /**
+   * How many ticks a fresh range stays fresh — what a move buys, before the
+   * thinning is back where it was.
+   *
+   * It exists so that a move and a technique can be held against each other at
+   * all. A technique pays for as long as the epoch lasts; a move pays until the
+   * range is worn again, and measured over fifteen moves that is eleven ticks
+   * on average, seven in the middle of the range. Without dividing by it, the
+   * relief of a move dwarfs every technique on the list and stands at the top
+   * whatever else is offered.
+   */
+  readonly freshRangeLasts: number;
 }
 
 // ---------------------------------------------------------------- carried

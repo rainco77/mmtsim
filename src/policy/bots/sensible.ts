@@ -100,14 +100,6 @@ const KEEP_TICKS = 3;
 const SPARE_HANDS = 2;
 
 /**
- * Above this price the country counts as spent, and this player moves before it
- * hurts: twice the walking for the same meal (E29). The one figure the
- * allocation writes — a fill level cannot say it, being read after the growing
- * back.
- */
-const SPENT = 1.5;
-
-/**
  * Builds out of surplus: starts something while the people are well fed, and
  * stops while they are not.
  *
@@ -194,6 +186,12 @@ export class SensiblePolicy implements Policy {
     // Idle labour is the honest signal for affording another. It is what a
     // second site would have to come out of, and when there is none, a second
     // site comes out of somebody's dinner by another name.
+    // Moving on is one of these too, and it needs saying because it looks free:
+    // it finishes in a single tick, so it never counts as a building site that
+    // is under way, and nothing else holds it back. But it takes hands like
+    // anything else, and taken out of a community with none to spare it comes
+    // out of somebody's dinner. Played without this, the bot moved twenty-six
+    // times, built nothing but a sickle and was down to twelve heads by tick 82.
     const building = derived.projects.filter((project) => project.running).length;
     if (building > 0 && derived.laborUnused < SPARE_HANDS) return [];
 
@@ -281,26 +279,32 @@ export class SensiblePolicy implements Policy {
       return false;
     };
 
-    // A range that has been hunted or fished out is not mended by working
-    // harder in it — a community that can still move, moves (E29). The cost takes
-    // care of itself: what is in the ground stays there, so a community with
-    // many pits will not do this lightly.
-    const spent = Object.values(derived.renewable).some(
-      () => Object.values(derived.effortPerStock).some((price) => price >= SPENT),
+    // **An institution is taken as soon as it can be had.** A project that
+    // switches a rule is not one improvement among others: it opens a way of
+    // living that was not there before, and nothing already on the list can be
+    // held against it. Whoever weighs it against a better sickle never takes it.
+    const institution = derived.projects.find(
+      (project) =>
+        project.available &&
+        !project.running &&
+        (index.project.get(project.id)?.effects ?? []).some(
+          (effect) => effect.type === "rule" && effect.set,
+        ),
     );
-    if (spent) {
-      const move = derived.projects.find(
-        (project) =>
-          project.available &&
-          !project.running &&
-          (index.project.get(project.id)?.effects ?? []).some(
-            (effect) => effect.type === "stock" && effect.to.kind === "ceiling",
-          ),
-      );
-      if (move !== undefined) {
-        return [...keep, { type: "startProject", id: move.id, rank: BOUGHT_WITH_COMFORT }];
-      }
+    if (institution !== undefined) {
+      return [...keep, { type: "startProject", id: institution.id, rank: BOUGHT_WITH_COMFORT }];
     }
+
+    // Moving on used to be taken out of turn, the moment anything cost half as
+    // much again to find as on fresh country. That reading is gone: the cost of
+    // finding carries the weather — measured, it stands at −0.71 against the
+    // draw — so the rule fired on bad ticks, and a move mends no weather. Played
+    // that way the community moved every other tick, spent everything on
+    // moving, and bled out from nineteen heads to twelve.
+    //
+    // It needs no rule of its own any more. What a move is worth against a worn
+    // range is reckoned where every other worth is reckoned, so it can simply
+    // stand in the same list and win when it deserves to.
 
     const open = derived.projects.filter((project) => {
       if (!project.available || project.running) return false;

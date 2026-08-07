@@ -78,6 +78,19 @@ export interface GameState {
   readonly landTakings: number;
 
   /**
+   * What the country now on offer is worth against the mean the takings have
+   * come down to — a factor about one, drawn afresh at the end of every tick
+   * (E25, stream `land`).
+   *
+   * Held in the state and not peeked out of the stream, because peeking never
+   * advances anything: the same number would stand there for ever and waiting
+   * for a better offer could never do anything. Written at the tick's end so
+   * that what was on the screen when the decision was made is what the move
+   * then gets.
+   */
+  readonly landOffer: number;
+
+  /**
    * The tick at which the community fell below the minimum viable size and was
    * given up (E20). Absent while it is still going.
    *

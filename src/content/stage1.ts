@@ -1036,34 +1036,34 @@ export const STAGE1: Config = {
       // moves for nothing, a community with many pits is settled in fact long
       // before it settles by decision (Testart).
       id: "range_change",
-      // It appears when the country begins to fail, and that appearance is
-      // itself the warning. What "failing" means is the **price of searching**,
-      // and the two figures sit inside the span that was measured: fresh
-      // country costs 1.25, and the room to grow runs out around 1.61. A third
-      // more walking for the same meal is the notice, half as much again is the
-      // point at which moving is the answer. Before that, moving
-      // would be a cheap reset rather than a decision.
+      // **Whoever can walk can always walk.** Moving is not a technique that has
+      // to be come by, and nothing about it has to be met first: a community
+      // that carries its whole life with it is free to go at any time, and it
+      // was free to go on the first tick as much as on the hundredth.
       //
-      // It used to read a fill level — a stock below a half, then below a third
-      // of what the range carries — and that could never fire. A fill level is
-      // read after the growing back, so a range that fills overnight shows
-      // untouched however much comes off it: over eight seeds the thinnest any
-      // stock ever reached was 0.861 while two thirds of the range was taken
-      // every tick, and the one answer a moving people really had was never so
-      // much as visible.
+      // So there is no mark on it, and that is a change of mind. It hung on the
+      // cost of searching before, on the reasoning that without a mark moving
+      // would be a cheap reset rather than a decision. Two things were wrong
+      // with that. The cost of searching carries the weather: a process that
+      // finds its return runs at `target ÷ draw`, so a poor draw makes the
+      // community take more out of the same stand — measured over 1680 ticks
+      // the cost sits at −0.71 against the draw, 2.02 in the poorest class of
+      // draws against 1.35 in the best. A mark on it therefore fires against
+      // weather, and no move mends weather, because the weather goes along.
       //
-      // The price also tells efficiency from intensification without being
-      // told. The sickle only makes hands quicker and leaves it exactly where
-      // it was; the mortar means less country per meal, so it really does push
-      // the move further off — which is what intensification is supposed to do.
-      visibleWhen: [
-        { kind: "rule", id: "settled", set: false },
-        { kind: "stockDear", factor: 1.35 },
-      ],
-      availableWhen: [
-        { kind: "rule", id: "settled", set: false },
-        { kind: "stockDear", factor: 1.5 },
-      ],
+      // And moving was never a free reset. **The brake is the falling quality**
+      // — each further range yields less than the one before (measured 0.95,
+      // 0.90, 0.86 and on down to 0.51), so whoever spends the good country
+      // early is left with the poor country later. That is a cost the player
+      // pays for himself, and it needs no gate to enforce it.
+      //
+      // What the thinning of the range decides is therefore not *whether* the
+      // offer stands but *where it stands among the others*, and that belongs
+      // to the ordering and not here. An offer that comes and goes with a stock
+      // dipping cannot carry a progress bar either: what a project still wants
+      // is meant to be read off it, and a mark that flickers reads as nothing.
+      visibleWhen: [{ kind: "rule", id: "settled", set: false }],
+      availableWhen: [{ kind: "rule", id: "settled", set: false }],
       defaultRank: PROJECTS_LAST,
       laborCost: 24,
       stockCost: {},
@@ -1125,11 +1125,33 @@ export const STAGE1: Config = {
       // Mesolithic core axes. Stone and not simply "axe", so the name says
       // which world this is and leaves room for an iron one later.
       id: "stone_axe",
-      visibleWhen: [
-        { kind: "strain", measure: { searchCost: "deadwood" }, factor: 1.15 },
-      ],
-
-      availableWhen: [{ kind: "experience", activities: ["woodcutting"], min: 30 }],
+      // **It answers no want; it comes of long practice at wood.** The mark was
+      // on the cost of finding deadwood before, at a seventh above fresh
+      // country, and that was the wrong axis twice over.
+      //
+      // It could not be relied on: measured over eight seeds the highest that
+      // cost ever reaches in a whole run is 1.13 to 1.31, so the mark sat inside
+      // the noise, and whether it fell decided the epoch — three seeds in eight
+      // crossed it, and whether they did turned on whether a woodpile was being
+      // kept. Everything else hangs behind this one: no axe, no pit, and without
+      // a pit no settling. Whether a run can be finished at all must not turn on
+      // that.
+      //
+      // And firewood is the wrong thing to hang it on anyway. What the axe opens
+      // is **standing timber** — the lining and posts of a pit, the hull of a
+      // boat — not fuel; a community that is short of fuel picks up more of what
+      // has fallen. That is also why nothing wants timber before the axe exists,
+      // so a mark on a want would have nothing to read.
+      //
+      // Practice at wood grows by some two and a half a tick and never falls, so
+      // it is reached in every run. Reckoned against where the others land:
+      // sickle at 41 to 58, mortar at 73 to 99, earth oven at 103 to 134. At 120
+      // the axe comes into view just as the earth oven is finished — after the
+      // early three, and not so late that there is nothing to do but wait for
+      // it. The thirty between seeing and having are about twelve ticks, the
+      // same distance the other techniques keep.
+      visibleWhen: [{ kind: "experience", activities: ["woodcutting"], min: 120 }],
+      availableWhen: [{ kind: "experience", activities: ["woodcutting"], min: 150 }],
       defaultRank: PROJECTS_LAST,
       laborCost: 48,
       stockCost: { wood: 20 },
@@ -1568,6 +1590,13 @@ export const STAGE1: Config = {
     perHeadAtStart: { wilderness: 0.6, water: 0.24 },
     baseQuality: 1.0,
     qualityDecayPerTaking: 0.05,
+    // What a report on the next range strays from that mean, either way. At a
+    // seventh a lucky one is worth waiting a tick or two for and a poor one is
+    // worth sitting out, without the move turning into a game of chance.
+    qualitySpread: 0.15,
+    // Measured over fifteen moves: eleven ticks on average before the thinning
+    // is back where it stood, seven in the middle of the range.
+    freshRangeLasts: 11,
   },
 
   carried: { baseProductivity: 1.0, baseWorkAbility: 1.0, adjustmentPerTick: 0.25 },

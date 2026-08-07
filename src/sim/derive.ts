@@ -240,6 +240,60 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
   const idleShare =
     allocation.laborAvailable > 0 ? allocation.laborUnused / allocation.laborAvailable : 1;
   const laborScarcity = Math.max(0, Math.min(1, 1 - idleShare));
+
+  /** What the country now on offer is worth (E13, E25) — mean and report together. */
+  const offeredQuality =
+    index.config.land.baseQuality *
+    Math.pow(1 - index.config.land.qualityDecayPerTaking, state.landTakings) *
+    state.landOffer;
+
+  /** Quality of one kind of ground, over what is held and what is not. */
+  const groundQuality = (capacity: CapacityId): number => {
+    const owned = capacityOf(sector?.capacityHeld ?? {}, capacity);
+    const unowned = capacityOf(state.unownedCapacity, capacity);
+    const total = owned.amount + unowned.amount;
+    return total > 0
+      ? (owned.amount * owned.quality + unowned.amount * unowned.quality) / total
+      : 1;
+  };
+
+  /**
+   * What moving on is worth: the extra searching the worn range is costing right
+   * now, for every stock a move would put back to what the ground can carry.
+   *
+   * Divided by how long a fresh range stays fresh, or it cannot be held against
+   * a technique at all — a technique pays for the rest of the epoch, a move only
+   * until the range is worn again. Undivided it dwarfs everything else on the
+   * list from the moment the range begins to thin.
+   *
+   * And scaled by what is on offer against what is held: a report of better
+   * country makes moving worth more, a poorer one less. Measured against the
+   * ground under one's feet and not against a fixed figure, because the mean
+   * falls with every taking anyway and only the comparison says anything.
+   */
+  const worthOfMoving = (def: { readonly effects: readonly Effect[] }): number => {
+    let excess = 0;
+    let quality = 0;
+    let counted = 0;
+    let refills = false;
+    for (const effect of def.effects) {
+      if (effect.type !== "stock" || effect.to.kind !== "ceiling") continue;
+      refills = true;
+      const price = allocation.effortPerStock[effect.id];
+      const taken = allocation.consumed[effect.id] ?? 0;
+      if (price !== undefined && price > 1 && taken > 0) excess += (price - 1) * taken;
+      const ground = index.stock.get(effect.id)?.regrowth?.capacity;
+      if (ground !== undefined) {
+        quality += groundQuality(ground);
+        counted += 1;
+      }
+    }
+    if (!refills) return 0;
+    const standing = counted > 0 ? quality / counted : 1;
+    const lasts = Math.max(1, index.config.land.freshRangeLasts);
+    return (excess / lasts) * (standing > 0 ? offeredQuality / standing : 1);
+  };
+
   const worthOf = (def: { readonly effects: readonly Effect[] }): number => {
     let total = 0;
     for (const effect of def.effects) {
@@ -262,7 +316,7 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
         if (Number.isFinite(best) && per < best) total += (best - per) * price * heads;
       }
     }
-    return total;
+    return total + worthOfMoving(def);
   };
 
   const projects: ProjectView[] = index.config.projects.map((def) => {
@@ -329,9 +383,7 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     capacityTotal: allocation.capacityTotal,
     utilization,
     renewable: renewals(afterDecay, index),
-    nextTakingQuality:
-      index.config.land.baseQuality *
-      Math.pow(1 - index.config.land.qualityDecayPerTaking, state.landTakings),
+    nextTakingQuality: offeredQuality,
     coverage,
     tiers: allocation.tiers,
     runs: allocation.runs,
@@ -505,7 +557,8 @@ function qualityOf(
     case "nextTaking":
       return (
         index.config.land.baseQuality *
-        Math.pow(1 - index.config.land.qualityDecayPerTaking, state.landTakings)
+        Math.pow(1 - index.config.land.qualityDecayPerTaking, state.landTakings) *
+        state.landOffer
       );
     default:
       return fallback;

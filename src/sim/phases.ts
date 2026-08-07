@@ -2,6 +2,7 @@ import { allocate, type AllocationResult } from "./allocation.ts";
 import { type ConfigIndex, tierEffectAt } from "./config.ts";
 import { applyEffect } from "./effects.ts";
 import type { ActivityId, ProjectId, CapacityId, SectorId, StockId } from "./ids.ts";
+import { draw, type RandomState } from "./random.ts";
 import { drawShocks, type Shocks } from "./risk.ts";
 import {
   capacityOf,
@@ -40,6 +41,27 @@ export interface Phase {
 
 /** Until property exists there is exactly one sector (E22). */
 export const HOUSEHOLDS: SectorId = "households";
+
+/**
+ * The stream the report on the next range is drawn from (E25). Its own stream,
+ * so that adding it shifts nothing the weather does — a draw is a pure function
+ * of seed, stream and counter.
+ */
+const LAND_STREAM = "land";
+
+/**
+ * What the country now on offer is worth against the mean: a factor about one,
+ * even about it, so the mean the takings have come down to is left exactly
+ * where it was.
+ */
+export function drawLandOffer(
+  random: RandomState,
+  config: ConfigIndex["config"],
+): { offer: number; random: RandomState } {
+  const spread = config.land.qualitySpread ?? 0;
+  const result = draw(random, LAND_STREAM);
+  return { offer: 1 + spread * (2 * result.value - 1), random: result.random };
+}
 
 
 export function laborPerformance(sector: SectorState | undefined): number {
@@ -537,7 +559,12 @@ export class OfferPhase implements Phase {
       seen ??= { ...state.seenProjects };
       seen[project.id] = state.tick;
     }
-    return seen === undefined ? state : { ...state, seenProjects: seen };
+    // And the scouts come back: what stands on offer for the coming decision.
+    // Drawn here, at the tick's end, so that the figure a decision is made
+    // against is the one the move then gets.
+    const { offer, random } = drawLandOffer(state.random, index.config);
+    const next = seen === undefined ? state : { ...state, seenProjects: seen };
+    return { ...next, landOffer: offer, random };
   }
 }
 

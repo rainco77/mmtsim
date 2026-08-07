@@ -123,7 +123,8 @@ function resolveQuality(
       return {
         quality:
           config.land.baseQuality *
-          Math.pow(1 - config.land.qualityDecayPerTaking, state.landTakings),
+          Math.pow(1 - config.land.qualityDecayPerTaking, state.landTakings) *
+          state.landOffer,
         advanceTaking: true,
       };
   }
