@@ -2288,26 +2288,26 @@ ganze Entnahme, also `(Decke / Entnahme) · ln(Stand / Rest)`. Auf einem vollen 
 hängt er nur am Anteil `x`:
 
 ```
-Preis = (1 / x) · ln(1 / (1 − x))
+Kosten = (1 / x) · ln(1 / (1 − x))
 ```
 
 | Anteil | 0,25 | 0,375 | 0,50 | 0,65 | 0,80 |
 |---|---|---|---|---|---|
-| Preis | 1,15 | 1,25 | 1,39 | 1,62 | 2,01 |
+| Kosten | 1,15 | 1,25 | 1,39 | 1,62 | 2,01 |
 
 **3. Wo das Wachstum aufhört.** Dort, wo das Essen alle Hände braucht:
 
 ```
-Preis am Ruhepunkt = (1 − übrige Arbeit je Kopf) ÷ (Bedarf je Kopf × Arbeit je Einheit)
+Kosten am Ruhepunkt = (1 − übrige Arbeit je Kopf) ÷ (Bedarf je Kopf × Arbeit je Einheit)
 ```
 
 Deshalb ist die Obergrenze **keine Stellschraube**: Jede arbeitssparende Technik hebt sie
 von selbst — mit der Sichel (0,182 statt 0,28) rückt sie von rund 1,6 auf rund 2,5. Über
-Anteil und Preis lässt sich daraus die Kopfzahl am Ruhepunkt zurückrechnen.
+Anteil und Kosten lässt sich daraus die Kopfzahl am Ruhepunkt zurückrechnen.
 
 **4. Was ein Bestand dauerhaft hergibt.** Die logistische Kurve hat ihr Maximum bei halber
-Decke: `Rate × Decke ÷ 4`. Wird mehr genommen, fällt der Stand, bis der Preis die
-Entnahme bremst. Bei Rate 4 ist dieses Maximum ungefähr so groß wie die Decke selbst —
+Decke: `Rate × Decke ÷ 4`. Wird mehr genommen, fällt der Stand, bis die Kosten die
+Entnahme bremsen. Bei Rate 4 ist dieses Maximum ungefähr so groß wie die Decke selbst —
 deshalb nimmt eine Gemeinschaft von einem Zuwachs je Tick zwangsläufig den größten Teil, und
 das ist bei einem Wuchs richtig und bei einer Herde alarmierend.
 
@@ -2568,6 +2568,26 @@ stand also immer bei null, und seine Zahlen waren gegen nichts ausbalanciert. Ei
 nie feuert, lässt sich nicht beurteilen. Er kommt mit der Epoche zurück, in der es Wohnraum
 wirklich gibt, und dann mit etwas, wogegen er sich einstellen lässt.
 
+#### Wie sich die Gemeinschaft einregelt
+
+Mehr Kinder je Erwachsenem heißt mehr Arbeit in die Betreuung, also weniger für die
+Behaglichkeit — den untersten Rang, der als erster ausfällt und die Geburten trägt. Weniger
+Geburten senken das Verhältnis wieder. Eine Krise trifft die Kinder härter als die
+Erwachsenen; damit fällt das Verhältnis, die Geburten steigen, und die Gemeinschaft füllt
+sich auf.
+
+**Das setzt voraus, dass Arbeit knapp ist.** Wo Hände frei sind, wird die Betreuung aus
+ihnen bezahlt und der Kreislauf greift nicht.
+
+**Das Niveau hebt allein ein Projekt.** Und Projekte werden nicht aus Überschuss bezahlt,
+sondern aus Deckung — der Rang sagt, worauf verzichtet wird — oder sie kommen nur in guten
+Ticks voran.
+
+**Der Revierwechsel gewinnt nichts, er verhindert einen Verlust.** Wer bleibt, dessen
+Suchkosten steigen, dessen Behaglichkeit fällt und dessen Geburten unter die Sterblichkeit
+sinken — die Gemeinschaft schrumpft. Der Wechsel holt den Stand zurück, den das Bleiben
+gekostet hat.
+
 #### Die Betreuung
 
 **Sie ist der Anspruch auf Arbeit, den kein Fortschritt verbilligt.** Sichel, Mörser und
@@ -2652,7 +2672,7 @@ und Sommer zusammen: die Nahrungssuche etwa die Hälfte aller Arbeit, sobald Ver
 Werkzeug und Betreuung mitgezählt werden; Brennstoff ein bis zwei Stunden am Tag; Felle
 und Faser über ein Jahr in derselben Größenordnung. Dass die Nahrung hier trotzdem bei
 einem Drittel steht, ist kein Widerspruch: Gerechnet wird für **unberührtes Land**, und
-im Spiel hebt der Suchpreis sie um gut die Hälfte — gemessen auf 57 %.
+im Spiel heben die Suchkosten sie um gut die Hälfte — gemessen auf 57 %.
 
 **Der Anteil für Projekte wird dabei nicht angetastet.** Umverteilt wird zwischen den
 Rängen; wächst ihre Summe, wird die Epoche länger.
@@ -2919,7 +2939,7 @@ braucht keine Sperre, die ihn erzwingt.
 keinen Mangel: Was sie erschließt, ist der stehende Wald, und den verlangt niemand, bevor
 es die Axt gibt — wem Brennstoff fehlt, der liest mehr von dem auf, was gefallen ist. Am
 Brennholz gemessen war ihre Marke außerdem nicht verlässlich zu erreichen: Der höchste
-Suchpreis für Totholz, den ein ganzer Lauf überhaupt erreicht, liegt zwischen 1,13 und
+Suchkosten für Totholz, den ein ganzer Lauf überhaupt erreicht, liegt zwischen 1,13 und
 1,31, die Marke lag also im Rauschen. Drei von acht Seeds kamen darüber, und daran hing,
 ob die Epoche zu Ende gespielt werden konnte, denn ohne Axt keine Grube und ohne Grube
 keine Sesshaftigkeit. Übung im Holz fällt nie, also wird sie in jedem Lauf erreicht.
