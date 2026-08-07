@@ -1395,14 +1395,19 @@ Bau entschieden.
 
 ### E20 — Wie Bevölkerungswachstum rechnet
 
-**Alles ist ein Faktor, und nirgends wird addiert.**
+**Jede Rate ist ein Faktor, und Raten werden nie addiert.**
 
 ```
-Köpfe'    = Köpfe × Überleben × Geburten
-Überleben = Grundüberleben × Faktor je Bedarf …
-Geburten  = Grundfaktor     × Faktor je Bedarf …
-Arbeit    = Köpfe × Arbeitsfähigkeit × Produktivität
+Köpfe'    = Köpfe ⊙ Überleben ⊕ Neugeborene in ihrer Kohorte
+Überleben = Grundüberleben × Faktor je Bedarf …      je Kohorte
+Geburten  = Grundfaktor    × Faktor je Bedarf …
+Arbeit    = (Gewichte · Köpfe) × Arbeitsfähigkeit × Produktivität
 ```
+
+Köpfe sind ein Vektor über die Kohorten; `⊙` heißt „je Kohorte einzeln", `·` ist das
+Skalarprodukt. Addiert wird an genau einer Stelle, und dort ist es keine Rate, sondern
+Menschen: die Neugeborenen, die in ihre Kohorte kommen. Wieviele es sind, folgt aus dem
+Geburtenfaktor auf die gewichtete Kopfzahl.
 
 Ein Überlebensfaktor von 0,10 heißt: **ein Zehntel der Gruppe übersteht den Tick.** Eine
 Produktivität von 1,2 heißt: ein Fünftel mehr wird geschafft. 1,0 heißt „keine Wirkung".
@@ -1497,14 +1502,74 @@ Zone, auf die man zuläuft, nicht als Überraschung.
 Was nach dem Scheitern passiert, hängt an der offenen Frage, ob und wie das Spiel
 endet.
 
-**Kohorten später:** Das Modell ist der Ein-Kohorten-Fall eines allgemeinen
-Kohortenmodells, nicht eine Zahl mit Sonderregeln. Die Erweiterung besteht darin, dass
-aus der Zahl ein Vektor wird, die Raten je Gruppe gelten und ein Alterungsschritt
-dazukommt. Möglich ist das, weil die Raten **aus Regeln über der Deckung berechnet**
-werden (T3) statt fest im Code zu stehen: Aus „Rang 1 unterdeckt → Sterberate hoch"
-wird „→ Sterberate der Kleinkinder sehr stark, der Erwachsenen mäßig". Geschlechter
-sind derselbe Fall — eine Kohorte ist eine Gruppe mit eigenen Raten. Der Umstieg ist
-eine Schemamigration nach T7.
+#### Kohorten: aus der Kopfzahl wird ein Vektor
+
+Das Modell war der Ein-Kohorten-Fall eines allgemeinen Kohortenmodells, nicht eine Zahl
+mit Sonderregeln. Aus der Zahl wird ein **Vektor**, und welche Gruppen darin stehen, sagt
+allein der Inhalt. Für diese Epoche sind es zwei: **Heranwachsende und Erwachsene.**
+
+**Jede Stelle, die die Kohorten anfasst, trägt einen eigenen Vektor über sie** — und zwar
+in genau einer von zwei Arten, je nachdem, was herauskommen soll:
+
+| | der zweite Vektor ist | Rechnung | Ergebnis |
+|---|---|---|---|
+| **Lesen** | Gewichte | Skalarprodukt | **eine Zahl** |
+| **Wirken** | Empfindlichkeiten | elementweise | **wieder ein Vektor** |
+
+Gelesen wird überall dort, wo aus den Menschen eine einzelne Größe wird: der Bedarf eines
+Rangs, die Arbeitsleistung, die Zahl der Geburten, die Größe, unter der aufgegeben wird,
+der Speicher je Kopf. Jede dieser Stellen hat ihre eigene Gewichtung, denn ein
+Heranwachsender isst weniger als ein Erwachsener, arbeitet anders und bekommt keine
+Kinder — aber wer aufgibt, zählt Menschen und keine Arbeitskräfte.
+
+Gewirkt wird dort, wo sich der Vektor selbst ändert: Sterblichkeit und Aufrücken. Dort
+kann keine Summe stehen, ohne genau die Auskunft zu verlieren, um die es geht — aus „die
+Hälfte der Kinder und ein Zehntel der Erwachsenen" wird keine einzelne Zahl. **Dass Hunger
+und Kälte Kinder härter treffen als Erwachsene, ist genau das, was diese Form trägt.**
+
+**Die Geburten sind beides zugleich:** wie viele geboren werden, ist ein Skalarprodukt;
+**wohin** sie fallen, ist ein Einheitsvektor.
+
+**Ein Vektor wird immer vollständig ausgeschrieben** — nie weggelassen, nie zu einer
+einzelnen Zahl abgekürzt, die „für alle gleich" bedeutet. Der Grund ist der Tag, an dem
+eine Kohorte dazukommt: Bei einem fehlenden Vektor müsste das Modell raten, und beide
+Vermutungen sind falsch — mit einer Eins bekäme die neue Gruppe volle Arbeitsleistung, mit
+einer Null nichts zu essen. Ausgeschrieben erzwingt eine neue Kohorte an jeder Stelle eine
+Entscheidung, und beim Lesen steht ohnehin klarer da, was gemeint ist.
+
+**Produktivität und Arbeitsfähigkeit bleiben je eine Zahl.** Sie sind mitgeführter Zustand
+und nicht Inhalt, und sie wären doppelt: Was ein Halbwüchsiger weniger leistet, steht schon
+im Gewichtsvektor der Arbeit. Wer keine Arbeit beisteuert, kann nicht zusätzlich
+unproduktiv sein — es zeigt sich nirgends. Kleidung und Behaglichkeit wirken deshalb
+weiter auf die Arbeitsleistung als Ganzes, Hunger und Kälte dagegen je Kohorte.
+
+**Die Bewegung zwischen den Kohorten ist eine Liste im Inhalt**: je Eintrag, aus welcher
+Gruppe in welche und mit welchem festen Anteil je Tick. Das ist der Alterungsschritt, und
+es ist zugleich die allgemeine Form — dieselbe Liste, dünn geschrieben, ist die Matrix, mit
+der der Kohortenstand multipliziert wird. **Alle Übergänge eines Ticks werden aus demselben
+Anfangsstand gerechnet und gemeinsam angewandt**, sonst hinge das Ergebnis daran, in
+welcher Reihenfolge sie im Inhalt stehen, und niemand könnte es dem Inhalt ansehen.
+
+Eine feste Rate ist dabei ein Eimer mit Loch und keine Warteschlange: Bei einem Zehntel je
+Tick bleibt ein Mensch im Mittel zehn Ticks Kind, aber ein Zehntel wird schon im nächsten
+erwachsen. Wer die Verzögerung schärfer will, schreibt zwei oder drei Kohorten
+hintereinander in den Inhalt. Genau dafür ist der Vektor da.
+
+**Andere Achsen sind weitere Einträge in derselben Liste, keine zweite Maschine.** Ein
+Kreuz wie gesund und krank mal jung und alt schreibt der Inhalt aus — gesunde Kinder,
+kranke Kinder, gesunde Erwachsene, kranke Erwachsene. Ein mehrachsiger Zustand wäre enger
+und nicht allgemeiner: Er müsste jede Kombination führen, auch die, die nie vorkommt, und
+er müsste beantworten, was ein krankes Kind ist, wenn Krankheit die Sterblichkeit
+verdoppelt und Kindsein sie um die Hälfte hebt — eine Frage, auf die es keine Antwort aus
+der Sache gibt. Eine Liste stellt sie nie.
+
+**Was jede Achse eigen mitbringt, ist ihre Bewegung**, und die kommt, wenn es die Achse
+gibt: Alter mit fester Rate, Krankheit mit einer Rate, die an der Deckung eines Rangs
+hängt, Vermögen aus den Zahlungen und mit einem Besitz je Gruppe. Eine allgemeine
+Verteilungsmaschine wird nicht vorab gebaut — sie müsste sich für einen Bewegungsgrund
+entscheiden und wäre für die anderen falsch.
+
+Der Umstieg ist eine Schemamigration nach T7.
 
 ### E21 — Wie die Zuteilung rechnet
 
@@ -1750,13 +1815,14 @@ Regel: **gespeichert wird nur, was Geschichte hat.** Alles Berechenbare wird jed
 neu gerechnet und nirgends abgelegt. Das hält den Spielstand klein (T7) und verhindert,
 dass zwei Stellen dasselbe behaupten und auseinanderlaufen.
 
-**Gespeichert — neun Dinge:**
+**Gespeichert — zehn Dinge:**
 
 | | |
 |---|---|
 | **Tickzähler** | |
 | **Zufallszustand** | Hauptseed plus je Strom ein Zählerstand (E25); nie ein globaler Generator |
-| **Bestände** | eine Zahl je Bestand: Bevölkerung, Nahrung, Wohnraum, Holz — dazu eine je Flächentyp (E13), anfangs Wildnis und erschlossene Fläche |
+| **Bestände** | eine Zahl je Bestand: Nahrung, Wohnraum, Holz — dazu eine je Flächentyp (E13), anfangs Wildnis und erschlossene Fläche |
+| **Die Bevölkerung** | eine Zahl **je Kohorte** (E20), nicht eine einzelne Kopfzahl |
 | **Zahl der Landnahmen** | daraus wird der Mittelwert der Güte gerechnet (E13) |
 | **Das Landangebot** | der Wurf, der das gerade angebotene Land gegen diesen Mittelwert stellt (E13). Gespeichert, weil er am Ende des Ticks gezogen wird und bis zur Entscheidung im nächsten stehen bleiben muss |
 | **Produktivität** | mitgeführt |
@@ -1773,7 +1839,7 @@ werden. Sie sind damit auch der Ort, an dem später Gesundheit und Bildung einza
 
 **Abgeleitet — jeden Tick neu, nirgends abgelegt:**
 
-Köpfe (heute gleich der Bevölkerung, später aus den Kohorten) · Arbeitsvolumen = Köpfe ×
+Köpfe (die Summe über die Kohorten) · Arbeitsvolumen = gewichtete Kopfzahl ×
 Arbeitsfähigkeit · Arbeitsleistung = Arbeitsvolumen × Produktivität · **erreichbares
 Gebiet** (aus Grundgebiet und erledigten Institutionsprojekten, E13) · Güte des nächsten
 Landstücks und Durchschnittsgüte · Deckung je Rang · Auslastung · welches Verfahren wie
