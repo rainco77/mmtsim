@@ -2255,30 +2255,159 @@ Spielen tatsächlich stört.
 
 ### E29 — Übergang 1: Jäger und Sammler → Siedlung
 
-**Die Erzählung der Epoche.** Sie ist der Maßstab, gegen den alles andere geprüft wird —
-nicht eine Stimmung, sondern eine Folge von Zuständen, die eintreten müssen:
+**Die Erzählung der Epoche.** Sie ist der Maßstab, gegen den alles andere geprüft wird:
+der Verlauf, den Modell und Inhalt hervorbringen sollen.
 
-1. Eine Gemeinschaft lebt auf einem Revier, das sie in einem **leicht schlechten Tick** trägt.
-2. **Schlechte Ticks beißen**: Die Nahrung reicht nicht, Menschen sterben, die Gruppe
-   schrumpft.
-3. **Gute Ticks lassen sie wachsen.** Im Schnitt wächst sie langsam — und
-   **zwischen den Krisen steht sie**. Sie wächst bis an einen Wert und bleibt dort,
-   statt weiterzuwachsen oder langsam auszubluten. Dieser ruhende Zustand ist der
-   Normalfall der Epoche, nicht die Ausnahme: Alles andere — Wachstum, Einbruch,
-   Erholung — sind Abweichungen davon und kehren dorthin zurück.
-4. Das Wachstum drückt gegen das Revier → **Intensivierung lohnt** → die Grenze steigt →
-   die Bevölkerung wächst nach.
-5. **Die Intensivierungen sind aufgebraucht.** Die Grenze bewegt sich nicht mehr, die
-   Enge bleibt.
-6. **Jetzt lohnt der Speicher.** Er hebt die tragbare Bevölkerung vom schlechten Tick auf
-   den mittleren — der einzige verbliebene Weg zu wachsen.
-7. Der Speicher ist Kapital im Boden → man kann nicht mehr weiterziehen → **man ist
-   sesshaft, bevor man es beschließt** (Testart).
+#### 1 — Wie es anfängt
 
-Zwischen 2 und 6 liegt der **Revierwechsel**: die Antwort auf ein ausgezehrtes Revier,
-früh billig, später teuer. Und über die ganze Strecke muss die Gruppe **deutlich unter
-dem sitzen, was ein guter Tick trüge** — sonst bleibt nichts für Feuer, Kleidung und
-Vorrat übrig, und heraus kommt eine Gesellschaft, die satt, nackt und frierend ist.
+Die Gemeinschaft lebt auf einem Revier, das sie vorerst trägt.
+
+Fast die ganze Arbeit ist gebunden. Hunger, Feuer und Kleidung sind meistens gedeckt, und
+ein großer Teil der Hände geht in die Betreuung. Für Sättigung und Behaglichkeit reicht es
+nicht in jedem Tick.
+
+Bleibt alles, wie es ist, dünnt das Revier aus. Was langsam nachwächst, wird stärker
+entnommen, als es nachkommt, und dieselbe Menge kostet nach und nach mehr Arbeit. Die
+Gemeinschaft geht darum zurück, bis sie auf einem niedrigeren Niveau steht, auf dem sie
+sich wieder hält.
+
+Früher oder später trifft sie ein schlechter Tick — daran führt kein Weg vorbei, offen ist
+nur wann. Dann bleiben zuerst Sättigung und Behaglichkeit unversorgt, und fällt er hart
+genug aus, reicht es auch für Feuer oder gar Hunger nicht mehr, und Menschen sterben.
+Danach erholt sie sich auf das Niveau, das inzwischen gilt.
+
+**Was daran zu lernen ist**
+
+- Arbeit ist die Währung, in der alles bezahlt wird. Knapp ist sie nicht immer — gute Ticks
+  lassen etwas frei —, aber jede Entscheidung geht auf ihre Kosten.
+- Ein dünner werdendes Revier zeigt sich nicht als leeres Land, sondern als mehr Arbeit für
+  dieselbe Menge. Knappheit erscheint hier als Arbeitsaufwand.
+- Stillhalten kostet. Es stellt sich wieder eine Ruhelage ein, aber auf einer kleineren Zahl.
+- Die Krise kommt sicher, nur nicht absehbar wann — und sie trifft von zwei Seiten: weniger
+  Ertrag und zugleich mehr Bedarf.
+
+**Anker**
+
+- Die Vorstellung von der müßigen Wildbeutergesellschaft stammt aus Zeitmessungen, die nur
+  die Nahrungssuche zählten. Mit Verarbeitung, Werkzeugpflege und Betreuung rückt die
+  Arbeitslast in die Größenordnung kleinbäuerlicher Gesellschaften (Hawkes/O'Connell gegen
+  Sahlins).
+- Wildbeuter lebten weit unter dem, was ihr Land theoretisch hätte tragen können — bei
+  einem Fünftel bis zwei Fünfteln (Kelly). Diese Obergrenze rechnet, was ein Land
+  hervorbringt, nicht was sich davon mit den vorhandenen Händen holen lässt. Und sie
+  widerspricht dem Ausdünnen nicht: Zurück gehen die langsam nachwachsenden Arten, und die
+  sind nur ein kleiner Teil dessen, was ein Land insgesamt hergibt.
+- Dass ein Revier ausdünnt, wenn man bleibt, ist für langsam nachwachsende Arten belegt:
+  Muschelschalen werden durch die Abfallschichten kleiner, und der Fang verschiebt sich von
+  langsamer zu schneller Beute (Ertebølle; Stiner/Munro).
+
+#### 2 — Die Wege heraus
+
+Auf die Enge gibt es Antworten. Jede bindet Arbeit oder Material, und was hineingeht, fehlt
+anderswo.
+
+**Vorrat anlegen.** Was gewonnen und nicht gleich verbraucht wird, trägt durch eine
+schlechte Zeit. In guten Ticks fällt das leicht, in schlechten spart man es sich vom Mund
+ab.
+
+**Revierwechsel.** Auf einem frischen Revier sind die Suchkosten wieder niedrig.
+Weiterzuziehen ist für eine solche Gemeinschaft der Normalfall und kein Notbehelf. Es
+begrenzt dafür ihre Zahl: Unterwegs müssen die Kleinen getragen werden, und tragen lassen
+sich nur wenige — darum folgen die Geburten weit auseinander.
+
+**Projekte.** Sie kosten Arbeit, Material oder beides, bevor etwas zurückkommt. Die einen
+bringen dieselbe Menge mit weniger Händen. Die anderen holen aus demselben Revier mehr
+heraus als bisher, aber jede Einheit kostet dann mehr Arbeit als zuvor — diesen Weg geht
+man erst, wenn die Enge zwingt.
+
+Die Wege zahlen zu verschiedenen Zeiten: der Revierwechsel sofort, der Vorrat erst in der
+schlechten Zeit, ein Projekt erst, wenn es fertig ist.
+
+**Was daran zu lernen ist**
+
+- Alle Wege werden aus derselben Arbeit bezahlt. Was in den einen geht, fehlt beim anderen.
+- Hände sparen und mehr aus demselben Revier holen sind nicht dasselbe: Das zweite kostet je
+  Einheit **mehr** Arbeit, nicht weniger.
+- Was die Gemeinschaft beweglich hält, hält sie zugleich klein.
+
+**Anker**
+
+- Weiterziehen war der Normalbetrieb und nicht die Notmaßnahme: Man brachte die Menschen zu
+  den Ressourcen statt umgekehrt (Binford).
+- Wie viele Kleinkinder zugleich getragen werden können, begrenzt, wie dicht Geburten
+  aufeinanderfolgen (Blurton Jones).
+- Mehr je Fläche kostet mehr Arbeit je Einheit und geschieht unter Druck, nicht aus Einsicht
+  (Boserup).
+
+#### 3 — Was der Fortschritt bringt
+
+Ein fertiges Projekt hebt die Deckung, und die Gemeinschaft wächst. Mit ihr wächst, was sie
+dem Revier entnimmt: Die Dichte sinkt, die Suchkosten steigen, und bald steht sie wieder so
+eng wie zuvor — nur mit mehr Menschen.
+
+Ein Vorrat federt die schlechte Zeit ab. Er hebt nicht, wie viele hier leben können.
+
+Ein Revierwechsel senkt die Suchkosten und ist über die Strecke mehrfach nötig. Auch er
+hebt nicht, wie viele hier leben können, und jedes weitere Revier gibt im Mittel etwas
+weniger her als das vorige.
+
+Was bleibt, ist kein besseres Leben, sondern eine höhere Decke: Dasselbe Land trägt mehr
+Menschen als vorher, und eine größere Gemeinschaft kann Projekte angehen, die einer kleinen
+zu groß waren.
+
+**Was daran zu lernen ist**
+
+- Fortschritt wird in Köpfe umgesetzt, nicht in Wohlstand. Man wird nicht reicher, man wird
+  mehr.
+- Land und Arbeit sind hier dasselbe: Wo niemand Fläche belegt, zeigt sich knappes Land als
+  Arbeit.
+- Von den drei Wegen hebt nur einer die Decke. Die beiden anderen kaufen Zeit und Sicherheit.
+
+**Anker**
+
+- Wächst die Nahrung, wächst die Zahl der Menschen mit, bis der Vorteil aufgezehrt ist
+  (Malthus).
+- Zur Intensivierung treibt nicht die Einsicht, sondern der Druck der wachsenden Zahl
+  (Boserup).
+
+#### 4 — Wie die Epoche endet
+
+Irgendwann wird ein Vorrat für Nahrung **gebaut**. Erst damit ist die schlechte Zeit
+wirklich abgefedert; was ohne Bau zurückgelegt werden kann, hilft nur bedingt.
+
+Zurück bleibt bei einem Revierwechsel ohnehin manches — auch ein Holzvorrat wandert nicht
+mit. Neu ist, dass hier etwas **gebaut** ist: Einen Vorrat, der von selbst hält, kann die
+Gemeinschaft vorher aufbrauchen, den Bau nicht. Je mehr davon steht, desto weniger lohnt
+der Revierwechsel.
+
+Irgendwann lohnt der Revierwechsel gar nicht mehr. Die Projekte haben die Decke gehoben,
+aber wer bleibt, lebt dauerhaft auf einem dünnen Revier.
+
+Heraus führt nur, sesshaft zu werden. Das ist eine Entscheidung, und sie beendet die
+Epoche: Sie öffnet Projekte, die vorher nicht möglich waren, macht Eigentum zu einer
+Einrichtung und verbilligt die Betreuung — wer nicht mehr zieht, muss die Kleinen nicht mehr
+tragen, und die Geburten folgen dichter.
+
+**Was daran zu lernen ist**
+
+- Was gebaut ist, bindet an den Ort.
+- Die Falle schnappt durch den eigenen Erfolg zu: Das Wirksamste gegen die Krise nimmt den
+  ältesten Ausweg.
+- Wo man nicht mehr weggehen kann, wird zur Frage, wem etwas gehört.
+
+**Anker**
+
+- Vorratshaltung setzt lagerfähige Nahrung und den Bau dafür voraus; was an den Ort bindet,
+  ist, was man nicht mitträgt — sesshaft ist man, bevor man es beschließt (Testart).
+- Gebaute Vorratsgruben sind älter als die ersten Nutzpflanzen: Gelagert wurde vor dem
+  Ackerbau (Kuijt/Finlayson).
+- Mit dem Sesshaftwerden rücken die Geburten dichter zusammen (Bocquet-Appel).
+
+---
+
+Über die ganze Strecke muss die Gemeinschaft **deutlich unter dem sitzen, was ein guter Tick
+trüge** — sonst bleibt nichts für Feuer, Kleidung und Vorrat übrig, und heraus kommt eine
+Gesellschaft, die satt, nackt und frierend ist.
 
 > Die Bevölkerung soll **nicht chronisch am Verhungern** sein. Wildbeuter saßen bei
 > zwanzig bis vierzig Prozent dessen, was ihr Land maximal getragen hätte (Kelly), und
