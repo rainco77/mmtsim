@@ -451,9 +451,23 @@ function utilisationOf(result: AllocationResult): Record<CapacityId, number> {
  * them, interpolated linearly between no and full coverage — the non-linearity
  * that famine mortality needs already sits in the ranking.
  *
- * At rank 100 fully covered and nothing above, births equal deaths and the
- * population stands. That fixes both base rates and defines the Malthusian
- * point exactly rather than by feel.
+ * **The two base rates balance each other and nothing else** — 1.0308 against
+ * 0.97 comes to 0.99988, so a community stands still exactly when the tiers
+ * between them come to one. Where that is depends on which of them are covered,
+ * and it is nowhere near the bottom of the ranking:
+ *
+ * | covered | births | survival | per tick |
+ * |---|---|---|---|
+ * | rank 100 alone | 1.0308 × 0.99 = 1.0205 | 0.97 × 0.94 = 0.9118 | **0.930** |
+ * | 100 and 200 | 1.0205 | 0.97 | **0.990** |
+ * | everything (before settling) | 1.0308 × 1.01 × 1.01 = 1.0515 | 0.97 | **1.020** |
+ *
+ * Fed but cold is a community that loses seven in a hundred a tick; fed and
+ * warm and nothing above still loses one, because want of comfort holds the
+ * births down. Only a community that has everything grows.
+ *
+ * It used to read here that births equalled deaths at rank 100 covered and that
+ * this fixed both base rates. It never did: at rank 100 alone the fire is out.
  */
 export class PopulationPhase implements Phase {
   readonly id = "population";
