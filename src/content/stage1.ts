@@ -178,7 +178,7 @@ export const STAGE1: Config = {
         ratePerTick: 0.5,
         capacity: "wilderness",
         densityPerArea: 38.4,
-        refuge: 3,
+        refuge: 24,
         maxEffort: 30,
       },
     },
@@ -188,10 +188,10 @@ export const STAGE1: Config = {
       id: "game",
       decayPerTick: 0,
       regrowth: {
-        ratePerTick: 0.0375,
+        ratePerTick: 0.3,
         capacity: "wilderness",
         densityPerArea: 14.4,
-        refuge: 2,
+        refuge: 16,
         maxEffort: 30,
       },
     },
@@ -208,7 +208,7 @@ export const STAGE1: Config = {
       id: "deadwood",
       decayPerTick: 0,
       regrowth: {
-        ratePerTick: 0.025,
+        ratePerTick: 0.2,
         capacity: "wilderness",
         // Provisional, and known to be so. Reckoned, three would leave the
         // comfort at about half at twenty-five heads — the pinch the epoch was
@@ -218,7 +218,7 @@ export const STAGE1: Config = {
         // with it. Ten is the lowest value at which no seed died over eight
         // seeds and two hundred ticks. The figure belongs to the balancing.
         densityPerArea: 80.0,
-        refuge: 2,
+        refuge: 16,
         maxEffort: 30,
       },
     },
@@ -235,10 +235,10 @@ export const STAGE1: Config = {
       id: "trees",
       decayPerTick: 0,
       regrowth: {
-        ratePerTick: 0.0125,
+        ratePerTick: 0.1,
         capacity: "wilderness",
         densityPerArea: 160.0,
-        refuge: 5,
+        refuge: 40,
         maxEffort: 30,
       },
     },
@@ -248,10 +248,10 @@ export const STAGE1: Config = {
       id: "fish",
       decayPerTick: 0,
       regrowth: {
-        ratePerTick: 0.05,
+        ratePerTick: 0.4,
         capacity: "water",
         densityPerArea: 19.2,
-        refuge: 2,
+        refuge: 16,
         maxEffort: 30,
       },
     },
@@ -266,10 +266,10 @@ export const STAGE1: Config = {
       id: "shellfish",
       decayPerTick: 0,
       regrowth: {
-        ratePerTick: 0.0437,
+        ratePerTick: 0.35,
         capacity: "water",
         densityPerArea: 48.0,
-        refuge: 3,
+        refuge: 24,
         maxEffort: 30,
       },
     },
@@ -846,7 +846,7 @@ export const STAGE1: Config = {
       // before a tick was kept from combing nine tenths of a range. What the
       // split has to deliver is unchanged — hunger as the crisis and not the
       // daily rule (E29) — and what it delivers now wants measuring afresh.
-      perHead: 0.9,
+      perHead: 1.3,
       // A small child eats little and one nearly grown almost a full share;
       // over the group, seven tenths.
       perHeadWeight: { growing: 0.7, grown: 1 },
@@ -1005,7 +1005,7 @@ export const STAGE1: Config = {
       rank: 500,
       stock: "food",
       branch: "food",
-      perHead: 0.9,
+      perHead: 0.5,
       perHeadWeight: { growing: 0.7, grown: 1 },
       consumedOnUse: 1,
       // **Satiety carries the strength to work and nothing else** (E20). It
@@ -1612,11 +1612,18 @@ export const STAGE1: Config = {
     // the community, so a hundredth off the growth factor is a third of all the
     // births. Read as a real flow the same effects are wide, and the width is
     // not a taste — it falls out of the three cases (see the tiers below).
-    baseBirthRate: 0.0833,
+    baseBirthRate: 0.0933,
 
-    // Unchanged, and the same for both until there is a reason to spread it:
-    // the sensitivities per cohort stand written out at each tier, at one.
-    baseSurvival: { growing: 0.97, grown: 0.97 },
+    // **Children die twice as readily as the grown, crisis or no.** Over the
+    // thirteen ticks of growing up that comes to 0.94^13 = 0.45: about half do
+    // not reach the grown cohort, which is the forager figure.
+    //
+    // It leaves the ratio of children to grown untouched — that hangs on the
+    // ageing rate and the mortality of the grown alone — and raises instead how
+    // many births are needed to hold it. The birth flow grows by two fifths, so
+    // the same relative fall in births costs half again as many people: the
+    // population answers comfort instead of shrugging at it.
+    baseSurvival: { growing: 0.94, grown: 0.97 },
 
     // **Growing up.** The rate follows from the standstill and is not a taste:
     // in balance the growing must give up as many as they take in, so
@@ -1688,7 +1695,7 @@ export const STAGE1: Config = {
   // lies there for the rest of three hundred. Every seed goes back, which two
   // thirds did not.
   land: {
-    perHeadAtStart: { wilderness: 0.36, water: 0.144 },
+    perHeadAtStart: { wilderness: 0.144, water: 0.0576 },
     // Three tenths of what the ground could carry. Full, a quarter of the hands
     // would have nothing to do for twenty ticks while the range was worked down;
     // at three tenths not one is idle from the first tick on.

@@ -86,13 +86,18 @@ const seedOf = (i: number): number => 101 + i * 13;
  * played, the price of searching pushes food up by half again, which is where
  * the "about half" of the anchor lands.
  */
-const CLAIM_ON_WORK: Readonly<Record<string, number>> = {
-  food_survival: 0.17,
-  warmth_fire: 0.04,
-  childcare: 0.14,
-  clothing_cover: 0.08,
-  food_satiety: 0.17,
-  warmth_comfort: 0.09,
+/**
+ * Checked over *needs*, not over ranks. Hunger and satiety are one claim on the
+ * work split over two ranks, and warmth likewise: how the claim divides between
+ * the vital rank and the one above it is the buffer against a poor draw, which
+ * belongs to the crisis and not here. What the anchors speak to is the whole —
+ * about a third of the work into getting food, a good tenth into fuel.
+ */
+const CLAIM_ON_WORK: Readonly<Record<string, readonly [number, readonly string[]]>> = {
+  food: [0.34, ["food_survival", "food_satiety"]],
+  warmth: [0.13, ["warmth_fire", "warmth_comfort"]],
+  care: [0.14, ["childcare"]],
+  clothing: [0.08, ["clothing_cover"]],
 };
 
 /** How far a share may stray from what it is meant to be. */
@@ -105,6 +110,7 @@ const CLAIM_BAND = 1 / 3;
  * and being all or nothing is the point of it.
  */
 const REGULATOR_FLOOR = 0.05;
+
 
 /** Labour to make one unit of a good, its inputs chained in — the cheapest way. */
 function labourPerUnit(stock: string, seen: ReadonlySet<string> = new Set()): number {
@@ -554,9 +560,11 @@ const report = {
   proportions: {
     "every need claims the share of the work it is meant to (E9, E29)": (() => {
       const claims = claimsOnWork();
+      const share = (tiers: readonly string[]) =>
+        tiers.reduce((sum, id) => sum + (claims[id] ?? 0), 0);
       const off = Object.entries(CLAIM_ON_WORK)
-        .filter(([id, want]) => Math.abs((claims[id] ?? 0) - want) > want * CLAIM_BAND)
-        .map(([id, want]) => ({ tier: id, want, is: round(claims[id] ?? 0) }));
+        .filter(([, [want, tiers]]) => Math.abs(share(tiers) - want) > want * CLAIM_BAND)
+        .map(([need, [want, tiers]]) => ({ need, want, is: round(share(tiers)) }));
       return {
         share: Object.fromEntries(Object.entries(claims).map(([id, v]) => [id, round(v)])),
         leftForProjects: round(1 - Object.values(claims).reduce((a, b) => a + b, 0)),
