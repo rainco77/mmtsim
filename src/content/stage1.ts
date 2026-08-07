@@ -1673,8 +1673,20 @@ export const STAGE1: Config = {
 
   // A community of about twenty-five on the range that carries it (E14, Birdsell's
   // magic numbers). The figures per head are what gets tuned; the totals follow.
+  //
+  // **The range has to carry fewer than the group that arrives on it** (E29):
+  // standing still is meant to end at a lower level than it began at, and at
+  // 0.6 and 0.24 it ended at a higher one — twenty-five grew to thirty-two and
+  // stayed. Where the resting level lands runs cleanly with the figure, at
+  // about 31.8 times it, so a decline wants six tenths of what stood here, and
+  // that is what these are.
+  //
+  // Measured over eight seeds doing nothing at all: twenty-five is carried for
+  // the first ten ticks, falls away to between 18.9 and 21.8 by tick thirty and
+  // lies there for the rest of three hundred. Every seed goes back, which two
+  // thirds did not.
   land: {
-    perHeadAtStart: { wilderness: 0.6, water: 0.24 },
+    perHeadAtStart: { wilderness: 0.36, water: 0.144 },
     baseQuality: 1.0,
     qualityDecayPerTaking: 0.05,
     // What a report on the next range strays from that mean, either way. At a
@@ -1691,15 +1703,27 @@ export const STAGE1: Config = {
   // and no work went into children.
   //
   // Now the starting group performs 15 + 10 × 0.25 = 17.5 rather than 25, and
-  // five of what it performs goes into care. 17.5 × 1.71 = 30, less five for
-  // the children, leaves the same 25 the community had before — so the rest of
-  // the economy runs on exactly what it ran on, and what changed is only that
-  // more children now bind hands.
+  // five of what it performs goes into care. At 1.71 that left the same 25 the
+  // community had before, so the rest of the economy ran on exactly what it ran
+  // on and all that changed was that more children bind hands.
+  //
+  // **And it carries the offset for the smaller range as well.** The two say
+  // different things — the range says how many people the country feeds, the
+  // productivity says how much work those people do — and only the first is
+  // what the story is about. Cutting the range alone took the epoch with it:
+  // at six tenths not one seed in eight ever settled, because what a project
+  // costs and how much practice a technique wants are absolute figures while
+  // both labour and practice run with the head count, so a third fewer people
+  // is a third slower to every threshold. Measured, productivity barely lifts
+  // the resting level — the stocks bind there, not the hands — but it lifts the
+  // work: at 2.05 the resting community performs 33 rather than 27, and eight
+  // seeds in eight settle again. The figure is fitted and not derived: the
+  // smallest round step up from 1.71 at which they all still arrive.
   //
   // The offset belongs here and not in the coefficients of the processes,
   // because care is no new work: the famously short days of the "original
   // affluent society" counted the search for food alone, and the coefficients
   // are balanced against that same reality, so the time spent on children was
   // silently inside them. Pulling it out is measuring the day correctly.
-  carried: { baseProductivity: 1.71, baseWorkAbility: 1.0, adjustmentPerTick: 0.25 },
+  carried: { baseProductivity: 2.05, baseWorkAbility: 1.0, adjustmentPerTick: 0.25 },
 };

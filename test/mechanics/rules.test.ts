@@ -849,11 +849,22 @@ describe("sedentism (E29)", () => {
     };
     state = finish(state, "sedentism");
 
-    const first = derive(state, index).nextTakingQuality;
+    // Held against the same report, or the comparison says nothing: what is on
+    // offer is the falling mean times a draw that strays by a seventh either
+    // way (E25), and a seventh is wider than the twentieth a taking costs. Two
+    // ticks read one after the other therefore carry two different draws.
     const afterOne = finish(state, "land_taking");
-    const second = derive(afterOne, index).nextTakingQuality;
+    const sameOffer = (x: GameState): GameState => ({ ...x, landOffer: 1 });
+    const first = derive(sameOffer(state), index).nextTakingQuality;
+    const second = derive(sameOffer(afterOne), index).nextTakingQuality;
     expect(second).toBeLessThan(first);
     expect(afterOne.landTakings).toBe(1);
+
+    // And the draw is what makes the two readings differ at all: on the same
+    // standing, a better report is worth more country than a poorer one.
+    const lucky = derive({ ...state, landOffer: 1.15 }, index).nextTakingQuality;
+    const poor = derive({ ...state, landOffer: 0.85 }, index).nextTakingQuality;
+    expect(lucky).toBeGreaterThan(poor);
   });
 });
 

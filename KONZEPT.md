@@ -828,21 +828,36 @@ fünfzig wären zwei davon.
 | **Revier** | *je Kopf* angegeben und mit der Gemeinschaft multipliziert |
 | **Alles, was auf dem Revier lebt** | beginnt an seiner Obergrenze, aus derselben Regel wie der Nachwuchs (E19) — man kommt in ein Land, das noch niemand leergejagt hat |
 | **Vorrat** | **keiner.** Von der Hand in den Mund ist der Zustand, in dem die Epoche anfängt und aus dem sie sich herausarbeitet; ein Startvorrat verschenkte gerade den Mangel, den die Grube später beantwortet — und war ohnehin wirkungslos, weil Nahrung mit 0,9 verdirbt |
-| **Ende bei zwölf** | darunter zu wenige Jäger, niemand übrig für Kinder und Kranke, kein Ausgleich für einen einzelnen Todesfall |
+| **Ende bei sieben Erwachsenen** | darunter zu wenige Jäger, niemand übrig für Kinder und Kranke, kein Ausgleich für einen einzelnen Todesfall — und alle drei gelten den Arbeitenden, nicht den Köpfen (E20) |
 
 Zwei lose Zahlen für Gemeinschaft und Revier liefen auseinander, sobald an einer gedreht wurde —
 und derselbe Fehler ließ eine Gruppe in einem *bereits leergefischten* Gewässer starten,
 weil die Startbestände neben der Regel standen statt aus ihr zu folgen. Als Abhängigkeit
 geschrieben kann das nicht wiederkehren.
 
-Eine Gemeinschaft unter zwölf stirbt übrigens nicht aus — sie schließt sich einer anderen an.
-Als *diese* Gemeinschaft ist sie vorbei, und das genügt: eine weitere Regel dafür braucht es
-nicht. Die Gruppe sitzt *an* der
-Tragfähigkeit ihres Landes, nicht weit darunter — das ist die Lage einer
-Wildbeutergemeinschaft, und nur so ist ein schlechter Tick existentiell, lohnt Vorratshaltung
-und entsteht Druck zur Intensivierung. Mit einem Revier, das ein Vielfaches des Bedarfs
-hergibt, drückt über hunderte Ticks nichts, und dann hat weder der Speicher noch die Rodung
-eine Aufgabe.
+Eine zu klein gewordene Gemeinschaft stirbt übrigens nicht aus — sie schließt sich einer
+anderen an. Als *diese* Gemeinschaft ist sie vorbei, und das genügt: eine weitere Regel
+dafür braucht es nicht.
+
+**Die Gruppe sitzt etwas über der Tragfähigkeit ihres Landes, nicht darunter.** Das ist die
+Lage einer Wildbeutergemeinschaft, und nur so ist ein schlechter Tick existentiell, lohnt
+Vorratshaltung und entsteht Druck zur Intensivierung. Mit einem Revier, das ein Vielfaches
+des Bedarfs hergibt, drückt über hunderte Ticks nichts, und dann hat weder der Speicher noch
+die Rodung eine Aufgabe.
+
+**Etwas darüber, und nicht genau darauf** — denn die Bestände beginnen voll, und was die
+Gemeinschaft am ersten Tick trägt, trägt sie nicht mehr, sobald das langsam Nachwachsende
+ausgedünnt ist. Wer nichts tut, geht deshalb auf ein niedrigeres Niveau zurück und hält sich
+dort (E29). Stand die Fläche je Kopf so, dass die Ruhelage *über* der Startgruppe lag, sagte
+das Modell das Gegenteil der Erzählung.
+
+**Und die Fläche je Kopf ist nicht allein zu drehen.** Sie bestimmt zugleich, wie viele
+Hände es gibt — und was ein Projekt kostet und wieviel Übung eine Technik verlangt, sind
+absolute Zahlen. Ein Drittel weniger Menschen ist ein Drittel langsamer zu jeder Schwelle,
+und gemessen erreichte dann kein Lauf mehr die Sesshaftigkeit. Was die Fläche an Arbeit
+nimmt, muss die Grundproduktivität zurückgeben: Die Fläche sagt, wie viele Menschen das Land
+ernährt, die Produktivität, wieviel Arbeit diese Menschen leisten — und nur das Erste ist
+es, wovon die Erzählung handelt.
 
 **Aber „an der Tragfähigkeit" heißt: an der eines *leicht* schlechten Ticks.** Wörtlich
 am Durchschnitt genommen wäre nie etwas übrig — kein Vorrat, kein Projekt, keine
@@ -2266,7 +2281,7 @@ Anteil = Bedarf je Kopf ÷ (Fläche je Kopf × Dichte)
 
 Die Kopfzahl kürzt sich heraus — sie steht in Zähler und Nenner. Der Startanteil hängt
 also **nur** am Ertrag des Reviers je Kopf, nie an der Größe der Gemeinschaft. Beispiel:
-1,8 ÷ (0,6 × 8) = 0,375.
+1,8 ÷ (0,36 × 8) = 0,625.
 
 **2. Was das Suchen kostet.** Der Preis ist der Mittelwert von `Decke / Bestand` über die
 ganze Entnahme, also `(Decke / Entnahme) · ln(Stand / Rest)`. Auf einem vollen Stand
