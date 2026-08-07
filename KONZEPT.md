@@ -744,6 +744,10 @@ Fläche, die einen festen Prozentsatz schlechter ist als die vorige.
 | 10. | 0,60 |
 | 20. | 0,36 |
 
+**Diese Reihe ist der Mittelwert**, nicht das, was in einem einzelnen Tick auf dem Tisch
+liegt: Das jeweilige Angebot streut gleichmäßig um sie, ohne sie zu verschieben (E25;
+ausgeführt beim Revierwechsel der ersten Epoche).
+
 *(Platzhalterzahlen, Balancing später.)* Güte statt steigender Kosten aus drei Gründen:
 Es ist **Ricardo im Original** (Differentialrente handelt von Qualität, nicht von
 Erschließungskosten). Es erzeugt die richtige Dynamik — bei steigenden Kosten würde man
@@ -1746,14 +1750,15 @@ Regel: **gespeichert wird nur, was Geschichte hat.** Alles Berechenbare wird jed
 neu gerechnet und nirgends abgelegt. Das hält den Spielstand klein (T7) und verhindert,
 dass zwei Stellen dasselbe behaupten und auseinanderlaufen.
 
-**Gespeichert — acht Dinge:**
+**Gespeichert — neun Dinge:**
 
 | | |
 |---|---|
 | **Tickzähler** | |
 | **Zufallszustand** | Hauptseed plus je Strom ein Zählerstand (E25); nie ein globaler Generator |
 | **Bestände** | eine Zahl je Bestand: Bevölkerung, Nahrung, Wohnraum, Holz — dazu eine je Flächentyp (E13), anfangs Wildnis und erschlossene Fläche |
-| **Zahl der Landnahmen** | daraus wird die Güte gerechnet (E13) |
+| **Zahl der Landnahmen** | daraus wird der Mittelwert der Güte gerechnet (E13) |
+| **Das Landangebot** | der Wurf, der das gerade angebotene Land gegen diesen Mittelwert stellt (E13). Gespeichert, weil er am Ende des Ticks gezogen wird und bis zur Entscheidung im nächsten stehen bleiben muss |
 | **Produktivität** | mitgeführt |
 | **Arbeitsfähigkeit** | mitgeführt |
 | **Erledigte Projekte** | je Kennung, wie oft — und daran misst sich die Obergrenze aus E12 |
@@ -1994,6 +1999,7 @@ Ein **Hauptseed**, daraus mehrere unabhängige Ströme:
 | Strom | Wofür |
 |---|---|
 | `weather` | die Witterung für die inländische Produktion (E24) |
+| `land` | die Güte des Landes, das gerade angeboten wird (E13) |
 | `events` | zufällige Ereignisse |
 | `foreign` | Weltmarktpreise, Wechselkurs |
 
@@ -2676,10 +2682,18 @@ und sind dieselbe Tätigkeit; Sammeln mit Sichel ist immer noch Sammeln. Sie ste
 am Verfahren, damit zwei Projekte sich nicht darüber uneinig werden können, was „Sammeln"
 ist.
 
-**Sichtbar wird ein Projekt bei der halben Übung**, ausführbar bei der ganzen. Es steht
-also erst grau da mit dem, worauf es wartet — das ist der Reiz, weiterzumachen, statt
-einer unerreichbaren Liste. Am ersten Tick steht nichts auf dem Schirm; ab dem zweiten
-wächst die Karte herein.
+**Sichtbar wird ein Projekt, wenn der Mangel drückt, den es beantwortet — ausführbar,
+wenn die Übung da ist.** Das sind zwei verschiedene Fragen, und sie werden an zwei
+verschiedenen Größen gemessen: Ob etwas gebraucht wird, sagt der Zustand der Wirtschaft;
+ob man es kann, sagt das, was bisher getan wurde. Der Mörser wird sichtbar, wenn das
+Sammeln teurer wird, und ausführbar aus vielen Ernten; die Sichel, wenn das Sammeln je
+Kopf mehr Hände frisst; der Erdofen, wenn das Totholz knapp wird. Wo ein Projekt ein
+anderes sachlich voraussetzt, steht diese Voraussetzung zusätzlich auf der
+Ausführbarkeit.
+
+Es steht also erst grau da mit dem, worauf es wartet — das ist der Reiz, weiterzumachen,
+statt einer unerreichbaren Liste. Am ersten Tick steht nichts auf dem Schirm; ab dem
+zweiten wächst die Karte herein.
 
 **Ausgenommen sind Vorsorge und Fläche.** Vorratsgrube, Revierwechsel, Boot und
 Sesshaftigkeit verlangen keine Übung — eine Grube gräbt man, man erfindet sie nicht.
@@ -2692,9 +2706,44 @@ gezählt werden. Nebenbei ist der Revierwechsel dadurch früh billig und später
 ohne dass ein Wort darüber verloren wird: Wer noch nichts gegraben hat, lässt nichts
 zurück.
 
-**Der Revierwechsel erscheint erst, wenn das Revier ausdünnt** — sichtbar unter der
-Hälfte dessen, was es trägt, ausführbar unter einem Drittel. Sein Erscheinen *ist* damit
-die Warnung.
+**Der Revierwechsel hat gar keine Marke.** Wer wandern kann, kann immer wandern: Eine
+Gemeinschaft, die ihren ganzen Hausstand mit sich trägt, ist am ersten Tick so frei zu
+gehen wie am hundertsten. Ausführbar ist er, solange nicht sesshaft — sonst steht nichts
+davor.
+
+**Was der Zustand des Reviers entscheidet, ist allein seine Stellung in der Reihenfolge
+der möglichen Projekte.** Je dünner die Bestände, desto weiter oben steht das Angebot. Das
+ist die Warnung; ein Erscheinen und Verschwinden wäre sie nicht, denn ein Angebot, das mit
+einem Bestand kommt und geht, kann auch keinen Fortschrittsbalken tragen.
+
+Wert ist der Wechsel dabei genau das, was das ausgedünnte Revier an Mehraufwand bei der
+Suche gerade kostet — **geteilt durch die Zahl der Ticks, die ein frisches Revier frisch
+bleibt.** Ohne diese Teilung ist er gegen eine Technik überhaupt nicht abzuwägen: Eine
+Technik zahlt, solange die Epoche dauert, ein Umzug nur, bis das Revier wieder ausgedünnt
+ist. Ungeteilt stünde er von dem Augenblick an obenan, in dem irgendetwas dünner wird.
+Dazu skaliert mit dem, was gerade angeboten wird, gegen das, worauf man steht.
+
+**An den Suchkosten hing er zuvor, und das war falsch.** Die Suchkosten tragen das Wetter:
+Ein Verfahren, das seinen Ertrag findet, läuft auf Ziel geteilt durch Wurf, also holt die
+Gemeinschaft bei schlechtem Wurf mehr aus demselben Stand. Über 1680 Ticks gemessen liegt
+die Beziehung zwischen Suchkosten und Wurf bei −0,71; im schlechtesten Wurfviertel stehen
+die Kosten bei 2,02, im besten bei 1,35. Eine Marke darauf feuert gegen Wetter — und gegen
+Wetter hilft kein Umzug, weil das Wetter mitzieht. Die Dichte der Bestände, am Tickende
+nach der Entnahme gelesen, ist der ruhige Ersatz: Beziehung zum Wurf 0,03.
+
+**Und ohne Marke ist der Wechsel trotzdem kein billiger Neuanfang.** Die Bremse ist die
+fallende Güte: Jedes weitere Revier trägt weniger als das vorige, wer das gute Land früh
+verbraucht, steht später auf schlechtem. Diesen Preis zahlt der Spieler selbst, und er
+braucht keine Sperre, die ihn erzwingt.
+
+**Die Steinaxt hängt allein an der Übung im Holz, an keiner Knappheit.** Sie beantwortet
+keinen Mangel: Was sie erschließt, ist der stehende Wald, und den verlangt niemand, bevor
+es die Axt gibt — wem Brennstoff fehlt, der liest mehr von dem auf, was gefallen ist. Am
+Brennholz gemessen war ihre Marke außerdem nicht verlässlich zu erreichen: Der höchste
+Suchpreis für Totholz, den ein ganzer Lauf überhaupt erreicht, liegt zwischen 1,13 und
+1,31, die Marke lag also im Rauschen. Drei von acht Seeds kamen darüber, und daran hing,
+ob die Epoche zu Ende gespielt werden konnte, denn ohne Axt keine Grube und ohne Grube
+keine Sesshaftigkeit. Übung im Holz fällt nie, also wird sie in jedem Lauf erreicht.
 
 #### Schritt 4 — was worauf aufbaut
 
@@ -2828,6 +2877,18 @@ jede spätere Epoche mit einem dauerhaften Abschlag belastete — aus einer Opti
 eine Falle. Und es lässt sich begründen: **Sesshaft wird man nicht irgendwo, sondern an
 einem ausgesuchten Ort.** Wer viel gewandert ist, hat viel Land gesehen. Der Preis des
 Wanderns wird während des Wanderns bezahlt und ist damit abgegolten.
+
+**Was gerade angeboten wird, ist gezogen.** Eine Gemeinschaft wandert nicht blind, aber
+sie weiß auch nicht, was sie finden wird: Sie beobachtet ihre Umgebung und hört von
+Verwandten und Tauschpartnern, wie es anderswo steht — und was da zurückkommt, ist eine
+Nachricht über *ein* Stück Land. Die nächste Nachricht lautet anders. Deshalb wird das
+Angebot jeden Tick neu gezogen, aus einem eigenen Zufallsstrom (E25) und am Tickende,
+damit die Zahl, gegen die entschieden wird, auch die ist, die der Umzug dann bekommt.
+
+Der Wurf liegt gleichmäßig um den fallenden Mittelwert, **der Mittelwert selbst bleibt
+unberührt** und fällt mit jedem Zug genau wie zuvor; was ein guter Bescheid ändert, ist
+dieses eine Angebot und nie die Reihe. Auf ein besseres zu warten ist damit eine
+Entscheidung mit Preis, denn das Revier, in dem man steht, dünnt derweil weiter aus.
 
 **Woran gemessen wird, ob die Erzählung eintritt** — die Zahlen daneben gehören in die
 Messung, nicht hierher, weil sie sich mit jeder Änderung bewegen:
