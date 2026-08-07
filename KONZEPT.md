@@ -1398,16 +1398,23 @@ Bau entschieden.
 **Jede Rate ist ein Faktor, und Raten werden nie addiert.**
 
 ```
-Köpfe'    = Köpfe ⊙ Überleben ⊕ Neugeborene in ihrer Kohorte
-Überleben = Grundüberleben × Faktor je Bedarf …      je Kohorte
-Geburten  = Grundfaktor    × Faktor je Bedarf …
-Arbeit    = (Gewichte · Köpfe) × Arbeitsfähigkeit × Produktivität
+Köpfe'      = Köpfe ⊙ Überleben ⊕ Neugeborene in ihrer Kohorte
+Überleben   = Grundüberleben × Faktor je Bedarf …      je Kohorte
+Neugeborene = Grundrate × Faktor je Bedarf … × (Gewichte · Köpfe)
+Arbeit      = (Gewichte · Köpfe) × Arbeitsfähigkeit × Produktivität
 ```
 
 Köpfe sind ein Vektor über die Kohorten; `⊙` heißt „je Kohorte einzeln", `·` ist das
 Skalarprodukt. Addiert wird an genau einer Stelle, und dort ist es keine Rate, sondern
-Menschen: die Neugeborenen, die in ihre Kohorte kommen. Wieviele es sind, folgt aus dem
-Geburtenfaktor auf die gewichtete Kopfzahl.
+Menschen: die Neugeborenen, die in ihre Kohorte kommen.
+
+**Die Geburten sind eine Zahl von Menschen, kein Faktor auf alle.** Sie folgen aus einer
+Grundrate je Erwachsenem, mal den Faktoren der Bedarfe, mal der Zahl derer, die Kinder
+bekommen können — und sie kommen in die untere Kohorte. Vorher war es ein Faktor auf die
+Kopfzahl, und dabei war gleichgültig, wer mitzählte: Eine Gruppe aus lauter Kindern
+vermehrte sich so schnell wie eine aus lauter Erwachsenen. Damit kostet Nachwuchs zuerst
+und trägt später — eine Gemeinschaft, die gerade viele Kinder hat, bekommt dadurch nicht
+mehr Kinder, sondern weniger Hände, und muss diese Zeit überstehen, bevor es sich auszahlt.
 
 Ein Überlebensfaktor von 0,10 heißt: **ein Zehntel der Gruppe übersteht den Tick.** Eine
 Produktivität von 1,2 heißt: ein Fünftel mehr wird geschafft. 1,0 heißt „keine Wirkung".
@@ -1440,9 +1447,10 @@ Winter.
 **Nur der Puffer trägt das Wachstum.** Die Grundfaktoren waren einmal Kehrwerte
 voneinander, so dass eine Gruppe mit gerade gedeckten Bedarfen stehenblieb. Das ist
 aufgehoben: Wer nur die tödlichen Ränge deckt, **schrumpft** — langsam und ohne dass
-jemand daran stirbt. Gewachsen wird ausschließlich, solange Sättigung und
-Behaglichkeit bedient werden. Das ist der Malthus-Punkt aus E7, und er sitzt jetzt an
-der Stelle, an der er hingehört: nicht am Verhungern, sondern am Verzicht.
+jemand daran stirbt. Gewachsen wird ausschließlich, solange **Betreuung und
+Behaglichkeit** bedient werden, die beiden Ränge auf der Geburtenachse. Das ist der
+Malthus-Punkt aus E7, und er sitzt jetzt an der Stelle, an der er hingehört: nicht am
+Verhungern, sondern am Verzicht.
 
 Gemessen war der Grund handfest: Mit Kehrwerten blieb die Gruppe stehen, sobald der
 Hunger gedeckt war, und ein schlechter Wurf hatte keine Folge, die über den Tick
@@ -1450,7 +1458,8 @@ hinausreichte. Jetzt kostet ein Tick ohne Puffer Nachwuchs, und mehrere hinterei
 kosten Größe.
 
 **Der Regler ist immer genau ein Bedarf.** Die Bevölkerung pendelt sich dort ein, wo
-Überleben × Geburten = 1 wird — und dahin kommt sie, indem sie so lange wächst, bis
+**geboren = gestorben** wird — die Grundrate mal den Bedarfsfaktoren mal den Erwachsenen
+gegen die Summe der Verluste über alle Kohorten. Dahin kommt sie, indem sie so lange wächst, bis
 *ein* Bedarf so weit unterdeckt ist, dass er es allein ausgleicht. Welcher das ist,
 entscheidet allein die Größe seines Faktors, **nicht** die Menge, die er verlangt:
 Gemessen wuchs die Siedlung immer wieder genau so weit, bis die Wärme bei 0,45 stand,
@@ -1540,8 +1549,8 @@ Entscheidung, und beim Lesen steht ohnehin klarer da, was gemeint ist.
 **Produktivität und Arbeitsfähigkeit bleiben je eine Zahl.** Sie sind mitgeführter Zustand
 und nicht Inhalt, und sie wären doppelt: Was ein Halbwüchsiger weniger leistet, steht schon
 im Gewichtsvektor der Arbeit. Wer keine Arbeit beisteuert, kann nicht zusätzlich
-unproduktiv sein — es zeigt sich nirgends. Kleidung und Behaglichkeit wirken deshalb
-weiter auf die Arbeitsleistung als Ganzes, Hunger und Kälte dagegen je Kohorte.
+unproduktiv sein — es zeigt sich nirgends. Kleidung und Sättigung wirken deshalb weiter
+auf die Arbeitsleistung als Ganzes, Hunger und Kälte dagegen je Kohorte.
 
 **Die Bewegung zwischen den Kohorten ist eine Liste im Inhalt**: je Eintrag, aus welcher
 Gruppe in welche und mit welchem festen Anteil je Tick. Das ist der Alterungsschritt, und
@@ -1821,7 +1830,7 @@ dass zwei Stellen dasselbe behaupten und auseinanderlaufen.
 |---|---|
 | **Tickzähler** | |
 | **Zufallszustand** | Hauptseed plus je Strom ein Zählerstand (E25); nie ein globaler Generator |
-| **Bestände** | eine Zahl je Bestand: Nahrung, Wohnraum, Holz — dazu eine je Flächentyp (E13), anfangs Wildnis und erschlossene Fläche |
+| **Bestände** | eine Zahl je Bestand: Nahrung, Wärme, Kleidung, Betreuung, Holz — dazu eine je Flächentyp (E13), anfangs Wildnis und erschlossene Fläche |
 | **Die Bevölkerung** | eine Zahl **je Kohorte** (E20), nicht eine einzelne Kopfzahl |
 | **Zahl der Landnahmen** | daraus wird der Mittelwert der Güte gerechnet (E13) |
 | **Das Landangebot** | der Wurf, der das gerade angebotene Land gegen diesen Mittelwert stellt (E13). Gespeichert, weil er am Ende des Ticks gezogen wird und bis zur Entscheidung im nächsten stehen bleiben muss |
@@ -2485,12 +2494,10 @@ bliebe nichts — heraus käme eine Gesellschaft, die satt, nackt und frierend i
 > ernährt (Sahlins). Der Hunger ist die **Krise**, nicht der Alltag.
 
 **Epoche „Jäger und Sammler".** Auf dem Bildschirm: Bevölkerung, Wildnis, Nahrung,
-Deckung von Rang 100 und Rang 600 — Hunger und Sättigung, die beiden Nahrungsränge. Kein
+Deckung von Rang 100 und Rang 500 — Hunger und Sättigung, die beiden Nahrungsränge. Kein
 Wohnraum, kein Holz, keine erschlossene Fläche, kein Vorrat.
 
-> *Hier stand „Rang 100 und Rang 300".* Rang 300 ist der Wohnraum, und derselbe Satz sagt
-> zwei Zeilen weiter, dass es in dieser Epoche keinen gibt. Gemeint war der zweite
-> Nahrungsrang.
+> *Hier stand „Rang 100 und Rang 300".* Gemeint war der zweite Nahrungsrang.
 
 Verfahrenskette der Branche Nahrung über das ganze Spiel:
 `Sammeln` → `Ackerbau` → `Pflug` → `Maschinell`
@@ -2502,18 +2509,20 @@ sehr hohe Verfallsrate — **kein Vorrat möglich** (E19).
 **Die Bedarfe dieser Epoche.** Von der Physiologie her bestimmt, nicht von der Technik:
 Was braucht ein Mensch, damit er nicht stirbt, Kinder bekommt und arbeiten kann.
 
-| Rang | Bedarf | Gut | je Kopf | Wirkung bei Nulldeckung |
-|---|---|---|---|---|
-| 100 | **Hunger** | Nahrung | 0,9 | Überleben **0,65** — ein Drittel stirbt |
-| 200 | **Feuer** | Wärme, aus Holz | 0,03 | Überleben **0,94** |
-| 300 | *Wohnraum* | Wohnraum | 0,3 | Überleben 0,90 · Geburten ×1,003 bei voller Deckung |
-| 400 | **Kleidung** | Kleidung, aus Fell oder Faser | 0,3 | Arbeitsfähigkeit **0,60** |
-| ganz hinten | *Vorrat anlegen* | — | — | siehe E19: Ziel ist die Speicherkapazität |
-| 600 | **Sättigung** | Nahrung | 0,9 | Geburten ×1,01 · Produktivität ×1,2 bei voller Deckung |
-| 700 | **geheizt** | Wärme | 0,07 | Produktivität ×1,1 bei voller Deckung |
+| Rang | Bedarf | Gut | je Kopf | wirkt auf | bei Nulldeckung |
+|---|---|---|---|---|---|
+| 100 | **Hunger** | Nahrung | 0,9 | Überleben | **0,65** — ein Drittel stirbt |
+| 200 | **Feuer** | Wärme, aus Holz | 0,03 | Überleben | **0,94** |
+| 300 | **Betreuung** | Betreuung, nur aus Arbeit | 0,5 *je Heranwachsendem* | Geburten | **0,80** |
+| 400 | **Kleidung** | Kleidung, aus Fell oder Faser | 0,3 | Arbeitsfähigkeit | **0,60** |
+| ganz hinten | *Vorrat anlegen* | — | — | — | siehe E19: Ziel ist die Speicherkapazität |
+| 500 | **Sättigung** | Nahrung | 0,9 | Produktivität | 1,2 bei voller Deckung |
+| 600 | **Behaglichkeit** | Wärme | 0,07 | Geburten | **0,50** |
 
-*Wohnraum kommt erst mit der Sesshaftigkeit.* Er steht **vor** der Kleidung, weil sein
-Ausfall tötet und ihrer nur die Arbeitsfähigkeit kostet: Der tödliche Rang geht voran.
+**Jeder Rang wirkt auf genau eine Achse.** Sättigung und Behaglichkeit taten vorher beide
+dasselbe — Geburten *und* Produktivität — und unterschieden sich nur in der Größe der
+Zahlen; das war keine Wahl, sondern dieselbe Wirkung zweimal. Jetzt trägt die Sättigung
+die Kraft zu arbeiten und die Behaglichkeit die Kinder.
 
 *Der Vorrat trägt keine Rangzahl.* Seine Vorgabe steht hinter jedem Bedarf, wo niemand
 daran sterben kann; wohin er gehört, rückt der Spieler selbst (E1, E18).
@@ -2521,10 +2530,41 @@ daran sterben kann; wohin er gehört, rückt der Spieler selbst (E1, E18).
 Die Ränge stehen in **Hunderterschritten**, weil die Projektränge im selben Zahlenraum
 liegen (E18) — dazwischen bleiben neunundneunzig Plätze für sie.
 
-**Wohnraum steht über der Kleidung, und zwar nach dem, was ihr Ausfall kostet.** Kein Dach
-nimmt ein Zehntel der Menschen, keine Kleidung nimmt niemanden, kostet aber die Kraft zu
-arbeiten. Der tödliche Rang geht vor — die beiden standen einmal umgekehrt und wurden
-getauscht, als sie nebeneinander gelesen wurden.
+**Die Behaglichkeit bleibt, und zwar nicht als Geburtenhebel, sondern als obere Hälfte der
+geteilten Wärme.** Kälte ist eine Schwelle und keine Rampe. Mit einer einzigen Wärmestufe,
+linear verrechnet, kostete eine Deckung von 0,44 mehr als die halbe Sterblichkeit eines
+ganz erloschenen Feuers, und die Kälte regelte die Bevölkerung, lange bevor der Hunger es
+konnte. Fiele sie weg, wäre dieser Fehler zurück.
+
+**Der Wohnraum ist ganz herausgenommen** — Rang, Gut, Branche und Verfahren. Seine Branche
+ging erst mit der Sesshaftigkeit auf, und die Sesshaftigkeit beendet die Epoche: Der Bedarf
+stand also immer bei null, und seine Zahlen waren gegen nichts ausbalanciert. Ein Rang, der
+nie feuert, lässt sich nicht beurteilen. Er kommt mit der Epoche zurück, in der es Wohnraum
+wirklich gibt, und dann mit etwas, wogegen er sich einstellen lässt.
+
+#### Die Betreuung
+
+**Sie ist der Anspruch auf Arbeit, den kein Fortschritt verbilligt.** Sichel, Mörser und
+Axt machen Nahrung, Wärme und Holz billiger — an der Sorge für die, die nicht für sich
+sorgen können, geht keine davon vorbei. Der Anspruch wächst mit der Zahl der
+Heranwachsenden, und damit ist er der Boden, gegen den die Gemeinschaft klein bleibt.
+
+**Ein Gut, das sich nicht auf Vorrat legen lässt.** Es verfällt vollständig je Tick — wer
+heute nicht betreut, hat es nicht nachgeholt. Sein Verfahren verbraucht **nur Arbeit**,
+keine Fläche und kein Material, und es hängt nicht am Wetter: Kinder brauchen Betreuung bei
+jedem Wurf.
+
+**Sie ist keine neue Arbeit, sondern Arbeit, die sichtbar wird.** Die berühmten kurzen
+Arbeitstage der „ursprünglichen Überflussgesellschaft" zählten allein die Nahrungssuche;
+mit Verarbeitung, Werkzeugpflege und der Sorge für Kinder rückt die Last in die
+Größenordnung kleinbäuerlicher Gesellschaften. Die Koeffizienten der Verfahren sind gegen
+dieselbe Wirklichkeit ausbalanciert, also steckte die Betreuungszeit stillschweigend schon
+in ihnen. Sie herauszuziehen heißt deshalb nicht, Arbeit hinzuzufügen, sondern **den Tag
+richtig zu messen** — und der Ausgleich gehört auf die Angebotsseite, nicht in die
+Koeffizienten: Die Grundproduktivität steigt um genau das, was sichtbar geworden ist.
+
+**Die Bedarfe der anderen Ränge werden dafür nicht gesenkt.** Sie sind Physiologie und
+ausdrücklich keine Stellschraube.
 
 **Die beiden Überlebenszahlen sagen, wie hart eine Not landet — nicht, wie oft eine
 eintritt.** Wie oft, sagt die Verteilung der Würfe (E24); wie hart, sagen diese Zahlen,
@@ -2563,7 +2603,7 @@ eine Schwelle, kein Hang. Halbe Rationen sind Hunger; halbes Brennholz ist ein k
 Winter, kein halbes Erfrieren. Ein kleiner lebensnotwendiger Rang und ein
 Behaglichkeitsrang darüber sagen das, ohne dass ein Koeffizient verbogen werden muss.
 
-**Warum nur diese vier.** *Wasser* ist lebensnotwendig, aber für eine wandernde Gruppe
+**Warum nur diese.** *Wasser* ist lebensnotwendig, aber für eine wandernde Gruppe
 nie knapp — man lagert daran; ein Bedarf, der immer gedeckt ist, ist Rauschen.
 *Wohnraum* gehört nicht hierher, denn ein dauerhaftes Haus **ist** die Sesshaftigkeit;
 was eine Gruppe unterwegs braucht, ist Fell und Faser. *Werkzeuge* sind kein Bedarf,
