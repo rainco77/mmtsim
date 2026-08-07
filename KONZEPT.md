@@ -2409,9 +2409,8 @@ tragen, und die Geburten folgen dichter.
 trüge** — sonst bleibt nichts für Feuer, Kleidung und Vorrat übrig, und heraus kommt eine
 Gesellschaft, die satt, nackt und frierend ist.
 
-> Die Bevölkerung soll **nicht chronisch am Verhungern** sein. Wildbeuter saßen bei
-> zwanzig bis vierzig Prozent dessen, was ihr Land maximal getragen hätte (Kelly), und
-> waren im Mittel gut ernährt (Sahlins). Der Hunger ist die **Krise**, nicht der Alltag.
+> Die Bevölkerung soll **nicht chronisch am Verhungern** sein; im Mittel war sie gut
+> ernährt (Sahlins). Der Hunger ist die **Krise**, nicht der Alltag.
 
 **Epoche „Jäger und Sammler".** Auf dem Bildschirm: Bevölkerung, Wildnis, Nahrung,
 Deckung von Rang 100 und Rang 600 — Hunger und Sättigung, die beiden Nahrungsränge. Kein
