@@ -2613,16 +2613,63 @@ Gruppe die Lehre daraus noch anwenden kann. Die Ordnung bleibt: Hunger tötet mi
 ungleich schneller, denn gegen Kälte helfen Kleidung und Zusammenrücken, gegen fehlende
 Nahrung hilft nichts.
 
-**Die Arbeit je Nahrung ist um die Hälfte teurer als zuerst angesetzt.** Vorher lag die
-Hälfte der Arbeitsfähigkeit dauerhaft brach; damit konnte kein schlechter Wurf wehtun
-und keine Technik sich lohnen, denn eine neue Technik kostet gerade mehr Arbeit, und wo
-Arbeit übrig ist, ist das kein Tausch. Extern gestützt ist die Richtung dadurch, dass
-der niedrige Wert aus der Behauptung von der ursprünglichen Wohlstandsgesellschaft
-stammt und zurückgewiesen wurde, sobald Verarbeitung, Werkzeugbau und Wege mitgezählt
-wurden. Gemessen ist der Betrag: Beim Doppelten setzt sich die Gruppe in der niedrigen
-Lage fest — ohne Sättigung fällt die Produktivität um ein Viertel, und mit weniger
-Arbeit kommt sie nicht mehr heraus, kein Projekt wird je fertig. Bei der Hälfte mehr
-kommt sie heraus, und acht von acht Läufen erreichen die Sesshaftigkeit.
+#### Wieviel Arbeit ein Bedarf beansprucht
+
+**Jeder Rang beansprucht einen Anteil an der Arbeit der Gemeinschaft, und dieser Anteil
+ist eine Festlegung — keine Nebenfolge der Koeffizienten.** Er lässt sich ohne jeden Lauf
+ausrechnen: der Fluss, den ein Rang je Kopf verlangt, mal dem, was eine Einheit davon an
+Arbeit kostet, die Vorleistungen eingerechnet, geteilt durch das, was ein Kopf leistet.
+Was verbraucht wird, wird jeden Tick neu verlangt; was nur getragen wird, nur in Höhe
+seines Verfalls.
+
+**Warum das eine eigene Festlegung ist und keine Balancefrage:** Ein Rang ist nur dann
+*teilweise* gedeckt, wenn das Angebot **innerhalb** seines Bedarfs endet — und die
+Wahrscheinlichkeit dafür ist ungefähr sein Anteil am Ganzen. Ein Rang mit einem Prozent
+der Arbeit ist in einem Tick von hundert der klemmende und in den anderen
+neunundneunzig ein **Schalter**: an oder aus, nie dazwischen. Wer nie klemmt, kann auch
+nicht der Bedarf sein, an dem sich die Bevölkerung einpendelt.
+
+Gemessen war das kein Randfall: Die Kleidung beanspruchte **vier Promille** der Arbeit,
+während ihr Ausfall zwei Fünftel der Arbeitsfähigkeit kostete — ein Hebel, der nichts
+kostet und alles bewirkt, und einer, der niemals einen Verlauf zeigen konnte. Der Grund
+ist, dass Kleidung getragen und nicht verbraucht wird: Verlangt wird nur der Verfall.
+
+**Die Zielanteile auf unberührtem Land:**
+
+| Rang | Anteil |
+|---|---|
+| Hunger | 17 % |
+| Sättigung | 17 % |
+| Betreuung | 14 % |
+| Behaglichkeit | 9 % |
+| Kleidung | 8 % |
+| Feuer | 4 % |
+| übrig für Projekte | rund ein Drittel |
+
+**Es ist ein Band, kein Punkt** — belegt ist die Größenordnung, nicht die Ziffer, also
+darf jeder Anteil um ein Drittel danebenliegen. Und die Anker sind Jahresmittel, Winter
+und Sommer zusammen: die Nahrungssuche etwa die Hälfte aller Arbeit, sobald Verarbeitung,
+Werkzeug und Betreuung mitgezählt werden; Brennstoff ein bis zwei Stunden am Tag; Felle
+und Faser über ein Jahr in derselben Größenordnung. Dass die Nahrung hier trotzdem bei
+einem Drittel steht, ist kein Widerspruch: Gerechnet wird für **unberührtes Land**, und
+im Spiel hebt der Suchpreis sie um gut die Hälfte — gemessen auf 57 %.
+
+**Der Anteil für Projekte wird dabei nicht angetastet.** Umverteilt wird zwischen den
+Rängen; wächst ihre Summe, wird die Epoche länger.
+
+**Das Feuer liegt bewusst unter der Grenze**, ab der ein Rang ein Regler sein kann. Es ist
+klein und steht weit unten, damit es fast immer bedient wird: An ist der Normalfall, Aus
+ist die Krise. Bei ihm ist der Schalter die Absicht.
+
+**Die Arbeit je Nahrung war einmal um die Hälfte teurer angesetzt als ganz zu Anfang.**
+Der Grund galt und gilt: Lag die Hälfte der Arbeitsfähigkeit brach, konnte kein schlechter
+Wurf wehtun und keine Technik sich lohnen, denn eine neue Technik kostet gerade mehr
+Arbeit, und wo Arbeit übrig ist, ist das kein Tausch. Extern gestützt ist die Richtung
+dadurch, dass der niedrige Wert aus der Behauptung von der ursprünglichen
+Wohlstandsgesellschaft stammt und zurückgewiesen wurde, sobald Verarbeitung, Werkzeugbau
+und Wege mitgezählt wurden. Ein Teil davon ist inzwischen wieder abgegeben — an die
+Kleidung und die Wärme, die vorher fast nichts kosteten —, und der Druck bleibt trotzdem,
+weil die Summe der Ansprüche dieselbe ist.
 
 **Wärme steht zweimal darin, und Nahrung auch**, aus demselben Grund (E20): Kälte ist
 eine Schwelle, kein Hang. Halbe Rationen sind Hunger; halbes Brennholz ist ein kalter

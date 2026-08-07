@@ -280,8 +280,8 @@ export const STAGE1: Config = {
       // needle is what turns wrapped skins into garments that last,
       // so the needle acts here and not on any process (E19).
       id: "clothing",
-      decayPerTick: 0.03,
-      decayWhenRule: [{ rule: "sewn", decayPerTick: 0.012 }],
+      decayPerTick: 0.1,
+      decayWhenRule: [{ rule: "sewn", decayPerTick: 0.04 }],
     },
     // **Care cannot be laid by.** Whoever does not tend a child today has not
     // made it up tomorrow, so it decays entirely — there is no such thing as a
@@ -360,7 +360,7 @@ export const STAGE1: Config = {
       activity: "gathering",
       priority: 100,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.42, plants: 1.0 },
+      intermediatesPerOutput: { labor: 0.308, plants: 1.0 },
       exposure: { weather: 0.88 },
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
@@ -377,7 +377,7 @@ export const STAGE1: Config = {
       activity: "gathering",
       priority: 105,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.273, plants: 0.7 },
+      intermediatesPerOutput: { labor: 0.2, plants: 0.7 },
       exposure: { weather: 0.88 },
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
@@ -403,7 +403,7 @@ export const STAGE1: Config = {
       activity: "gathering",
       priority: 103,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.42, plants: 0.75 },
+      intermediatesPerOutput: { labor: 0.308, plants: 0.75 },
       exposure: { weather: 0.88 },
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
@@ -418,7 +418,7 @@ export const STAGE1: Config = {
       activity: "hunting",
       priority: 90,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.675, game: 1.0 },
+      intermediatesPerOutput: { labor: 0.495, game: 1.0 },
       exposure: { weather: 0.92 },
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
@@ -431,7 +431,7 @@ export const STAGE1: Config = {
       activity: "hunting",
       priority: 95,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.405, game: 1.0 },
+      intermediatesPerOutput: { labor: 0.297, game: 1.0 },
       exposure: { weather: 0.92 },
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
@@ -467,7 +467,7 @@ export const STAGE1: Config = {
       // and plant food still fed most of them. And the water is the safer of
       // the two in a poor tick, 0.4 of exposure against 0.7, which is exactly
       // why those who had it used it.
-      intermediatesPerOutput: { labor: 0.525, fish: 1.0 },
+      intermediatesPerOutput: { labor: 0.385, fish: 1.0 },
       // Safer than the land, not immune to it: the drought that costs the
       // gathering lowers the river too. At 0.15 the water carried a quarter of
       // the food and felt nothing, so the worst draw of a run never reached
@@ -493,7 +493,7 @@ export const STAGE1: Config = {
       activity: "fishing",
       priority: 75,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 4.5, shellfish: 1.0 },
+      intermediatesPerOutput: { labor: 3.3, shellfish: 1.0 },
       exposure: { weather: 0.1 },
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
@@ -513,7 +513,7 @@ export const STAGE1: Config = {
       // cord and it is forever being mended, while a line is a thread. What it
       // buys for that is hands — a fifth of the labour. Two kinds of gear with
       // different profiles rather than one that simply replaces the other.
-      intermediatesPerOutput: { labor: 0.225, fish: 1.0, fibre: 0.08 },
+      intermediatesPerOutput: { labor: 0.165, fish: 1.0, fibre: 0.08 },
       exposure: { weather: 0.4 },
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
@@ -531,7 +531,7 @@ export const STAGE1: Config = {
       activity: "fishing",
       priority: 82,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.45, fish: 1.0, fibre: 0.05 },
+      intermediatesPerOutput: { labor: 0.33, fish: 1.0, fibre: 0.05 },
       exposure: { weather: 0.4 },
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
@@ -548,7 +548,7 @@ export const STAGE1: Config = {
       activity: "farming",
       priority: 200,
       capacityPerOutput: { cleared: 0.35 },
-      intermediatesPerOutput: { labor: 0.625 },
+      intermediatesPerOutput: { labor: 0.458 },
       exposure: { weather: 0.9 },
       qualityWeight: 0.9,
       // **Sowing is committed** (E24): the seed goes into the ground before the
@@ -568,7 +568,7 @@ export const STAGE1: Config = {
       activity: "farming",
       priority: 210,
       capacityPerOutput: { cleared: 0.2 },
-      intermediatesPerOutput: { labor: 0.740741 },
+      intermediatesPerOutput: { labor: 0.543 },
       exposure: { weather: 0.8 },
       qualityWeight: 0.9,
       // Sown like the plain field above, and committed in the same way (E24).
@@ -624,7 +624,7 @@ export const STAGE1: Config = {
       activity: "firemaking",
       priority: 100,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.3, wood: 1.5 },
+      intermediatesPerOutput: { labor: 0.6, wood: 2.2 },
       exposure: {},
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
@@ -640,7 +640,7 @@ export const STAGE1: Config = {
       activity: "firemaking",
       priority: 110,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.3, wood: 0.9 },
+      intermediatesPerOutput: { labor: 0.6, wood: 1.32 },
       exposure: {},
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
@@ -666,7 +666,7 @@ export const STAGE1: Config = {
       activity: "hunting",
       priority: 100,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.3, game: 1.0 },
+      intermediatesPerOutput: { labor: 0.5, game: 1.0 },
       // The same hunt as the one that brings meat, on the same range and out of
       // the same herd, so it hangs on the draw exactly as hard. Left behind at a
       // lower figure it would turn *relatively* cheaper in a poor tick, and
@@ -724,7 +724,7 @@ export const STAGE1: Config = {
       activity: "clothmaking",
       priority: 100,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.5, hides: 1.0 },
+      intermediatesPerOutput: { labor: 3.5, hides: 1.0 },
       exposure: {},
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
@@ -738,7 +738,7 @@ export const STAGE1: Config = {
       activity: "clothmaking",
       priority: 110,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.35, hides: 1.0 },
+      intermediatesPerOutput: { labor: 2.45, hides: 1.0 },
       exposure: {},
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
@@ -759,7 +759,7 @@ export const STAGE1: Config = {
       branch: "clothing",
       priority: 95,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.42, fibre: 1.0 },
+      intermediatesPerOutput: { labor: 4.5, fibre: 1.0 },
       exposure: {},
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
@@ -773,7 +773,7 @@ export const STAGE1: Config = {
       activity: "clothmaking",
       priority: 90,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 0.6, fibre: 1.0 },
+      intermediatesPerOutput: { labor: 5.4, fibre: 1.0 },
       exposure: {},
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).

@@ -59,6 +59,89 @@ const share = (xs: readonly boolean[]): number => xs.filter(Boolean).length / (x
 const round = (value: number): number => Math.round(value * 1000) / 1000;
 const seedOf = (i: number): number => 101 + i * 13;
 
+// --------------------------------------------------------------- proportions
+
+/**
+ * What share of the community's work each need claims — **reckoned, not run**.
+ *
+ * No seed, no weather, no player: the flow a rank asks for per head times what
+ * a unit of it costs in labour, its chain folded in, over what a head performs.
+ * That makes this the cheapest criterion there is and the only one that cannot
+ * pass emptily, because nothing has to happen for it to be measurable.
+ *
+ * What it guards is a proportion and not a balance. A rank is only ever
+ * *partly* covered when the supply runs out inside its demand, and the chance
+ * of that is roughly its share of the whole — so a rank at one per cent is the
+ * binding one in one tick in a hundred and a switch in the other ninety-nine.
+ * Measured before this was set, clothing claimed **four parts in a thousand**
+ * of the work while its failure cost two fifths of the ability to work: a lever
+ * that costs nothing and moves everything, and one that could never show a
+ * gradient. That is what the band below is against.
+ *
+ * The figures are a band and not a point. What the anchors carry is the order
+ * of magnitude — food acquisition about half of all work once processing, tools
+ * and children are counted in; fuel one to two hours a day; hides and cordage
+ * in the same range over a year of winters and summers — so the target may be
+ * missed by a third either way. The reckoning is for **untouched country**;
+ * played, the price of searching pushes food up by half again, which is where
+ * the "about half" of the anchor lands.
+ */
+const CLAIM_ON_WORK: Readonly<Record<string, number>> = {
+  food_survival: 0.17,
+  warmth_fire: 0.04,
+  childcare: 0.14,
+  clothing_cover: 0.08,
+  food_satiety: 0.17,
+  warmth_comfort: 0.09,
+};
+
+/** How far a share may stray from what it is meant to be. */
+const CLAIM_BAND = 1 / 3;
+
+/**
+ * A rank that carries births, productivity or the ability to work has to be big
+ * enough to be a regulator rather than a switch. Fire is deliberately below it:
+ * it is small and low in the ranking so that it is met almost whatever happens,
+ * and being all or nothing is the point of it.
+ */
+const REGULATOR_FLOOR = 0.05;
+
+/** Labour to make one unit of a good, its inputs chained in — the cheapest way. */
+function labourPerUnit(stock: string, seen: ReadonlySet<string> = new Set()): number {
+  if (stock === "labor") return 1;
+  if (seen.has(stock)) return 0;
+  const branch = STAGE1.branches.find((b) => b.produces === stock);
+  if (branch === undefined) return 0;
+  const runs = STAGE1.processes.filter((p) => p.branch === branch.id && p.unlockedFromStart);
+  if (runs.length === 0) return 0;
+  const next = new Set([...seen, stock]);
+  return Math.min(
+    ...runs.map((p) =>
+      Object.entries(p.intermediatesPerOutput).reduce(
+        (sum, [input, amount]) => sum + amount * labourPerUnit(input, next),
+        0,
+      ),
+    ),
+  );
+}
+
+function claimsOnWork(): Record<string, number> {
+  const pop = STAGE1.population;
+  const weighed = (w: Readonly<Record<string, number>>): number =>
+    pop.cohorts.reduce((sum, c) => sum + (pop.shareAtStart[c.id] ?? 0) * (w[c.id] ?? 0), 0);
+  const work = weighed(pop.labourWeight) * STAGE1.carried.baseProductivity;
+
+  const out: Record<string, number> = {};
+  for (const tier of STAGE1.needTiers) {
+    // What is used up is asked for again every tick; what is only worn is asked
+    // for at the rate it wears out.
+    const decay = STAGE1.stocks.find((s) => s.id === tier.stock)?.decayPerTick ?? 0;
+    const per = tier.consumedOnUse > 0 ? tier.perHead * tier.consumedOnUse : tier.perHead * decay;
+    out[tier.id] = (per * weighed(tier.perHeadWeight) * labourPerUnit(tier.stock)) / work;
+  }
+  return out;
+}
+
 // ------------------------------------------------------------------ experiments
 
 /**
@@ -467,6 +550,36 @@ const report = {
   seeds: SEEDS,
   cap: CAP,
   // Measured with no player at all, so a failure can only be the model's.
+  // Reckoned from the content alone — no seed, no player, no tick.
+  proportions: {
+    "every need claims the share of the work it is meant to (E9, E29)": (() => {
+      const claims = claimsOnWork();
+      const off = Object.entries(CLAIM_ON_WORK)
+        .filter(([id, want]) => Math.abs((claims[id] ?? 0) - want) > want * CLAIM_BAND)
+        .map(([id, want]) => ({ tier: id, want, is: round(claims[id] ?? 0) }));
+      return {
+        share: Object.fromEntries(Object.entries(claims).map(([id, v]) => [id, round(v)])),
+        leftForProjects: round(1 - Object.values(claims).reduce((a, b) => a + b, 0)),
+        band: CLAIM_BAND,
+        off,
+        pass: off.length === 0,
+      };
+    })(),
+    "no rank that moves the people is a mere switch (E20)": (() => {
+      const claims = claimsOnWork();
+      const tooSmall = STAGE1.needTiers
+        .filter(
+          (t) =>
+            t.id !== "warmth_fire" &&
+            (t.birthRate !== undefined ||
+              t.productivity !== undefined ||
+              t.workAbility !== undefined) &&
+            (claims[t.id] ?? 0) < REGULATOR_FLOOR,
+        )
+        .map((t) => ({ tier: t.id, is: round(claims[t.id] ?? 0) }));
+      return { floor: REGULATOR_FLOOR, tooSmall, pass: tooSmall.length === 0 };
+    })(),
+  },
   experiments: {
     // "Without decisions nobody settles" used to stand here and was worthless:
     // the passive bot digs no pits, sedentism wants pits, done. It tested the
