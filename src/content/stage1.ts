@@ -175,9 +175,9 @@ export const STAGE1: Config = {
       id: "plants",
       decayPerTick: 0,
       regrowth: {
-        ratePerTick: 4.0,
+        ratePerTick: 0.5,
         capacity: "wilderness",
-        densityPerArea: 4.8,
+        densityPerArea: 38.4,
         refuge: 3,
         maxEffort: 30,
       },
@@ -188,9 +188,9 @@ export const STAGE1: Config = {
       id: "game",
       decayPerTick: 0,
       regrowth: {
-        ratePerTick: 0.3,
+        ratePerTick: 0.0375,
         capacity: "wilderness",
-        densityPerArea: 1.8,
+        densityPerArea: 14.4,
         refuge: 2,
         maxEffort: 30,
       },
@@ -208,7 +208,7 @@ export const STAGE1: Config = {
       id: "deadwood",
       decayPerTick: 0,
       regrowth: {
-        ratePerTick: 0.2,
+        ratePerTick: 0.025,
         capacity: "wilderness",
         // Provisional, and known to be so. Reckoned, three would leave the
         // comfort at about half at twenty-five heads — the pinch the epoch was
@@ -217,7 +217,7 @@ export const STAGE1: Config = {
         // death rank demands is not rationed but stripped, and the fire goes out
         // with it. Ten is the lowest value at which no seed died over eight
         // seeds and two hundred ticks. The figure belongs to the balancing.
-        densityPerArea: 10.0,
+        densityPerArea: 80.0,
         refuge: 2,
         maxEffort: 30,
       },
@@ -235,9 +235,9 @@ export const STAGE1: Config = {
       id: "trees",
       decayPerTick: 0,
       regrowth: {
-        ratePerTick: 0.1,
+        ratePerTick: 0.0125,
         capacity: "wilderness",
-        densityPerArea: 20.0,
+        densityPerArea: 160.0,
         refuge: 5,
         maxEffort: 30,
       },
@@ -248,9 +248,9 @@ export const STAGE1: Config = {
       id: "fish",
       decayPerTick: 0,
       regrowth: {
-        ratePerTick: 0.4,
+        ratePerTick: 0.05,
         capacity: "water",
-        densityPerArea: 2.4,
+        densityPerArea: 19.2,
         refuge: 2,
         maxEffort: 30,
       },
@@ -266,9 +266,9 @@ export const STAGE1: Config = {
       id: "shellfish",
       decayPerTick: 0,
       regrowth: {
-        ratePerTick: 0.35,
+        ratePerTick: 0.0437,
         capacity: "water",
-        densityPerArea: 6.0,
+        densityPerArea: 48.0,
         refuge: 3,
         maxEffort: 30,
       },
@@ -1088,30 +1088,25 @@ export const STAGE1: Config = {
       id: "range_change",
       // **Whoever can walk can always walk.** Moving is not a technique that has
       // to be come by, and nothing about it has to be met first: a community
-      // that carries its whole life with it is free to go at any time, and it
-      // was free to go on the first tick as much as on the hundredth.
+      // that carries its whole life with it is free to go at any time. So there
+      // is no mark on it.
       //
-      // So there is no mark on it, and that is a change of mind. It hung on the
-      // cost of searching before, on the reasoning that without a mark moving
-      // would be a cheap reset rather than a decision. Two things were wrong
-      // with that. The cost of searching carries the weather: a process that
-      // finds its return runs at `target ÷ draw`, so a poor draw makes the
-      // community take more out of the same stand — measured over 1680 ticks
-      // the cost sits at −0.71 against the draw, 2.02 in the poorest class of
-      // draws against 1.35 in the best. A mark on it therefore fires against
-      // weather, and no move mends weather, because the weather goes along.
+      // A mark on the cost of searching would fire against the weather rather
+      // than against the country: a process that finds its return runs at
+      // `target ÷ draw`, so a poor draw makes the community take more out of the
+      // same stand — and no move mends weather, because the weather goes along.
       //
-      // And moving was never a free reset. **The brake is the falling quality**
-      // — each further range yields less than the one before (measured 0.95,
-      // 0.90, 0.86 and on down to 0.51), so whoever spends the good country
-      // early is left with the poor country later. That is a cost the player
-      // pays for himself, and it needs no gate to enforce it.
+      // The brake is instead the falling quality: each further range yields less
+      // than the one before, so whoever spends the good country early is left
+      // with the poor country later. That is a cost the player pays himself, and
+      // it needs no gate to enforce it.
       //
       // What the thinning of the range decides is therefore not *whether* the
-      // offer stands but *where it stands among the others*, and that belongs
-      // to the ordering and not here. An offer that comes and goes with a stock
-      // dipping cannot carry a progress bar either: what a project still wants
-      // is meant to be read off it, and a mark that flickers reads as nothing.
+      // offer stands but *where it stands among the others*, and that belongs to
+      // the ordering and not here. An offer that came and went with a stock
+      // dipping could not carry a progress bar either: what a project still
+      // wants is meant to be read off it, and a mark that flickers reads as
+      // nothing.
       visibleWhen: [{ kind: "rule", id: "settled", set: false }],
       availableWhen: [{ kind: "rule", id: "settled", set: false }],
       defaultRank: PROJECTS_LAST,
@@ -1140,16 +1135,17 @@ export const STAGE1: Config = {
           capacity: "water",
           quality: { kind: "from", capacity: "wilderness" },
         },
-        // Found: a country nobody has been over — every one of the six, or the
-        // community would move into a range it had already gathered bare. After the
-        // quality, so that what it finds is the full measure of the *new*
-        // country and not of the one it left.
-        { type: "stock", id: "plants", to: { kind: "ceiling" } },
-        { type: "stock", id: "game", to: { kind: "ceiling" } },
-        { type: "stock", id: "deadwood", to: { kind: "ceiling" } },
-        { type: "stock", id: "trees", to: { kind: "ceiling" } },
-        { type: "stock", id: "fish", to: { kind: "ceiling" } },
-        { type: "stock", id: "shellfish", to: { kind: "ceiling" } },
+        // Found: fresh country, but not untouched. What a move closes is a
+        // fifth of the gap between what stands and what the ground could carry
+        // — so the worn stocks gain most and none is ever lowered, and moving
+        // relieves the searching without setting it back to nothing. After the
+        // quality, so the gap is measured against the *new* country.
+        { type: "stock", id: "plants", to: { kind: "ceiling", closes: 0.2 } },
+        { type: "stock", id: "game", to: { kind: "ceiling", closes: 0.2 } },
+        { type: "stock", id: "deadwood", to: { kind: "ceiling", closes: 0.2 } },
+        { type: "stock", id: "trees", to: { kind: "ceiling", closes: 0.2 } },
+        { type: "stock", id: "fish", to: { kind: "ceiling", closes: 0.2 } },
+        { type: "stock", id: "shellfish", to: { kind: "ceiling", closes: 0.2 } },
       ],
       sector: "households",
     },
@@ -1693,15 +1689,20 @@ export const STAGE1: Config = {
   // thirds did not.
   land: {
     perHeadAtStart: { wilderness: 0.36, water: 0.144 },
+    // Three tenths of what the ground could carry. Full, a quarter of the hands
+    // would have nothing to do for twenty ticks while the range was worked down;
+    // at three tenths not one is idle from the first tick on.
+    stocksAtStart: 0.3,
     baseQuality: 1.0,
     qualityDecayPerTaking: 0.05,
     // What a report on the next range strays from that mean, either way. At a
     // seventh a lucky one is worth waiting a tick or two for and a poor one is
     // worth sitting out, without the move turning into a game of chance.
     qualitySpread: 0.15,
-    // Measured over fifteen moves: eleven ticks on average before the thinning
-    // is back where it stood, seven in the middle of the range.
-    freshRangeLasts: 11,
+    // How long a move keeps the searching cheaper before the country is worn
+    // as it was — the stretch a move buys, against a technique that pays for
+    // the rest of the epoch.
+    freshRangeLasts: 28,
   },
 
   // **Productivity carries the offset for both things the cohorts made

@@ -59,7 +59,10 @@ export function createState(config: Config, options: StartOptions): GameState {
     const rule = stock.regrowth;
     if (rule === undefined) continue;
     const range = unownedCapacity[rule.capacity];
-    stocks[stock.id] = (range === undefined ? 0 : carryingArea(range)) * rule.densityPerArea;
+    stocks[stock.id] =
+      (range === undefined ? 0 : carryingArea(range)) *
+      rule.densityPerArea *
+      config.land.stocksAtStart;
   }
 
   // **What is worn rather than used up is already there.** The community is

@@ -198,7 +198,12 @@ function levelOf(
   for (const holder of Object.values(state.sectors)) {
     area += carryingArea(capacityOf(holder.capacityHeld, rule.capacity));
   }
-  return area * carriedPerArea(state, rule.densityPerArea, stockId);
+  const ceiling = area * carriedPerArea(state, rule.densityPerArea, stockId);
+  const closes = source.closes ?? 1;
+  if (closes >= 1) return ceiling;
+  let held = 0;
+  for (const holder of Object.values(state.sectors)) held += holder.stocks[stockId] ?? 0;
+  return held + closes * Math.max(0, ceiling - held);
 }
 
 /** Sets a stock outright — what is left behind, and what a fresh country holds. */

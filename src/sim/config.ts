@@ -474,7 +474,19 @@ export type QualitySource =
  */
 export type LevelSource =
   | { readonly kind: "fixed"; readonly value: number }
-  | { readonly kind: "ceiling" };
+  | {
+      readonly kind: "ceiling";
+      /**
+       * How much of the way from what is held to the ceiling this closes.
+       *
+       * One is the ceiling itself. Below one it is a *share of the gap*, and
+       * that shape is deliberate: a stock is then never lowered by it, and the
+       * more worn it is the more it gains. A share of the ceiling would do
+       * neither — the stocks come to rest at very different densities, so one
+       * figure would lift the thin ones and push the full ones down.
+       */
+      readonly closes?: number;
+    };
 
 /** The four effect types from E12. Amounts may be negative. */
 export type Effect =
@@ -736,6 +748,17 @@ export interface LandConfig {
    * ceilings, so a community began in a fished-out water.
    */
   readonly perHeadAtStart: Readonly<Record<CapacityId, number>>;
+
+  /**
+   * How much of what the ground could carry actually stands on it when the run
+   * begins — a share of the ceiling, the same for every renewable stock.
+   *
+   * The community is taken over, not set down in untouched country: it has
+   * lived here a while, and the range shows it. Below one because a range that
+   * begins full leaves a quarter of the hands with nothing to do until it has
+   * been worked down, and no hand lies idle in a subsistence economy.
+   */
+  readonly stocksAtStart: number;
   /** Quality of the very first territory. */
   readonly baseQuality: number;
   /** Each taking yields land this much worse than the previous one (E13). */
