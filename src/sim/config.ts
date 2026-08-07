@@ -2,6 +2,7 @@ import type {
   ActivityId,
   CapacityId,
   BranchId,
+  CohortId,
   NeedTierId,
   ProcessId,
   ProjectId,
@@ -308,6 +309,16 @@ export interface NeedTierDef {
   readonly perHead: number;
 
   /**
+   * Whose heads this need is counted over (E20). A growing person eats less
+   * than a grown one, wears less cloth and needs almost as much warmth, and
+   * care is asked for the growing alone.
+   *
+   * Read as a scalar product against the cohorts: the demand is `perHead` times
+   * the weighted head count.
+   */
+  readonly perHeadWeight: CohortVector;
+
+  /**
    * Share of the served amount that is used up in use.
    *
    * Bread is eaten, a roof is lived under. **Consumption hangs on the heads,
@@ -323,8 +334,16 @@ export interface NeedTierDef {
 
   /** Factor on the birth rate; 1 is no effect. */
   readonly birthRate?: TierEffect;
-  /** Factor on survival; 1 means nobody dies of this, 0.1 means nine in ten do. */
-  readonly survival?: TierEffect;
+
+  /**
+   * Factor on survival; 1 means nobody dies of this, 0.1 means nine in ten do.
+   *
+   * Applied cohort by cohort and never summed, because a sum would lose the one
+   * thing at issue: "half the children and a tenth of the grown" is not one
+   * number. `per` says how hard it lands on each — the loss is scaled, so a two
+   * means twice as many of that cohort are lost as of one standing at one.
+   */
+  readonly survival?: TierEffect & { readonly per: CohortVector };
   readonly productivity?: TierEffect;
   readonly workAbility?: TierEffect;
 }
@@ -570,14 +589,88 @@ export interface ProjectDef {
 
 // ---------------------------------------------------------------- population
 
+/**
+ * A figure per cohort, and **every cohort has to be named** (E20).
+ *
+ * Never left off and never shortened to a single figure meaning "the same for
+ * all", because of the day a cohort is added: with a vector missing the model
+ * would have to guess, and both guesses are wrong — a one would give the new
+ * group full labour, a zero would give it nothing to eat. Written out, a new
+ * cohort forces a decision in every place, which is what it should do. The
+ * index checks it and refuses content that leaves one out.
+ */
+export type CohortVector = Readonly<Record<CohortId, number>>;
+
+export interface CohortDef {
+  readonly id: CohortId;
+}
+
+/**
+ * People moving from one cohort to another, at a fixed share a tick (E20).
+ *
+ * The ageing step, and at the same time the general form: this list, sparsely
+ * written, is the matrix the standing is multiplied by. A rate that hangs on
+ * coverage instead — falling sick, getting well — is one further kind in this
+ * one field and no new structure.
+ *
+ * A fixed rate is a leaky bucket and not a queue: at a tenth a tick the mean
+ * stay is ten ticks, but a tenth are grown by the next one. Whoever wants the
+ * delay sharper writes two or three cohorts in a row into the content.
+ */
+export interface CohortTransition {
+  readonly from: CohortId;
+  readonly to: CohortId;
+  readonly perTick: number;
+}
+
 export interface PopulationConfig {
+  /** Which groups the head count is a vector over. Two here: growing, grown. */
+  readonly cohorts: readonly CohortDef[];
+
   /**
-   * The two factors a tick applies to the heads before any need is considered.
-   * Reciprocal by construction, so that a community whose needs are all met neither
-   * grows nor shrinks: it grows when it is *better* off than it needs to be.
+   * How the starting group is split over them (E14).
+   *
+   * A community is taken over and not founded, so it stands in the age
+   * structure a standing population has — not as twenty-five grown strangers
+   * who would all age at once.
    */
-  readonly baseBirthFactor: number;
-  readonly baseSurvival: number;
+  readonly shareAtStart: CohortVector;
+
+  /**
+   * How much labour a head in each cohort supplies. What a half-grown supplies
+   * less of stands here and nowhere else — productivity and work ability are
+   * one figure each, because a child that supplies no labour cannot be made
+   * less productive in any way that shows.
+   */
+  readonly labourWeight: CohortVector;
+
+  /** Who bears children — nought for the growing. */
+  readonly birthWeight: CohortVector;
+
+  /** Where the newborn land. The unit vector of the two the births are. */
+  readonly birthsInto: CohortId;
+
+  /**
+   * Newborn per weighted head per tick, before any need is considered.
+   *
+   * A number of people and not a factor on everyone. As a factor it made no
+   * difference who was counted: a group of nothing but children bred as fast as
+   * one of nothing but adults. Now the young cost first and carry later.
+   */
+  readonly baseBirthRate: number;
+
+  /** What survives a tick per cohort, before any need is considered. */
+  readonly baseSurvival: CohortVector;
+
+  readonly transitions: readonly CohortTransition[];
+
+  /**
+   * Which heads the abandonment threshold counts (E20) — the grown, because
+   * whether a community can still recover hangs on them twice over: they do the
+   * work and they bear the children. Twelve people of whom ten are growing are
+   * finished; twelve grown come out of it.
+   */
+  readonly viableWeight: CohortVector;
 
   /**
    * Below this the community is given up and the run ends (E20). Not a
@@ -734,7 +827,47 @@ export interface ConfigIndex {
   readonly processesOfBranch: ReadonlyMap<BranchId, readonly ProcessDef[]>;
 }
 
+/**
+ * Every vector over the cohorts has to name every one of them (E20).
+ *
+ * Checked here and refused rather than filled in, because there is no safe
+ * default: a one would hand a newly added cohort full labour, a nought would
+ * leave it nothing to eat. The point of writing them out is that adding a
+ * cohort forces a decision in every place, and that only bites if leaving one
+ * out is an error rather than a silent guess.
+ */
+function checkCohortVectors(config: Config): void {
+  const ids = config.population.cohorts.map((cohort) => cohort.id);
+  const check = (where: string, vector: CohortVector): void => {
+    for (const id of ids) {
+      if (vector[id] === undefined) throw new Error(`${where} says nothing about cohort ${id}`);
+    }
+    for (const id of Object.keys(vector)) {
+      if (!ids.includes(id)) throw new Error(`${where} names cohort ${id}, which does not exist`);
+    }
+  };
+
+  check("population.shareAtStart", config.population.shareAtStart);
+  check("population.labourWeight", config.population.labourWeight);
+  check("population.birthWeight", config.population.birthWeight);
+  check("population.baseSurvival", config.population.baseSurvival);
+  check("population.viableWeight", config.population.viableWeight);
+  if (!ids.includes(config.population.birthsInto)) {
+    throw new Error(`births land in cohort ${config.population.birthsInto}, which does not exist`);
+  }
+  for (const move of config.population.transitions) {
+    if (!ids.includes(move.from)) throw new Error(`a transition comes from ${move.from}, which does not exist`);
+    if (!ids.includes(move.to)) throw new Error(`a transition goes to ${move.to}, which does not exist`);
+  }
+  for (const tier of config.needTiers) {
+    check(`tier ${tier.id} perHeadWeight`, tier.perHeadWeight);
+    if (tier.survival !== undefined) check(`tier ${tier.id} survival.per`, tier.survival.per);
+  }
+}
+
 export function indexConfig(config: Config): ConfigIndex {
+  checkCohortVectors(config);
+
   const processesOfBranch = new Map<BranchId, ProcessDef[]>();
   for (const process of config.processes) {
     const list = processesOfBranch.get(process.branch) ?? [];

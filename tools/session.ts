@@ -151,8 +151,9 @@ const scope = {
     return {
       tick: d.tick,
       people: round(d.heads),
-      births: round(d.birthFactor),
-      survival: round(d.survival),
+      cohorts: from(Object.keys(d.cohorts), (id) => round(d.cohorts[id] ?? 0)),
+      born: round(d.born),
+      survival: from(Object.keys(d.survival), (id) => round(d.survival[id] ?? 0)),
       abandoned: d.communityGivenUp,
       needs: from(
         d.tiers.map((t) => t.tier),

@@ -1,11 +1,12 @@
 import type { Config } from "./config.ts";
-import type { CapacityId, StockId } from "./ids.ts";
+import type { CapacityId, CohortId, StockId } from "./ids.ts";
 import { HOUSEHOLDS } from "./phases.ts";
 import { createRandomState } from "./random.ts";
-import { carryingArea, type Capacity, type GameState } from "./state.ts";
+import { carryingArea, weighedHeads, type Capacity, type GameState } from "./state.ts";
 
 export interface StartOptions {
   readonly seed: number;
+  /** Total heads; split over the cohorts in the shares the content gives. */
   readonly heads?: number;
   readonly wilderness?: number;
   readonly water?: number;
@@ -21,6 +22,14 @@ export interface StartOptions {
  */
 export function createState(config: Config, options: StartOptions): GameState {
   const heads = options.heads ?? 25;
+
+  // The community is taken over, not founded: it stands in the age structure a
+  // standing population has, and not as twenty-five grown strangers. The shares
+  // come from the content, so the two cannot drift apart.
+  const cohorts: Record<CohortId, number> = {};
+  for (const cohort of config.population.cohorts) {
+    cohorts[cohort.id] = heads * (config.population.shareAtStart[cohort.id] ?? 0);
+  }
 
   // The range follows the community (E14): so much of each capacity per head. The
   // options are there for tests and measurements, not for the game.
@@ -72,7 +81,7 @@ export function createState(config: Config, options: StartOptions): GameState {
     const kept = tier.perHead * (1 - tier.consumedOnUse);
     if (kept <= 0) continue;
     if (config.branches.find((b) => b.id === tier.branch)?.unlockedFromStart !== true) continue;
-    stocks[tier.stock] = (stocks[tier.stock] ?? 0) + heads * kept;
+    stocks[tier.stock] = (stocks[tier.stock] ?? 0) + weighedHeads(cohorts, tier.perHeadWeight) * kept;
   }
 
   return {
@@ -80,7 +89,7 @@ export function createState(config: Config, options: StartOptions): GameState {
     random: createRandomState(options.seed),
     sectors: {
       [HOUSEHOLDS]: {
-        heads,
+        cohorts,
         stocks,
         capacityHeld: {},
         productivity: config.carried.baseProductivity,

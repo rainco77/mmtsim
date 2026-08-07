@@ -1480,13 +1480,24 @@ Arbeitsteilung, kein Puffer gegen einen schlechten Tick, kein Ersatz für Ausfä
 klein gewordene Siedlungen aufgegeben oder gingen in anderen auf. Bis auf den letzten
 Menschen zu rechnen wäre die unrealistischere Variante.
 
-**Die Schwelle liegt bei zwölf, die Startgruppe bei fünfundzwanzig** — dieselben Zahlen wie
-in E14 („Startaufstellung"), und der Anker ist Birdsells *magic number*: Fünfundzwanzig
-**ist** die Gemeinschaft, die zusammen lebt und zieht, also kann sie nicht zugleich der
-Boden sein, unter dem es nicht weitergeht. Unter etwa einem Dutzend hört eine Gemeinschaft
-auf zu funktionieren — zu wenige Jäger, niemand übrig für Kinder und Kranke, kein
-Ausgleich für einen einzelnen Todesfall. Und aus einer zu kleinen Gruppe erholt sich nichts
-mehr, also muss der Lauf **davor** enden und nicht erst, wenn niemand mehr da ist.
+**Gezählt werden dabei die Erwachsenen, nicht die Köpfe.** Ob eine Gemeinschaft sich noch
+erholen kann, hängt an ihnen, und zwar an beidem, was sie tun: Sie leisten die Arbeit, und
+sie bekommen die Kinder. Zwölf Menschen, davon zehn Heranwachsende, sind erledigt — die
+zwei Übrigen müssen alle ernähren und dazu die Betreuung aufbringen, und bis die Kinder
+aufrücken, vergehen viele Ticks. Zwölf Erwachsene kommen heraus. Nach Köpfen gezählt wären
+beide gleich.
+
+**Die Schwelle liegt bei sieben Erwachsenen, die Startgruppe bei fünfundzwanzig Köpfen** —
+dieselben Zahlen wie in E14 („Startaufstellung"), und der Anker ist Birdsells *magic
+number*: Fünfundzwanzig **ist** die Gemeinschaft, die zusammen lebt und zieht, also kann
+sie nicht zugleich der Boden sein, unter dem es nicht weitergeht. Unter etwa einem Dutzend
+Menschen hört eine Gemeinschaft auf zu funktionieren — zu wenige Jäger, niemand übrig für
+Kinder und Kranke, kein Ausgleich für einen einzelnen Todesfall; alle drei Aussagen gelten
+den Arbeitenden. Sieben von fünfzehn Erwachsenen ist derselbe Anteil, an dem die Schwelle
+vorher als zwölf von fünfundzwanzig Köpfen stand, nur unempfindlich dagegen, ob die
+Verluste die Arbeitenden oder die Kinder getroffen haben. Und aus einer zu kleinen Gruppe
+erholt sich nichts mehr, also muss der Lauf **davor** enden und nicht erst, wenn niemand
+mehr da ist.
 
 > *Hier stand vorher „Die Schwelle liegt bei 25, die Startgruppe bei 50" — im Widerspruch
 > zu E14 und zum Inhalt, der schon immer zwölf sagt. Der Satz stammte aus der Zeit vor der

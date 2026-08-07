@@ -70,7 +70,7 @@ export { counterOf, createRandomState, draw, peek, uniformAt } from "./random.ts
 export type { StartOptions } from "./setup.ts";
 export { createState } from "./setup.ts";
 export type { ActiveProject, Capacity, GameState, SectorState } from "./state.ts";
-export { capacityOf, completedCount, stockOf, withSector } from "./state.ts";
+export { capacityOf, completedCount, stockOf, totalHeads, weighedHeads, withSector } from "./state.ts";
 export { tick } from "./tick.ts";
 export type { ConditionContext, Unlocks } from "./unlocks.ts";
 export { allHold, computeUnlocks, conditionHolds, unmetConditions } from "./unlocks.ts";

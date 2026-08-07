@@ -2,6 +2,7 @@ import type {
   ActivityId,
   CapacityId,
   BranchId,
+  CohortId,
   ProcessId,
   ProjectId,
   SectorId,
@@ -176,8 +177,14 @@ export interface GameState {
 }
 
 export interface SectorState {
-  /** Fractional; displayed rounded (E20). */
-  readonly heads: number;
+  /**
+   * The people, a figure per cohort (E20). Fractional; displayed rounded.
+   *
+   * A vector and not a single head count, because dying, growing up and being
+   * born do not touch every group alike — and because a newborn is not a pair
+   * of hands.
+   */
+  readonly cohorts: Readonly<Record<CohortId, number>>;
 
   readonly stocks: Readonly<Record<StockId, number>>;
 
@@ -246,6 +253,33 @@ export function stockOf(stocks: Readonly<Record<StockId, number>>, id: StockId):
 
 export function completedCount(state: GameState, id: ProjectId): number {
   return state.completedProjects[id] ?? 0;
+}
+
+/**
+ * Everyone, counted alike. What a run of the mill head count meant before —
+ * used where people are meant as people and not as hands (E20).
+ */
+export function totalHeads(cohorts: Readonly<Record<CohortId, number>>): number {
+  let sum = 0;
+  for (const heads of Object.values(cohorts)) sum += heads;
+  return sum;
+}
+
+/**
+ * The scalar product of the people with a weighting (E20): how much work is
+ * performed, how much of a need is asked for, how many can bear children.
+ *
+ * A cohort the weighting does not name counts as nought rather than as one,
+ * because the index refuses content that leaves one out — so this can only be
+ * reached by a weighting built in a test.
+ */
+export function weighedHeads(
+  cohorts: Readonly<Record<CohortId, number>>,
+  weight: Readonly<Record<CohortId, number>>,
+): number {
+  let sum = 0;
+  for (const [cohort, heads] of Object.entries(cohorts)) sum += heads * (weight[cohort] ?? 0);
+  return sum;
 }
 
 export function withSector(

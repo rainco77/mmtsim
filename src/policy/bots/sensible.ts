@@ -1,4 +1,4 @@
-import { livesOn, yieldPerCapacity } from "../../sim/index.ts";
+import { livesOn, weighedHeads, yieldPerCapacity } from "../../sim/index.ts";
 import type { Action, ConfigIndex, Derived, GameState, ProcessDef } from "../../sim/index.ts";
 import type { Policy } from "../policy.ts";
 
@@ -228,7 +228,9 @@ export class SensiblePolicy implements Policy {
           const cost = process.capacityPerOutput[capacity] ?? 0;
           if (cost > 0) per = per === 0 ? cost : Math.min(per, cost);
         }
-        needed += tier.perHead * derived.heads * per;
+        // Counted over the heads the rank is asked for and not over all of
+        // them (E20) — care is wanted for the growing alone.
+        needed += tier.perHead * weighedHeads(derived.cohorts, tier.perHeadWeight) * per;
       }
       return needed;
     };

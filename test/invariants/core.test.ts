@@ -107,7 +107,9 @@ describe("invariants", () => {
   it("population never turns negative", () => {
     for (const seed of SEEDS) {
       for (const state of walk(seed)) {
-        expect(state.sectors["households"]?.heads ?? 0).toBeGreaterThanOrEqual(0);
+        for (const heads of Object.values(state.sectors["households"]?.cohorts ?? {})) {
+          expect(heads).toBeGreaterThanOrEqual(0);
+        }
       }
     }
   });

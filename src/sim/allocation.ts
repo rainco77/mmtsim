@@ -30,7 +30,7 @@ import {
 } from "./plan.ts";
 import { shockFactor, type Shocks } from "./risk.ts";
 import { renewals, type Renewal } from "./phases.ts";
-import { capacityOf, type GameState } from "./state.ts";
+import { capacityOf, weighedHeads, type GameState } from "./state.ts";
 
 /**
  * Allocation and production for one tick (E21, E5).
@@ -157,8 +157,9 @@ function poolCapacities(
   for (const type of config.capacities) {
     if (type.fromPopulation === true) {
       // People are a capacity, and their quality is what one of them can do.
+      // Weighted, because not every head supplies a full pair of hands (E20).
       pools[type.id] = {
-        available: sector?.heads ?? 0,
+        available: weighedHeads(sector?.cohorts ?? {}, config.population.labourWeight),
         quality: (sector?.workAbility ?? 0) * (sector?.productivity ?? 0),
       };
       continue;
@@ -449,8 +450,11 @@ export function allocate(input: AllocationInput): AllocationResult {
     process.yield === "found" ? shocks : plannedShocks;
   const sector = state.sectors[sectorId];
 
-  const heads = sector?.heads ?? 0;
-  const laborAvailable = heads * (sector?.workAbility ?? 0) * (sector?.productivity ?? 0);
+  const cohorts = sector?.cohorts ?? {};
+  const laborAvailable =
+    weighedHeads(cohorts, index.config.population.labourWeight) *
+    (sector?.workAbility ?? 0) *
+    (sector?.productivity ?? 0);
 
   // What the tick found in store, kept aside before anything is taken out of it
   // or put into it: the opening balance the closing one is read against.
@@ -529,6 +533,8 @@ export function allocate(input: AllocationInput): AllocationResult {
           stock: stockId,
           branch: index.config.branches.find((b) => b.produces === stockId)?.id ?? "",
           perHead: 0,
+        // Not counted over heads at all — the amount is named outright.
+        perHeadWeight: {},
           consumedOnUse: 1,
         },
         stock: stockId,
@@ -584,7 +590,9 @@ export function allocate(input: AllocationInput): AllocationResult {
   // bast costs two and a half trees to the fibre, the whole forest went into
   // clothes nobody needed and the community then froze.
   for (const tier of tierList) {
-    const need = heads * perHead(tier, shocks);
+    // Whose heads this need is counted over (E20): the growing eat less, wear
+    // less and are the only ones care is asked for.
+    const need = weighedHeads(cohorts, tier.perHeadWeight) * perHead(tier, shocks);
     if (need <= 1e-9) continue;
     demands.push({ tier, stock: tier.stock, amount: need });
   }
@@ -619,6 +627,8 @@ export function allocate(input: AllocationInput): AllocationResult {
         stock: stockDef.id,
         branch: config.branches.find((b) => b.produces === stockDef.id)?.id ?? "",
         perHead: 0,
+        // Not counted over heads at all — the amount is named outright.
+        perHeadWeight: {},
         consumedOnUse: 0,
       },
       stock: stockDef.id,
@@ -642,6 +652,8 @@ export function allocate(input: AllocationInput): AllocationResult {
         stock: stockDef.id,
         branch: config.branches.find((b) => b.produces === stockDef.id)?.id ?? "",
         perHead: 0,
+        // Not counted over heads at all — the amount is named outright.
+        perHeadWeight: {},
         consumedOnUse: 0,
       },
       stock: stockDef.id,
@@ -844,7 +856,9 @@ export function allocate(input: AllocationInput): AllocationResult {
   for (const tier of tierList) {
     // What the draw really asked for, against what the plan set aside for an
     // average one. A hard draw therefore shows up as a gap, not as extra work.
-    const need = heads * perHead(tier, shocks);
+    // Whose heads this need is counted over (E20): the growing eat less, wear
+    // less and are the only ones care is asked for.
+    const need = weighedHeads(cohorts, tier.perHeadWeight) * perHead(tier, shocks);
     const served = Math.min(need, Math.max(0, pools.stock[tier.stock] ?? 0));
     pools.stock[tier.stock] = (pools.stock[tier.stock] ?? 0) - served;
 
@@ -976,7 +990,7 @@ function survivalBuffer(
   const lowest = index.tiersByRank[0];
   const sector = state.sectors[sectorId];
   if (lowest === undefined || sector === undefined) return 1;
-  const need = sector.heads * lowest.perHead;
+  const need = weighedHeads(sector.cohorts, lowest.perHeadWeight) * lowest.perHead;
   if (need <= 0) return 1;
   return Math.min(1, (sector.stocks[lowest.stock] ?? 0) / need);
 }

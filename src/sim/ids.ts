@@ -23,3 +23,10 @@ export type RuleId = string;
 
 /** Named random streams stay independent of one another (E25). */
 export type RandomStreamId = string;
+
+/**
+ * A group of people with rates of its own (E20). Age is the only axis the
+ * content uses so far; sickness or wealth would be further entries in the same
+ * list and not a second machine.
+ */
+export type CohortId = string;

@@ -1,5 +1,5 @@
 import { allocate, type AllocationResult } from "./allocation.ts";
-import { type ConfigIndex, tierEffectAt } from "./config.ts";
+import { type Config, type ConfigIndex, tierEffectAt } from "./config.ts";
 import { applyEffect } from "./effects.ts";
 import type { ActivityId, ProjectId, CapacityId, SectorId, StockId } from "./ids.ts";
 import { draw, type RandomState } from "./random.ts";
@@ -8,6 +8,8 @@ import {
   capacityOf,
   carryingArea,
   stockOf,
+  totalHeads,
+  weighedHeads,
   type ActiveProject,
   type Capacity,
   type GameState,
@@ -64,9 +66,22 @@ export function drawLandOffer(
 }
 
 
-export function laborPerformance(sector: SectorState | undefined): number {
+/**
+ * What the community can do this tick: the heads that supply labour, weighted
+ * by how much each supplies, times work ability times productivity (E20).
+ *
+ * The weighting is where a half-grown pair of hands lives. Work ability and
+ * productivity stay one figure each, because they would say the same thing
+ * twice — somebody who supplies no labour cannot be made less productive in any
+ * way that shows.
+ */
+export function laborPerformance(sector: SectorState | undefined, config: Config): number {
   if (sector === undefined) return 0;
-  return sector.heads * sector.workAbility * sector.productivity;
+  return (
+    weighedHeads(sector.cohorts, config.population.labourWeight) *
+    sector.workAbility *
+    sector.productivity
+  );
 }
 
 // ------------------------------------------------------------------ weather
@@ -259,7 +274,7 @@ export class ProjectPhase implements Phase {
   run(state: GameState, index: ConfigIndex, ctx: TickContext): GameState {
     ctx.unlocks = computeUnlocks(state, index);
     const sector = state.sectors[HOUSEHOLDS];
-    ctx.laborAvailable = laborPerformance(sector);
+    ctx.laborAvailable = laborPerformance(sector, index.config);
 
     // Labour is a stock now, so a project spends it like it spends wood. The
     // plan has already produced for it — projects hold the top rank — so this
@@ -412,7 +427,7 @@ export class ProductionPhase implements Phase {
       leadProcess: result.leadProcess,
       lastCoverage: Object.fromEntries(result.tiers.map((t) => [t.tier, t.coverage])),
       lastEffort: result.effortPerStock,
-      lastLabourPerHead: labourPerHead(result, index, sector.heads),
+      lastLabourPerHead: labourPerHead(result, index, totalHeads(sector.cohorts)),
       lastUtilisation: utilisationOf(result),
       experience,
     };
@@ -447,27 +462,34 @@ function utilisationOf(result: AllocationResult): Record<CapacityId, number> {
 // --------------------------------------------------------------- population
 
 /**
- * Two rates per tick, births and deaths (E20). Each need tier shifts one of
- * them, interpolated linearly between no and full coverage — the non-linearity
- * that famine mortality needs already sits in the ranking.
+ * Dying, growing up and being born, all three reckoned from the same standing
+ * and applied together (E20).
  *
- * **The two base rates balance each other and nothing else** — 1.0308 against
- * 0.97 comes to 0.99988, so a community stands still exactly when the tiers
- * between them come to one. Where that is depends on which of them are covered,
- * and it is nowhere near the bottom of the ranking:
+ * **Together** is the point. Worked one after another, the outcome would hang
+ * on the order the transitions happen to stand in the content — somebody would
+ * grow up and fall ill in the same tick, and nobody could see it from the
+ * content. So everything below reads `sector.cohorts` and nothing reads what
+ * the step before it wrote.
  *
- * | covered | births | survival | per tick |
+ * Each of the three is a different shape, because each yields something
+ * different. Dying is a factor per cohort, element by element, and gives the
+ * vector back. Being born is a scalar product — how many — and a unit vector —
+ * where they land. Growing up is a share moved from one entry to another.
+ *
+ * The base rates balance each other and nothing else: births run at 0.0833 per
+ * grown head against a base survival of 0.97, so with a group six tenths grown
+ * the two come out level once the tiers between them come to six tenths. Where
+ * that is depends on which of them are covered:
+ *
+ * | covered | births | deaths | per tick |
  * |---|---|---|---|
- * | rank 100 alone | 1.0308 × 0.99 = 1.0205 | 0.97 × 0.94 = 0.9118 | **0.930** |
- * | 100 and 200 | 1.0205 | 0.97 | **0.990** |
- * | everything (before settling) | 1.0308 × 1.01 × 1.01 = 1.0515 | 0.97 | **1.020** |
+ * | rank 100 alone | 0.6 × 0.0833 × 0.40 = 0.020 | 1 − 0.94 × 0.97 = 0.088 | **−6.8 %** |
+ * | 100 and 200 | 0.020 | 0.030 | **−1.0 %** |
+ * | everything | 0.6 × 0.0833 = 0.050 | 0.030 | **+2.0 %** |
  *
  * Fed but cold is a community that loses seven in a hundred a tick; fed and
- * warm and nothing above still loses one, because want of comfort holds the
- * births down. Only a community that has everything grows.
- *
- * It used to read here that births equalled deaths at rank 100 covered and that
- * this fixed both base rates. It never did: at rank 100 alone the fire is out.
+ * warm and nothing above still loses one, because want of care and of comfort
+ * holds the births down. Only a community that has everything grows.
  */
 export class PopulationPhase implements Phase {
   readonly id = "population";
@@ -477,26 +499,54 @@ export class PopulationPhase implements Phase {
     const allocation = ctx.allocation;
     if (sector === undefined || allocation === undefined) return state;
 
-    let births = index.config.population.baseBirthFactor;
-    let survival = index.config.population.baseSurvival;
+    const population = index.config.population;
+    const before = sector.cohorts;
 
+    // How hard each rank landed this tick. Births are one factor for everyone,
+    // survival is a factor per cohort — the ranking says how much of it a
+    // cohort takes, and a loss scaled by two takes twice as many.
+    let birthFactor = 1;
+    const survival: Record<string, number> = {};
+    for (const cohort of population.cohorts) {
+      survival[cohort.id] = population.baseSurvival[cohort.id] ?? 1;
+    }
     for (const outcome of allocation.tiers) {
       const tier = index.tier.get(outcome.tier);
       if (tier === undefined) continue;
-      births *= tierEffectAt(tier.birthRate, outcome.coverage);
-      survival *= tierEffectAt(tier.survival, outcome.coverage);
+      birthFactor *= tierEffectAt(tier.birthRate, outcome.coverage);
+      if (tier.survival === undefined) continue;
+      const kept = tierEffectAt(tier.survival, outcome.coverage);
+      for (const cohort of population.cohorts) {
+        const sensitivity = tier.survival.per[cohort.id] ?? 1;
+        survival[cohort.id] = (survival[cohort.id] ?? 1) * Math.max(0, 1 - sensitivity * (1 - kept));
+      }
     }
 
-    const heads = Math.max(0, sector.heads * survival * births);
+    const born =
+      population.baseBirthRate * birthFactor * weighedHeads(before, population.birthWeight);
+
+    const after: Record<string, number> = {};
+    for (const cohort of population.cohorts) {
+      after[cohort.id] = Math.max(0, (before[cohort.id] ?? 0) * (survival[cohort.id] ?? 1));
+    }
+    for (const move of population.transitions) {
+      const moving = Math.max(0, (before[move.from] ?? 0) * move.perTick);
+      after[move.from] = Math.max(0, (after[move.from] ?? 0) - moving);
+      after[move.to] = (after[move.to] ?? 0) + moving;
+    }
+    after[population.birthsInto] = (after[population.birthsInto] ?? 0) + Math.max(0, born);
+
     const next: GameState = {
       ...state,
-      sectors: { ...state.sectors, [HOUSEHOLDS]: { ...sector, heads } },
+      sectors: { ...state.sectors, [HOUSEHOLDS]: { ...sector, cohorts: after } },
     };
 
     // Below the minimum viable size the community is given up (E20), and that
     // is written down rather than left to be noticed: from the next tick on
-    // nothing moves any more.
-    return heads < index.config.population.minimumViableSize
+    // nothing moves any more. Counted over the grown, because whether a
+    // community can still recover hangs on them — they do the work and they
+    // bear the children.
+    return weighedHeads(after, population.viableWeight) < population.minimumViableSize
       ? { ...next, abandonedAt: state.tick }
       : next;
   }
@@ -563,7 +613,7 @@ export class OfferPhase implements Phase {
       index,
       unlocks: ctx.unlocks,
       coverage: state.lastCoverage,
-      population: state.sectors[HOUSEHOLDS]?.heads ?? 0,
+      population: totalHeads(state.sectors[HOUSEHOLDS]?.cohorts ?? {}),
       fresh: ctx.fresh,
     };
     let seen: Record<ProjectId, number> | undefined;

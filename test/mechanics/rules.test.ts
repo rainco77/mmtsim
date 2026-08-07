@@ -17,6 +17,23 @@ import {
 } from "../../src/sim/index.ts";
 import { counterOf, draw, uniformAt } from "../../src/sim/random.ts";
 
+/** A head count split over the cohorts the way the content starts them (E20). */
+const asCohorts = (heads: number): Record<string, number> =>
+  Object.fromEntries(
+    STAGE1.population.cohorts.map((c) => [
+      c.id,
+      heads * (STAGE1.population.shareAtStart[c.id] ?? 0),
+    ]),
+  );
+
+/** Does the community grow this tick — born against died, over all cohorts (E20). */
+const grows = (state: GameState, index: ConfigIndex): boolean => {
+  const d = derive(state, index);
+  let died = 0;
+  for (const [id, heads] of Object.entries(d.cohorts)) died += heads * (1 - (d.survival[id] ?? 1));
+  return d.born > died;
+};
+
 /**
  * Mechanics (E26): what the rules promise, not what a run happens to produce.
  * Deliberately no snapshots like "after 100 ticks the population is 34.217" —
@@ -157,7 +174,7 @@ describe("the year's quality (E24)", () => {
         ...(alive as unknown as GameState),
         sectors: {
           ...state.sectors,
-          households: { ...state.sectors["households"]!, heads: 25 },
+          households: { ...state.sectors["households"]!, cohorts: asCohorts(25) },
         },
       };
     }
@@ -308,7 +325,7 @@ describe("processes and the fallback level (E5)", () => {
         ...state.sectors,
         households: {
           ...state.sectors["households"]!,
-          heads: 200,
+          cohorts: asCohorts(200),
           capacityHeld: { cleared: { amount: 3, quality: 1 } },
         },
       },
@@ -383,7 +400,7 @@ describe("processes and the fallback level (E5)", () => {
           ...base.sectors,
           households: {
             ...base.sectors["households"]!,
-            heads,
+            cohorts: asCohorts(heads),
             stocks: {},
             capacityHeld: { cleared: { amount: cleared, quality: 1 } },
           },
@@ -419,7 +436,7 @@ describe("processes and the fallback level (E5)", () => {
         ...state.sectors,
         households: {
           ...state.sectors["households"]!,
-          heads: 200,
+          cohorts: asCohorts(200),
           stocks: { food: 0, plants: 20 },
           // Small enough that the fields cannot feed two hundred people on
           // their own — otherwise nothing falls through and there is nothing
@@ -538,15 +555,22 @@ describe("population (E20)", () => {
     // catastrophe; with it served, it grows. That is the regulator this epoch
     // is meant to have, and the number it settles at is a matter of balance,
     // not of this test.
-    const { baseBirthFactor: b, baseSurvival: s } = STAGE1.population;
-    const satiety = STAGE1.needTiers.find((t) => t.id === "food_satiety")!;
-    const comfort = STAGE1.needTiers.find((t) => t.id === "warmth_comfort")!;
+    const pop = STAGE1.population;
+    // A standing group in the shares the content starts at, so births per head
+    // and deaths per head can be held against each other at all.
+    const cohorts = asCohorts(100);
+    const bearing = cohorts["grown"]!;
+    const dying = Object.entries(cohorts).reduce(
+      (sum, [id, heads]) => sum + heads * (1 - (pop.baseSurvival[id] ?? 1)),
+      0,
+    );
+    const onBirths = STAGE1.needTiers.filter((t) => t.birthRate !== undefined);
 
-    const served = b * (satiety.birthRate?.atFull ?? 1) * (comfort.birthRate?.atFull ?? 1) * s;
-    const starved = b * (satiety.birthRate?.atZero ?? 1) * (comfort.birthRate?.atZero ?? 1) * s;
+    const served = onBirths.reduce((f, t) => f * (t.birthRate?.atFull ?? 1), 1);
+    const starved = onBirths.reduce((f, t) => f * (t.birthRate?.atZero ?? 1), 1);
 
-    expect(served).toBeGreaterThan(1);
-    expect(starved).toBeLessThan(1);
+    expect(pop.baseBirthRate * served * bearing).toBeGreaterThan(dying);
+    expect(pop.baseBirthRate * starved * bearing).toBeLessThan(dying);
   });
 
   it("shrinks under famine and grows when sated", () => {
@@ -561,14 +585,128 @@ describe("population (E20)", () => {
         households: { ...start.sectors["households"]!, stocks: { food: 0 } },
       },
     };
-    const hungry = derive(starving, index);
-    expect(hungry.survival * hungry.birthFactor).toBeLessThan(1);
+    expect(grows(starving, index)).toBe(false);
 
-    const fed = derive(
-      createState(STAGE1, { seed: 7, heads: 20, wilderness: 4000, water: 1600, food: 200 }),
-      index,
-    );
-    expect(fed.survival * fed.birthFactor).toBeGreaterThan(1);
+    expect(
+      grows(
+        createState(STAGE1, { seed: 7, heads: 20, wilderness: 4000, water: 1600, food: 200 }),
+        index,
+      ),
+    ).toBe(true);
+  });
+
+  it("the newborn land among the growing, never among the workers (E20)", () => {
+    // On their own, with nobody dying and nobody growing up, so the only thing
+    // that can move a cohort is a birth.
+    const only = indexConfig({
+      ...STAGE1,
+      population: {
+        ...STAGE1.population,
+        baseSurvival: { growing: 1, grown: 1 },
+        transitions: [],
+      },
+    });
+    const state = createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600, food: 400 });
+    const before = state.sectors["households"]!.cohorts;
+    const born = derive(state, only).born;
+    const after = tick(state, only).sectors["households"]!.cohorts;
+
+    expect(born).toBeGreaterThan(0);
+    expect(after["grown"]).toBeCloseTo(before["grown"]!, 9);
+    expect(after["growing"]).toBeCloseTo(before["growing"]! + born, 9);
+  });
+
+  it("only heads with a labour weight perform work (E20)", () => {
+    const state = createState(STAGE1, { seed: 7 });
+    const sector = state.sectors["households"]!;
+    const d = derive(state, index);
+
+    const byHand =
+      sector.cohorts["growing"]! * STAGE1.population.labourWeight["growing"]! +
+      sector.cohorts["grown"]! * STAGE1.population.labourWeight["grown"]!;
+    expect(d.workingHeads).toBeCloseTo(byHand, 9);
+    expect(d.workingHeads).toBeLessThan(d.heads);
+    expect(d.laborPerformance).toBeCloseTo(byHand * d.workAbility * d.productivity, 6);
+  });
+
+  it("care is asked for the growing and not for the heads (E20)", () => {
+    // Same number of people, split two ways. What care asks for has to follow
+    // the children and nothing else.
+    const shift = (state: GameState, growing: number, grown: number): GameState => ({
+      ...state,
+      sectors: {
+        ...state.sectors,
+        households: { ...state.sectors["households"]!, cohorts: { growing, grown } },
+      },
+    });
+    const base = createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600, food: 400 });
+    const askedFor = (state: GameState): number =>
+      derive(state, index).tiers.find((t) => t.tier === "childcare")?.need ?? 0;
+
+    const few = askedFor(shift(base, 10, 30));
+    const many = askedFor(shift(base, 20, 20));
+    expect(many).toBeCloseTo(2 * few, 6);
+  });
+
+  it("every transition of a tick is reckoned from the same standing (E20)", () => {
+    // Two steps in a row, both moving everybody. Worked one after the other,
+    // whoever was in the first would land in the third within one tick; from
+    // one standing, each moves exactly one step.
+    const chain = indexConfig({
+      ...STAGE1,
+      population: {
+        ...STAGE1.population,
+        cohorts: [{ id: "first" }, { id: "second" }, { id: "third" }],
+        shareAtStart: { first: 1, second: 0, third: 0 },
+        labourWeight: { first: 1, second: 1, third: 1 },
+        birthWeight: { first: 0, second: 0, third: 0 },
+        baseSurvival: { first: 1, second: 1, third: 1 },
+        viableWeight: { first: 1, second: 1, third: 1 },
+        birthsInto: "first",
+        transitions: [
+          { from: "first", to: "second", perTick: 1 },
+          { from: "second", to: "third", perTick: 1 },
+        ],
+      },
+      needTiers: STAGE1.needTiers.map((t) => ({
+        ...t,
+        perHeadWeight: { first: 1, second: 1, third: 1 },
+        ...(t.survival === undefined
+          ? {}
+          : { survival: { ...t.survival, per: { first: 1, second: 1, third: 1 } } }),
+      })),
+    });
+    const start = createState(chain.config, { seed: 7, wilderness: 4000, water: 1600, food: 400 });
+    const moved = tick(start, chain).sectors["households"]!.cohorts;
+
+    expect(moved["first"]).toBeCloseTo(0, 9);
+    expect(moved["second"]).toBeCloseTo(25, 9);
+    expect(moved["third"]).toBeCloseTo(0, 9);
+  });
+
+  it("content that leaves a cohort out of a vector is refused (E20)", () => {
+    expect(() =>
+      indexConfig({
+        ...STAGE1,
+        population: { ...STAGE1.population, labourWeight: { grown: 1 } },
+      }),
+    ).toThrow(/growing/);
+  });
+
+  it("giving up counts the grown, not the heads (E20)", () => {
+    // The same number of people twice over. Ten of them growing and two grown
+    // is a community that cannot recover; twelve grown is one that can.
+    const base = createState(STAGE1, { seed: 7 });
+    const of = (growing: number, grown: number): GameState => ({
+      ...base,
+      sectors: {
+        ...base.sectors,
+        households: { ...base.sectors["households"]!, cohorts: { growing, grown } },
+      },
+    });
+
+    expect(tick(of(10, 2), index).abandonedAt).toBe(0);
+    expect(tick(of(0, 12), index).abandonedAt).toBeUndefined();
   });
 
   it("gives the community up below the minimum viable size, and stops (E20)", () => {
@@ -597,7 +735,7 @@ describe("sedentism (E29)", () => {
         ...state.sectors,
         households: {
           ...state.sectors["households"]!,
-          heads: 100,
+          cohorts: asCohorts(100),
         },
       },
     };
@@ -605,9 +743,30 @@ describe("sedentism (E29)", () => {
 
     const unlocks = computeUnlocks(state, index);
     expect(unlocks.rules.has("settled")).toBe(true);
-    expect(unlocks.branches.has("housing")).toBe(true);
     expect(unlocks.processes.has("farming")).toBe(true);
     expect(state.sectors["households"]?.capacityHeld["cleared"]?.amount).toBeCloseTo(20, 9);
+  });
+
+  it("a project effect opens a whole branch (E12)", () => {
+    // Its own fixture rather than a piece of the content: the epoch has no
+    // branch that arrives late any more, and a test that hangs on the content
+    // moves every time the content does.
+    const late = indexConfig({
+      ...STAGE1,
+      branches: [
+        ...STAGE1.branches,
+        { id: "later", produces: "later", unlockedFromStart: false },
+      ],
+      projects: STAGE1.projects.map((p) =>
+        p.id === "sedentism" ? { ...p, effects: [...p.effects, { type: "branch", id: "later" }] } : p,
+      ),
+    });
+
+    const before = createState(late.config, { seed: 7 });
+    expect(computeUnlocks(before, late).branches.has("later")).toBe(false);
+
+    const after = { ...before, completedProjects: { sedentism: 1 } };
+    expect(computeUnlocks(after, late).branches.has("later")).toBe(true);
   });
 
   it("storage pits keep what they cover, and only that (E19)", () => {
@@ -620,7 +779,7 @@ describe("sedentism (E29)", () => {
         ...base.sectors,
         households: {
           ...base.sectors["households"]!,
-          heads: 0,
+          cohorts: asCohorts(0),
           stocks: { food: 100 },
           capacityHeld: { storage: { amount: capacity, quality: 1 } },
         },
@@ -656,7 +815,7 @@ describe("sedentism (E29)", () => {
         ...state.sectors,
         households: {
           ...state.sectors["households"]!,
-          heads: 100,
+          cohorts: asCohorts(100),
         },
       },
     };
@@ -684,7 +843,7 @@ describe("sedentism (E29)", () => {
         ...state.sectors,
         households: {
           ...state.sectors["households"]!,
-          heads: 400,
+          cohorts: asCohorts(400),
         },
       },
     };
@@ -700,39 +859,19 @@ describe("sedentism (E29)", () => {
 
 describe("supply chains (E4)", () => {
   it("produces an intermediate nobody needs directly", () => {
-    // Housing needs wood; nothing needs wood for its own sake. Without derived
-    // demand no wood would ever be made and the roof would stay uncovered.
-    let state = finish(createState(STAGE1, { seed: 7, wilderness: 300, water: 120 }), "sickle");
-    state = {
-      ...state,
-      sectors: {
-        ...state.sectors,
-        households: { ...state.sectors["households"]!, heads: 120 },
-      },
-    };
-    state = finish(state, "sedentism");
-    // Enough cleared land that food does not claim all of it: rank 100 comes
-    // before rank 200, so without spare acres nothing is ever built.
-    state = {
-      ...state,
-      sectors: {
-        ...state.sectors,
-        households: {
-          ...state.sectors["households"]!,
-          capacityHeld: { cleared: { amount: 300, quality: 1 } },
-        },
-      },
-    };
+    // Warmth is made out of wood; nobody needs wood for its own sake — no rank
+    // asks for it. Without demand derived through the chain none would ever be
+    // made and the fire would stay out.
+    let state = createState(STAGE1, { seed: 7, wilderness: 300, water: 120 });
 
-    // Checked over a stretch, not in a single tick: once the roofs stand they
-    // only need their wear replaced, so a given tick may well make no wood.
     let everMadeWood = false;
-    for (let i = 0; i < 40; i += 1) {
+    for (let i = 0; i < 20; i += 1) {
       if ((derive(state, index).produced["wood"] ?? 0) > 0) everMadeWood = true;
       state = tick(state, index);
     }
     expect(everMadeWood).toBe(true);
-    expect(state.sectors["households"]?.stocks["housing"] ?? 0).toBeGreaterThan(0);
+    expect(index.config.needTiers.some((t) => t.stock === "wood")).toBe(false);
+    expect(derive(state, index).coverage["warmth_fire"] ?? 0).toBeGreaterThan(0);
   });
 
   it("names the upstream bottleneck, not the missing intermediate", () => {
@@ -747,7 +886,7 @@ describe("supply chains (E4)", () => {
         ...state.sectors,
         households: {
           ...state.sectors["households"]!,
-          heads: 200,
+          cohorts: asCohorts(200),
           // Everything else the country carries is there in plenty, so the one
           // thing that can be short is the wood — otherwise two exhausted
           // stocks compete for the report and the answer says nothing.
@@ -766,7 +905,7 @@ describe("supply chains (E4)", () => {
       completedProjects: { sickle: 1, sedentism: 1 },
     };
     const d = derive(state, index);
-    expect(d.coverage["shelter_roof"] ?? 1).toBeLessThan(1);
+    expect(d.coverage["warmth_fire"] ?? 1).toBeLessThan(1);
     expect(d.binding.kind).toBe("stock");
     expect(d.binding.what).toBe("deadwood");
   });

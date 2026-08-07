@@ -7,6 +7,7 @@ import {
   derive,
   indexConfig,
   tick,
+  totalHeads,
   type GameState,
 } from "../src/sim/index.ts";
 
@@ -66,7 +67,7 @@ interface RunResult {
 
 function run(seed: number): RunResult {
   let state: GameState = createState(STAGE1, { seed });
-  let peak = state.sectors["households"]?.heads ?? 0;
+  let peak = totalHeads(state.sectors["households"]?.cohorts ?? {});
   let abandonedAt: number | null = null;
   let laborWasted = 0;
   const binding: Record<string, number> = {};
@@ -101,12 +102,12 @@ function run(seed: number): RunResult {
       state = apply(state, action, index).state;
     }
     state = tick(state, index);
-    peak = Math.max(peak, state.sectors["households"]?.heads ?? 0);
+    peak = Math.max(peak, totalHeads(state.sectors["households"]?.cohorts ?? {}));
   }
 
   return {
     seed,
-    finalPopulation: round(state.sectors["households"]?.heads ?? 0),
+    finalPopulation: round(totalHeads(state.sectors["households"]?.cohorts ?? {})),
     peakPopulation: round(peak),
     abandonedAt,
     completed: Object.keys(state.completedProjects),

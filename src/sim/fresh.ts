@@ -18,6 +18,7 @@ import { HOUSEHOLDS } from "./phases.ts";
 import { drawShocks } from "./risk.ts";
 import { createState } from "./setup.ts";
 import { computeUnlocks } from "./unlocks.ts";
+import { totalHeads } from "./state.ts";
 
 const KNOWN = new WeakMap<ConfigIndex, Readonly<Record<string, number>>>();
 
@@ -40,7 +41,7 @@ export function freshMarks(index: ConfigIndex): Readonly<Record<string, number>>
     tierPerHead: unlocks.tierPerHead,
   });
 
-  const heads = state.sectors[HOUSEHOLDS]?.heads ?? 0;
+  const heads = totalHeads(state.sectors[HOUSEHOLDS]?.cohorts ?? {});
   if (heads > 0) {
     for (const run of result.runs) {
       const activity = index.process.get(run.process)?.activity;

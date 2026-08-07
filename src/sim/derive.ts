@@ -9,7 +9,14 @@ import {
 import type { CapacityId, ProjectId, StockId } from "./ids.ts";
 import { carriedPerArea, decayed, HOUSEHOLDS, regrown, renewals, type Renewal } from "./phases.ts";
 import { peek } from "./random.ts";
-import { capacityOf, carryingArea, type Capacity, type GameState } from "./state.ts";
+import {
+  capacityOf,
+  carryingArea,
+  totalHeads,
+  weighedHeads,
+  type Capacity,
+  type GameState,
+} from "./state.ts";
 import {
   allHold,
   computeUnlocks,
@@ -36,9 +43,13 @@ export interface Derived {
   readonly tick: number;
 
   readonly heads: number;
+  /** The people by cohort (E20); `heads` is their sum. */
+  readonly cohorts: Readonly<Record<string, number>>;
+  /** The heads that supply labour, each weighted by how much (E20). */
+  readonly workingHeads: number;
   readonly workAbility: number;
   readonly productivity: number;
-  /** heads × workAbility (E16). */
+  /** workingHeads × workAbility (E16). */
   readonly laborVolume: number;
   /** laborVolume × productivity — the quantity that is allocated (E16). */
   readonly laborPerformance: number;
@@ -93,9 +104,10 @@ export interface Derived {
   readonly storeBefore: Readonly<Record<StockId, number>>;
   readonly storeAfter: Readonly<Record<StockId, number>>;
 
-  /** Factor on the heads this tick; 1 means the community stands (E20). */
-  readonly birthFactor: number;
-  readonly survival: number;
+  /** How many are born this tick — a number of people, not a factor (E20). */
+  readonly born: number;
+  /** What survives the tick, per cohort; 1 means nobody dies of it (E20). */
+  readonly survival: Readonly<Record<string, number>>;
   /** The community was given up and the run is over (E20). */
   readonly communityGivenUp: boolean;
   /** The tick it happened at; absent while it is still going. */
@@ -172,7 +184,9 @@ export interface ProjectView {
 export function derive(state: GameState, index: ConfigIndex): Derived {
   const unlocks = computeUnlocks(state, index);
   const sector = state.sectors[HOUSEHOLDS];
-  const heads = sector?.heads ?? 0;
+  const cohorts = sector?.cohorts ?? {};
+  const heads = totalHeads(cohorts);
+  const workingHeads = weighedHeads(cohorts, index.config.population.labourWeight);
   const workAbility = sector?.workAbility ?? 0;
   const productivity = sector?.productivity ?? 0;
 
@@ -202,14 +216,29 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
   const coverage: Record<string, number> = {};
   for (const outcome of allocation.tiers) coverage[outcome.tier] = outcome.coverage;
 
-  let birthFactor = index.config.population.baseBirthFactor;
-  let survival = index.config.population.baseSurvival;
+  // The same reckoning the population phase does, so what is shown is what
+  // will happen (E20): one factor on the births, one on the survival of each
+  // cohort.
+  let birthFactor = 1;
+  const survival: Record<string, number> = {};
+  for (const cohort of index.config.population.cohorts) {
+    survival[cohort.id] = index.config.population.baseSurvival[cohort.id] ?? 1;
+  }
   for (const outcome of allocation.tiers) {
     const tier = index.tier.get(outcome.tier);
     if (tier === undefined) continue;
     birthFactor *= tierEffectAt(tier.birthRate, outcome.coverage);
-    survival *= tierEffectAt(tier.survival, outcome.coverage);
+    if (tier.survival === undefined) continue;
+    const kept = tierEffectAt(tier.survival, outcome.coverage);
+    for (const cohort of index.config.population.cohorts) {
+      const sensitivity = tier.survival.per[cohort.id] ?? 1;
+      survival[cohort.id] = (survival[cohort.id] ?? 1) * Math.max(0, 1 - sensitivity * (1 - kept));
+    }
   }
+  const born =
+    index.config.population.baseBirthRate *
+    birthFactor *
+    weighedHeads(cohorts, index.config.population.birthWeight);
 
   const utilization: Record<CapacityId, number> = {};
   for (const type of index.config.capacities) {
@@ -358,9 +387,11 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
   return {
     tick: state.tick,
     heads,
+    cohorts,
+    workingHeads,
     workAbility,
     productivity,
-    laborVolume: heads * workAbility,
+    laborVolume: workingHeads * workAbility,
     laborPerformance: allocation.laborAvailable,
     laborToProjects: allocation.laborToProjects,
     laborToProduction: allocation.laborToProduction,
@@ -391,7 +422,7 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     storeBefore: allocation.storeBefore,
     effortPerStock: allocation.effortPerStock,
     storeAfter: allocation.storeAfter,
-    birthFactor,
+    born,
     survival,
     communityGivenUp: state.abandonedAt !== undefined,
     ...(state.abandonedAt === undefined ? {} : { abandonedAt: state.abandonedAt }),

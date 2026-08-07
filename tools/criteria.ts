@@ -1,7 +1,7 @@
 import { STAGE1 } from "../src/content/stage1.ts";
 import { PassivePolicy, PoorPolicy, SensiblePolicy } from "../src/policy/bots/index.ts";
 import type { Policy } from "../src/policy/policy.ts";
-import { apply, createState, derive, indexConfig, livesOn, tick } from "../src/sim/index.ts";
+import { apply, createState, derive, indexConfig, livesOn, tick, totalHeads } from "../src/sim/index.ts";
 import type { Derived, GameState, ProcessDef } from "../src/sim/index.ts";
 
 /**
@@ -137,7 +137,15 @@ function at(stand: readonly string[], heads: number, seed: number): Cell {
     ...state,
     sectors: {
       ...state.sectors,
-      households: { ...state.sectors["households"]!, heads },
+      households: {
+        ...state.sectors["households"]!,
+        cohorts: Object.fromEntries(
+          STAGE1.population.cohorts.map((c) => [
+            c.id,
+            heads * (STAGE1.population.shareAtStart[c.id] ?? 0),
+          ]),
+        ),
+      },
     },
   });
   let state: GameState = {
@@ -347,7 +355,7 @@ function play(seed: number, policy: Policy): Trace {
   let thinnest = 1;
   let foodPerHeadFirst: number | null = null;
   let foodPerHeadLast = 0;
-  const headsAtStart = state.sectors["households"]?.heads ?? 0;
+  const headsAtStart = totalHeads(state.sectors["households"]?.cohorts ?? {});
 
   for (let i = 0; i < CAP; i += 1) {
     if ((state.completedProjects["sedentism"] ?? 0) > 0) {
@@ -412,7 +420,7 @@ function play(seed: number, policy: Policy): Trace {
     abandoned,
     moves: state.landTakings,
     length: ticks,
-    headsAtEnd: state.sectors["households"]?.heads ?? 0,
+    headsAtEnd: totalHeads(state.sectors["households"]?.cohorts ?? {}),
     idleShare: available > 0 ? idle / available : 0,
     idleBreachAt,
     maxOffers,

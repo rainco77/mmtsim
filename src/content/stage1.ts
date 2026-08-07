@@ -283,9 +283,10 @@ export const STAGE1: Config = {
       decayPerTick: 0.03,
       decayWhenRule: [{ rule: "sewn", decayPerTick: 0.012 }],
     },
-    // Buildings need upkeep: maintenance is simply rebuilding what fell apart,
-    // and it keeps absorbing labour instead of being a one-off (E19).
-    { id: "housing", decayPerTick: 0.02 },
+    // **Care cannot be laid by.** Whoever does not tend a child today has not
+    // made it up tomorrow, so it decays entirely — there is no such thing as a
+    // store of it, and no rank above it can eat one.
+    { id: "care", decayPerTick: 1 },
   ],
 
   // -------------------------------------------------------------- capacities
@@ -320,7 +321,7 @@ export const STAGE1: Config = {
     { id: "hides", produces: "hides", unlockedFromStart: true },
     { id: "fibre", produces: "fibre", unlockedFromStart: true },
     { id: "clothing", produces: "clothing", unlockedFromStart: true },
-    { id: "housing", produces: "housing", unlockedFromStart: false },
+    { id: "care", produces: "care", unlockedFromStart: true },
   ],
 
   // --------------------------------------------------------------- processes
@@ -781,17 +782,20 @@ export const STAGE1: Config = {
     },
 
     {
-      id: "building",
-      branch: "housing",
-      activity: "building",
+      // **Nothing but hands.** No ground, no material, and no weather: children
+      // want tending whatever the draw, which is the whole point of the rank —
+      // a claim that no technique of the epoch can make cheaper and no good
+      // year can excuse.
+      id: "childcare",
+      branch: "care",
+      activity: "caring",
       priority: 100,
-      capacityPerOutput: { cleared: 0.05 },
-      intermediatesPerOutput: { labor: 2.857143, wood: 1.4 },
-      exposure: { weather: 0.0 },
-      qualityWeight: 0.0,
-      // Nobody sows in this epoch: the return shows itself while one looks (E24).
+      capacityPerOutput: {},
+      intermediatesPerOutput: { labor: 1 },
+      exposure: {},
+      qualityWeight: 0,
       yield: "found",
-      unlockedFromStart: false,
+      unlockedFromStart: true,
     },
   ],
 
@@ -801,7 +805,16 @@ export const STAGE1: Config = {
   // order not to die, to have children and to be able to work. Ranks run in
   // hundreds because project ranks live in the same number space (E18), which
   // leaves ninety-nine places between them for projects and for needs inserted
-  // later — housing is such a later one and sits at 350.
+  // later.
+  //
+  // **Every rank acts on exactly one axis** (E20). Satiety and comfort used to
+  // move births *and* productivity both and differed only in the size of the
+  // figures, which is not a choice but the same effect written twice. Satiety
+  // now carries the strength to work and comfort carries the children.
+  //
+  // **Every rank also says whose heads it is counted over.** A growing person
+  // eats less than a grown one and wears less cloth, needs almost as much
+  // warmth, and care is asked for the growing alone.
   needTiers: [
     {
       id: "food_survival",
@@ -834,6 +847,9 @@ export const STAGE1: Config = {
       // split has to deliver is unchanged — hunger as the crisis and not the
       // daily rule (E29) — and what it delivers now wants measuring afresh.
       perHead: 0.9,
+      // A small child eats little and one nearly grown almost a full share;
+      // over the group, seven tenths.
+      perHeadWeight: { growing: 0.7, grown: 1 },
       consumedOnUse: 1,
       // **How hard a shortfall lands, not how often one happens.** With the draw
       // reaching far enough down to produce a hunger several times over an epoch
@@ -848,7 +864,7 @@ export const STAGE1: Config = {
       // twenty-seven per cent and all twenty communities are still there at the
       // end. That is the shape the epoch wants: a crisis with a before, a during
       // and an after — the group is smaller afterwards, and it goes on.
-      survival: { atZero: 0.65, atFull: 1 },
+      survival: { atZero: 0.65, atFull: 1, per: { growing: 1, grown: 1 } },
     },
     {
       // Fire, in the amount it takes not to freeze. Small, and high in the
@@ -871,6 +887,9 @@ export const STAGE1: Config = {
       stock: "warmth",
       branch: "warmth",
       perHead: 0.03,
+      // A small body loses its warmth faster than a large one, so it needs
+      // nearly as much of the fire.
+      perHeadWeight: { growing: 0.9, grown: 1 },
       consumedOnUse: 1,
       // No fire at all in a Mesolithic winter kills — less than starving,
       // because clothing and huddling take part of it, and now much less again.
@@ -880,7 +899,7 @@ export const STAGE1: Config = {
       // of cold while it was still feeding itself. At 0.94 the fire going out
       // costs six per cent, and the deaths of a bad tick are the hunger's, which
       // is where the epoch means them to be.
-      survival: { atZero: 0.94, atFull: 1 },
+      survival: { atZero: 0.94, atFull: 1, per: { growing: 1, grown: 1 } },
     },
     {
       // Clothing does not kill, it costs *work ability* (E16). The honest
@@ -895,26 +914,40 @@ export const STAGE1: Config = {
       stock: "clothing",
       branch: "clothing",
       perHead: 0.3,
+      // Less cloth for a smaller body.
+      perHeadWeight: { growing: 0.6, grown: 1 },
       // Worn, not used up. What eats clothing is decay, and that is on the
       // stock, where the needle can reach it.
       consumedOnUse: 0,
       workAbility: { atZero: 0.6, atFull: 1.0 },
     },
     {
-      // Arrives with sedentism, and ranked by what its failure costs: no roof
-      // takes a tenth of the people, no clothing takes nobody but costs the
-      // strength to work. The deadly rank goes first — so this is 300 and
-      // clothing 400, swapped once the two were read side by side.
-      id: "shelter_roof",
+      // **The claim on work that no progress makes cheaper** (E29). Sickle,
+      // mortar and axe make food, warmth and wood cheaper; nothing goes round
+      // the tending of those who cannot tend themselves. It grows with the
+      // number of the growing, so it is the floor a community stays small
+      // against — and it is what settling finally pays off.
+      //
+      // Ranked above the fire and below the clothing: a community feeds itself
+      // and keeps itself warm, then looks after those who cannot, and clothes
+      // itself after that.
+      id: "childcare",
       rank: 300,
-      stock: "housing",
-      branch: "housing",
-      perHead: 0.3,
-      consumedOnUse: 0,
-      // A community that moves has no roof at all and lives; only those who stay
-      // come to depend on one.
-      survival: { atZero: 0.9, atFull: 1 },
-      birthRate: { atZero: 1, atFull: 1.003 },
+      stock: "care",
+      branch: "care",
+      // Half a share for each of the growing and nothing for the grown, so ten
+      // children cost five of work. Reckoned against the whole: five of thirty
+      // is a sixth of everything the community does, which is where the time
+      // studies put direct care averaged over all adults.
+      perHead: 0.5,
+      perHeadWeight: { growing: 1, grown: 0 },
+      consumedOnUse: 1,
+      // Whoever cannot look after his children has fewer. Four fifths at no
+      // coverage against a half for comfort — 0.8 × 0.5 = 0.4, the scale the
+      // base birth rate was reckoned on. Care carries the smaller part of the
+      // band because it stands low in the ranking and is nearly always covered:
+      // when it does fail, things are already grave.
+      birthRate: { atZero: 0.8, atFull: 1 },
     },
     {
       // Warmth beyond the minimum: cooked food, shorter nights at the fire,
@@ -922,13 +955,15 @@ export const STAGE1: Config = {
       // carries the ability to work, and the two ought to stay distinguishable
       // (E16).
       id: "warmth_comfort",
-      rank: 700,
+      rank: 600,
       exposure: { weather: 0.4 },
       stock: "warmth",
       branch: "warmth",
       perHead: 0.07,
+      // A small body has a great deal of surface for its size and cannot hold
+      // its warmth, so it needs nearly as much as a large one.
+      perHeadWeight: { growing: 0.9, grown: 1 },
       consumedOnUse: 1,
-      productivity: { atZero: 1, atFull: 1.1 },
       // And it carries the children. A small body has a great deal of surface
       // for its size and cannot hold its warmth, so being cold costs infants
       // first — and an infant that does not live is, to a model without ages,
@@ -942,13 +977,18 @@ export const STAGE1: Config = {
       // other way about — births stood at their maximum almost always and the
       // regulator was catastrophe.
       //
-      // Reckoned against the rest: base births 1.01 against base survival
-      // 1/1.01, so a community with everything covered stands still. With
-      // comfort gone and bellies full, 1.01 × 1.01 × 0.99 against 0.990 stands
-      // still as well — growth simply stops. With both gone it comes to 0.99,
-      // and the community shrinks slowly because too few are born, with nobody
-      // dying of it.
-      birthRate: { atZero: 0.99, atFull: 1.01 },
+      // **Comfort is the top rank, so it is the first thing to go**, which
+      // makes it the regulator of an ordinary tick — and that is why it carries
+      // the larger half of the band: at no coverage the births run at a half.
+      // Together with care, 0.5 × 0.8 = 0.4, and a community fed and warm and
+      // nothing more loses one in a hundred a tick.
+      //
+      // It used to read 0.99 to 1.01, and that looked like a hundredth of a
+      // band only because it multiplied a *growth* factor rather than the
+      // births themselves. A hundredth off the growth of a community is a third
+      // of all its births. Nothing was widened here; it was put on the right
+      // quantity.
+      birthRate: { atZero: 0.5, atFull: 1 },
     },
     {
       // The dispensable third of the food, and the community's whole buffer
@@ -956,12 +996,16 @@ export const STAGE1: Config = {
       // that kills. Raising it from 0.4 to 0.6 does not feed anyone more — the
       // two ranks still come to 1.8 together — it moves where the harm lands.
       id: "food_satiety",
-      rank: 600,
+      rank: 500,
       stock: "food",
       branch: "food",
       perHead: 0.9,
+      perHeadWeight: { growing: 0.7, grown: 1 },
       consumedOnUse: 1,
-      birthRate: { atZero: 1, atFull: 1.01 },
+      // **Satiety carries the strength to work and nothing else** (E20). It
+      // used to move the births as well, which made it comfort's twin at a
+      // different size; now the two say different things. What it says is the
+      // plain one: a fed community gets more done.
       productivity: { atZero: 1, atFull: 1.2 },
     },
   ],
@@ -1409,8 +1453,6 @@ export const STAGE1: Config = {
         // every later epoch (E29).
         { type: "takings", set: 0 },
         { type: "process", id: "farming" },
-        { type: "process", id: "building" },
-        { type: "branch", id: "housing" },
         // The first fields: wilderness becomes cleared land, inheriting its
         // quality (E13).
         {
@@ -1538,23 +1580,68 @@ export const STAGE1: Config = {
   ],
 
   // -------------------------------------------------------------- population
-  // Equal base rates: with rank 100 fully covered and nothing above it, births
-  // equal deaths and the population stands (E20).
   population: {
-    // Reciprocal: a community whose needs are all met neither grows nor shrinks. It
-    // grows when it is better off than it needs to be.
-    baseBirthFactor: 1.0308,
-    baseSurvival: 0.97,
+    // **Two cohorts, and the head count is a vector over them** (E20). Which
+    // groups there are is content and nothing else, so sickness or wealth would
+    // be further entries in this list and not a second machine.
+    cohorts: [{ id: "growing" }, { id: "grown" }],
+
+    // Forty in a hundred still growing. Foragers run between thirty-five and
+    // forty-five: under fifteen is about thirty-five with the !Kung and the
+    // Aché, and reckoned up to the age at which somebody produces more than he
+    // eats — around twenty with the Aché — it is nearer half.
+    shareAtStart: { growing: 0.4, grown: 0.6 },
+
+    // Aché children produce next to nothing until their late teens, Hadza
+    // children get about half their own food. Averaged over a group running
+    // from infants to the nearly grown, a quarter of a grown pair of hands.
+    labourWeight: { growing: 0.25, grown: 1 },
+
+    birthWeight: { growing: 0, grown: 1 },
+    birthsInto: "growing",
+
+    // **A number of people, not a factor on everyone.** Reckoned from the three
+    // cases the model used to run at, so the epoch behaves as it did: with six
+    // tenths of the community grown, 0.6 × 0.0833 = 0.05 born against 0.03 dead
+    // is the two per cent a fully covered community grew at before.
+    //
+    // What this replaces was a *growth* factor of 1.0308, and that is why the
+    // effects on it looked so tiny: births are only some three in a hundred of
+    // the community, so a hundredth off the growth factor is a third of all the
+    // births. Read as a real flow the same effects are wide, and the width is
+    // not a taste — it falls out of the three cases (see the tiers below).
+    baseBirthRate: 0.0833,
+
+    // Unchanged, and the same for both until there is a reason to spread it:
+    // the sensitivities per cohort stand written out at each tier, at one.
+    baseSurvival: { growing: 0.97, grown: 0.97 },
+
+    // **Growing up.** The rate follows from the standstill and is not a taste:
+    // in balance the growing must give up as many as they take in, so
+    // `births = (ageing + dying) × growing`, that is `0.03 = (r + 0.03) × 0.40`
+    // and r = 0.045. The grown check out too — they take in 0.045 × 0.40 = 0.018
+    // and lose 0.03 × 0.60 = 0.018. On average that is some thirteen ticks
+    // growing up.
+    transitions: [{ from: "growing", to: "grown", perTick: 0.045 }],
+
+    // Counted over the grown (E20). Twelve people of whom ten are growing are
+    // finished — the two left must feed everybody and find the care besides,
+    // and the children are many ticks from being any use. Twelve grown come out
+    // of it. By heads the two look the same.
+    viableWeight: { growing: 0, grown: 1 },
+
     // Below about a dozen a community stops working: too few hunters, nobody spare
     // to carry children or the sick, and no cover at all for a single death. It
     // does not die out — it joins a neighbour, and as *this* community it is over.
+    // All three of those are statements about the working, so seven of fifteen
+    // grown is the same share the old twelve of twenty-five heads stood at.
     //
     // Twenty-five is the community itself (Birdsell's magic numbers), so it cannot
     // also be the floor. His other number, five hundred, is the circle within
     // which people marry — a network of communities, not a settlement, and nothing
     // this model has: we play one community, which is understood to sit inside such
     // a network.
-    minimumViableSize: 12,
+    minimumViableSize: 7,
   },
 
   // **How often the draw goes deep enough to matter.** The shape is fixed by
@@ -1599,5 +1686,20 @@ export const STAGE1: Config = {
     freshRangeLasts: 11,
   },
 
-  carried: { baseProductivity: 1.0, baseWorkAbility: 1.0, adjustmentPerTick: 0.25 },
+  // **Productivity carries the offset for both things the cohorts made
+  // visible** (E20). It stood at 1.0 while every head was a full pair of hands
+  // and no work went into children.
+  //
+  // Now the starting group performs 15 + 10 × 0.25 = 17.5 rather than 25, and
+  // five of what it performs goes into care. 17.5 × 1.71 = 30, less five for
+  // the children, leaves the same 25 the community had before — so the rest of
+  // the economy runs on exactly what it ran on, and what changed is only that
+  // more children now bind hands.
+  //
+  // The offset belongs here and not in the coefficients of the processes,
+  // because care is no new work: the famously short days of the "original
+  // affluent society" counted the search for food alone, and the coefficients
+  // are balanced against that same reality, so the time spent on children was
+  // silently inside them. Pulling it out is measuring the day correctly.
+  carried: { baseProductivity: 1.71, baseWorkAbility: 1.0, adjustmentPerTick: 0.25 },
 };
