@@ -125,6 +125,31 @@ Kennzahl auf ein Zwanzigstel; die Arbeit je Kopf mit +55 % erklärt ihn.
 
 ---
 
+## Wo eine Zahl, ein Beleg und eine Geschichte hingehören
+
+**Ein Kommentar im Quelltext sagt, wie die Sache funktioniert — sonst nichts.** Der
+Mechanismus, der Anker, die Größenordnung, warum es überhaupt so gebaut ist. Kein
+Messergebnis, kein Seed, keine Ticknummer, kein Prozentsatz aus einem Lauf.
+
+**Und nichts über die Historie.** Nicht, dass etwas geändert wurde, nicht was vorher
+dastand, nicht warum es geändert wurde, nicht welcher Versuch verworfen wurde. Wer den
+Kommentar liest, sieht die Historie ohnehin nicht, ohne git zu bemühen — dann kann er sie
+auch dort lesen, wo sie richtig steht.
+
+| | gehört hin |
+|---|---|
+| **Quelltext** | wie es funktioniert |
+| **Commit-Meldung** | was gemessen wurde und was sich warum geändert hat. Sie ist an einen Stand gebunden und behauptet nie, aktuell zu sein |
+| **Issue** | die Messung, die eine offene Arbeit begründet — es trägt seinen Stand im Kopf |
+| **`KONZEPT.md`** | die Entscheidung und ihre Begründung. Eine Größenordnung darf vorkommen, eine Messung mit drei Stellen nicht |
+
+Der Grund ist die Halbwertszeit: Eine Messung ist am Tag nach der nächsten Änderung falsch,
+und im Quelltext fällt das niemandem auf. Eine falsche Zahl in einem Kommentar hat schon
+mehrere Runden lang eine Rechnung getragen.
+
+**Umfang:** ab jetzt, und beim Anfassen einer Stelle wird sie mitgezogen. Kein Durchgang
+durch den Bestand.
+
 ## Wie über Zahlen und Befunde geredet wird
 
 **`KONZEPT.md` wird auf der Auftraggeberseite nicht gelesen.** Das Dokument ist reines
