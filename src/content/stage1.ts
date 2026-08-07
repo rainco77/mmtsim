@@ -864,7 +864,12 @@ export const STAGE1: Config = {
       // twenty-seven per cent and all twenty communities are still there at the
       // end. That is the shape the epoch wants: a crisis with a before, a during
       // and an after — the group is smaller afterwards, and it goes on.
-      survival: { atZero: 0.65, atFull: 1, per: { growing: 1, grown: 1 } },
+      // Children die twice as readily of it as the grown. `per` scales the
+      // loss, so at no coverage the grown lose a third and the growing lose
+      // two thirds. That is the low end of what famine demography finds, and
+      // it leaves room to the arithmetic ceiling of 2.86, above which the
+      // growing would lose more than all of themselves.
+      survival: { atZero: 0.65, atFull: 1, per: { growing: 2, grown: 1 } },
     },
     {
       // Fire, in the amount it takes not to freeze. Small, and high in the
@@ -899,7 +904,8 @@ export const STAGE1: Config = {
       // of cold while it was still feeding itself. At 0.94 the fire going out
       // costs six per cent, and the deaths of a bad tick are the hunger's, which
       // is where the epoch means them to be.
-      survival: { atZero: 0.94, atFull: 1, per: { growing: 1, grown: 1 } },
+            // Twice as hard on the growing, as hunger is.
+      survival: { atZero: 0.94, atFull: 1, per: { growing: 2, grown: 1 } },
     },
     {
       // Clothing does not kill, it costs *work ability* (E16). The honest
