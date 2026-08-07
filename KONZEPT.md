@@ -2405,9 +2405,9 @@ tragen, und die Geburten folgen dichter.
 
 ---
 
-Über die ganze Strecke muss die Gemeinschaft **deutlich unter dem sitzen, was ein guter Tick
-trüge** — sonst bleibt nichts für Feuer, Kleidung und Vorrat übrig, und heraus kommt eine
-Gesellschaft, die satt, nackt und frierend ist.
+Über die ganze Strecke bleibt die Gemeinschaft **deutlich kleiner, als die Nahrung allein
+zuließe**. Wäre sie so groß, ginge alle Arbeit ins Essen, und für Feuer, Kleidung und Vorrat
+bliebe nichts — heraus käme eine Gesellschaft, die satt, nackt und frierend ist.
 
 > Die Bevölkerung soll **nicht chronisch am Verhungern** sein; im Mittel war sie gut
 > ernährt (Sahlins). Der Hunger ist die **Krise**, nicht der Alltag.
