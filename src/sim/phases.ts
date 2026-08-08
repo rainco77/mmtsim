@@ -28,7 +28,7 @@ import { allHold, computeUnlocks, type ConditionContext, type Unlocks } from "./
 export interface TickContext {
   shocks: Shocks;
   unlocks: Unlocks;
-  /** What the strain measures read in the position a run begins in — see `fresh.ts`. */
+  /** What the strain measures read in the position a run begins in — see `outset.ts`. */
   startReadings: Readonly<Record<string, number>>;
   laborAvailable: number;
   laborToProjects: number;

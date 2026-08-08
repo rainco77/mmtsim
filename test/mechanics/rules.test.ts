@@ -486,20 +486,21 @@ describe("processes and the fallback level (E5)", () => {
     const local = indexConfig(twin);
     const base = createState(twin, { seed: 7 });
 
-    const thin = {
+    // Only the store of food is moved. The ranges live in the same record, so
+    // replacing it outright empties them, and then the order is decided by
+    // whichever range is least ruined rather than by the exposure under test.
+    const withFood = (amount: number) => ({
       ...base,
       sectors: {
         ...base.sectors,
-        households: { ...base.sectors["households"]!, stocks: { food: 0 } },
+        households: {
+          ...base.sectors["households"]!,
+          stocks: { ...base.sectors["households"]!.stocks, food: amount },
+        },
       },
-    };
-    const fat = {
-      ...base,
-      sectors: {
-        ...base.sectors,
-        households: { ...base.sectors["households"]!, stocks: { food: 500 } },
-      },
-    };
+    });
+    const thin = withFood(0);
+    const fat = withFood(500);
 
     const leadThin = derive(thin, local).ordering.find((o) => o.branch === "food")?.lead;
     const leadFat = derive(fat, local).ordering.find((o) => o.branch === "food")?.lead;
@@ -507,6 +508,40 @@ describe("processes and the fallback level (E5)", () => {
     expect(leadFat).not.toBe("gathering_safe");
   });
 
+  it("a thinned range pushes away from what it carries (E5, E29)", () => {
+    // The other half of what a unit costs. Exposure is one factor in it and the
+    // cost of searching is another, and only the first had anything holding it.
+    //
+    // No process is named: which one leads follows the content and has changed
+    // more than once. The range the leader draws from is found first, then that
+    // very range is thinned — so the experiment stays controlled whatever the
+    // content says today.
+    const state = createState(STAGE1, { seed: 7 });
+    const held = state.sectors["households"]!.stocks;
+    const quarryOf = (process: string): string | undefined =>
+      Object.keys(index.process.get(process)?.intermediatesPerOutput ?? {}).find(
+        (id) => index.stock.get(id)?.regrowth !== undefined,
+      );
+
+    const leadBefore = derive(state, index).ordering.find((o) => o.branch === "food")?.lead;
+    const quarry = quarryOf(leadBefore ?? "");
+    expect(quarry).toBeDefined();
+
+    const thinned = {
+      ...state,
+      sectors: {
+        ...state.sectors,
+        households: {
+          ...state.sectors["households"]!,
+          stocks: { ...held, [quarry!]: (held[quarry!] ?? 0) * 0.1 },
+        },
+      },
+    };
+
+    const leadAfter = derive(thinned, index).ordering.find((o) => o.branch === "food")?.lead;
+    expect(leadAfter).not.toBe(leadBefore);
+    expect(quarryOf(leadAfter ?? "")).not.toBe(quarry);
+  });
 });
 
 describe("allocation runs rank by rank (E21)", () => {

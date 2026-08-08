@@ -86,7 +86,7 @@ export interface ConditionContext {
   /** Coverage per tier from the previous tick's outcome. */
   readonly coverage: Readonly<Record<string, number>>;
   readonly population: number;
-  /** What the strain measures read in the position a run begins in — see `fresh.ts`. */
+  /** What the strain measures read in the position a run begins in — see `outset.ts`. */
   readonly startReadings: Readonly<Record<string, number>>;
 }
 

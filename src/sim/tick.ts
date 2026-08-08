@@ -1,7 +1,7 @@
 import type { ConfigIndex } from "./config.ts";
 import { PIPELINE, type TickContext } from "./phases.ts";
 import { computeUnlocks } from "./unlocks.ts";
-import { startReadings } from "./fresh.ts";
+import { startReadings } from "./outset.ts";
 import type { GameState } from "./state.ts";
 
 /**

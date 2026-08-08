@@ -9,9 +9,11 @@
  * per head, and the marks move with it instead of staying behind as stale
  * claims about a model that has gone on without them.
  *
- * The outset is **not untouched country**: the stands begin below what the
- * ground could carry (E14). So a mark says *dearer than when we got here*, and
- * a measure that falls away from its opening reading can never cross one.
+ * The outset is **not untouched country**, and not what a move leaves behind
+ * either: the stands begin below what the ground could carry (E14), and this
+ * reading is taken once at the start of a run and never again — moving on does
+ * not renew it. So a mark says *dearer than at the start of the run*, and a
+ * measure that falls away from its opening reading can never cross one.
  *
  * Worked out once per configuration and kept, because it cannot change while a
  * run is going: it is a property of the content, not of the game.

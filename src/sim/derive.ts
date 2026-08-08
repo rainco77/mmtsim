@@ -25,7 +25,7 @@ import {
   type Unlocks,
   type Unmet,
 } from "./unlocks.ts";
-import { startReadings } from "./fresh.ts";
+import { startReadings } from "./outset.ts";
 import type { OrderingReason } from "./ordering.ts";
 
 /**
