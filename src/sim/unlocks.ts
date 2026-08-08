@@ -86,8 +86,8 @@ export interface ConditionContext {
   /** Coverage per tier from the previous tick's outcome. */
   readonly coverage: Readonly<Record<string, number>>;
   readonly population: number;
-  /** What the strain measures read on fresh country — see `fresh.ts`. */
-  readonly fresh: Readonly<Record<string, number>>;
+  /** What the strain measures read in the position a run begins in — see `fresh.ts`. */
+  readonly startReadings: Readonly<Record<string, number>>;
 }
 
 export function conditionHolds(condition: Condition, ctx: ConditionContext): boolean {
@@ -144,13 +144,13 @@ function strainOf(ctx: ConditionContext, measure: StrainMeasure): number {
   return ctx.state.lastUtilisation[measure.utilisation] ?? 0;
 }
 
-/** The mark: the factor against what the same measure reads on a fresh range. */
+/** The mark: the factor against what the same measure read at the outset. */
 function markOf(
   ctx: ConditionContext,
   condition: { readonly measure: StrainMeasure; readonly factor: number },
 ): number {
   if ("utilisation" in condition.measure) return condition.factor;
-  const reference = ctx.fresh[keyOf(condition.measure)] ?? 1;
+  const reference = ctx.startReadings[keyOf(condition.measure)] ?? 1;
   return reference * condition.factor;
 }
 

@@ -393,7 +393,7 @@ export type Condition =
    */
   /**
    * Taking anything the range carries has grown at least this much dearer than
-   * it is on fresh country (E29).
+   * it was in the position the run began in (E29).
    *
    * A community does not move on a whim; it moves when the country is spent.
    * And because the project only appears then, its appearing *is* the warning.
@@ -413,7 +413,7 @@ export type Condition =
    */
   | {
       /**
-       * **The strain a project answers, measured against a fresh range.**
+       * **The strain a project answers, measured against the opening range.**
        *
        * Every project is there to ease one particular strain, and it should
        * come into view as that strain draws near — early enough to be got ready
@@ -426,8 +426,9 @@ export type Condition =
        * measured against is worked out once from the starting position, so a
        * change to a density, a coefficient or the range per head carries the
        * marks along instead of leaving them behind as stale claims about a
-       * model that has moved. `1.2` means *a fifth dearer than on fresh
-       * country* and goes on meaning that.
+       * model that has moved. `1.2` means *a fifth dearer than at the outset*
+       * and goes on meaning that. The outset is not untouched country: the
+       * stands begin below what the ground could carry (E14).
        *
        * Utilisation is the exception and needs no reference: it already lies
        * between nought and one, so its factor is a plain share.

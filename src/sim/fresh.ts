@@ -1,13 +1,17 @@
 /**
- * What the strain measures read on **fresh country** — the figure a project's
- * mark is a factor of (E29).
+ * What the strain measures read in the **position a run begins in** — the
+ * figure a project's mark is a factor of (E29).
  *
- * A mark in the content is a ratio and never a number: *a fifth dearer than on
- * an untouched range*. That only means something if the model can say what
- * untouched costs, and it can — the starting position follows from the content
- * alone (E14), so the answer does too. Change a density, a coefficient or the
- * range per head, and the marks move with it instead of staying behind as
- * stale claims about a model that has gone on without them.
+ * A mark in the content is a ratio and never a number: *a fifth dearer than at
+ * the outset*. That only means something if the model can say what the outset
+ * costs, and it can — the starting position follows from the content alone
+ * (E14), so the answer does too. Change a density, a coefficient or the range
+ * per head, and the marks move with it instead of staying behind as stale
+ * claims about a model that has gone on without them.
+ *
+ * The outset is **not untouched country**: the stands begin below what the
+ * ground could carry (E14). So a mark says *dearer than when we got here*, and
+ * a measure that falls away from its opening reading can never cross one.
  *
  * Worked out once per configuration and kept, because it cannot change while a
  * run is going: it is a property of the content, not of the game.
@@ -22,7 +26,7 @@ import { totalHeads } from "./state.ts";
 
 const KNOWN = new WeakMap<ConfigIndex, Readonly<Record<string, number>>>();
 
-export function freshMarks(index: ConfigIndex): Readonly<Record<string, number>> {
+export function startReadings(index: ConfigIndex): Readonly<Record<string, number>> {
   const known = KNOWN.get(index);
   if (known !== undefined) return known;
 
@@ -50,9 +54,9 @@ export function freshMarks(index: ConfigIndex): Readonly<Record<string, number>>
       out[key] = (out[key] ?? 0) + run.labor / heads;
     }
   }
-  // On untouched ground a stand stands at its ceiling, so searching costs one
-  // by construction — written out all the same, so that the mark reads the same
-  // way for every measure and nobody has to remember the special case.
+  // What searching costs in the position a run begins in. That position is not
+  // untouched country: the stands begin below what the ground could carry
+  // (E14), so this is the cost of searching a range that has been lived on.
   for (const stock of index.config.stocks) {
     if (stock.regrowth === undefined) continue;
     out[`search:${stock.id}`] = Math.max(1, result.effortPerStock[stock.id] ?? 1);

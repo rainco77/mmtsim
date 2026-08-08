@@ -72,6 +72,13 @@ selbst** wieder auf den Tisch legen, wenn der passende Moment kommt oder ein
 Arbeitsabschnitt endet. Auf der anderen Seite wird keine solche Liste geführt; es wird
 darauf vertraut, dass Vertagtes nicht verschwindet.
 
+**Die Liste wird kopiert, nicht geschrieben:** wörtlich aus der vorigen Nachricht,
+derselbe Wortlaut, dieselbe Reihenfolge. Hinzufügen darf ich, an der Stelle, an die der
+neue Punkt gehört — auch oben. Streichen, Umsortieren, Umformulieren, Zusammenfassen und
+Aufteilen nicht — auch nicht, wenn ein Punkt erledigt scheint oder ein neuer Befund ihn
+überholt. Das geht nur auf ausdrückliche Anweisung. Was ich neu schreibe, redigiere ich
+unwillkürlich, und dabei verschwindet genau das, was sonst niemand mehr im Kopf hat.
+
 **Kurz.** Lange Nachrichten verstecken die Fehler, statt sie zu zeigen, und machen jede
 Runde teuer.
 
@@ -101,10 +108,13 @@ steht dann, wogegen geprüft wurde:
    Bedingung A eintreten, obwohl sie auf ihr aufbaut?
 7. **Was das Konzept dazu schon sagt** und was schon gebaut ist.
 
-**Erst den Bestand lesen, dann den Unterschied vorschlagen.** Was ist gebaut, was genau
-ist daran falsch — kein Neuentwurf für etwas, das es schon gibt. Und der Bestand wird
-**nachgesehen, nicht erinnert**: Die Datei wird vor dem Vorschlag noch einmal geöffnet,
-auch wenn sie in derselben Sitzung schon gelesen wurde.
+**Erst nachsehen, dann vorschlagen — und jede Quelle gilt als veraltet.** Quelltext,
+`KONZEPT.md`, Issues, Commits, eigene Messungen: alles kann überholt sein, auch was ich in
+derselben Sitzung gelesen habe. Vor jedem Vorschlag, jeder Messung und jeder Änderung wird
+das Betroffene neu geöffnet — was ist gebaut, was genau ist daran falsch, kein Neuentwurf
+für etwas, das es schon gibt. Und dann steht in einer Zeile, **welche meiner Annahmen sich
+beim Nachsehen als falsch erwiesen hat**; auch „keine" steht da. Fehlt die Zeile, ist der
+Vorschlag ungeprüft.
 
 **Nichts erneut vorschlagen, was schon entschieden ist.**
 

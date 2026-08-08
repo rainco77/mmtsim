@@ -28,8 +28,8 @@ import { allHold, computeUnlocks, type ConditionContext, type Unlocks } from "./
 export interface TickContext {
   shocks: Shocks;
   unlocks: Unlocks;
-  /** What the strain measures read on fresh country — see `fresh.ts`. */
-  fresh: Readonly<Record<string, number>>;
+  /** What the strain measures read in the position a run begins in — see `fresh.ts`. */
+  startReadings: Readonly<Record<string, number>>;
   laborAvailable: number;
   laborToProjects: number;
   allocation?: AllocationResult;
@@ -614,7 +614,7 @@ export class OfferPhase implements Phase {
       unlocks: ctx.unlocks,
       coverage: state.lastCoverage,
       population: totalHeads(state.sectors[HOUSEHOLDS]?.cohorts ?? {}),
-      fresh: ctx.fresh,
+      startReadings: ctx.startReadings,
     };
     let seen: Record<ProjectId, number> | undefined;
     for (const project of index.config.projects) {

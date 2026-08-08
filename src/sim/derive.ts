@@ -25,7 +25,7 @@ import {
   type Unlocks,
   type Unmet,
 } from "./unlocks.ts";
-import { freshMarks } from "./fresh.ts";
+import { startReadings } from "./fresh.ts";
 import type { OrderingReason } from "./ordering.ts";
 
 /**
@@ -252,7 +252,7 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     unlocks,
     coverage,
     population: heads,
-    fresh: freshMarks(index),
+    startReadings: startReadings(index),
   };
 
   /**
