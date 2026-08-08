@@ -1110,7 +1110,11 @@ export const STAGE1: Config = {
       visibleWhen: [{ kind: "rule", id: "settled", set: false }],
       availableWhen: [{ kind: "rule", id: "settled", set: false }],
       defaultRank: PROJECTS_LAST,
-      laborCost: 24,
+      // Packing up and walking, not half a season: about a third of what the
+      // community performs in a tick. Against what it frees — the ranks below
+      // comfort cost some five points less of the work for a handful of ticks —
+      // anything much dearer and moving costs more than it ever gives back.
+      laborCost: 8,
       stockCost: {},
       minTicks: 1,
       effects: [
@@ -1140,12 +1144,12 @@ export const STAGE1: Config = {
         // — so the worn stocks gain most and none is ever lowered, and moving
         // relieves the searching without setting it back to nothing. After the
         // quality, so the gap is measured against the *new* country.
-        { type: "stock", id: "plants", to: { kind: "ceiling", closes: 0.2 } },
-        { type: "stock", id: "game", to: { kind: "ceiling", closes: 0.2 } },
-        { type: "stock", id: "deadwood", to: { kind: "ceiling", closes: 0.2 } },
-        { type: "stock", id: "trees", to: { kind: "ceiling", closes: 0.2 } },
-        { type: "stock", id: "fish", to: { kind: "ceiling", closes: 0.2 } },
-        { type: "stock", id: "shellfish", to: { kind: "ceiling", closes: 0.2 } },
+        { type: "stock", id: "plants", to: { kind: "ceiling", closes: 0.5 } },
+        { type: "stock", id: "game", to: { kind: "ceiling", closes: 0.5 } },
+        { type: "stock", id: "deadwood", to: { kind: "ceiling", closes: 0.5 } },
+        { type: "stock", id: "trees", to: { kind: "ceiling", closes: 0.5 } },
+        { type: "stock", id: "fish", to: { kind: "ceiling", closes: 0.5 } },
+        { type: "stock", id: "shellfish", to: { kind: "ceiling", closes: 0.5 } },
       ],
       sector: "households",
     },
