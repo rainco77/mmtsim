@@ -821,12 +821,17 @@ Buchführung über einzelne Parzellen, nur einen zweiten Typ.
 Fünfundzwanzig ist die Gruppe, die zusammen lebt und zieht (Birdsells *magic numbers*);
 fünfzig wären zwei davon.
 
+**Das Revier beginnt nicht voll.** Die Decke ist, was der Boden tragen *könnte*, nicht was
+darauf steht — kein wirkliches Land steht an seinem Höchstmaß. Und ein volles Revier ließe
+einen erheblichen Teil der Hände über Dutzende von Ticks ohne Arbeit, was der Epoche
+widerspricht: Keine Hand liegt brach.
+
 **Und alles daran ist abgeleitet, nicht abgeschrieben:**
 
 | | |
 |---|---|
 | **Revier** | *je Kopf* angegeben und mit der Gemeinschaft multipliziert |
-| **Alles, was auf dem Revier lebt** | beginnt an seiner Obergrenze, aus derselben Regel wie der Nachwuchs (E19) — man kommt in ein Land, das noch niemand leergejagt hat |
+| **Alles, was auf dem Revier lebt** | beginnt bei einem Anteil dessen, was der Boden tragen könnte, aus derselben Regel wie der Nachwuchs (E19) |
 | **Vorrat** | **keiner.** Von der Hand in den Mund ist der Zustand, in dem die Epoche anfängt und aus dem sie sich herausarbeitet; ein Startvorrat verschenkte gerade den Mangel, den die Grube später beantwortet — und war ohnehin wirkungslos, weil Nahrung mit 0,9 verdirbt |
 | **Ende bei sieben Erwachsenen** | darunter zu wenige Jäger, niemand übrig für Kinder und Kranke, kein Ausgleich für einen einzelnen Todesfall — und alle drei gelten den Arbeitenden, nicht den Köpfen (E20) |
 
@@ -2172,19 +2177,18 @@ Lauf, keine Eindrücke:
 0,9 je Kopf heißt: Die Hälfte des Nahrungsbedarfs ist entbehrlich. Ein schlechter Tick
 frisst zuerst diesen Teil, und erst wenn es mehr nimmt, sterben Menschen.
 
-**Die Hälfte, weil der Abstand zwischen zwei Rängen der Puffer selbst ist.** Gerechnet:
-Bei 1,2 gegen 0,6 liegt zwischen „die Sättigung gibt nach" und „das Feuer geht aus" nur
-der Faktor drei in der Häufigkeit — sobald der Puffer oft genug nachgibt, um spürbar zu
-sein, geht in jedem zwanzigsten Tick das Feuer aus, und das tötet einen großen Teil der
-Gruppe. Bei 0,9 gegen 0,9 wird daraus der Faktor dreißig. Der entbehrliche Teil ist
-nicht Komfort im Nebensatz, er ist der Abstand zwischen Verzicht und Katastrophe.
+**Ein knappes Drittel, und der Abstand zwischen den beiden Rängen *ist* der Puffer.** Je
+mehr entbehrlich ist, desto tiefer muss ein Wurf gehen, bevor jemand stirbt — und desto
+seltener erlebt der Spieler eine Krise. Gemessen wurde bis zur Hälfte hinauf: Dann sieht
+mancher Lauf bis zur Sesshaftigkeit **keine einzige** Krise, und wer nie gehungert hat, hat
+keinen Grund zu graben. Bei einem knappen Drittel erlebt jeder Lauf mindestens zwei, im
+Mittel drei bis vier, und die meisten davon, bevor die Grube überhaupt baubar ist.
 
-Weiter als bis zur Hälfte geht es nicht: Bei 1,0 gegen 0,8 — 44 % entbehrlich — war eine
-Hungersnot **unmöglich**, und eine Gesellschaft mit mehr Luft ist keine
-Subsistenzgesellschaft mehr. Extern gestützt ist die Teilung dadurch, dass der
-Grundumsatz eines Menschen etwa zwei Drittel seines Verbrauchs ausmacht und Bewegung
-und Arbeit den Rest, und dadurch, dass Menschen eine lange Strecke auf etwa der Hälfte
-ihrer üblichen Aufnahme überlebt haben — schwer geschädigt, aber lebend.
+Nach unten ist die Grenze, dass der Hunger die **Krise** bleiben muss und nicht der Alltag
+wird. Extern gestützt ist die Größenordnung dadurch, dass der Grundumsatz eines Menschen
+etwa zwei Drittel seines Verbrauchs ausmacht und Bewegung und Arbeit den Rest, und dadurch,
+dass Menschen eine lange Strecke auf etwa der Hälfte ihrer üblichen Aufnahme überlebt haben
+— schwer geschädigt, aber lebend.
 
 Wo das Polster liegt, sagt eine Schwelle, die sich ausrechnen lässt und nicht geraten
 werden muss. Geplant wird gegen einen Wurf von 0,9; der Hunger wird also berührt,
@@ -2583,10 +2587,37 @@ ihnen bezahlt und der Kreislauf greift nicht.
 sondern aus Deckung — der Rang sagt, worauf verzichtet wird — oder sie kommen nur in guten
 Ticks voran.
 
-**Der Revierwechsel gewinnt nichts, er verhindert einen Verlust.** Wer bleibt, dessen
-Suchkosten steigen, dessen Behaglichkeit fällt und dessen Geburten unter die Sterblichkeit
-sinken — die Gemeinschaft schrumpft. Der Wechsel holt den Stand zurück, den das Bleiben
-gekostet hat.
+**Der Revierwechsel holt zurück, was das Bleiben gekostet hat.** Wer bleibt, dessen
+Suchkosten steigen, dessen Behaglichkeit fällt und dessen Geburten sinken. Der Wechsel senkt
+die Suchkosten für einige Ticks, und **in diesen Ticks kann der Spieler die Arbeit, die
+sonst in die Behaglichkeit ginge, in ein Projekt stecken.** Darin liegt sein ganzer Wert:
+nicht in mehr Menschen, sondern in dem Fenster, in dem gebaut werden kann.
+
+Er füllt das Revier deshalb **nicht auf die Decke, sondern schließt einen Teil der Lücke**
+zwischen dem, was steht, und dem, was der Boden tragen könnte. Ein Anteil der *Decke* wäre
+falsch: Die Bestände kommen bei sehr verschiedenen Dichten zur Ruhe, und ein gemeinsamer
+Anteil hübe die dünnen und drückte die vollen — ein Wechsel machte dann manchen Bestand
+schlechter. Ein Anteil der *Lücke* senkt keinen, und die ausgezehrten gewinnen am meisten.
+
+**Und was ihn wertvoll macht, ist ein Verhältnis:** Was er freimacht, muss größer sein als
+was er kostet. Ist er zu teuer, wird nie gezogen; ist er zu billig oder zu großzügig, wird
+nur noch gezogen und nichts mehr gebaut.
+
+**Nur die schnell nachwachsenden Bestände wurden verlangsamt, dichter gemacht wurden alle.**
+Ein Bestand, der sich innerhalb eines Ticks wieder füllt, kann gar nicht ausdünnen — dort
+muss die Rate herunter. Die ohnehin langsamen ebenfalls zu verlangsamen ist ein Fehler:
+Gemessen wurden sie damit unwiederbringlich, und die Gemeinschaft starb an der Kleidung,
+lange bevor der Hunger sie erreichte. Die Dichte dagegen gehört überall angehoben, damit die
+Verhältnisse zwischen den Beständen bleiben — sonst wächst die Gemeinschaft in die eine
+gehobene Decke hinein und räumt die übrigen ab.
+
+**Krisen treffen die Kinder härter als die Erwachsenen, und ohne das gibt es keine
+Erholung.** Über das Aufwachsen gerechnet erreicht etwa die Hälfte der Kinder das
+Erwachsenenalter nicht — auch ohne Krise. Das lässt das Verhältnis Kinder zu Erwachsenen
+unberührt, denn das hängt an der Aufrückrate und der Sterblichkeit der Erwachsenen; es hebt
+statt dessen, wieviele Geburten nötig sind, um es zu halten. Der Geburtenstrom wird dadurch
+groß genug, dass die Bevölkerung auf die Behaglichkeit **antwortet**, statt sie zu
+ignorieren.
 
 #### Die Betreuung
 
