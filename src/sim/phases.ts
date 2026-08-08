@@ -67,6 +67,49 @@ export function drawLandOffer(
 
 
 /**
+ * The carrying brake on the births (E20, E29): how hard the children weigh is
+ * their load per bearer, times how far the searching ranges beyond fresh
+ * country.
+ *
+ * The distance is the tick's own. Every stand that was taken from is priced by
+ * the allocation, and the prices are averaged over the labour that went into
+ * the taking — whoever spends most of the day searching far sets most of the
+ * weight. Nothing searched, or searching as cheap as fresh country, means no
+ * brake; and a community that has settled carries nothing, whatever the
+ * searching costs.
+ */
+export function backloadFactor(
+  cohorts: Readonly<Record<string, number>>,
+  allocation: AllocationResult,
+  unlocks: Unlocks | undefined,
+  index: ConfigIndex,
+): number {
+  const backload = index.config.population.backload;
+  if (backload === undefined) return 1;
+  if (unlocks !== undefined && unlocks.rules.has(backload.liftedByRule)) return 1;
+
+  const bearers = weighedHeads(cohorts, index.config.population.birthWeight);
+  if (bearers <= 0) return 1;
+  const load = weighedHeads(cohorts, backload.loadWeight) / bearers;
+
+  let labour = 0;
+  let priced = 0;
+  for (const run of allocation.runs) {
+    if (run.labor <= 0) continue;
+    const def = index.process.get(run.process);
+    if (def === undefined) continue;
+    for (const input of Object.keys(def.intermediatesPerOutput)) {
+      if (index.stock.get(input)?.regrowth === undefined) continue;
+      labour += run.labor;
+      priced += run.labor * (allocation.effortPerStock[input] ?? 1);
+    }
+  }
+  const effort = labour > 0 ? priced / labour : 1;
+
+  return Math.max(0, 1 - backload.strength * load * Math.max(0, effort - 1));
+}
+
+/**
  * What the community can do this tick: the heads that supply labour, weighted
  * by how much each supplies, times work ability times productivity (E20).
  *
@@ -523,7 +566,10 @@ export class PopulationPhase implements Phase {
     }
 
     const born =
-      population.baseBirthRate * birthFactor * weighedHeads(before, population.birthWeight);
+      population.baseBirthRate *
+      birthFactor *
+      backloadFactor(before, allocation, ctx.unlocks, index) *
+      weighedHeads(before, population.birthWeight);
 
     const after: Record<string, number> = {};
     for (const cohort of population.cohorts) {

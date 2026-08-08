@@ -827,26 +827,15 @@ export const STAGE1: Config = {
       // asked for here is the part whose failure kills, the rest only costs
       // births and the strength to work.
       //
-      // Half and half, so this rank is reached only once what is brought in
-      // falls below half of what the two together ask. Nothing softens that on
-      // the way: no process of this epoch settles its inputs in advance — one
-      // sets out and finds what one finds — so the caution the plan carries
-      // never reaches food here, and what is short is short.
-      //
-      // Both ends have been played. At 1.4 against 0.4 only a fifth was
-      // dispensable, and two draws of 0.44 and 0.24 took 28 % and 52 % of the
-      // people and ended the run at tick 82. At 1.0 against 0.8 the worry ran
-      // the other way — a community with half its food to spare is no longer a
-      // subsistence community — and famine looked impossible: the worst draw of
-      // a whole run still left this rank fully covered.
-      //
-      // Neither reading was the reason to stop at half and half, and neither is
-      // still worth much: both were taken before the ordering was solved as one
-      // program, before what lies fallen was told apart from what stands, and
-      // before a tick was kept from combing nine tenths of a range. What the
-      // split has to deliver is unchanged — hunger as the crisis and not the
-      // daily rule (E29) — and what it delivers now wants measuring afresh.
-      perHead: 1.3,
+      // Two thirds of what a head asks of food; the third above it is the
+      // satiety, and it can be gone without anyone dying (E27). The split is
+      // the moat: a poor draw eats the dispensable third first, and only what
+      // cuts deeper than that reaches this rank. Nothing softens it on the
+      // way: no process of this epoch settles its inputs in advance — one sets
+      // out and finds what one finds — so the caution the plan carries never
+      // reaches food here, and what is short is short. What the split has to
+      // deliver stands in E29: hunger as the crisis, not the daily rule.
+      perHead: 1.2,
       // A small child eats little and one nearly grown almost a full share;
       // over the group, seven tenths.
       perHeadWeight: { growing: 0.7, grown: 1 },
@@ -999,13 +988,13 @@ export const STAGE1: Config = {
     {
       // The dispensable third of the food, and the community's whole buffer
       // against a poor draw: a bad tick eats this before it reaches the rank
-      // that kills. Raising it from 0.4 to 0.6 does not feed anyone more — the
-      // two ranks still come to 1.8 together — it moves where the harm lands.
+      // that kills. Moving weight between the two ranks feeds nobody more —
+      // it moves where the harm of a poor draw lands.
       id: "food_satiety",
       rank: 500,
       stock: "food",
       branch: "food",
-      perHead: 0.5,
+      perHead: 0.6,
       perHeadWeight: { growing: 0.7, grown: 1 },
       consumedOnUse: 1,
       // **Satiety carries the strength to work and nothing else** (E20). It
@@ -1606,24 +1595,30 @@ export const STAGE1: Config = {
     birthWeight: { growing: 0, grown: 1 },
     birthsInto: "growing",
 
-    // **A number of people, not a factor on everyone**, and what it really sets
-    // is **where the community comes to rest**.
+    // **A number of people, not a factor on everyone**, and what it sets is the
+    // **pace** — how fast a community can grow back after a loss.
     //
-    // Births are the only claim on work that grows with what is left over:
-    // comfort is the last rank, so whatever no need wanted flows into it, and
-    // comfort carries the births. The community therefore stops growing exactly
-    // where comfort has fallen far enough that births meet deaths — and that
-    // point is what this figure moves. Too low and the community rests well
-    // below what its range would carry, which leaves hands idle in every tick
-    // and switches off the regulating loop with them: a rank that is always
-    // fully covered regulates nothing.
+    // Where it comes to rest is the carrying brake's business (`backload`): the
+    // searching grows dear as the range thins, dear searching with children on
+    // the back holds the births down, and the community stops where that brake
+    // meets this rate. After a crisis the brake is light — few to carry, short
+    // ways — so the recovery runs at nearly this full rate.
     //
-    // Set so that a community that builds nothing rests at about the
-    // twenty-five it starts with (E14, E29) — and no higher, because above
-    // about 0.175 the births outrun the deaths even with comfort and care
-    // wholly unserved, and then what holds the community is starvation rather
-    // than the buffer. The test beside this one draws that line.
+    // Kept below the line where births outrun deaths with comfort and care
+    // wholly unserved: beyond it starvation becomes the brake, which is the
+    // opposite of what the epoch wants. The test beside this one draws that
+    // line.
     baseBirthRate: 0.17,
+
+    // The carrying brake (E20, E29): the growing are carried, the grown carry,
+    // and the searching of the tick prices the distance. Lifted for good by
+    // settling — whoever stays no longer carries, and the births move closer
+    // together.
+    backload: {
+      loadWeight: { growing: 1, grown: 0 },
+      strength: 0.8,
+      liftedByRule: "settled",
+    },
 
     // **Children die twice as readily as the grown, crisis or no.** Over the
     // thirteen ticks of growing up that comes to 0.94^13 = 0.45: about half do

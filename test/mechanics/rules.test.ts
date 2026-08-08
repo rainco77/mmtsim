@@ -3,6 +3,7 @@ import { STAGE1 } from "../../src/content/stage1.ts";
 import {
   allocate,
   apply,
+  backloadFactor,
   completedCount,
   computeUnlocks,
   createState,
@@ -11,9 +12,11 @@ import {
   indexConfig,
   PIPELINE,
   tick,
+  type AllocationResult,
   type Config,
   type ConfigIndex,
   type GameState,
+  type Unlocks,
 } from "../../src/sim/index.ts";
 import { counterOf, draw, uniformAt } from "../../src/sim/random.ts";
 
@@ -739,6 +742,10 @@ describe("population (E20)", () => {
         shareAtStart: { first: 1, second: 0, third: 0 },
         labourWeight: { first: 1, second: 1, third: 1 },
         birthWeight: { first: 0, second: 0, third: 0 },
+        backload: {
+          ...STAGE1.population.backload!,
+          loadWeight: { first: 0, second: 0, third: 0 },
+        },
         baseSurvival: { first: 1, second: 1, third: 1 },
         viableWeight: { first: 1, second: 1, third: 1 },
         birthsInto: "first",
@@ -802,6 +809,57 @@ describe("population (E20)", () => {
     // forgets to stop cannot compute a community that no longer exists.
     expect(tick(over, index)).toEqual(over);
     expect(tick(tick(over, index), index).tick).toBe(over.tick);
+  });
+});
+
+describe("the carrying brake (E20, E29)", () => {
+  // A hand-shaped allocation: all searching labour on the plants, priced as
+  // stated. Only the fields the brake reads are given.
+  const searched = (effort: number): AllocationResult =>
+    ({
+      runs: [{ process: "gathering", output: 10, labor: 5, share: 1 }],
+      effortPerStock: { plants: effort },
+    }) as unknown as AllocationResult;
+  const carrying = { growing: 10, grown: 15 };
+
+  it("dearer searching cuts the births; fresh country carries no brake", () => {
+    const cheap = backloadFactor(carrying, searched(1.0), undefined, index);
+    const dear = backloadFactor(carrying, searched(1.4), undefined, index);
+    const dearer = backloadFactor(carrying, searched(1.8), undefined, index);
+    expect(cheap).toBe(1);
+    expect(dear).toBeLessThan(cheap);
+    expect(dearer).toBeLessThan(dear);
+  });
+
+  it("nobody to carry, no brake — however dear the searching", () => {
+    expect(backloadFactor({ growing: 0, grown: 15 }, searched(2.0), undefined, index)).toBe(1);
+  });
+
+  it("settling lifts it for good", () => {
+    const settled = { rules: new Set(["settled"]) } as unknown as Unlocks;
+    expect(backloadFactor(carrying, searched(2.0), settled, index)).toBe(1);
+  });
+
+  it("it can silence the births, never reverse them", () => {
+    const crushing = indexConfig({
+      ...STAGE1,
+      population: {
+        ...STAGE1.population,
+        backload: { ...STAGE1.population.backload!, strength: 100 },
+      },
+    });
+    expect(backloadFactor(carrying, searched(2.0), undefined, crushing)).toBe(0);
+  });
+
+  it("a community on a thinned range bears fewer than the brake-free reckoning", () => {
+    // Same state, same allocation — the only difference is the brake, so the
+    // gap between the two readings is the brake and nothing else.
+    const unburdened = Object.fromEntries(
+      Object.entries(STAGE1.population).filter(([key]) => key !== "backload"),
+    ) as typeof STAGE1.population;
+    const unbraked = indexConfig({ ...STAGE1, population: unburdened });
+    const state = createState(STAGE1, { seed: 7 });
+    expect(derive(state, index).born).toBeLessThan(derive(state, unbraked).born);
   });
 });
 

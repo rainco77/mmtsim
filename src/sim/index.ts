@@ -59,6 +59,7 @@ export type {
 } from "./ids.ts";
 export type { Phase, TickContext } from "./phases.ts";
 export {
+  backloadFactor,
   HOUSEHOLDS,
   laborPerformance,
   PIPELINE,

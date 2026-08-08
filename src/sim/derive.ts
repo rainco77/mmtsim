@@ -7,7 +7,15 @@ import {
   tierEffectAt,
 } from "./config.ts";
 import type { CapacityId, ProjectId, StockId } from "./ids.ts";
-import { carriedPerArea, decayed, HOUSEHOLDS, regrown, renewals, type Renewal } from "./phases.ts";
+import {
+  backloadFactor,
+  carriedPerArea,
+  decayed,
+  HOUSEHOLDS,
+  regrown,
+  renewals,
+  type Renewal,
+} from "./phases.ts";
 import { peek } from "./random.ts";
 import {
   capacityOf,
@@ -238,6 +246,7 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
   const born =
     index.config.population.baseBirthRate *
     birthFactor *
+    backloadFactor(cohorts, allocation, unlocks, index) *
     weighedHeads(cohorts, index.config.population.birthWeight);
 
   const utilization: Record<CapacityId, number> = {};

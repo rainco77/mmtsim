@@ -1428,7 +1428,7 @@ Bau entschieden.
 ```
 Köpfe'      = Köpfe ⊙ Überleben ⊕ Neugeborene in ihrer Kohorte
 Überleben   = Grundüberleben × Faktor je Bedarf …      je Kohorte
-Neugeborene = Grundrate × Faktor je Bedarf … × (Gewichte · Köpfe)
+Neugeborene = Grundrate × Faktor je Bedarf … × Traglastfaktor × (Gewichte · Köpfe)
 Arbeit      = (Gewichte · Köpfe) × Arbeitsfähigkeit × Produktivität
 ```
 
@@ -1437,8 +1437,15 @@ Skalarprodukt. Addiert wird an genau einer Stelle, und dort ist es keine Rate, s
 Menschen: die Neugeborenen, die in ihre Kohorte kommen.
 
 **Die Geburten sind eine Zahl von Menschen, kein Faktor auf alle.** Sie folgen aus einer
-Grundrate je Erwachsenem, mal den Faktoren der Bedarfe, mal der Zahl derer, die Kinder
-bekommen können — und sie kommen in die untere Kohorte. Vorher war es ein Faktor auf die
+Grundrate je Erwachsenem, mal den Faktoren der Bedarfe, mal dem Traglastfaktor, mal der
+Zahl derer, die Kinder bekommen können — und sie kommen in die untere Kohorte.
+
+**Der Traglastfaktor ist die Bremse der wandernden Lebensweise** (E29, „Wie sich die
+Gemeinschaft einregelt"): Er fällt, je mehr Kinderlast je Tragendem schon da ist und je
+weiter die Suchwege des Ticks reichen — die Suchkosten der Bestände, aus denen entnommen
+wurde, gewichtet mit der Arbeit, die hineinging. Auf frischem Land und ohne Kinderlast ist
+er eins, unter null fällt er nie, und die Regel der Sesshaftigkeit hebt ihn dauerhaft auf
+eins. Vorher war es ein Faktor auf die
 Kopfzahl, und dabei war gleichgültig, wer mitzählte: Eine Gruppe aus lauter Kindern
 vermehrte sich so schnell wie eine aus lauter Erwachsenen. Damit kostet Nachwuchs zuerst
 und trägt später — eine Gemeinschaft, die gerade viele Kinder hat, bekommt dadurch nicht
@@ -2466,6 +2473,8 @@ schlechten Zeit, ein Projekt erst, wenn es fertig ist.
   den Ressourcen statt umgekehrt (Binford).
 - Wie viele Kleinkinder zugleich getragen werden können, begrenzt, wie dicht Geburten
   aufeinanderfolgen (Blurton Jones).
+- Die Traglast einer Frau — das Kind, getragen auf den Sammelwegen und bei den
+  Lagerwechseln — setzt den Geburtenabstand; beides zusammen, nicht eines allein (Lee).
 - Mehr je Fläche kostet mehr Arbeit je Einheit und geschieht unter Druck, nicht aus Einsicht
   (Boserup).
 
@@ -2597,24 +2606,31 @@ wirklich gibt, und dann mit etwas, wogegen er sich einstellen lässt.
 
 #### Wie sich die Gemeinschaft einregelt
 
-Mehr Kinder je Erwachsenem heißt mehr Arbeit in die Betreuung, also weniger für die
-Behaglichkeit — den untersten Rang, der als erster ausfällt und die Geburten trägt. Weniger
-Geburten senken das Verhältnis wieder. Eine Krise trifft die Kinder härter als die
-Erwachsenen; damit fällt das Verhältnis, die Geburten steigen, und die Gemeinschaft füllt
-sich auf.
+**Die Bremse der Geburten ist die Traglast.** Wer wandert, trägt die Kleinen — auf jedem
+Suchgang. Wie schwer das wiegt, ist die Kinderlast je Tragendem mal der Weite der Wege,
+und die Weite der Wege sind die Suchkosten des Ticks: über die Bestände, aus denen
+entnommen wurde, gewichtet mit der Arbeit, die hineinging. Frisches Land kostet eins und
+bremst gar nicht. Dünnt das Revier aus, werden die Wege weit, und die Geburten rücken
+auseinander; eine Krise nimmt die Kinder zuerst, danach ist die Last klein und die Wege
+sind kurz, und die Gemeinschaft füllt sich mit nahezu voller Rate wieder auf. Die
+Sesshaftigkeit hebt die Bremse für immer auf: Wer bleibt, trägt nicht — die Geburten
+rücken zusammen.
 
-**Das setzt voraus, dass Arbeit knapp ist.** Wo Hände frei sind, wird die Betreuung aus
-ihnen bezahlt und der Kreislauf greift nicht.
+**Wo die Gemeinschaft ruht, bestimmt die Traglast gegen die Grundgeburtenrate.** Die
+Grundgeburtenrate ist das Tempo, mit dem sich die Gemeinschaft nach einem Verlust wieder
+auffüllt. Behaglichkeit und Betreuung wirken weiter auf die Geburten, aber als
+Krisenantwort, nicht als Setzer des Niveaus.
 
 **Das Niveau hebt allein ein Projekt.** Und Projekte werden nicht aus Überschuss bezahlt,
 sondern aus Deckung — der Rang sagt, worauf verzichtet wird — oder sie kommen nur in guten
 Ticks voran.
 
 **Der Revierwechsel holt zurück, was das Bleiben gekostet hat.** Wer bleibt, dessen
-Suchkosten steigen, dessen Behaglichkeit fällt und dessen Geburten sinken. Der Wechsel senkt
-die Suchkosten für einige Ticks, und **in diesen Ticks kann der Spieler die Arbeit, die
-sonst in die Behaglichkeit ginge, in ein Projekt stecken.** Darin liegt sein ganzer Wert:
-nicht in mehr Menschen, sondern in dem Fenster, in dem gebaut werden kann.
+Suchkosten steigen, dessen Behaglichkeit fällt und dessen Geburten sinken. Der Wechsel
+senkt die Suchkosten für einige Ticks, und in diesen Ticks ist zweierlei zu holen: **die
+Arbeit, die sonst in die teuren Wege ginge, kann in ein Projekt gehen, und die Traglast
+ist leicht — auf frischem Revier rücken die Geburten zusammen.** Sein Wert ist das
+Baufenster und der Geburtenlohn.
 
 Er füllt das Revier deshalb **nicht auf die Decke, sondern schließt einen Teil der Lücke**
 zwischen dem, was steht, und dem, was der Boden tragen könnte. Ein Anteil der *Decke* wäre
@@ -2639,8 +2655,7 @@ Erholung.** Über das Aufwachsen gerechnet erreicht etwa die Hälfte der Kinder 
 Erwachsenenalter nicht — auch ohne Krise. Das lässt das Verhältnis Kinder zu Erwachsenen
 unberührt, denn das hängt an der Aufrückrate und der Sterblichkeit der Erwachsenen; es hebt
 statt dessen, wieviele Geburten nötig sind, um es zu halten. Der Geburtenstrom wird dadurch
-groß genug, dass die Bevölkerung auf die Behaglichkeit **antwortet**, statt sie zu
-ignorieren.
+groß genug, dass die Bevölkerung auf ihre Bremsen **antwortet**, statt sie zu ignorieren.
 
 #### Die Betreuung
 

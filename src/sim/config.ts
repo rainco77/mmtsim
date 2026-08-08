@@ -678,6 +678,30 @@ export interface PopulationConfig {
   readonly transitions: readonly CohortTransition[];
 
   /**
+   * The carrying brake on the births, while the community still moves
+   * (E20, E29).
+   *
+   * A community that carries its whole life along carries its children too, on
+   * every search it makes. How hard that weighs is the load — the carried per
+   * bearer — times how far the searching ranges, and the tick's searching is
+   * already priced: the effort per stock, averaged over the labour that went
+   * into taking from each. Both inputs move slowly, so the births stay calm
+   * under a single tick's weather. Fresh country is priced one and carries no
+   * brake at all.
+   *
+   * The rule named here lifts the brake for good: whoever no longer moves no
+   * longer carries — that is the demographic gift of settling (E29).
+   */
+  readonly backload?: {
+    /** How much each cohort weighs as carried load. */
+    readonly loadWeight: CohortVector;
+    /** What one unit of load times one unit of dear searching cuts off births. */
+    readonly strength: number;
+    /** The rule that lifts the brake once it is set. */
+    readonly liftedByRule: RuleId;
+  };
+
+  /**
    * Which heads the abandonment threshold counts (E20) — the grown, because
    * whether a community can still recover hangs on them twice over: they do the
    * work and they bear the children. Twelve people of whom ten are growing are
@@ -866,6 +890,12 @@ function checkCohortVectors(config: Config): void {
   check("population.birthWeight", config.population.birthWeight);
   check("population.baseSurvival", config.population.baseSurvival);
   check("population.viableWeight", config.population.viableWeight);
+  if (config.population.backload !== undefined) {
+    check("population.backload.loadWeight", config.population.backload.loadWeight);
+    if (!(config.population.backload.strength >= 0)) {
+      throw new Error("the carrying brake's strength must be a figure of at least nought");
+    }
+  }
   if (!ids.includes(config.population.birthsInto)) {
     throw new Error(`births land in cohort ${config.population.birthsInto}, which does not exist`);
   }
