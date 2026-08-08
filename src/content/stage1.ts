@@ -1606,17 +1606,24 @@ export const STAGE1: Config = {
     birthWeight: { growing: 0, grown: 1 },
     birthsInto: "growing",
 
-    // **A number of people, not a factor on everyone.** Reckoned from the three
-    // cases the model used to run at, so the epoch behaves as it did: with six
-    // tenths of the community grown, 0.6 × 0.0833 = 0.05 born against 0.03 dead
-    // is the two per cent a fully covered community grew at before.
+    // **A number of people, not a factor on everyone**, and what it really sets
+    // is **where the community comes to rest**.
     //
-    // What this replaces was a *growth* factor of 1.0308, and that is why the
-    // effects on it looked so tiny: births are only some three in a hundred of
-    // the community, so a hundredth off the growth factor is a third of all the
-    // births. Read as a real flow the same effects are wide, and the width is
-    // not a taste — it falls out of the three cases (see the tiers below).
-    baseBirthRate: 0.0933,
+    // Births are the only claim on work that grows with what is left over:
+    // comfort is the last rank, so whatever no need wanted flows into it, and
+    // comfort carries the births. The community therefore stops growing exactly
+    // where comfort has fallen far enough that births meet deaths — and that
+    // point is what this figure moves. Too low and the community rests well
+    // below what its range would carry, which leaves hands idle in every tick
+    // and switches off the regulating loop with them: a rank that is always
+    // fully covered regulates nothing.
+    //
+    // Set so that a community that builds nothing rests at about the
+    // twenty-five it starts with (E14, E29) — and no higher, because above
+    // about 0.175 the births outrun the deaths even with comfort and care
+    // wholly unserved, and then what holds the community is starvation rather
+    // than the buffer. The test beside this one draws that line.
+    baseBirthRate: 0.17,
 
     // **Children die twice as readily as the grown, crisis or no.** Over the
     // thirteen ticks of growing up that comes to 0.94^13 = 0.45: about half do
