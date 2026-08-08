@@ -1700,10 +1700,6 @@ export const STAGE1: Config = {
   // thirds did not.
   land: {
     perHeadAtStart: { wilderness: 0.144, water: 0.0576 },
-    // Three tenths of what the ground could carry. Full, a quarter of the hands
-    // would have nothing to do for twenty ticks while the range was worked down;
-    // at three tenths not one is idle from the first tick on.
-    stocksAtStart: 0.3,
     baseQuality: 1.0,
     qualityDecayPerTaking: 0.05,
     // What a report on the next range strays from that mean, either way. At a

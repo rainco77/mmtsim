@@ -821,17 +821,25 @@ Buchführung über einzelne Parzellen, nur einen zweiten Typ.
 Fünfundzwanzig ist die Gruppe, die zusammen lebt und zieht (Birdsells *magic numbers*);
 fünfzig wären zwei davon.
 
-**Das Revier beginnt nicht voll.** Die Decke ist, was der Boden tragen *könnte*, nicht was
-darauf steht — kein wirkliches Land steht an seinem Höchstmaß. Und ein volles Revier ließe
-einen erheblichen Teil der Hände über Dutzende von Ticks ohne Arbeit, was der Epoche
-widerspricht: Keine Hand liegt brach.
+**Das Revier beginnt auf seiner Ruhelage** — dort, wo der Nachwuchs genau das ersetzt, was
+diese Gemeinschaft entnimmt. Die Decke ist, was der Boden tragen *könnte*, nicht was darauf
+steht; und die Gemeinschaft ist übernommen, nicht eben angekommen, also steht das Land
+schon dort, wo ihre eigene Entnahme es hält. Jeder andere Wert bewegt sich in den ersten
+Ticks, und dann misst der Anfang jedes Laufs ein Revier beim Einpendeln statt eines, auf dem
+gelebt wird.
+
+**Ausgerechnet, nicht hingeschrieben.** Der Ruhepunkt folgt aus Nachwuchsrate, Decke und
+Entnahme; weil die Entnahme ihrerseits an den Suchkosten und damit am Stand hängt, wird die
+Gleichung mehrfach im Kreis gerechnet, bis beide zueinander passen. So trägt jede Änderung
+an Dichte, Rate, Verfahren oder Bedarf die Startaufstellung mit sich, statt eine veraltete
+Zahl zurückzulassen.
 
 **Und alles daran ist abgeleitet, nicht abgeschrieben:**
 
 | | |
 |---|---|
 | **Revier** | *je Kopf* angegeben und mit der Gemeinschaft multipliziert |
-| **Alles, was auf dem Revier lebt** | beginnt bei einem Anteil dessen, was der Boden tragen könnte, aus derselben Regel wie der Nachwuchs (E19) |
+| **Alles, was auf dem Revier lebt** | beginnt auf seiner Ruhelage, aus derselben Regel wie der Nachwuchs (E19) |
 | **Vorrat** | **keiner.** Von der Hand in den Mund ist der Zustand, in dem die Epoche anfängt und aus dem sie sich herausarbeitet; ein Startvorrat verschenkte gerade den Mangel, den die Grube später beantwortet — und war ohnehin wirkungslos, weil Nahrung mit 0,9 verdirbt |
 | **Ende bei sieben Erwachsenen** | darunter zu wenige Jäger, niemand übrig für Kinder und Kranke, kein Ausgleich für einen einzelnen Todesfall — und alle drei gelten den Arbeitenden, nicht den Köpfen (E20) |
 

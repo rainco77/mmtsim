@@ -750,16 +750,6 @@ export interface LandConfig {
    */
   readonly perHeadAtStart: Readonly<Record<CapacityId, number>>;
 
-  /**
-   * How much of what the ground could carry actually stands on it when the run
-   * begins — a share of the ceiling, the same for every renewable stock.
-   *
-   * The community is taken over, not set down in untouched country: it has
-   * lived here a while, and the range shows it. Below one because a range that
-   * begins full leaves a quarter of the hands with nothing to do until it has
-   * been worked down, and no hand lies idle in a subsistence economy.
-   */
-  readonly stocksAtStart: number;
   /** Quality of the very first territory. */
   readonly baseQuality: number;
   /** Each taking yields land this much worse than the previous one (E13). */

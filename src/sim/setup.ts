@@ -1,6 +1,8 @@
-import type { Config } from "./config.ts";
+import { allocate } from "./allocation.ts";
+import { indexConfig, type Config } from "./config.ts";
 import type { CapacityId, CohortId, StockId } from "./ids.ts";
-import { HOUSEHOLDS } from "./phases.ts";
+import { HOUSEHOLDS, renewals } from "./phases.ts";
+import { computeUnlocks } from "./unlocks.ts";
 import { createRandomState } from "./random.ts";
 import { carryingArea, weighedHeads, type Capacity, type GameState } from "./state.ts";
 
@@ -50,19 +52,22 @@ export function createState(config: Config, options: StartOptions): GameState {
   // twenty-five it used to start with, two and a half survived to the first
   // allocation.
   //
-  // What it does start with is a full country: what lives on the range begins
-  // at what the range carries, because a community arrives in a country it has not
-  // yet hunted out. Reckoned from the same rule the regrowth uses, so the two
-  // cannot drift apart.
+  // What lives on the range begins **where it comes to rest** — where what grows
+  // back equals what this community takes (E14). A community is not newly
+  // arrived: it has been living here, so the country already stands where its
+  // own taking holds it. Any other figure moves in the opening ticks, and then
+  // the first stretch of every run measures a country settling down rather than
+  // a country being lived on.
+  //
+  // Reckoned and not written down, so that a change to a density, a rate, a
+  // process or a need carries the opening with it instead of leaving stale
+  // numbers behind. Started at the ceiling and settled below.
   const stocks: Record<StockId, number> = { food: options.food ?? 0 };
   for (const stock of config.stocks) {
     const rule = stock.regrowth;
     if (rule === undefined) continue;
     const range = unownedCapacity[rule.capacity];
-    stocks[stock.id] =
-      (range === undefined ? 0 : carryingArea(range)) *
-      rule.densityPerArea *
-      config.land.stocksAtStart;
+    stocks[stock.id] = (range === undefined ? 0 : carryingArea(range)) * rule.densityPerArea;
   }
 
   // **What is worn rather than used up is already there.** The community is
@@ -87,7 +92,7 @@ export function createState(config: Config, options: StartOptions): GameState {
     stocks[tier.stock] = (stocks[tier.stock] ?? 0) + weighedHeads(cohorts, tier.perHeadWeight) * kept;
   }
 
-  return {
+  const opening: GameState = {
     tick: 0,
     random: createRandomState(options.seed),
     sectors: {
@@ -119,4 +124,72 @@ export function createState(config: Config, options: StartOptions): GameState {
     leadProcess: {},
     experience: {},
   };
+
+  return atRest(opening, config);
+}
+
+/**
+ * How many rounds the country is settled in, and how far a stand is moved in
+ * each of them.
+ *
+ * What is taken depends on how dear the searching is, and that on where the
+ * stand stands, so the two are found by going round rather than in one step.
+ * Moved the whole way each round it does not settle at all but swings: a stand
+ * left full is searched cheaply, so everything is taken from it, so the answer
+ * is a thin stand, which is then searched dearly and left alone again. Moved a
+ * third of the way it comes to rest.
+ */
+const SETTLE_ROUNDS = 40;
+const SETTLE_STEP = 1 / 3;
+
+/**
+ * The opening country, moved to where this community's taking holds it.
+ *
+ * Growth is `rate · (held + refuge) · (1 − held / ceiling)`, so a stand rests
+ * where that equals what is taken. Of the two roots the **upper** one is the
+ * stable one: above it the growing back falls short of the taking and the stand
+ * comes down again, while below the halfway mark a thinner stand yields less
+ * still and the fall feeds itself. Where the taking is more than the stand can
+ * ever grow there is no rest at all, and the most that can be offered is the
+ * top of the growth curve.
+ */
+function atRest(opening: GameState, config: Config): GameState {
+  const index = indexConfig(config);
+  const unlocks = computeUnlocks(opening, index);
+  let state = opening;
+
+  for (let round = 0; round < SETTLE_ROUNDS; round += 1) {
+    const taken = allocate({
+      state,
+      index,
+      sectorId: HOUSEHOLDS,
+      // An average draw: the opening is a property of the content and not of
+      // the seed, so no weather is rolled into it.
+      shocks: {},
+      unlockedBranches: unlocks.branches,
+      unlockedProcesses: unlocks.processes,
+      tierPerHead: unlocks.tierPerHead,
+    }).consumed;
+
+    const sector = state.sectors[HOUSEHOLDS];
+    if (sector === undefined) return state;
+    const stocks: Record<StockId, number> = { ...sector.stocks };
+    for (const [id, stand] of Object.entries(renewals(state, index))) {
+      const rule = index.stock.get(id)?.regrowth;
+      if (rule === undefined || stand === undefined) continue;
+      const rest = restingStand(taken[id] ?? 0, rule.ratePerTick, stand.ceiling, rule.refuge);
+      stocks[id] = stand.held + (rest - stand.held) * SETTLE_STEP;
+    }
+    state = { ...state, sectors: { ...state.sectors, [HOUSEHOLDS]: { ...sector, stocks } } };
+  }
+  return state;
+}
+
+/** Where one stand rests: the upper root of growth against taking. */
+function restingStand(taken: number, rate: number, ceiling: number, refuge: number): number {
+  if (ceiling <= 0 || rate <= 0) return 0;
+  const gap = (ceiling + refuge) ** 2 - (4 * taken * ceiling) / rate;
+  const peak = (ceiling - refuge) / 2;
+  if (gap <= 0) return Math.max(0, Math.min(ceiling, peak));
+  return Math.max(0, Math.min(ceiling, (ceiling - refuge + Math.sqrt(gap)) / 2));
 }

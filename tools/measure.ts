@@ -235,6 +235,16 @@ console.log("\n== Was der Fortschritt bringt: bauend gegen ziehend ==");
 console.log("\n== Die Bestände ==");
 {
   const inside = (t: Trace): readonly Row[] => t.rows.filter((r) => r.tick <= REST_TO);
+  const perPlay: [string, readonly Trace[]][] = [
+    ["still", still],
+    ["ziehend", moving],
+    ["bauend", growing],
+  ];
+  for (const [name, runs] of perPlay) {
+    console.log(
+      `Dünnster Stand ${name.padEnd(18)} ${round(Math.min(...runs.flatMap((t) => inside(t).map((r) => r.thinnest))))}`,
+    );
+  }
   const thinnest = Math.min(
     ...[...still, ...moving, ...growing, ...building].flatMap((t) => inside(t).map((r) => r.thinnest)),
   );

@@ -155,6 +155,50 @@ describe("random streams stay independent (E25)", () => {
   });
 });
 
+describe("the opening country (E14)", () => {
+  it("does not move in the opening ticks", () => {
+    // What it is not allowed to do is climb: an opening below where the taking
+    // holds it makes the first stretch of every run a country filling up, and
+    // everything measured there is measured on a range that is getting richer
+    // rather than one that is being lived on.
+    const density = (state: GameState): number => {
+      const shares: number[] = [];
+      for (const stand of Object.values(derive(state, index).renewable)) {
+        if (stand !== undefined && stand.ceiling > 0) shares.push(stand.held / stand.ceiling);
+      }
+      return shares.reduce((a, b) => a + b, 0) / Math.max(1, shares.length);
+    };
+
+    const drifts: number[] = [];
+    for (const seed of [1, 2, 3, 4]) {
+      let state = createState(STAGE1, { seed });
+      const opened = density(state);
+      for (let i = 0; i < 20; i += 1) state = tick(state, index);
+      drifts.push(density(state) - opened);
+    }
+    const drift = drifts.reduce((a, b) => a + b, 0) / drifts.length;
+    expect(Math.abs(drift)).toBeLessThan(0.1);
+  });
+
+  it("does not depend on a figure written beside the regrowth rule", () => {
+    // Halve what the ground carries and the opening follows of itself: the
+    // stands come out lower, and each still rests where its own growth meets
+    // its own taking.
+    const thin: Config = {
+      ...STAGE1,
+      stocks: STAGE1.stocks.map((s) =>
+        s.regrowth === undefined
+          ? s
+          : { ...s, regrowth: { ...s.regrowth, densityPerArea: s.regrowth.densityPerArea / 2 } },
+      ),
+    };
+    const local = indexConfig(thin);
+    const held = (config: Config, idx: ConfigIndex): number =>
+      derive(createState(config, { seed: 1 }), idx).renewable["plants"]?.held ?? 0;
+    expect(held(thin, local)).toBeLessThan(held(STAGE1, index));
+  });
+});
+
 describe("the year's quality (E24)", () => {
   it("has mean one, an upper bound and a long left tail", () => {
     const exponent = STAGE1.shocks["weather"]!.exponent;
