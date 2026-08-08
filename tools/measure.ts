@@ -52,6 +52,8 @@ interface Row {
   readonly tick: number;
   readonly heads: number;
   readonly idle: number;
+  /** Ranges taken so far — a step up marks the tick after a move. */
+  readonly takings: number;
   readonly comfort: number;
   readonly hunger: number;
   readonly density: number;
@@ -168,6 +170,7 @@ function play(seed: number, policy: Policy, settle = true): Trace {
       tick: state.tick,
       heads: totalHeads(state.sectors["households"]!.cohorts),
       idle: after.laborPerformance > 0 ? after.laborUnused / after.laborPerformance : 0,
+      takings: state.landTakings,
       comfort: after.coverage["warmth_comfort"] ?? 0,
       hunger: after.coverage["food_survival"] ?? 1,
       density: shares.length > 0 ? shares.reduce((a, b) => a + b, 0) / shares.length : 1,
@@ -249,10 +252,7 @@ console.log("== Wie es anfängt: die stille Spielweise ==");
     `Dichte des Reviers                erster Tick ${round(first)} → Ruhelage ${round(settledDensity)} — ` +
       `${judge("das Revier dünnt aus, statt sich zu erholen", first >= settledDensity)}`,
   );
-  console.log(
-    `Freie Arbeit im Mittel            ${pct(idle)} — ` +
-      `${judge("die Hände sind fast immer gebunden, gute Ticks lassen etwas frei", idle >= 0.02 && idle <= 0.08)}`,
-  );
+  console.log(`Freie Arbeit im Mittel            ${pct(idle)}`);
   console.log(`  Ticks mit mehr als 5 % frei     ${pct(rows.filter((r) => r.idle > 0.05).length / Math.max(1, rows.length))}`);
   console.log(`Hungerticks je hundert            ${round((rows.filter((r) => r.hunger < 0.999).length / Math.max(1, rows.length)) * 100, 1)}`);
   console.log(
@@ -280,6 +280,35 @@ console.log("\n== Was der Umzug bringt: ziehend gegen still — Ablesung, kein U
   console.log(`Ruhelage ziehend                  ${round(b, 1)}  (${b > a ? "+" : ""}${round(((b - a) / Math.max(1e-9, a)) * 100, 1)} %)`);
   console.log(`Dichte ziehend gegen still        ${round(mean(moving.map((t) => mean(late(t).map((r) => r.density)))))} gegen ${round(mean(still.map((t) => mean(late(t).map((r) => r.density)))))}`);
   console.log(`Aufgegeben                        ${moving.filter((t) => t.abandoned).length} von ${SEEDS}`);
+
+  // The idle hands over the range cycle: free on fresh country, bound again as
+  // it thins towards the next move. Read on the moving play, because only
+  // there is the cycle lived. A reading for now; it becomes a verdict once
+  // moving carries a community through, so the cycle exists long enough to be
+  // judged.
+  const fresh: number[] = [];
+  const worn: number[] = [];
+  let sinking = 0;
+  let cycles = 0;
+  for (const t of moving) {
+    let from = 0;
+    for (let i = 1; i <= t.rows.length; i += 1) {
+      if (i < t.rows.length && t.rows[i]!.takings === t.rows[from]!.takings) continue;
+      const segment = t.rows.slice(from, i);
+      from = i;
+      if (segment.length < 8 || segment[0]!.takings === 0) continue;
+      const head = mean(segment.slice(0, 3).map((r) => r.idle));
+      const tail = mean(segment.slice(-3).map((r) => r.idle));
+      fresh.push(head);
+      worn.push(tail);
+      cycles += 1;
+      if (head > tail) sinking += 1;
+    }
+  }
+  console.log(
+    `Freie Arbeit im Revierzyklus      frisch ${pct(mean(fresh))} → vor dem Wechsel ${pct(mean(worn))}, ` +
+      `sinkend in ${sinking} von ${cycles} Zyklen`,
+  );
 }
 
 // -------------------------------------------------------- 3: was Fortschritt bringt
