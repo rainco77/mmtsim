@@ -2181,9 +2181,20 @@ Lauf, keine Eindrücke:
 | **Kommt schlechtes Spiel genauso weit wie gutes?** | T4 |
 | Gibt es Zustände ohne Weg zurück? | E20 |
 
-**Der Komfort ist der Puffer, und er muss der richtige sein.** Hunger 0,9 und Sättigung
-0,9 je Kopf heißt: Die Hälfte des Nahrungsbedarfs ist entbehrlich. Ein schlechter Tick
-frisst zuerst diesen Teil, und erst wenn es mehr nimmt, sterben Menschen.
+**Wie eine Grenze eines Urteils bemessen wird.** Eine Grenze wird nach zwei Maßstäben
+gesetzt und nach keinem anderen: ob sie historisch und fachlich vertretbar ist — nichts
+festschreiben, was akademisch angreifbar wäre —, und ob die Spieldynamik mit ihr attraktiv
+bleibt; das Spiel soll den Spieler halten. Nie wird eine Grenze danach bemessen, dass die
+Urteile zusammen grün werden: Eine Grenze, die verschoben wird, damit ein anderes Urteil
+besteht, misst nichts mehr. Eine Ablesung, für die noch keine begründbare Grenze bekannt
+ist, bleibt Ablesung ohne Urteil, bis die Erfahrung eine liefert. Auch eine gesetzte
+Grenze ist nicht endgültig: Die Erfahrung darf sie ändern, mit Begründung aus denselben
+zwei Maßstäben.
+
+**Der Komfort ist der Puffer, und er muss der richtige sein.** Der entbehrliche Anteil
+des Nahrungsbedarfs — der Abstand zwischen Sättigung und Hunger — ist das Polster: Ein
+schlechter Tick frisst zuerst diesen Teil, und erst wenn er mehr nimmt, sterben Menschen.
+Wie groß die Mengen je Kopf sind, steht im Inhalt; hier steht, wie ihr Verhältnis wirkt.
 
 **Ein knappes Drittel, und der Abstand zwischen den beiden Rängen *ist* der Puffer.** Je
 mehr entbehrlich ist, desto tiefer muss ein Wurf gehen, bevor jemand stirbt — und desto
@@ -2547,15 +2558,19 @@ sehr hohe Verfallsrate — **kein Vorrat möglich** (E19).
 **Die Bedarfe dieser Epoche.** Von der Physiologie her bestimmt, nicht von der Technik:
 Was braucht ein Mensch, damit er nicht stirbt, Kinder bekommt und arbeiten kann.
 
-| Rang | Bedarf | Gut | je Kopf | wirkt auf | bei Nulldeckung |
-|---|---|---|---|---|---|
-| 100 | **Hunger** | Nahrung | 0,9 | Überleben | **0,65** — ein Drittel stirbt |
-| 200 | **Feuer** | Wärme, aus Holz | 0,03 | Überleben | **0,94** |
-| 300 | **Betreuung** | Betreuung, nur aus Arbeit | 0,5 *je Heranwachsendem* | Geburten | **0,80** |
-| 400 | **Kleidung** | Kleidung, aus Fell oder Faser | 0,3 | Arbeitsfähigkeit | **0,60** |
-| ganz hinten | *Vorrat anlegen* | — | — | — | siehe E19: Ziel ist die Speicherkapazität |
-| 500 | **Sättigung** | Nahrung | 0,9 | Produktivität | 1,2 bei voller Deckung |
-| 600 | **Behaglichkeit** | Wärme | 0,07 | Geburten | **0,50** |
+| Rang | Bedarf | Gut | wirkt auf |
+|---|---|---|---|
+| 100 | **Hunger** | Nahrung | Überleben |
+| 200 | **Feuer** | Wärme, aus Holz | Überleben |
+| 300 | **Betreuung** | Betreuung, nur aus Arbeit | Geburten; bemisst sich je Heranwachsendem |
+| 400 | **Kleidung** | Kleidung, aus Fell oder Faser | Arbeitsfähigkeit |
+| ganz hinten | *Vorrat anlegen* | — | siehe E19: Ziel ist die Speicherkapazität |
+| 500 | **Sättigung** | Nahrung | Produktivität |
+| 600 | **Behaglichkeit** | Wärme | Geburten |
+
+Wieviel ein Rang je Kopf verlangt und wie hart seine Unterdeckung wirkt, steht im
+Inhalt; das Konzept führt diese Zahlen nicht, damit es nicht mit jedem Austarieren
+veraltet.
 
 **Jeder Rang wirkt auf genau eine Achse.** Sättigung und Behaglichkeit taten vorher beide
 dasselbe — Geburten *und* Produktivität — und unterschieden sich nur in der Größe der
