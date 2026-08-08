@@ -100,11 +100,11 @@ const scope = {
   /** The log as it belongs in a finding: readable, and a line to paste. */
   log: () => ({
     text: [
-      `Spielprotokoll — Seed ${play.seed}`,
+      `Play log — seed ${play.seed}`,
       ...play.actions.map(([t, a]) => `${String(t).padStart(3)}  ${a.type} ${"id" in a ? a.id : JSON.stringify(a)}`),
-      play.actions.length === 0 ? "(keine Handlungen)" : "(sonst nichts)",
+      play.actions.length === 0 ? "(no actions)" : "(nothing else)",
       ...(play.handEdited
-        ? ["ACHTUNG: der Zustand wurde von Hand verändert — dieses Protokoll spielt den Lauf NICHT nach"]
+        ? ["WARNING: the state was edited by hand — this log does NOT replay the run"]
         : []),
     ].join("\n"),
     json: { seed: play.seed, actions: play.actions },
