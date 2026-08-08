@@ -1,5 +1,5 @@
 import { STAGE1 } from "../src/content/stage1.ts";
-import { EagerPolicy, PassivePolicy } from "../src/policy/bots/index.ts";
+import { EagerPolicy, PassivePolicy } from "./bots/index.ts";
 import type { Policy } from "../src/policy/policy.ts";
 import {
   apply,

@@ -9,7 +9,6 @@ import {
   type Action,
   type GameState,
 } from "../src/sim/index.ts";
-import * as bots from "../src/policy/bots/index.ts";
 
 /**
  * The running session for balancing (T4).
@@ -127,7 +126,6 @@ const scope = {
     }
     return tick(next, session.idx);
   },
-  bots,
   config: () => session.cfg,
 
   /**

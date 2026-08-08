@@ -1,5 +1,5 @@
 import { STAGE1 } from "../src/content/stage1.ts";
-import { PassivePolicy, PoorPolicy, SensiblePolicy } from "../src/policy/bots/index.ts";
+import { PassivePolicy, PoorPolicy, SensiblePolicy } from "./bots/index.ts";
 import type { Policy } from "../src/policy/policy.ts";
 import { apply, createState, derive, indexConfig, livesOn, tick, totalHeads } from "../src/sim/index.ts";
 import type { Derived, GameState, ProcessDef } from "../src/sim/index.ts";

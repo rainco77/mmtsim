@@ -1,5 +1,5 @@
-import type { Action, ConfigIndex, Derived, GameState } from "../../sim/index.ts";
-import type { Policy } from "../policy.ts";
+import type { Action, ConfigIndex, Derived, GameState } from "../src/sim/index.ts";
+import type { Policy } from "../src/policy/policy.ts";
 
 /**
  * Above this price the country counts as spent: the same meal costs half again

@@ -1,5 +1,5 @@
-import type { Action, Derived, GameState } from "../../sim/index.ts";
-import type { Policy } from "../policy.ts";
+import type { Action, Derived, GameState } from "../src/sim/index.ts";
+import type { Policy } from "../src/policy/policy.ts";
 
 /**
  * Plays badly, but coherently.

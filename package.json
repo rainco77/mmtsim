@@ -12,9 +12,9 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "simulate": "node tools/simulate.ts",
     "session": "node tools/session.ts",
-    "criteria": "node tools/criteria.ts"
+    "archive:simulate": "node archive/simulate.ts",
+    "archive:criteria": "node archive/criteria.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

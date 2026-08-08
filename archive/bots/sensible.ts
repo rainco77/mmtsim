@@ -1,6 +1,6 @@
-import { livesOn, weighedHeads, yieldPerCapacity } from "../../sim/index.ts";
-import type { Action, ConfigIndex, Derived, GameState, ProcessDef } from "../../sim/index.ts";
-import type { Policy } from "../policy.ts";
+import { livesOn, weighedHeads, yieldPerCapacity } from "../src/sim/index.ts";
+import type { Action, ConfigIndex, Derived, GameState, ProcessDef } from "../src/sim/index.ts";
+import type { Policy } from "../src/policy/policy.ts";
 
 /** Net effect of a project on each capacity — the sign is what matters. */
 function moves(id: string, index: ConfigIndex): ReadonlyMap<string, number> {
