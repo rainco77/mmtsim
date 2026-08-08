@@ -1,7 +1,15 @@
 import { STAGE1 } from "../src/content/stage1.ts";
 import { StillPolicy, MovingPolicy, BuildingPolicy } from "../src/policy/plays/index.ts";
 import type { Policy } from "../src/policy/policy.ts";
-import { apply, createState, derive, indexConfig, tick, totalHeads } from "../src/sim/index.ts";
+import {
+  apply,
+  createState,
+  derive,
+  indexConfig,
+  tick,
+  totalHeads,
+  type GameState,
+} from "../src/sim/index.ts";
 
 /**
  * The measuring stand: what the epoch's story says should happen, read off runs
@@ -226,10 +234,10 @@ const judge = (what: string, pass: boolean): string => {
   return pass ? "ja" : "NEIN";
 };
 
-console.log(`Seeds 1..${SEEDS}, bis Tick ${CAP}, Ruhelage abgelesen zwischen Tick ${REST_FROM} und ${REST_TO}.\n`);
+console.log(`Seeds 1..${SEEDS}, up to tick ${CAP}, resting level read between ticks ${REST_FROM} and ${REST_TO}.\n`);
 
-// ---------------------------------------------------------- 1: wie es anfängt
-console.log("== Wie es anfängt: die stille Spielweise ==");
+// ---------------------------------------------------------- 1: how it begins
+console.log("== How it begins: the still play ==");
 {
   const resting = restingOf(still);
   const rows = still.flatMap((t) => late(t));
@@ -238,48 +246,48 @@ console.log("== Wie es anfängt: die stille Spielweise ==");
   const settledDensity = mean(rows.map((r) => r.density));
   const idle = mean(rows.map((r) => r.idle));
 
-  console.log(`Kopfzahl am Start                 ${round(startHeads, 1)}`);
+  console.log(`Heads at the start               ${round(startHeads, 1)}`);
   console.log(
-    `Ruhelage                          ${round(resting, 1)} ` +
-      `(tiefster ${round(mean(still.map((t) => Math.min(...late(t).map((r) => r.heads)))), 1)}, ` +
-      `höchster ${round(mean(still.map((t) => Math.max(...late(t).map((r) => r.heads)))), 1)})`,
+    `Resting level                    ${round(resting, 1)} ` +
+      `(lowest ${round(mean(still.map((t) => Math.min(...late(t).map((r) => r.heads)))), 1)}, ` +
+      `highest ${round(mean(still.map((t) => Math.max(...late(t).map((r) => r.heads)))), 1)})`,
   );
   console.log(
-    `  gegen den Start                 ${pct(resting / Math.max(1e-9, startHeads))} — ` +
-      `${judge("ohne Projekte ruht sie bei dem, womit sie startet", resting >= startHeads * 0.8 && resting <= startHeads * 1.2)}`,
+    `  against the start              ${pct(resting / Math.max(1e-9, startHeads))} — ` +
+      `${judge("with no projects it rests at what it starts with", resting >= startHeads * 0.8 && resting <= startHeads * 1.2)}`,
   );
   console.log(
-    `Dichte des Reviers                erster Tick ${round(first)} → Ruhelage ${round(settledDensity)} — ` +
-      `${judge("das Revier dünnt aus, statt sich zu erholen", first >= settledDensity)}`,
+    `Density of the range             first tick ${round(first)} -> at rest ${round(settledDensity)} — ` +
+      `${judge("the range thins instead of recovering", first >= settledDensity)}`,
   );
-  console.log(`Freie Arbeit im Mittel            ${pct(idle)}`);
-  console.log(`  Ticks mit mehr als 5 % frei     ${pct(rows.filter((r) => r.idle > 0.05).length / Math.max(1, rows.length))}`);
-  console.log(`Hungerticks je hundert            ${round((rows.filter((r) => r.hunger < 0.999).length / Math.max(1, rows.length)) * 100, 1)}`);
+  console.log(`Idle hands on average            ${pct(idle)}`);
+  console.log(`  ticks with more than 5 % free  ${pct(rows.filter((r) => r.idle > 0.05).length / Math.max(1, rows.length))}`);
+  console.log(`Hunger ticks per hundred         ${round((rows.filter((r) => r.hunger < 0.999).length / Math.max(1, rows.length)) * 100, 1)}`);
   console.log(
-    `Rückschläge je Lauf               ${round(back.length / SEEDS, 1)}, im Mittel ${pct(mean(back.map((b) => b.depth)))} der Köpfe`,
-  );
-  console.log(
-    `  Abstand / Erholung, Median      ${median(back.filter((b) => b.nextAfter !== null).map((b) => b.nextAfter ?? 0))} gegen ${median(back.filter((b) => b.recoveredAfter !== null).map((b) => b.recoveredAfter ?? 0))} Ticks`,
+    `Setbacks per run                 ${round(back.length / SEEDS, 1)}, mean depth ${pct(mean(back.map((b) => b.depth)))} of the heads`,
   );
   console.log(
-    `  aufgeholt vor der nächsten      ${pct(gotOverInTime(back))} — ` +
-      `${judge("eine Krise ist zu überstehen, bevor die nächste kommt", gotOverInTime(back) >= 0.75)}`,
+    `  gap / recovery, median         ${median(back.filter((b) => b.nextAfter !== null).map((b) => b.nextAfter ?? 0))} against ${median(back.filter((b) => b.recoveredAfter !== null).map((b) => b.recoveredAfter ?? 0))} ticks`,
   );
   console.log(
-    `Aufgegeben                        ${still.filter((t) => t.abandoned).length} von ${SEEDS} — ${judge("keine Gemeinschaft wird aufgegeben, wenn sie nichts tut", !still.some((t) => t.abandoned))}`,
+    `  got over before the next       ${pct(gotOverInTime(back))} — ` +
+      `${judge("a crisis is got over before the next one comes", gotOverInTime(back) >= 0.75)}`,
+  );
+  console.log(
+    `Given up                         ${still.filter((t) => t.abandoned).length} of ${SEEDS} — ${judge("no community is given up for doing nothing", !still.some((t) => t.abandoned))}`,
   );
 }
 
 // ------------------------------------------------------------- 2: der Umzug
-console.log("\n== Was der Umzug bringt: ziehend gegen still — Ablesung, kein Urteil ==");
+console.log("\n== What moving buys: moving against still — a reading, no verdict ==");
 {
   const a = restingOf(still);
   const b = restingOf(moving);
-  console.log(`Umzüge je Lauf                    ${round(mean(moving.map((t) => t.moves)), 1)}`);
-  console.log(`Ruhelage still                    ${round(a, 1)}`);
-  console.log(`Ruhelage ziehend                  ${round(b, 1)}  (${b > a ? "+" : ""}${round(((b - a) / Math.max(1e-9, a)) * 100, 1)} %)`);
-  console.log(`Dichte ziehend gegen still        ${round(mean(moving.map((t) => mean(late(t).map((r) => r.density)))))} gegen ${round(mean(still.map((t) => mean(late(t).map((r) => r.density)))))}`);
-  console.log(`Aufgegeben                        ${moving.filter((t) => t.abandoned).length} von ${SEEDS}`);
+  console.log(`Moves per run                    ${round(mean(moving.map((t) => t.moves)), 1)}`);
+  console.log(`Resting level still              ${round(a, 1)}`);
+  console.log(`Resting level moving             ${round(b, 1)}  (${b > a ? "+" : ""}${round(((b - a) / Math.max(1e-9, a)) * 100, 1)} %)`);
+  console.log(`Density moving against still     ${round(mean(moving.map((t) => mean(late(t).map((r) => r.density)))))} against ${round(mean(still.map((t) => mean(late(t).map((r) => r.density)))))}`);
+  console.log(`Given up                         ${moving.filter((t) => t.abandoned).length} of ${SEEDS}`);
 
   // The idle hands over the range cycle: free on fresh country, bound again as
   // it thins towards the next move. Read on the moving play, because only
@@ -306,13 +314,13 @@ console.log("\n== Was der Umzug bringt: ziehend gegen still — Ablesung, kein U
     }
   }
   console.log(
-    `Freie Arbeit im Revierzyklus      frisch ${pct(mean(fresh))} → vor dem Wechsel ${pct(mean(worn))}, ` +
-      `sinkend in ${sinking} von ${cycles} Zyklen`,
+    `Idle hands over the range cycle  fresh ${pct(mean(fresh))} -> before the move ${pct(mean(worn))}, ` +
+      `sinking in ${sinking} of ${cycles} cycles`,
   );
 }
 
-// -------------------------------------------------------- 3: was Fortschritt bringt
-console.log("\n== Was der Fortschritt bringt: bauend gegen ziehend ==");
+// -------------------------------------------------------- 3: what progress buys
+console.log("\n== What progress buys: building against moving ==");
 {
   const a = restingOf(moving);
   const b = restingOf(growing);
@@ -320,25 +328,25 @@ console.log("\n== Was der Fortschritt bringt: bauend gegen ziehend ==");
   const beforePit = building.map(
     (t) => setbacksIn(t.rows).filter((s) => t.pitAt === null || s.at < t.pitAt).length,
   );
-  console.log(`Projekte je Lauf                  ${round(mean(growing.map((t) => t.projectsDone)), 1)} von ${STAGE1.projects.length}`);
-  console.log(`Ruhelage ziehend                  ${round(a, 1)}`);
-  console.log(`Ruhelage bauend                   ${round(b, 1)}  — ${judge("Fortschritt zeigt sich in Köpfen", b > a)}`);
+  console.log(`Projects per run                 ${round(mean(growing.map((t) => t.projectsDone)), 1)} of ${STAGE1.projects.length}`);
+  console.log(`Resting level moving             ${round(a, 1)}`);
+  console.log(`Resting level building           ${round(b, 1)}  — ${judge("progress shows up in heads", b > a)}`);
   console.log(
-    `Sesshaft                          ${settled.length} von ${SEEDS}` +
+    `Settled                          ${settled.length} of ${SEEDS}` +
       (settled.length === 0
         ? ""
         : `, Tick ${Math.min(...settled.map((t) => t.sedentismAt ?? 0))}–${Math.max(...settled.map((t) => t.sedentismAt ?? 0))}`) +
-      ` — ${judge("die Epoche endet, kein Lauf bleibt stecken", settled.length === SEEDS)}`,
+      ` — ${judge("the epoch ends, no run gets stuck", settled.length === SEEDS)}`,
   );
-  console.log(`  Köpfe dabei                     ${round(mean(settled.map((t) => t.headsAtSedentism)), 1)}`);
-  console.log(`  Krisen bis dahin je Lauf        ${round(mean(building.map((t) => setbacksIn(t.rows).length)), 1)}`);
-  console.log(`  Krisen bis zur Grube je Lauf    ${round(mean(beforePit), 1)}`);
-  console.log(`  davon aufgeholt vor der nächsten ${pct(gotOverInTime(building.flatMap((t) => setbacksIn(t.rows))))} (still: ${pct(gotOverInTime(still.flatMap((t) => setbacksIn(t.rows))))})`);
-  console.log(`Aufgegeben vor der Sesshaftigkeit ${building.filter((t) => t.abandoned && t.sedentismAt === null).length} von ${SEEDS}`);
+  console.log(`  heads at settling              ${round(mean(settled.map((t) => t.headsAtSedentism)), 1)}`);
+  console.log(`  crises on the way per run      ${round(mean(building.map((t) => setbacksIn(t.rows).length)), 1)}`);
+  console.log(`  crises before the pit per run  ${round(mean(beforePit), 1)}`);
+  console.log(`  of them got over before the next ${pct(gotOverInTime(building.flatMap((t) => setbacksIn(t.rows))))} (still: ${pct(gotOverInTime(still.flatMap((t) => setbacksIn(t.rows))))})`);
+  console.log(`Given up before settling         ${building.filter((t) => t.abandoned && t.sedentismAt === null).length} of ${SEEDS}`);
 }
 
 // ------------------------------------------------ 3b: steht der Baum offen?
-console.log("\n== Der Baum — Ablesung, kein Urteil ==");
+console.log("\n== The tree — a reading, no verdict ==");
 {
   const everSeen = new Set<string>();
   for (const t of [...still, ...moving, ...growing, ...building]) for (const id of t.seen) everSeen.add(id);
@@ -351,12 +359,12 @@ console.log("\n== Der Baum — Ablesung, kein Urteil ==");
   const inEpoch = STAGE1.projects.map((p) => p.id).filter((id) => !afterSettling(id));
   const never = inEpoch.filter((id) => !everSeen.has(id));
   console.log(
-    `Nie sichtbar, in keinem Lauf      ${never.length} von ${inEpoch.length} dieser Epoche` +
+    `Never visible, in any run        ${never.length} of ${inEpoch.length} of this epoch` +
       (never.length === 0 ? "" : `: ${never.join(", ")}`),
   );
 
-  // Beide Kleidungswege und der Anteil des Wassers — sie sagen erst etwas,
-  // wenn der Baum offen ist, deshalb ohne Urteil.
+  // Both clothing roads and the water's share — they only say something
+  // once the tree is open, so no verdict here.
   const labourOf = (ids: readonly string[]): number =>
     growing.reduce((sum, t) => sum + ids.reduce((s, id) => s + (t.labour[id] ?? 0), 0), 0);
   const branchOf = (id: string): string => STAGE1.processes.find((p) => p.id === id)?.branch ?? "";
@@ -365,36 +373,95 @@ console.log("\n== Der Baum — Ablesung, kein Urteil ==");
   const fibre = clothing.filter((id) => (STAGE1.processes.find((p) => p.id === id)?.intermediatesPerOutput["fibre"] ?? 0) > 0);
   const both = labourOf(hides) + labourOf(fibre);
   console.log(
-    `Kleidung aus Fell gegen Faser     ${both <= 0 ? "—" : `${pct(labourOf(hides) / both)} zu ${pct(labourOf(fibre) / both)}`}`,
+    `Clothing from hides against fibre ${both <= 0 ? "—" : `${pct(labourOf(hides) / both)} to ${pct(labourOf(fibre) / both)}`}`,
   );
   const food = STAGE1.processes.filter((p) => branchOf(p.id) === "food").map((p) => p.id);
   const water = food.filter((id) => (STAGE1.processes.find((p) => p.id === id)?.capacityPerOutput["water"] ?? 0) > 0 ||
     ["fish", "shellfish"].some((s) => (STAGE1.processes.find((p) => p.id === id)?.intermediatesPerOutput[s] ?? 0) > 0));
   const allFood = labourOf(food);
-  console.log(`Anteil des Wassers an der Nahrung ${allFood <= 0 ? "—" : pct(labourOf(water) / allFood)}`);
+  console.log(`Share of the water in the food   ${allFood <= 0 ? "—" : pct(labourOf(water) / allFood)}`);
 }
 
-// ------------------------------------------------------------ 4: die Bestände
-console.log("\n== Die Bestände ==");
+// ------------------------------------------------------------ 4: the stocks
+console.log("\n== The stocks ==");
 {
   const inside = (t: Trace): readonly Row[] => t.rows.filter((r) => r.tick <= REST_TO);
   const perPlay: [string, readonly Trace[]][] = [
     ["still", still],
-    ["ziehend", moving],
-    ["bauend", growing],
+    ["moving", moving],
+    ["building", growing],
   ];
   for (const [name, runs] of perPlay) {
     console.log(
-      `Dünnster Stand ${name.padEnd(18)} ${round(Math.min(...runs.flatMap((t) => inside(t).map((r) => r.thinnest))))}`,
+      `Thinnest stand ${name.padEnd(18)} ${round(Math.min(...runs.flatMap((t) => inside(t).map((r) => r.thinnest))))}`,
     );
   }
   const thinnest = Math.min(
     ...[...still, ...moving, ...growing, ...building].flatMap((t) => inside(t).map((r) => r.thinnest)),
   );
-  console.log(`Dünnster Stand über alle Läufe    ${round(thinnest)} — ${judge("kein nachwachsender Bestand wird heruntergewirtschaftet", thinnest >= 0.2)}`);
+  console.log(`Thinnest stand over all runs      ${round(thinnest)} — ${judge("no renewable stock is run into the ground", thinnest >= 0.2)}`);
 }
 
-// -------------------------------------------- 5: was ohne einen Lauf gilt
+// ------------------------------------------------ 5: the stores and the crisis
+console.log("\n== The stores against the same crisis — a reading, no verdict ==");
+{
+  // Same seed, same draws, one thing varied (E30): just before a known setback
+  // the community is handed a store it did not have. What the crisis then
+  // costs, against having nothing, says what each kind of store is worth. The
+  // lesson the epoch is built on has to show here: firewood softens a little,
+  // food without a pit rots before it helps, a pit with food in it softens
+  // most.
+  const FOOD_IN_PIT = 100;
+  const FIRE_TICKS = 20;
+  type Given = "nothing" | "wood" | "food, no pit" | "pit with food";
+  const handed = (state: GameState, what: Given, burn: number): GameState => {
+    const sector = state.sectors["households"]!;
+    if (what === "nothing") return state;
+    const stocks = { ...sector.stocks };
+    let capacityHeld = sector.capacityHeld;
+    if (what === "wood") stocks["wood"] = (stocks["wood"] ?? 0) + burn * FIRE_TICKS;
+    if (what === "food, no pit") stocks["food"] = (stocks["food"] ?? 0) + FOOD_IN_PIT;
+    if (what === "pit with food") {
+      stocks["food"] = (stocks["food"] ?? 0) + FOOD_IN_PIT;
+      capacityHeld = { ...capacityHeld, storage: { amount: FOOD_IN_PIT, quality: 1 } };
+    }
+    return {
+      ...state,
+      sectors: { ...state.sectors, households: { ...sector, stocks, capacityHeld } },
+    };
+  };
+
+  const depths: Record<Given, number[]> = {
+    nothing: [],
+    wood: [],
+    "food, no pit": [],
+    "pit with food": [],
+  };
+  for (const trace of still) {
+    const setback = setbacksIn(trace.rows).find((s) => (trace.rows[s.at]?.tick ?? 0) >= 30);
+    if (setback === undefined) continue;
+    const strikesAt = trace.rows[setback.at]!.tick;
+    for (const what of Object.keys(depths) as Given[]) {
+      let state = createState(STAGE1, { seed: trace.seed });
+      while (state.tick < strikesAt - 1) state = tick(state, index);
+      const burn = derive(state, index).tiers.find((t) => t.tier === "warmth_fire")?.need ?? 0;
+      state = handed(state, what, burn);
+      const before = totalHeads(state.sectors["households"]!.cohorts);
+      let trough = before;
+      for (let i = 0; i < 40; i += 1) {
+        state = tick(state, index);
+        if (derive(state, index).communityGivenUp) break;
+        trough = Math.min(trough, totalHeads(state.sectors["households"]!.cohorts));
+      }
+      depths[what].push(before > 0 ? 1 - trough / before : 0);
+    }
+  }
+  for (const [what, cost] of Object.entries(depths)) {
+    console.log(`Depth of the setback, given ${what.padEnd(14)} ${pct(mean(cost))} of the heads (${cost.length} crises)`);
+  }
+}
+
+// -------------------------------------------- 6: what holds without a run
 /** Labour to make one unit of a good, its inputs chained in — the cheapest way. */
 function labourPerUnit(stock: string, seen: ReadonlySet<string> = new Set()): number {
   if (stock === "labor") return 1;
@@ -445,7 +512,7 @@ const CLAIM_BAND = 1 / 3;
  */
 const REGULATOR_FLOOR = 0.05;
 
-console.log("\n== Ohne Lauf: was der Inhalt für sich schon sagt ==");
+console.log("\n== Without a run: what the content says by itself ==");
 {
   const claims = claimsOnWork();
   let ok = true;
@@ -453,9 +520,9 @@ console.log("\n== Ohne Lauf: was der Inhalt für sich schon sagt ==");
     const share = tiers.reduce((sum, id) => sum + (claims[id] ?? 0), 0);
     const inBand = share >= target * (1 - CLAIM_BAND) && share <= target * (1 + CLAIM_BAND);
     if (!inBand) ok = false;
-    console.log(`${need.padEnd(10)} ${pct(share)} von ${pct(target)}${inBand ? "" : "   <- daneben"}`);
+    console.log(`${need.padEnd(10)} ${pct(share)} of ${pct(target)}${inBand ? "" : "   <- off"}`);
   }
-  console.log(`— ${judge("jeder Bedarf beansprucht ungefähr den Anteil der Arbeit, den er soll", ok)}`);
+  console.log(`— ${judge("every need claims about the share of the work it is meant to", ok)}`);
 
   let switches = true;
   for (const tier of STAGE1.needTiers) {
@@ -465,13 +532,13 @@ console.log("\n== Ohne Lauf: was der Inhalt für sich schon sagt ==");
     const share = claims[tier.id] ?? 0;
     if (share < REGULATOR_FLOOR) {
       switches = false;
-      console.log(`${tier.id.padEnd(16)} bewegt Menschen, beansprucht aber nur ${pct(share)}`);
+      console.log(`${tier.id.padEnd(16)} moves people but claims only ${pct(share)}`);
     }
   }
-  console.log(`— ${judge("kein Rang, der Menschen bewegt, ist ein bloßer Schalter", switches)}`);
+  console.log(`— ${judge("no rank that moves people is a mere switch", switches)}`);
 }
 
 // ------------------------------------------------------------------- das Urteil
 const failed = verdicts.filter(([, pass]) => !pass);
-console.log(`\n== Urteil: ${verdicts.length - failed.length} von ${verdicts.length} ==`);
-for (const [what, pass] of verdicts) console.log(`${pass ? "  ok " : "RISS "}${what}`);
+console.log(`\n== Verdict: ${verdicts.length - failed.length} of ${verdicts.length} ==`);
+for (const [what, pass] of verdicts) console.log(`${pass ? "  ok " : "FAIL "}${what}`);
