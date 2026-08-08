@@ -58,21 +58,83 @@ interface Row {
   readonly thinnest: number;
 }
 
+/**
+ * A setback and what became of it: the heads before it, the trough after, and
+ * when the community was back within a twentieth of where it stood. A run of
+ * hungry ticks counts once — the player lives through one bad patch, not five.
+ */
+interface Setback {
+  readonly at: number;
+  readonly depth: number;
+  readonly recoveredAfter: number | null;
+  readonly nextAfter: number | null;
+}
+
+function setbacksIn(rows: readonly Row[]): Setback[] {
+  const starts: number[] = [];
+  for (let i = 1; i < rows.length; i += 1) {
+    if ((rows[i]?.hunger ?? 1) < 0.999 && (rows[i - 1]?.hunger ?? 1) >= 0.999) starts.push(i);
+  }
+  return starts.map((at, k) => {
+    const before = rows[at - 1]?.heads ?? 0;
+    let trough = before;
+    let troughAt = at;
+    for (let i = at; i < Math.min(rows.length, at + 40); i += 1) {
+      const heads = rows[i]?.heads ?? 0;
+      if (heads < trough) {
+        trough = heads;
+        troughAt = i;
+      }
+    }
+    let recoveredAfter: number | null = null;
+    for (let i = troughAt; i < rows.length; i += 1) {
+      if ((rows[i]?.heads ?? 0) >= before * 0.95) {
+        recoveredAfter = i - at;
+        break;
+      }
+    }
+    const next = starts[k + 1];
+    return {
+      at,
+      depth: before > 0 ? 1 - trough / before : 0,
+      recoveredAfter,
+      nextAfter: next === undefined ? null : next - at,
+    };
+  });
+}
+
+/** Of these setbacks, how many were made good before the next one began. */
+function gotOverInTime(all: readonly Setback[]): number {
+  if (all.length === 0) return 1;
+  const done = all.filter(
+    (s) => s.recoveredAfter !== null && (s.nextAfter === null || s.recoveredAfter < s.nextAfter),
+  ).length;
+  return done / all.length;
+}
+
 interface Trace {
   readonly seed: number;
   readonly rows: readonly Row[];
   readonly moves: number;
   readonly projectsDone: number;
   readonly sedentismAt: number | null;
+  readonly pitAt: number | null;
   readonly abandoned: boolean;
   readonly headsAtSedentism: number;
+  /** Every project that was ever on the screen, grey or not. */
+  readonly seen: ReadonlySet<string>;
+  /** Labour into each process, summed over the run — for the roads that must stay open. */
+  readonly labour: Readonly<Record<string, number>>;
 }
 
 function play(seed: number, policy: Policy, settle = true): Trace {
   let state = createState(STAGE1, { seed });
   const rows: Row[] = [];
   let sedentismAt: number | null = null;
+  let pitAt: number | null = null;
   let headsAtSedentism = 0;
+  const seen = new Set<string>();
+  const labour: Record<string, number> = {};
 
   for (let i = 0; i < CAP; i += 1) {
     const d = derive(state, index);
@@ -93,7 +155,11 @@ function play(seed: number, policy: Policy, settle = true): Trace {
       if (result.rejected === undefined) state = result.state;
     }
 
+    if (pitAt === null && (state.completedProjects["storage_pit"] ?? 0) > 0) pitAt = state.tick;
+
     const after = derive(state, index);
+    for (const project of after.projects) if (project.visible) seen.add(project.id);
+    for (const run of after.runs) labour[run.process] = (labour[run.process] ?? 0) + run.labor;
     const shares: number[] = [];
     for (const stand of Object.values(after.renewable)) {
       if (stand !== undefined && stand.ceiling > 0) shares.push(stand.held / stand.ceiling);
@@ -117,8 +183,11 @@ function play(seed: number, policy: Policy, settle = true): Trace {
     moves: state.landTakings,
     projectsDone: Object.keys(state.completedProjects).length,
     sedentismAt,
+    pitAt,
     abandoned: last.communityGivenUp,
     headsAtSedentism,
+    seen,
+    labour,
   };
 }
 
@@ -130,28 +199,10 @@ const round = (x: number, places = 2): number => Number(x.toFixed(places));
 const late = (t: Trace): readonly Row[] =>
   t.rows.filter((r) => r.tick >= REST_FROM && r.tick <= REST_TO);
 const pct = (x: number): string => `${(x * 100).toFixed(1)} %`;
-
-/**
- * What a setback costs and whether it is got over: for every tick that hunger
- * first bites, how deep the community falls afterwards and whether it climbs
- * back to where it stood.
- */
-function setbacks(rows: readonly Row[]): { depth: number; recovered: number; count: number } {
-  const WITHIN = 60;
-  let count = 0;
-  let recovered = 0;
-  const depths: number[] = [];
-  for (let i = 1; i < rows.length; i += 1) {
-    if ((rows[i]?.hunger ?? 1) >= 0.999 || (rows[i - 1]?.hunger ?? 1) < 0.999) continue;
-    count += 1;
-    const before = rows[i - 1]?.heads ?? 0;
-    const after = rows.slice(i, i + WITHIN);
-    const trough = Math.min(...after.map((r) => r.heads));
-    if (before > 0) depths.push(1 - trough / before);
-    if (after.some((r) => r.heads >= before * 0.95)) recovered += 1;
-  }
-  return { depth: mean(depths), recovered: count === 0 ? 0 : recovered / count, count };
-}
+const median = (xs: readonly number[]): number => {
+  const sorted = [...xs].sort((a, b) => a - b);
+  return sorted.length === 0 ? 0 : (sorted[Math.floor(sorted.length / 2)] ?? 0);
+};
 
 // -------------------------------------------------------------- the three plays
 
@@ -178,37 +229,57 @@ console.log(`Seeds 1..${SEEDS}, bis Tick ${CAP}, Ruhelage abgelesen zwischen Tic
 console.log("== Wie es anfängt: die stille Spielweise ==");
 {
   const resting = restingOf(still);
-  const back = setbacks(still.flatMap((t) => [...t.rows]));
   const rows = still.flatMap((t) => late(t));
+  const back = still.flatMap((t) => setbacksIn(t.rows));
+  const first = mean(still.map((t) => t.rows[0]?.density ?? 0));
+  const settledDensity = mean(rows.map((r) => r.density));
+  const idle = mean(rows.map((r) => r.idle));
+
   console.log(`Kopfzahl am Start                 ${round(startHeads, 1)}`);
   console.log(
     `Ruhelage                          ${round(resting, 1)} ` +
       `(tiefster ${round(mean(still.map((t) => Math.min(...late(t).map((r) => r.heads)))), 1)}, ` +
       `höchster ${round(mean(still.map((t) => Math.max(...late(t).map((r) => r.heads)))), 1)})`,
   );
-  console.log(`  schrumpft auf                   ${pct(resting / Math.max(1e-9, startHeads))} des Starts`);
-  const first = mean(still.map((t) => t.rows[0]?.density ?? 0));
-  const settledDensity = mean(rows.map((r) => r.density));
-  console.log(`Dichte des Reviers                erster Tick ${round(first)} → Ruhelage ${round(settledDensity)}`);
-  console.log(`  dünnt aus statt sich zu erholen  ${first > settledDensity ? "ja" : "NEIN"}`);
-  console.log(`Freie Arbeit im Mittel            ${pct(mean(rows.map((r) => r.idle)))}`);
+  console.log(
+    `  gegen den Start                 ${pct(resting / Math.max(1e-9, startHeads))} — ` +
+      `${judge("ohne Projekte ruht sie bei dem, womit sie startet", resting >= startHeads * 0.8 && resting <= startHeads * 1.2)}`,
+  );
+  console.log(
+    `Dichte des Reviers                erster Tick ${round(first)} → Ruhelage ${round(settledDensity)} — ` +
+      `${judge("das Revier dünnt aus, statt sich zu erholen", first >= settledDensity)}`,
+  );
+  console.log(
+    `Freie Arbeit im Mittel            ${pct(idle)} — ` +
+      `${judge("die Hände sind fast immer gebunden, gute Ticks lassen etwas frei", idle >= 0.02 && idle <= 0.08)}`,
+  );
   console.log(`  Ticks mit mehr als 5 % frei     ${pct(rows.filter((r) => r.idle > 0.05).length / Math.max(1, rows.length))}`);
   console.log(`Hungerticks je hundert            ${round((rows.filter((r) => r.hunger < 0.999).length / Math.max(1, rows.length)) * 100, 1)}`);
-  console.log(`Rückschläge je Lauf               ${round(back.count / SEEDS, 1)}, im Mittel ${pct(back.depth)} der Köpfe`);
-  console.log(`  davon wieder aufgeholt          ${pct(back.recovered)}`);
-  console.log(`Aufgegeben                        ${still.filter((t) => t.abandoned).length} von ${SEEDS} — ${judge("keine Gemeinschaft wird aufgegeben, wenn sie nichts tut", !still.some((t) => t.abandoned))}`);
+  console.log(
+    `Rückschläge je Lauf               ${round(back.length / SEEDS, 1)}, im Mittel ${pct(mean(back.map((b) => b.depth)))} der Köpfe`,
+  );
+  console.log(
+    `  Abstand / Erholung, Median      ${median(back.filter((b) => b.nextAfter !== null).map((b) => b.nextAfter ?? 0))} gegen ${median(back.filter((b) => b.recoveredAfter !== null).map((b) => b.recoveredAfter ?? 0))} Ticks`,
+  );
+  console.log(
+    `  aufgeholt vor der nächsten      ${pct(gotOverInTime(back))} — ` +
+      `${judge("eine Krise ist zu überstehen, bevor die nächste kommt", gotOverInTime(back) >= 0.75)}`,
+  );
+  console.log(
+    `Aufgegeben                        ${still.filter((t) => t.abandoned).length} von ${SEEDS} — ${judge("keine Gemeinschaft wird aufgegeben, wenn sie nichts tut", !still.some((t) => t.abandoned))}`,
+  );
 }
 
 // ------------------------------------------------------------- 2: der Umzug
-console.log("\n== Was der Umzug bringt: ziehend gegen still ==");
+console.log("\n== Was der Umzug bringt: ziehend gegen still — Ablesung, kein Urteil ==");
 {
   const a = restingOf(still);
   const b = restingOf(moving);
   console.log(`Umzüge je Lauf                    ${round(mean(moving.map((t) => t.moves)), 1)}`);
   console.log(`Ruhelage still                    ${round(a, 1)}`);
   console.log(`Ruhelage ziehend                  ${round(b, 1)}  (${b > a ? "+" : ""}${round(((b - a) / Math.max(1e-9, a)) * 100, 1)} %)`);
-  console.log(`Dichte still                      ${round(mean(moving.map((t) => mean(late(t).map((r) => r.density)))))} gegen ${round(mean(still.map((t) => mean(late(t).map((r) => r.density)))))}`);
-  console.log(`Aufgegeben bis Tick ${REST_TO}              ${moving.filter((t) => t.abandoned && (t.rows[t.rows.length - 1]?.tick ?? 0) <= REST_TO).length} von ${SEEDS}`);
+  console.log(`Dichte ziehend gegen still        ${round(mean(moving.map((t) => mean(late(t).map((r) => r.density)))))} gegen ${round(mean(still.map((t) => mean(late(t).map((r) => r.density)))))}`);
+  console.log(`Aufgegeben                        ${moving.filter((t) => t.abandoned).length} von ${SEEDS}`);
 }
 
 // -------------------------------------------------------- 3: was Fortschritt bringt
@@ -217,6 +288,9 @@ console.log("\n== Was der Fortschritt bringt: bauend gegen ziehend ==");
   const a = restingOf(moving);
   const b = restingOf(growing);
   const settled = building.filter((t) => t.sedentismAt !== null);
+  const beforePit = building.map(
+    (t) => setbacksIn(t.rows).filter((s) => t.pitAt === null || s.at < t.pitAt).length,
+  );
   console.log(`Projekte je Lauf                  ${round(mean(growing.map((t) => t.projectsDone)), 1)} von ${STAGE1.projects.length}`);
   console.log(`Ruhelage ziehend                  ${round(a, 1)}`);
   console.log(`Ruhelage bauend                   ${round(b, 1)}  — ${judge("Fortschritt zeigt sich in Köpfen", b > a)}`);
@@ -224,11 +298,51 @@ console.log("\n== Was der Fortschritt bringt: bauend gegen ziehend ==");
     `Sesshaft                          ${settled.length} von ${SEEDS}` +
       (settled.length === 0
         ? ""
-        : `, Tick ${Math.min(...settled.map((t) => t.sedentismAt ?? 0))}–${Math.max(...settled.map((t) => t.sedentismAt ?? 0))}`),
+        : `, Tick ${Math.min(...settled.map((t) => t.sedentismAt ?? 0))}–${Math.max(...settled.map((t) => t.sedentismAt ?? 0))}`) +
+      ` — ${judge("die Epoche endet, kein Lauf bleibt stecken", settled.length === SEEDS)}`,
   );
   console.log(`  Köpfe dabei                     ${round(mean(settled.map((t) => t.headsAtSedentism)), 1)}`);
-  console.log(`Hungerticks bis dahin je Lauf     ${round(mean(building.map((t) => t.rows.filter((r) => r.hunger < 0.999 && (t.sedentismAt === null || r.tick <= t.sedentismAt)).length)), 1)}`);
-  console.log(`Aufgegeben vor der Sesshaftigkeit ${building.filter((t) => t.abandoned && t.sedentismAt === null).length} von ${SEEDS} — ${judge("die Epoche endet, kein Lauf bleibt stecken", settled.length === SEEDS)}`);
+  console.log(`  Krisen bis dahin je Lauf        ${round(mean(building.map((t) => setbacksIn(t.rows).length)), 1)}`);
+  console.log(`  Krisen bis zur Grube je Lauf    ${round(mean(beforePit), 1)}`);
+  console.log(`  davon aufgeholt vor der nächsten ${pct(gotOverInTime(building.flatMap((t) => setbacksIn(t.rows))))} (still: ${pct(gotOverInTime(still.flatMap((t) => setbacksIn(t.rows))))})`);
+  console.log(`Aufgegeben vor der Sesshaftigkeit ${building.filter((t) => t.abandoned && t.sedentismAt === null).length} von ${SEEDS}`);
+}
+
+// ------------------------------------------------ 3b: steht der Baum offen?
+console.log("\n== Der Baum — Ablesung, kein Urteil ==");
+{
+  const everSeen = new Set<string>();
+  for (const t of [...still, ...moving, ...growing, ...building]) for (const id of t.seen) everSeen.add(id);
+  // What waits on the settling belongs to the next stage and cannot be seen in
+  // this one, so it is not a gap in this tree.
+  const afterSettling = (id: string): boolean =>
+    (STAGE1.projects.find((p) => p.id === id)?.visibleWhen ?? []).some(
+      (c) => c.kind === "rule" && c.id === "settled" && c.set,
+    );
+  const inEpoch = STAGE1.projects.map((p) => p.id).filter((id) => !afterSettling(id));
+  const never = inEpoch.filter((id) => !everSeen.has(id));
+  console.log(
+    `Nie sichtbar, in keinem Lauf      ${never.length} von ${inEpoch.length} dieser Epoche` +
+      (never.length === 0 ? "" : `: ${never.join(", ")}`),
+  );
+
+  // Beide Kleidungswege und der Anteil des Wassers — sie sagen erst etwas,
+  // wenn der Baum offen ist, deshalb ohne Urteil.
+  const labourOf = (ids: readonly string[]): number =>
+    growing.reduce((sum, t) => sum + ids.reduce((s, id) => s + (t.labour[id] ?? 0), 0), 0);
+  const branchOf = (id: string): string => STAGE1.processes.find((p) => p.id === id)?.branch ?? "";
+  const clothing = STAGE1.processes.filter((p) => branchOf(p.id) === "clothing").map((p) => p.id);
+  const hides = clothing.filter((id) => (STAGE1.processes.find((p) => p.id === id)?.intermediatesPerOutput["hides"] ?? 0) > 0);
+  const fibre = clothing.filter((id) => (STAGE1.processes.find((p) => p.id === id)?.intermediatesPerOutput["fibre"] ?? 0) > 0);
+  const both = labourOf(hides) + labourOf(fibre);
+  console.log(
+    `Kleidung aus Fell gegen Faser     ${both <= 0 ? "—" : `${pct(labourOf(hides) / both)} zu ${pct(labourOf(fibre) / both)}`}`,
+  );
+  const food = STAGE1.processes.filter((p) => branchOf(p.id) === "food").map((p) => p.id);
+  const water = food.filter((id) => (STAGE1.processes.find((p) => p.id === id)?.capacityPerOutput["water"] ?? 0) > 0 ||
+    ["fish", "shellfish"].some((s) => (STAGE1.processes.find((p) => p.id === id)?.intermediatesPerOutput[s] ?? 0) > 0));
+  const allFood = labourOf(food);
+  console.log(`Anteil des Wassers an der Nahrung ${allFood <= 0 ? "—" : pct(labourOf(water) / allFood)}`);
 }
 
 // ------------------------------------------------------------ 4: die Bestände
