@@ -16,6 +16,7 @@ import {
   renewals,
   type Renewal,
 } from "./phases.ts";
+import { nextRangeQuality } from "./effects.ts";
 import { peek } from "./random.ts";
 import {
   capacityOf,
@@ -279,11 +280,23 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     allocation.laborAvailable > 0 ? allocation.laborUnused / allocation.laborAvailable : 1;
   const laborScarcity = Math.max(0, Math.min(1, 1 - idleShare));
 
-  /** What the country now on offer is worth (E13, E25) — mean and report together. */
-  const offeredQuality =
-    index.config.land.baseQuality *
-    Math.pow(1 - index.config.land.qualityDecayPerTaking, state.landTakings) *
-    state.landOffer;
+  /**
+   * What the country now on offer is worth (E13, E25): a step below the land
+   * the community lives on — its kinds weighted by area — times this tick's
+   * report. Which kinds count as land is what the content starts heads with.
+   */
+  const offeredQuality = (() => {
+    let area = 0;
+    let weighted = 0;
+    for (const kind of Object.keys(index.config.land.perHeadAtStart)) {
+      const owned = capacityOf(sector?.capacityHeld ?? {}, kind);
+      const unowned = capacityOf(state.unownedCapacity, kind);
+      area += owned.amount + unowned.amount;
+      weighted += owned.amount * owned.quality + unowned.amount * unowned.quality;
+    }
+    const current = area > 0 ? weighted / area : index.config.land.baseQuality;
+    return current * (1 - index.config.land.qualityDecayPerTaking) * state.landOffer;
+  })();
 
   /** Quality of one kind of ground, over what is held and what is not. */
   const groundQuality = (capacity: CapacityId): number => {
@@ -494,7 +507,7 @@ function consequencesOf(
             kind: "quality",
             capacity: effect.capacity,
             from: now,
-            to: qualityOf(effect.quality, state, index, now),
+            to: qualityOf(effect.quality, state, index, now, effect.capacity),
           });
         }
         break;
@@ -545,7 +558,7 @@ function consequencesOf(
             kind: "quality",
             capacity: effect.capacity,
             from: held.quality,
-            to: qualityOf(effect.quality, state, index, held.quality),
+            to: qualityOf(effect.quality, state, index, held.quality, effect.capacity),
           });
         }
         break;
@@ -586,6 +599,7 @@ function qualityOf(
   state: GameState,
   index: ConfigIndex,
   fallback: number,
+  capacity: CapacityId,
 ): number {
   switch (source.kind) {
     case "fixed":
@@ -595,11 +609,7 @@ function qualityOf(
         ? capacityOf(state.sectors[HOUSEHOLDS]?.capacityHeld ?? {}, source.capacity).quality
         : capacityOf(state.unownedCapacity, source.capacity).quality;
     case "nextTaking":
-      return (
-        index.config.land.baseQuality *
-        Math.pow(1 - index.config.land.qualityDecayPerTaking, state.landTakings) *
-        state.landOffer
-      );
+      return nextRangeQuality(state, index.config, capacity);
     default:
       return fallback;
   }

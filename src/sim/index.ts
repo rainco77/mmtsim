@@ -45,7 +45,7 @@ export {
 export type { Shocks } from "./risk.ts";
 export { drawShocks, exposureMagnitude, shockFactor } from "./risk.ts";
 export { derive } from "./derive.ts";
-export { applyEffect, effectTypesWithHandler } from "./effects.ts";
+export { applyEffect, effectTypesWithHandler, nextRangeQuality } from "./effects.ts";
 export type {
   CapacityId,
   BranchId,

@@ -10,6 +10,7 @@ import {
   derive,
   effectTypesWithHandler,
   indexConfig,
+  nextRangeQuality,
   PIPELINE,
   tick,
   type AllocationResult,
@@ -809,6 +810,26 @@ describe("population (E20)", () => {
     // forgets to stop cannot compute a community that no longer exists.
     expect(tick(over, index)).toEqual(over);
     expect(tick(tick(over, index), index).tick).toBe(over.tick);
+  });
+});
+
+describe("the next range (E13, E29)", () => {
+  it("is reckoned from the range left, never from a count of moves", () => {
+    const state = createState(STAGE1, { seed: 7 });
+    const often = { ...state, landTakings: state.landTakings + 7 };
+    expect(nextRangeQuality(often, STAGE1, "wilderness")).toBeCloseTo(
+      nextRangeQuality(state, STAGE1, "wilderness"),
+      12,
+    );
+  });
+
+  it("a good report can beat the range left; an average one is a step below", () => {
+    const state = createState(STAGE1, { seed: 7 });
+    const step = STAGE1.land.qualityDecayPerTaking;
+    const offered = (offer: number): number =>
+      nextRangeQuality({ ...state, landOffer: offer }, STAGE1, "wilderness");
+    expect(offered(1)).toBeCloseTo(1 - step, 9);
+    expect(offered(1 + STAGE1.land.qualitySpread)).toBeGreaterThan(1);
   });
 });
 

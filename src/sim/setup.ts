@@ -125,7 +125,31 @@ export function createState(config: Config, options: StartOptions): GameState {
     experience: {},
   };
 
-  return atRest(opening, config);
+  return freshlyArrived(atRest(opening, config), config);
+}
+
+/**
+ * The arrival: stocks marked `freshAtStart` open the way a move leaves them —
+ * their share of the gap to the ceiling closed above the rest the settling
+ * found. The community has just come here; what is slow to grow has not yet
+ * been thinned by it.
+ */
+function freshlyArrived(state: GameState, config: Config): GameState {
+  const sector = state.sectors[HOUSEHOLDS];
+  if (sector === undefined) return state;
+  const stocks: Record<StockId, number> = { ...sector.stocks };
+  for (const stock of config.stocks) {
+    const rule = stock.regrowth;
+    if (rule?.freshAtStart === undefined) continue;
+    const range = state.unownedCapacity[rule.capacity];
+    const ceiling = (range === undefined ? 0 : carryingArea(range)) * rule.densityPerArea;
+    const held = stocks[stock.id] ?? 0;
+    stocks[stock.id] = held + rule.freshAtStart * Math.max(0, ceiling - held);
+  }
+  return {
+    ...state,
+    sectors: { ...state.sectors, [HOUSEHOLDS]: { ...sector, stocks } },
+  };
 }
 
 /**

@@ -188,6 +188,8 @@ export const STAGE1: Config = {
       id: "game",
       decayPerTick: 0,
       regrowth: {
+        // The community arrives on game it has not yet thinned (E14, E29).
+        freshAtStart: 0.5,
         ratePerTick: 0.3,
         capacity: "wilderness",
         densityPerArea: 14.4,
@@ -248,6 +250,8 @@ export const STAGE1: Config = {
       id: "fish",
       decayPerTick: 0,
       regrowth: {
+        // As with the game: fresh on arrival, thinned by staying (E14, E29).
+        freshAtStart: 0.5,
         ratePerTick: 0.4,
         capacity: "water",
         densityPerArea: 19.2,

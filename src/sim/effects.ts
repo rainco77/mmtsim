@@ -64,7 +64,7 @@ class CapacityEffectHandler implements EffectHandler<CapacityEffect> {
     config: Config,
     sector: SectorId,
   ): GameState {
-    const { quality, advanceTaking } = resolveQuality(state, config, effect);
+    const { quality, advanceTaking } = resolveQuality(state, config, effect, effect.capacity);
     const withTaking = advanceTaking ? { ...state, landTakings: state.landTakings + 1 } : state;
     // New country comes with what lives on it (E29). Opening water without its
     // fish left the same fish spread over four times the water, so the boat —
@@ -105,11 +105,30 @@ class CapacityEffectHandler implements EffectHandler<CapacityEffect> {
   }
 }
 
+/**
+ * What the next range would be worth (E13, E29): a step below the country
+ * being left, times this tick's report. Reckoned from what the community
+ * leaves, never from a count — whoever walks trades the range they know for
+ * one a step poorer on average, and a good report can beat it. Waiting for
+ * one is the player's craft; what it costs is the wearing of the range being
+ * sat on.
+ */
+export function nextRangeQuality(
+  state: GameState,
+  config: Config,
+  capacity: CapacityId,
+): number {
+  return (
+    averageQuality(state, capacity) * (1 - config.land.qualityDecayPerTaking) * state.landOffer
+  );
+}
+
 /** Where the quality of added area comes from (E13) — data, never code. */
 function resolveQuality(
   state: GameState,
   config: Config,
   effect: { readonly quality?: QualitySource },
+  capacity: CapacityId,
 ): { quality: number | undefined; advanceTaking: boolean } {
   const source: QualitySource | undefined = effect.quality;
   if (source === undefined) return { quality: undefined, advanceTaking: false };
@@ -121,10 +140,7 @@ function resolveQuality(
       return { quality: averageQuality(state, source.capacity), advanceTaking: false };
     case "nextTaking":
       return {
-        quality:
-          config.land.baseQuality *
-          Math.pow(1 - config.land.qualityDecayPerTaking, state.landTakings) *
-          state.landOffer,
+        quality: nextRangeQuality(state, config, capacity),
         advanceTaking: true,
       };
   }
@@ -246,7 +262,7 @@ class SetCapacityEffectHandler implements EffectHandler<SetCapacityEffect> {
     const { quality, advanceTaking } =
       effect.quality === undefined
         ? { quality: undefined, advanceTaking: false }
-        : resolveQuality(state, config, { quality: effect.quality });
+        : resolveQuality(state, config, { quality: effect.quality }, effect.capacity);
     const next = advanceTaking ? { ...state, landTakings: state.landTakings + 1 } : state;
     const settle = (current: Capacity): Capacity => ({
       amount:

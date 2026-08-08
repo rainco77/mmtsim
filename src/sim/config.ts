@@ -126,6 +126,14 @@ export interface StockDef {
     readonly densityPerArea: number;
     readonly refuge: number;
     /**
+     * The run begins the tick after an arrival (E14, E29). A stock marked so
+     * opens the way a move leaves it — this share of the gap to the ceiling
+     * closed above where the community's own taking would hold it — and thins
+     * from there. A stock that opens at its rest cannot thin, and the opening
+     * stretch of a run would then say nothing about what staying costs.
+     */
+    readonly freshAtStart?: number;
+    /**
      * How much dearer taking becomes when the stock is thin — the effort per
      * unit caught, at most.
      *
@@ -776,7 +784,12 @@ export interface LandConfig {
 
   /** Quality of the very first territory. */
   readonly baseQuality: number;
-  /** Each taking yields land this much worse than the previous one (E13). */
+  /**
+   * A new range is on average this much worse **than the one being left** —
+   * reckoned from its quality, never from how often the community has moved.
+   * With the spread on the offer a well-timed move can still better the range;
+   * how rarely, follows from step against spread.
+   */
   readonly qualityDecayPerTaking: number;
   /**
    * How far what is on offer strays from that falling mean, up or down.

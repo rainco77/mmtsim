@@ -24,6 +24,14 @@ const WORTH_IT = 0.1;
 const BOUND = 0.02;
 
 /**
+ * A range of any quality is not taken. The report on the next range is drawn
+ * afresh every tick, so a braked community waits for one worth nearly what the
+ * worn range still is — a few ticks of patience against a step that cannot be
+ * taken back.
+ */
+const WORTH_LEAVING_FOR = 0.97;
+
+/**
  * Moves on, and does nothing else.
  *
  * **A dear stand is not by itself a reason to walk.** What makes it one is that
@@ -43,6 +51,9 @@ export class MovingPolicy implements Policy {
     const idle = derived.laborPerformance > 0 ? derived.laborUnused / derived.laborPerformance : 1;
     if (idle > BOUND) return [];
     if (!this.braked(derived, index)) return [];
+    if (derived.nextTakingQuality < WORTH_LEAVING_FOR * this.landQuality(derived, index)) {
+      return [];
+    }
 
     // Whatever the content offers that sets stocks back towards what the range
     // carries. Named by what it does, not by its id, so this holds for whatever
@@ -56,6 +67,20 @@ export class MovingPolicy implements Policy {
         ),
     );
     return move === undefined ? [] : [{ type: "startProject", id: move.id }];
+  }
+
+  /** Quality of the land lived on now, its kinds weighted by area. */
+  private landQuality(derived: Derived, index: ConfigIndex): number {
+    let area = 0;
+    let weighted = 0;
+    for (const kind of Object.keys(index.config.land.perHeadAtStart)) {
+      for (const pool of [derived.ownedCapacity[kind], derived.unownedCapacity[kind]]) {
+        if (pool === undefined) continue;
+        area += pool.amount;
+        weighted += pool.amount * pool.quality;
+      }
+    }
+    return area > 0 ? weighted / area : 1;
   }
 
   /** Is some stand the community draws on now dear, and would a move relieve it? */
