@@ -38,6 +38,12 @@ export function computeUnlocks(state: GameState, index: ConfigIndex): Unlocks {
   }
   for (const process of index.config.processes) {
     if (process.unlockedFromStart) processes.add(process.id);
+    // A combined technique wants several crafts stood together (E5): it is
+    // open once every project it names is done, and no effect points at it.
+    const wanted = process.needsProjects;
+    if (wanted !== undefined && wanted.length > 0) {
+      if (wanted.every((id) => completedCount(state, id) > 0)) processes.add(process.id);
+    }
   }
 
   for (const project of index.config.projects) {

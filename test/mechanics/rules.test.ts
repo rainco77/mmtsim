@@ -120,6 +120,10 @@ describe("content is well formed (T3)", () => {
       expect(stocks.has(tier.stock)).toBe(true);
       expect(branches.has(tier.branch)).toBe(true);
     }
+    const projects = new Set(STAGE1.projects.map((p) => p.id));
+    for (const process of STAGE1.processes) {
+      for (const id of process.needsProjects ?? []) expect(projects.has(id), id).toBe(true);
+    }
     for (const project of STAGE1.projects) {
       for (const effect of project.effects) {
         if (effect.type === "process") expect(processes.has(effect.id)).toBe(true);
@@ -836,6 +840,25 @@ describe("the next range (E13, E29)", () => {
       nextRangeQuality({ ...state, landOffer: offer }, STAGE1, "wilderness");
     expect(offered(1)).toBeCloseTo(1 - step, 9);
     expect(offered(1 + STAGE1.land.qualitySpread)).toBeGreaterThan(1);
+  });
+});
+
+describe("combined techniques (E5)", () => {
+  it("a technique wanting several crafts opens only once all of them stand", () => {
+    const base = createState(STAGE1, { seed: 7 });
+    const withDone = (done: Record<string, number>): GameState => ({
+      ...base,
+      completedProjects: done,
+    });
+    expect(computeUnlocks(withDone({}), index).processes.has("gathering_sickle_mortar")).toBe(false);
+    expect(
+      computeUnlocks(withDone({ sickle: 1 }), index).processes.has("gathering_sickle_mortar"),
+    ).toBe(false);
+    expect(
+      computeUnlocks(withDone({ sickle: 1, mortar: 1 }), index).processes.has(
+        "gathering_sickle_mortar",
+      ),
+    ).toBe(true);
   });
 });
 

@@ -578,21 +578,29 @@ console.log("\n== The whole tree before settling — the thorough play ==");
       `${judge("every project of the epoch is built in some run", neverBuilt.length === 0)}`,
   );
 
-  // Every process of the epoch: on from the start, or opened by an epoch project.
-  const openedBy = new Set<string>();
+  // No project's craft goes dead: for every epoch project that opens or
+  // enables techniques, at least one of them runs somewhere — the improver
+  // may be shadowed by its own combination, that is the combination working.
+  // Techniques on from the start are held to run themselves.
+  const deadCrafts: string[] = [];
   for (const project of STAGE1.projects) {
-    // What sedentism itself opens belongs to the settled stage, not to this one.
     if (afterSettling(project.id) || project.id === "sedentism") continue;
-    for (const effect of project.effects) if (effect.type === "process") openedBy.add(effect.id);
+    const enabled = new Set<string>();
+    for (const effect of project.effects) if (effect.type === "process") enabled.add(effect.id);
+    for (const proc of STAGE1.processes) {
+      if ((proc.needsProjects ?? []).includes(project.id)) enabled.add(proc.id);
+    }
+    if (enabled.size === 0) continue;
+    if (![...enabled].some((id) => ranSomewhere.has(id))) deadCrafts.push(project.id);
   }
-  const epochProcesses = STAGE1.processes
+  const fromStartDead = STAGE1.processes
+    .filter((proc) => proc.unlockedFromStart && proc.id !== "labor")
     .map((proc) => proc.id)
-    .filter((id) => id !== "labor")
-    .filter((id) => (STAGE1.processes.find((proc) => proc.id === id)?.unlockedFromStart ?? false) || openedBy.has(id));
-  const neverRan = epochProcesses.filter((id) => !ranSomewhere.has(id));
+    .filter((id) => !ranSomewhere.has(id));
+  const neverRan = [...deadCrafts, ...fromStartDead];
   console.log(
-    `Never run                        ${neverRan.length === 0 ? "none" : neverRan.join(", ")} — ` +
-      `${judge("every process of the epoch runs in some run", neverRan.length === 0)}`,
+    `Dead crafts                      ${neverRan.length === 0 ? "none" : neverRan.join(", ")} — ` +
+      `${judge("every project's craft runs in some run, and every craft on from the start", neverRan.length === 0)}`,
   );
 
   const stands = STAGE1.stocks.filter((s) => s.regrowth !== undefined).map((s) => s.id);

@@ -218,6 +218,13 @@ export interface ProcessDef {
    * no privileged place in any decision.
    */
   readonly intermediatesPerOutput: Readonly<Record<StockId, number>>;
+  /**
+   * Projects that must all stand before this technique exists (E5). For the
+   * written-out combination of two improvers on one craft — a sickle in the
+   * hand and a mortar at home are used together, and neither project may go
+   * dead because the other was built first.
+   */
+  readonly needsProjects?: readonly ProjectId[];
 
   /**
    * Exposure per named random stream (E24, E25) — risk is not only weather.

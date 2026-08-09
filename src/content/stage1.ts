@@ -392,6 +392,23 @@ export const STAGE1: Config = {
       unlockedFromStart: false,
     },
     {
+      // Sickle in the hand, mortar at home: the two improvers of gathering
+      // worked together, and neither project goes dead because the other was
+      // built first. The sickle's quicker cutting and the mortar's fuller use
+      // of every plant multiply.
+      id: "gathering_sickle_mortar",
+      branch: "food",
+      activity: "gathering",
+      priority: 106,
+      capacityPerOutput: {},
+      intermediatesPerOutput: { labor: 0.2, plants: 0.525 },
+      exposure: { weather: 0.88 },
+      qualityWeight: 0,
+      yield: "found",
+      needsProjects: ["sickle", "mortar"],
+      unlockedFromStart: false,
+    },
+    {
       // The mortar's road: the same growth feeds more, because small hard seeds
       // become edible and more of what stands there counts as food. Not a
       // smaller appetite — the need is physiology (E29). It is the one process
@@ -525,6 +542,21 @@ export const STAGE1: Config = {
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
       yield: "found",
+      unlockedFromStart: false,
+    },
+    {
+      // Net for the shoals, line for the deep: a fishery that has both takes
+      // more with the same hands, and neither project goes dead for the other.
+      id: "fishing_net_line",
+      branch: "food",
+      activity: "fishing",
+      priority: 86,
+      capacityPerOutput: { water: 0.028 },
+      intermediatesPerOutput: { labor: 0.14, fish: 1.0, fibre: 0.1 },
+      exposure: { weather: 0.4 },
+      qualityWeight: 0,
+      yield: "found",
+      needsProjects: ["fishing_net", "fish_hook"],
       unlockedFromStart: false,
     },
 
