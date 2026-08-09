@@ -175,6 +175,9 @@ export const STAGE1: Config = {
       id: "plants",
       decayPerTick: 0,
       regrowth: {
+        // A burnt stretch stays richer only as long as it is kept burnt: the
+        // bonus a burn carries fades as the underbrush returns.
+        carriedFadePerTick: 0.04,
         ratePerTick: 0.5,
         capacity: "wilderness",
         densityPerArea: 38.4,
@@ -1039,6 +1042,25 @@ export const STAGE1: Config = {
       sector: "households",
     },
     {
+      // Mesolithic underbrush burning, read from charcoal and pollen profiles
+      // (Mellars); popularly, fire-stick farming. A burnt stretch carries more
+      // edible growth for a while: the burn is one day's event, its effect
+      // fades as the underbrush returns, and the fuel is the standing
+      // deadwood — what the burn eats, the fire tiers cannot gather, so a
+      // woodpile laid in beforehand carries the camp through the lean
+      // firewood ticks after a burn. Repeatable without a counter: the fuel
+      // and the fading are the limit.
+      id: "fire_setting",
+      visibleWhen: [{ kind: "strain", measure: { searchCost: "plants" }, factor: 1.15 }],
+      availableWhen: [{ kind: "experience", activities: ["gathering"], min: 400 }],
+      defaultRank: PROJECTS_LAST,
+      laborCost: 6,
+      stockCost: { deadwood: 30 },
+      minTicks: 1,
+      effects: [{ type: "carries", stock: "plants", addPerArea: 8 }],
+      sector: "households",
+    },
+    {
       // Cooking pits and burnt mounds are among the commonest Mesolithic finds.
       id: "earth_oven",
       // It answers the fuel running short, and earlier than the axe does: it
@@ -1118,6 +1140,9 @@ export const STAGE1: Config = {
           capacity: "water",
           quality: { kind: "from", capacity: "wilderness" },
         },
+        // What the burns made of the ground stays with the ground: the new
+        // range carries what nature put there and not a shoot more.
+        { type: "carries", stock: "plants", reset: true, addPerArea: 0 },
         // Found: fresh country, but not untouched. What a move closes is a
         // fifth of the gap between what stands and what the ground could carry
         // — so the worn stocks gain most and none is ever lowered, and moving

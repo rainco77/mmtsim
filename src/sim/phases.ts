@@ -292,8 +292,30 @@ export class RegrowthPhase implements Phase {
   readonly id = "regrowth";
 
   run(state: GameState, index: ConfigIndex): GameState {
-    return regrown(state, index);
+    return regrown(fadedCarries(state, index), index);
   }
+}
+
+/**
+ * A carried bonus fades as the underbrush returns (E29): each tick takes the
+ * stated share of it, and what lives on the bonus goes with it — the same
+ * proportional step a burn makes, run backwards, so the searching never reads
+ * a fading range as untouched.
+ */
+function fadedCarries(state: GameState, index: ConfigIndex): GameState {
+  let next = state;
+  for (const [stockId, bonus] of Object.entries(state.rangeCarries)) {
+    if (bonus === 0) continue;
+    const rate = index.stock.get(stockId)?.regrowth?.carriedFadePerTick ?? 0;
+    if (rate <= 0) continue;
+    next = applyEffect(
+      next,
+      { type: "carries", stock: stockId, addPerArea: -rate * bonus },
+      index.config,
+      HOUSEHOLDS,
+    );
+  }
+  return next;
 }
 
 export class DecayPhase implements Phase {

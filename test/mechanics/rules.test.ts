@@ -838,6 +838,33 @@ describe("the next range (E13, E29)", () => {
   });
 });
 
+describe("the burnt range (E29)", () => {
+  it("a burn carries more, the bonus fades, and a move returns it to the ground", () => {
+    const carried = (state: GameState): number => state.rangeCarries["plants"] ?? 0;
+    let state = createState(STAGE1, { seed: 7 });
+    state = finish(state, "fire_setting");
+    const burnt = carried(state);
+    expect(burnt).toBeGreaterThan(0);
+
+    const later = runTicks(state, 5);
+    expect(carried(later)).toBeLessThan(burnt);
+    expect(carried(later)).toBeGreaterThan(0);
+
+    const moved = finish(later, "range_change");
+    expect(carried(moved)).toBe(0);
+  });
+
+  it("the burn eats standing deadwood", () => {
+    const wood = (state: GameState): number =>
+      state.sectors["households"]!.stocks["deadwood"] ?? 0;
+    const state = createState(STAGE1, { seed: 7 });
+    const before = wood(state);
+    const burnt = finish(state, "fire_setting");
+    const cost = STAGE1.projects.find((p) => p.id === "fire_setting")!.stockCost["deadwood"]!;
+    expect(wood(burnt)).toBeLessThan(before - cost * 0.5);
+  });
+});
+
 describe("the carrying brake (E20, E29)", () => {
   // A hand-shaped allocation: all searching labour on the plants, priced as
   // stated. Only the fields the brake reads are given.

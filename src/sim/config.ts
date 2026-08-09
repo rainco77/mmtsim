@@ -134,6 +134,13 @@ export interface StockDef {
      */
     readonly freshAtStart?: number;
     /**
+     * How fast a carried bonus on this stock fades, per tick — the underbrush
+     * grows back and what a burn made of the ground wants burning again.
+     * Whoever holds a range denser than nature keeps paying hands for it,
+     * which is what intensification costs (E29). Absent means a bonus keeps.
+     */
+    readonly carriedFadePerTick?: number;
+    /**
      * How much dearer taking becomes when the stock is thin — the effort per
      * unit caught, at most.
      *
@@ -566,7 +573,17 @@ export type Effect =
    * ceiling never makes what lives under it read as suddenly scarce — the
    * mistake the boat made before land learned to bring its stock along.
    */
-  | { readonly type: "carries"; readonly stock: StockId; readonly addPerArea: number };
+  | {
+      readonly type: "carries";
+      readonly stock: StockId;
+      readonly addPerArea: number;
+      /**
+       * Returns the carried bonus for this stock to nought instead of adding —
+       * what a burn has made of the ground stays with the ground, and whoever
+       * moves on stands on country nobody has tended. `addPerArea` is ignored.
+       */
+      readonly reset?: boolean;
+    };
 
 export interface ProjectDef {
   readonly id: ProjectId;

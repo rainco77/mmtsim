@@ -47,8 +47,18 @@ export class BuildingPolicy implements Policy {
 
     if (state.activeProjects.length > 0) return actions;
 
+    // Judgement lives here, not in the content's availability (the interface
+    // wants a progress bar on what a project still asks, so availability hangs
+    // only on what runs forward): nobody sensible burns land that is still
+    // rich from the last burn — a repeatable burn is started only once its
+    // bonus has as good as faded.
+    const worthBurning = (id: string): boolean =>
+      id !== "fire_setting" || (state.rangeCarries["plants"] ?? 0) < 2;
+
     const pit = offered.find((project) => project.id === "storage_pit");
-    const next = pit ?? offered.find((project) => project.id !== "range_change");
+    const next =
+      pit ??
+      offered.find((project) => project.id !== "range_change" && worthBurning(project.id));
     if (next !== undefined) actions.push({ type: "startProject", id: next.id });
     return actions;
   }

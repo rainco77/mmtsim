@@ -323,9 +323,11 @@ class CarriesEffectHandler implements EffectHandler<CarriesEffect> {
 
   apply(state: GameState, effect: CarriesEffect, config: Config): GameState {
     const rule = config.stocks.find((stock) => stock.id === effect.stock)?.regrowth;
-    if (rule === undefined || effect.addPerArea === 0) return state;
+    const added =
+      effect.reset === true ? -(state.rangeCarries[effect.stock] ?? 0) : effect.addPerArea;
+    if (rule === undefined || added === 0) return state;
     const was = carriedPerArea(state, rule.densityPerArea, effect.stock);
-    const now = Math.max(0, was + effect.addPerArea);
+    const now = Math.max(0, was + added);
     if (was <= 0) return state;
     const factor = now / was;
 
@@ -341,7 +343,7 @@ class CarriesEffectHandler implements EffectHandler<CarriesEffect> {
       sectors,
       rangeCarries: {
         ...state.rangeCarries,
-        [effect.stock]: (state.rangeCarries[effect.stock] ?? 0) + effect.addPerArea,
+        [effect.stock]: (state.rangeCarries[effect.stock] ?? 0) + added,
       },
     };
   }
