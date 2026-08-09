@@ -81,20 +81,18 @@ export const STAGE1: Config = {
     {
       // Wood keeps almost by itself, so a pile of it is a reserve that needs no
       // building — and the one buffer this epoch can have against a hard draw
-      // before the pit exists. Measured, what killed a community at seed 42,
-      // tick 81 was not hunger but the fire going out at 0.04 while hunger
-      // itself held at 0.86: a few ticks of firewood stacked would have carried
-      // it through.
+      // before the pit exists. What kills a community here is as often the fire
+      // going out as the hunger: a few ticks of firewood stacked carry it
+      // through.
       //
       // Just behind putting food by, which is where it belongs: one lays in
       // food before firewood, and both before eating one's fill.
       //
-      // Measured with a target of twelve: the pile forms at once — 9.8 by the
-      // first tick — and then rides between five and seven, because the fire
-      // burns some 2.7 a tick and refilling hangs on hands and standing wood.
-      // It costs, too: the run peaks at 26 against 36 without it. That is the
-      // bargain the setting is meant to be, and at twelve the community of this
-      // size is paying more for it than it gets.
+      // The pile forms at once and then rides well below its target, because
+      // the fire burns into it every tick and refilling hangs on hands and on
+      // standing wood. It costs while it is being laid in, which is the bargain
+      // the setting is meant to be: a target set too high is paid for in people
+      // who are not born.
       id: "wood",
       decayPerTick: 0.02,
       keeping: { rank: PROJECTS_LAST },
