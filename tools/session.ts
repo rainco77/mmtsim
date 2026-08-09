@@ -190,6 +190,24 @@ const scope = {
           return [id, { held: round(r.held), of: round(r.ceiling), grows: round(r.growth), taken: round(taken) }];
         }),
       ),
+      // The move decision, side by side: what the land under one's feet is
+      // worth against what the country on offer would open at. The offer is
+      // this tick's draw and holds until the next (E13).
+      land: (() => {
+        let area = 0;
+        let weighted = 0;
+        for (const kind of Object.keys(session.cfg.land.perHeadAtStart)) {
+          for (const held of [d.ownedCapacity[kind], d.unownedCapacity[kind]]) {
+            if (held === undefined) continue;
+            area += held.amount;
+            weighted += held.amount * held.quality;
+          }
+        }
+        return {
+          standing: round(area > 0 ? weighted / area : session.cfg.land.baseQuality),
+          offered: round(d.nextTakingQuality),
+        };
+      })(),
       shocks: from(Object.keys(session.cfg.shocks), (id) => round(d.shocks[id] ?? 1)),
       short: d.binding.kind === "none" ? null : `${d.binding.kind}:${d.binding.what ?? ""}`,
       projects: {
