@@ -224,6 +224,13 @@ export interface ActiveProject {
   /** Lower runs earlier; the start time seeds it, the player may reorder. */
   readonly order: number;
   readonly paused: boolean;
+  /**
+   * The land report the decision was made on (E13, E29). A move is committed
+   * against the country on offer that tick; the offer is drawn afresh every
+   * tick, so without this the completion would settle a different range than
+   * the one that was scouted, and the shown figure would be a lottery.
+   */
+  readonly landOfferAtStart: number;
 }
 
 export const EMPTY_AREA: Capacity = { amount: 0, quality: 1 };

@@ -371,9 +371,15 @@ export class ProjectPhase implements Phase {
       const progress = active.progress + step;
       if (progress >= 1 - 1e-9) {
         next = { ...next, completedProjects: bump(next.completedProjects, def.id) };
+        // The effects settle against the report the project was started on:
+        // whoever committed to a range moves into that range, not into
+        // whatever the offer happens to say the tick the walking ends.
+        const liveOffer = next.landOffer;
+        next = { ...next, landOffer: active.landOfferAtStart };
         for (const effect of def.effects) {
           next = applyEffect(next, effect, index.config, def.sector);
         }
+        next = { ...next, landOffer: liveOffer };
         ctx.completed.push(def.id);
       } else {
         remaining.push({ ...active, progress });

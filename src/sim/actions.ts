@@ -105,6 +105,7 @@ function startProject(
     order,
     paused: false,
     rank: rank ?? def.defaultRank,
+    landOfferAtStart: state.landOffer,
   };
   return { state: { ...state, activeProjects: [...state.activeProjects, active] } };
 }

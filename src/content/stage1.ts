@@ -1707,7 +1707,10 @@ export const STAGE1: Config = {
   land: {
     perHeadAtStart: { wilderness: 0.144, water: 0.0576 },
     baseQuality: 1.0,
-    qualityDecayPerTaking: 0.05,
+    // Against the spread below, a report worth more than the range left comes
+    // about every sixth tick: moving stays a choice worth timing, and the
+    // patient cannot ratchet the world upward move by move.
+    qualityDecayPerTaking: 0.09,
     // What a report on the next range strays from that mean, either way. At a
     // seventh a lucky one is worth waiting a tick or two for and a poor one is
     // worth sitting out, without the move turning into a game of chance.

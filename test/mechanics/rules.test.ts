@@ -823,6 +823,24 @@ describe("the next range (E13, E29)", () => {
     );
   });
 
+  it("the move settles the range that was scouted, not the offer at arrival", () => {
+    // The offer is redrawn every tick, and the walking takes ticks. Whatever
+    // the draw does meanwhile, the range moved into is the one the decision
+    // was made on.
+    const scoutedAt = 1 + STAGE1.land.qualitySpread;
+    let state: GameState = { ...createState(STAGE1, { seed: 7 }), landOffer: scoutedAt };
+    const before = state.unownedCapacity["wilderness"]!.quality;
+    state = apply(state, { type: "startProject", id: "range_change" }, index).state;
+    for (let i = 0; i < 60 && completedCount(state, "range_change") === 0; i += 1) {
+      state = tick(state, index);
+    }
+    expect(completedCount(state, "range_change")).toBe(1);
+    expect(state.unownedCapacity["wilderness"]!.quality).toBeCloseTo(
+      before * (1 - STAGE1.land.qualityDecayPerTaking) * scoutedAt,
+      9,
+    );
+  });
+
   it("a good report can beat the range left; an average one is a step below", () => {
     const state = createState(STAGE1, { seed: 7 });
     const step = STAGE1.land.qualityDecayPerTaking;
