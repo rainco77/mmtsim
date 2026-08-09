@@ -469,34 +469,26 @@ export const STAGE1: Config = {
       activity: "fishing",
       priority: 80,
       capacityPerOutput: {},
-      // Level with gathering, on purpose. Whether a community fishes was a
-      // matter of what country it had — the coast makes fishers of people, the
-      // inland forest does not — and both roads are therefore meant to stand
-      // open here rather than one being priced out.
+      // Level with gathering on fresh country, on purpose. Whether a community
+      // fishes was a matter of what country it had — the coast makes fishers of
+      // people, the inland forest does not — and both roads are therefore meant
+      // to stand open here rather than one being priced out. Price the water
+      // dearer and it never pays at all: every technique on the land pushes the
+      // searching price back down, so nobody fishes, so nobody learns to, so the
+      // net and the hook that ask for that learning never appear.
       //
-      // At 1.2, and then at 0.6, the water simply never paid: gathering costs
-      // 0.28 times the price of searching, so fishing needed that price to pass
-      // 4.3, then 2.1, and the run never got there — every technique on the land
-      // pushes the price back down. Nobody ever fished, so nobody ever learned
-      // to, so the net and the hook that ask for that learning never appeared,
-      // so nobody ever fished. Measured over eight seeds: 0 of experience at
-      // fishing after eighty ticks, 4253 at gathering, and the water carrying a
-      // thousandth of the food.
-      //
-      // At 0.35 both cost about the same on fresh country, and what tells them
-      // apart is what they really are. The greens grow back ten times as fast
-      // as the fish, so the water can carry only the smaller share whatever it
-      // costs — which is also the finding: coastal people fished a great deal
-      // and plant food still fed most of them. And the water is the safer of
-      // the two in a poor tick, 0.4 of exposure against 0.7, which is exactly
-      // why those who had it used it.
+      // What tells the two apart is not their price but what they are. The
+      // greens grow back many times faster than the fish, so the water can carry
+      // only the smaller share of the food whatever it costs — which is also the
+      // finding: coastal people fished a great deal and plant food still fed
+      // most of them.
       intermediatesPerOutput: { labor: 0.385, fish: 1.0 },
       // Safer than the land, not immune to it: the drought that costs the
-      // gathering lowers the river too. At 0.15 the water carried a quarter of
-      // the food and felt nothing, so the worst draw of a run never reached
-      // hunger at all and a store had no work to do. The shore keeps its low
-      // figure — mussels lie there whether it rains or not, and that is what
-      // made it the last reliable thing to fall back on.
+      // gathering lowers the river too. Make it immune and the worst draw of a
+      // run never reaches hunger, so a store has no work to do and nobody has a
+      // reason to dig one. The shore keeps a lower figure still — mussels lie
+      // there whether it rains or not, and that is what makes it the last
+      // reliable thing to fall back on.
       exposure: { weather: 0.4 },
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
