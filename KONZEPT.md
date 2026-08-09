@@ -3256,11 +3256,19 @@ Entscheidungsmöglichkeit, kann er automatisch laufen lassen, **bis die nächste
 möglich wird**. Zusätzlich kann er automatisch laufen lassen, auch wenn Aktionen
 möglich sind.
 
-**Was den automatischen Lauf anhält, ist noch festzulegen.** „Eine Aktion ist möglich"
-taugt nicht wörtlich als Haltebedingung, denn die meisten Handlungen (Vorratsziel
-setzen, Ränge verschieben, pausieren, abbrechen) sind in jedem Tick erlaubt. Anhalten
-muss der Lauf an **neuen** Möglichkeiten und an Ereignissen, die der Spieler sehen
-muss; die Liste dieser Haltepunkte wird bei der Gestaltung der Oberfläche festgelegt.
+**Die Haltepunkte:** Der „Lauf bis zum nächsten Haltepunkt" hält bei Not-Toten, wenn
+ein Projekt sichtbar wird, wenn eines ausführbar wird (nur beim echten Übergang —
+nicht, wenn ein Wiederholbares nach dem eigenen Abschluss bloß in die Liste
+zurückkehrt), wenn eines fertig wird, beim vollzogenen Umzug und am Ende (Aufgabe oder
+Epochenschluss). Der **freie Lauf** ignoriert die weichen Haltepunkte und hält nur bei
+Not-Toten und am Ende; Pause geht jederzeit.
+
+**Not-Tote, nicht Sterben schlechthin:** Es sterben in jedem Tick Menschen, und wenn
+die Traglastbremse die Geburten unter die Alltagssterblichkeit drückt, schrumpft die
+Gemeinschaft, ohne dass etwas schiefgeht — daran hält kein Lauf. Das Haltesignal ist
+der aufgezeichnete Überlebensfaktor einer Kohorte **unter seiner Grundrate**: Das
+kommt genau dann vor, wenn ein Überlebensrang unterversorgt war. Dieselbe Abgrenzung
+gilt für das Log-Ereignis „Menschen gestorben".
 
 **Was ein Tick bedeutet, wird nicht gesagt** — hier so wenig wie sonst irgendwo (E17).
 Hier stand einmal, er dehne sich mit der Epoche und sei anfangs ein Jahrzehnt, später ein
