@@ -3946,6 +3946,18 @@ sprechen **in Menschen und Ticks**, nicht in technischen Zahlen: „Die Sichel e
 zwei Köpfe mehr", „Die Grube hält Vorrat für vier Ticks Hunger". Prozent nur, wo das
 nicht geht; nackte Vorher/Nachher-Zahlenpaare gar nicht.
 
+**Menschen erscheinen ganzzahlig — überall.** Das Modell bleibt bewusst kontinuierlich
+(daran hängt die glatte Dynamik); die Oberfläche **führt ihr eigenes Buch in ganzen
+Menschen**: Zwei Zähler sammeln die Bruchteile der aufgezeichneten Geburten und Tode
+getrennt und melden beim Überschreiten einer ganzen Person („2 geboren · 1
+gestorben" — die laufende Zeile in der Menschen-Kachel); die angezeigte Kopfzahl ist
+Startbestand plus ganze Geburten minus ganze Tode und damit immer exakt konsistent mit
+den Meldungen. Auch die Kurven zeichnen dieses Buch; Kohorten-Flächen werden so
+gerundet, dass die Teile die Gesamtzahl ergeben. Die Abweichung zur kontinuierlichen
+Modellwahrheit ist durch die Restbruchteile begrenzt und wächst nie an. Raten —
+Deckung, Überlebensfaktoren, Suchkosten — bleiben kontinuierlich: Das sind keine
+Menschen.
+
 **Layout-Gesetze:** Die Seite scrollt nie als Ganzes — wo nötig, scrollt eine einzelne
 Kachel innen. Alle Bedienziele sind fingergroß; entworfen wird für Berührung, die Maus
 ist der Sonderfall.
