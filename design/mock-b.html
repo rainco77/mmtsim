@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <title>mmtsim — Feinentwurf B (Tick 96, eingefroren)</title>
+    <style>
+      :root {
+        --ground: #e9edea;
+        --surface: #f7f9f7;
+        --sunk: #dde3de;
+        --ink: #23282b;
+        --muted: #5c6660;
+        --line: #c9d0cb;
+        --accent: #b0722a;
+        --accent-ink: #7d4f1a;
+        --ok: #4f7d4f;
+        --ok-soft: #c9d8c6;
+        --crit: #93312b;
+        --store: #33707c;
+        --store-soft: #c3d6da;
+        --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
+      }
+      * { box-sizing: border-box; margin: 0; }
+      html, body { width: 1280px; height: 800px; overflow: hidden; }
+      body {
+        font-family: system-ui, sans-serif;
+        font-size: 14px;
+        color: var(--ink);
+        background: var(--ground);
+      }
+      .num { font-variant-numeric: tabular-nums; }
+
+      .page {
+        display: grid;
+        width: 100%;
+        height: 100%;
+        gap: 10px;
+        padding: 10px;
+        grid-template-columns: 264px 1.25fr 1fr 300px;
+        grid-template-rows: 56px 1fr;
+        grid-template-areas:
+          "top top top top"
+          "cat ladder side frame";
+      }
+      .tile {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .tile > h2 {
+        font-family: var(--serif);
+        font-size: 17px;
+        font-weight: 600;
+        padding: 10px 14px 6px;
+      }
+
+      /* ------- Kopfleiste ------- */
+      .top {
+        grid-area: top;
+        background: var(--ink);
+        color: var(--ground);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 0 16px;
+      }
+      .top .brand { font-family: var(--serif); font-size: 18px; }
+      .top .tick { font-size: 16px; }
+      .top .heads { color: #b8c2ba; }
+      .timegrips { margin-left: auto; display: flex; gap: 8px; }
+      .timegrips button {
+        font: inherit;
+        min-height: 40px;
+        padding: 0 18px;
+        border-radius: 8px;
+        border: 1px solid #4a524d;
+        background: #333b36;
+        color: var(--ground);
+        cursor: pointer;
+      }
+      .timegrips button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+      .lang { display: flex; gap: 4px; margin-left: 10px; }
+      .lang button { min-height: 40px; padding: 0 12px; border-radius: 8px; border: 1px solid #4a524d; background: none; color: #b8c2ba; }
+      .lang button.on { background: var(--ground); color: var(--ink); }
+
+      /* ------- Katalog ------- */
+      .cat { grid-area: cat; overflow: hidden; }
+      .cat .scroll { overflow-y: auto; padding: 0 10px 10px; display: flex; flex-direction: column; gap: 8px; }
+      .cat h3 {
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin: 10px 4px 2px;
+      }
+      .card {
+        background: var(--ground);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px 12px;
+      }
+      .card .head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+      .card .name { font-weight: 600; }
+      .card .use { color: var(--muted); font-size: 12.5px; margin-top: 3px; }
+      .card .costs { color: var(--muted); font-size: 12px; margin-top: 5px; }
+      .card button {
+        font: inherit;
+        min-height: 40px;
+        padding: 0 16px;
+        border-radius: 8px;
+        border: none;
+        background: var(--accent);
+        color: #fff;
+        cursor: pointer;
+      }
+      .chip {
+        display: inline-block;
+        font-size: 11.5px;
+        padding: 3px 8px;
+        border-radius: 99px;
+        background: var(--sunk);
+        color: var(--muted);
+      }
+      .chip.crit { background: #ead4d1; color: var(--crit); }
+      .progress { height: 8px; border-radius: 4px; background: var(--sunk); overflow: hidden; margin-top: 8px; }
+      .progress i { display: block; height: 100%; background: var(--accent); }
+      .needsbar { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; margin-top: 6px; font-size: 12px; color: var(--muted); }
+      .needsbar .progress { margin-top: 0; }
+      .needsbar .progress i { background: var(--ok); }
+
+      /* ------- Leiter ------- */
+      .ladder { grid-area: ladder; overflow: hidden; }
+      .ladder .rows { overflow-y: auto; display: flex; flex-direction: column; }
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 46px;
+        padding: 0 14px;
+        border-top: 1px solid var(--line);
+      }
+      .row:first-child { border-top: none; }
+      .rank {
+        width: 34px;
+        text-align: right;
+        font-size: 11.5px;
+        color: var(--muted);
+      }
+      .row .label { width: 118px; font-weight: 600; }
+      .row.claim .label { font-weight: 500; font-style: italic; }
+      .meter { flex: 1; height: 12px; border-radius: 6px; background: var(--sunk); overflow: hidden; }
+      .meter i { display: block; height: 100%; border-radius: 6px; }
+      .meter.cover i { background: var(--ok); }
+      .meter.short i { background: var(--crit); }
+      .meter.build i { background: var(--accent); }
+      .meter.store i { background: var(--store); }
+      .row .val { width: 46px; text-align: right; font-size: 13.5px; }
+      .row .note { font-size: 12px; color: var(--crit); width: 150px; }
+      .row .spark { width: 76px; height: 26px; }
+      .rowdetail {
+        background: var(--ground);
+        border-top: 1px dashed var(--line);
+        padding: 10px 14px 12px 58px;
+        font-size: 12.5px;
+        color: var(--muted);
+      }
+      .rowdetail .big { display: block; width: 100%; height: 46px; margin-bottom: 8px; }
+      .rowdetail table { border-collapse: collapse; }
+      .rowdetail td { padding: 2px 14px 2px 0; }
+      .rowdetail .why { color: var(--ink); margin-bottom: 6px; }
+      .foot {
+        margin-top: auto;
+        border-top: 2px solid var(--line);
+        background: var(--surface);
+      }
+      .slider { flex: 1; height: 12px; border-radius: 6px; background: var(--sunk); position: relative; }
+      .slider .knob {
+        position: absolute; top: 50%; transform: translate(-50%, -50%);
+        width: 26px; height: 26px; border-radius: 50%;
+        background: #fff; border: 2px solid var(--accent);
+      }
+
+      /* ------- Revier + Vorräte ------- */
+      .side { grid-area: side; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+      .range { flex: 1.6; overflow: hidden; }
+      .range .rows { overflow-y: auto; }
+      .stand {
+        display: grid;
+        grid-template-columns: 74px 1fr 92px;
+        grid-template-rows: auto auto;
+        align-items: center;
+        column-gap: 10px;
+        padding: 7px 14px;
+        border-top: 1px solid var(--line);
+      }
+      .stand:first-child { border-top: none; }
+      .stand .label { font-weight: 600; grid-row: span 2; }
+      .stand .meter { height: 9px; }
+      .stand .flow { font-size: 11.5px; color: var(--muted); }
+      .stand .effort { grid-row: span 2; text-align: right; font-size: 12.5px; }
+      .stand .effort b { font-size: 14px; }
+      .stand .effort.hot b { color: var(--crit); }
+      .stand svg { display: block; margin-left: auto; }
+      .movebox {
+        border-top: 2px solid var(--line);
+        padding: 10px 14px;
+        display: flex; flex-direction: column; gap: 6px;
+        font-size: 12.5px;
+      }
+      .movebox .pair { display: flex; justify-content: space-between; align-items: center; }
+      .movebox button {
+        font: inherit; min-height: 40px; padding: 0 16px; border-radius: 8px;
+        border: 1px solid var(--accent); background: none; color: var(--accent-ink); cursor: pointer;
+      }
+      .movebox .price { color: var(--crit); }
+      .movebox .gain { color: var(--muted); }
+
+      .stores { flex: 1; }
+      .storeline { padding: 7px 14px; border-top: 1px solid var(--line); }
+      .storeline:first-of-type { border-top: none; }
+      .storeline .head { display: flex; justify-content: space-between; font-size: 13px; }
+      .storeline .meter { height: 9px; margin-top: 5px; }
+      .storeline .sub { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; font-size: 11.5px; color: var(--muted); }
+
+      /* ------- Rahmen rechts ------- */
+      .frame { grid-area: frame; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+      .people { flex: 1.1; }
+      .people .count { font-family: var(--serif); font-size: 40px; padding: 0 14px; line-height: 1; }
+      .people .kaiser { padding: 2px 14px 6px; color: var(--muted); font-size: 12.5px; }
+      .people .chart { padding: 0 14px; }
+      .people .legend { display: flex; gap: 12px; padding: 4px 14px 0; font-size: 11.5px; color: var(--muted); }
+      .dot { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 4px; }
+      .brake { display: flex; align-items: center; gap: 8px; padding: 8px 14px 10px; font-size: 12.5px; }
+      .brake .q {
+        margin-left: auto; width: 26px; height: 26px; border-radius: 50%;
+        border: 1px solid var(--line); background: var(--ground);
+        display: flex; align-items: center; justify-content: center; color: var(--muted);
+      }
+      .log { flex: 1; overflow: hidden; }
+      .log ul { list-style: none; padding: 0 14px 10px; overflow-y: auto; }
+      .log li { display: flex; gap: 10px; padding: 5px 0; border-top: 1px solid var(--line); font-size: 12.5px; }
+      .log li:first-child { border-top: none; }
+      .log .t { color: var(--muted); min-width: 24px; text-align: right; }
+      .log .crisis { color: var(--crit); font-weight: 600; }
+      .log .weather { padding: 0 14px 6px; font-size: 11.5px; color: var(--muted); }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <!-- Kopfleiste -->
+      <header class="top">
+        <span class="brand">mmtsim</span>
+        <span class="tick num">Tick 96</span>
+        <span class="heads num">27 Menschen</span>
+        <nav class="timegrips">
+          <button>Ein Tick</button>
+          <button class="primary">Bis zum Haltepunkt</button>
+          <button>Laufen lassen</button>
+        </nav>
+        <nav class="lang"><button class="on">DE</button><button>EN</button></nav>
+      </header>
+
+      <!-- Vorhaben-Katalog -->
+      <section class="tile cat">
+        <h2>Vorhaben</h2>
+        <div class="scroll">
+          <h3>Läuft</h3>
+          <div class="card">
+            <div class="head"><span class="name">Fischernetz</span><span class="chip crit">bekommt keine Hände</span></div>
+            <div class="progress"><i style="width: 50%"></i></div>
+          </div>
+          <h3>Ausführbar</h3>
+          <div class="card">
+            <div class="head"><span class="name">Feuerlegen</span><button>Starten</button></div>
+            <p class="use">Ein Brand macht das Land eine Weile üppiger.</p>
+            <p class="costs num">Arbeit 4 · Totholz 30 · 1 Tick</p>
+          </div>
+          <div class="card">
+            <div class="head"><span class="name">Vorratsgrube <span class="chip num">×3</span></span><button>Starten</button></div>
+            <p class="use">Eine Grube speichert Nahrung für schlechte Ticks.</p>
+            <p class="costs num">Arbeit 24 · Holz 10 · 6 Ticks</p>
+          </div>
+          <h3>In Sicht</h3>
+          <div class="card">
+            <div class="head"><span class="name" style="color: var(--muted)">Sesshaftigkeit</span></div>
+            <p class="use">Bleiben: dein Volk bindet sich an diesen Ort.</p>
+            <div class="needsbar"><div class="progress"><i style="width: 70%"></i></div><span class="num">Speicher je Kopf 1,4 / 2</span></div>
+            <div class="needsbar"><div class="progress"><i style="width: 52%"></i></div><span class="num">eigenes Wasser 13 / 25</span></div>
+          </div>
+          <div class="card">
+            <div class="head"><span class="name" style="color: var(--muted)">Knochennadel</span></div>
+            <div class="needsbar"><div class="progress"><i style="width: 85%"></i></div><span class="num">Suchkosten Wild 1,19 / 1,4</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Rangleiter -->
+      <section class="tile ladder">
+        <h2>Bedarfe und Ansprüche</h2>
+        <div class="rows">
+          <div class="row">
+            <span class="rank num">100</span><span class="label">Hunger</span>
+            <div class="meter cover"><i style="width: 100%"></i></div>
+            <span class="val num">1,00</span>
+            <svg class="spark" viewBox="0 0 76 26"><path d="M0 6 L20 5 L36 8 L48 14 L60 7 L76 5 L76 26 L0 26 Z" fill="#c9d8c6"/><path d="M0 6 L20 5 L36 8 L48 14 L60 7 L76 5" fill="none" stroke="#4f7d4f" stroke-width="1.5"/><circle cx="76" cy="5" r="2.5" fill="#4f7d4f"/></svg>
+          </div>
+          <div class="row">
+            <span class="rank num">200</span><span class="label">Feuer</span>
+            <div class="meter cover"><i style="width: 100%"></i></div>
+            <span class="val num">1,00</span>
+            <svg class="spark" viewBox="0 0 76 26"><path d="M0 5 L30 5 L44 9 L58 5 L76 5 L76 26 L0 26 Z" fill="#c9d8c6"/><path d="M0 5 L30 5 L44 9 L58 5 L76 5" fill="none" stroke="#4f7d4f" stroke-width="1.5"/><circle cx="76" cy="5" r="2.5" fill="#4f7d4f"/></svg>
+          </div>
+          <div class="row">
+            <span class="rank num">300</span><span class="label">Betreuung</span>
+            <div class="meter cover"><i style="width: 100%"></i></div>
+            <span class="val num">1,00</span>
+            <svg class="spark" viewBox="0 0 76 26"><path d="M0 5 L76 5 L76 26 L0 26 Z" fill="#c9d8c6"/><path d="M0 5 L76 5" fill="none" stroke="#4f7d4f" stroke-width="1.5"/><circle cx="76" cy="5" r="2.5" fill="#4f7d4f"/></svg>
+          </div>
+          <div class="row claim">
+            <span class="rank num">350</span><span class="label">Fischernetz</span>
+            <div class="slider"><span class="knob" style="left: 32%"></span></div>
+            <span class="val num">50 %</span>
+            <span class="note">~9 Ticks · kostet Sättigung</span>
+          </div>
+          <div class="row">
+            <span class="rank num">400</span><span class="label">Kleidung</span>
+            <div class="meter cover"><i style="width: 100%"></i></div>
+            <span class="val num">1,00</span>
+            <svg class="spark" viewBox="0 0 76 26"><path d="M0 7 L24 6 L40 10 L56 6 L76 6 L76 26 L0 26 Z" fill="#c9d8c6"/><path d="M0 7 L24 6 L40 10 L56 6 L76 6" fill="none" stroke="#4f7d4f" stroke-width="1.5"/><circle cx="76" cy="6" r="2.5" fill="#4f7d4f"/></svg>
+          </div>
+          <div class="row">
+            <span class="rank num">450</span><span class="label" style="font-style: italic">Vorrat Holz</span>
+            <div class="meter store"><i style="width: 100%"></i></div>
+            <span class="val num">14/14</span>
+            <svg class="spark" viewBox="0 0 76 26"><path d="M0 20 L18 8 L40 6 L58 10 L76 5 L76 26 L0 26 Z" fill="#c3d6da"/><path d="M0 20 L18 8 L40 6 L58 10 L76 5" fill="none" stroke="#33707c" stroke-width="1.5"/><circle cx="76" cy="5" r="2.5" fill="#33707c"/></svg>
+          </div>
+          <div class="row" style="background: var(--ground)">
+            <span class="rank num">500</span><span class="label">Sättigung</span>
+            <div class="meter short"><i style="width: 62%"></i></div>
+            <span class="val num" style="color: var(--crit)">0,62</span>
+            <svg class="spark" viewBox="0 0 76 26"><path d="M0 6 L22 5 L38 9 L52 16 L64 19 L76 15 L76 26 L0 26 Z" fill="#ead4d1"/><path d="M0 6 L22 5 L38 9 L52 16 L64 19 L76 15" fill="none" stroke="#93312b" stroke-width="1.5"/><circle cx="76" cy="15" r="2.5" fill="#93312b"/></svg>
+          </div>
+          <div class="rowdetail">
+            <p class="why"><b>Nahrung wird knapp</b> — der Fang trägt nicht mehr. Das Netz läuft (50 %); frisches Revier würde auch helfen.</p>
+            <svg class="big" viewBox="0 0 560 46"><path d="M0 10 L120 8 L220 14 L320 26 L420 34 L560 28 L560 46 L0 46 Z" fill="#ead4d1"/><path d="M0 10 L120 8 L220 14 L320 26 L420 34 L560 28" fill="none" stroke="#93312b" stroke-width="1.5"/><circle cx="560" cy="28" r="3" fill="#93312b"/></svg>
+            <table class="num">
+              <tr><td>Sammeln mit Sichel</td><td>Arbeit 6,1</td><td>Ertrag 14,6</td><td>Pflanzen 2,38</td></tr>
+              <tr><td>Fischfang</td><td>Arbeit 3,4</td><td>Ertrag 5,2</td><td>Fisch 1,97</td></tr>
+              <tr><td>Jagd</td><td>Arbeit 2,2</td><td>Ertrag 4,1</td><td>Wild 1,81</td></tr>
+              <tr><td colspan="4">Vorrat Nahrung: 32 → 20 — der Tick lebte von der Substanz</td></tr>
+            </table>
+          </div>
+          <div class="row">
+            <span class="rank num">600</span><span class="label">Behaglichkeit</span>
+            <div class="meter short"><i style="width: 0%"></i></div>
+            <span class="val num" style="color: var(--muted)">0,00</span>
+            <svg class="spark" viewBox="0 0 76 26"><path d="M0 18 L20 22 L40 24 L76 24 L76 26 L0 26 Z" fill="#dde3de"/><path d="M0 18 L20 22 L40 24 L76 24" fill="none" stroke="#5c6660" stroke-width="1.5"/></svg>
+          </div>
+          <div class="row claim">
+            <span class="rank num">1000</span><span class="label">Vorrat Nahrung</span>
+            <div class="meter store"><i style="width: 37%"></i></div>
+            <span class="val num">20/54</span>
+            <span class="note" style="color: var(--muted)">füllt aus dem Übrigen</span>
+          </div>
+          <div class="row foot">
+            <span class="rank"></span><span class="label" style="color: var(--muted)">Freie Arbeit</span>
+            <div class="meter"><i style="width: 4%; background: var(--muted)"></i></div>
+            <span class="val num">1,6</span>
+            <svg class="spark" viewBox="0 0 76 26"><path d="M0 8 L20 12 L40 18 L60 22 L76 23 L76 26 L0 26 Z" fill="#dde3de"/><path d="M0 8 L20 12 L40 18 L60 22 L76 23" fill="none" stroke="#5c6660" stroke-width="1.5"/></svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- Revier + Vorräte -->
+      <div class="side">
+        <section class="tile range">
+          <h2>Revier</h2>
+          <div class="rows">
+            <div class="stand">
+              <span class="label">Pflanzen</span>
+              <div class="meter cover"><i style="width: 51%"></i></div>
+              <span class="effort hot num"><b>2,38</b><svg width="64" height="18" viewBox="0 0 64 18"><path d="M0 12 L16 11 L32 8 L48 5 L64 3" fill="none" stroke="#93312b" stroke-width="1.5"/><circle cx="64" cy="3" r="2" fill="#93312b"/></svg></span>
+              <span class="flow num">70 von 138 · +2,4 / −6,1 · <span style="color: var(--accent-ink)">gepflegt +1,2</span></span>
+            </div>
+            <div class="stand">
+              <span class="label">Wild</span>
+              <div class="meter cover"><i style="width: 62%"></i></div>
+              <span class="effort num"><b>1,81</b><svg width="64" height="18" viewBox="0 0 64 18"><path d="M0 12 L16 10 L32 9 L48 8 L64 7" fill="none" stroke="#5c6660" stroke-width="1.5"/><circle cx="64" cy="7" r="2" fill="#5c6660"/></svg></span>
+              <span class="flow num">32 von 52 · +0,9 / −1,6</span>
+            </div>
+            <div class="stand">
+              <span class="label">Fisch</span>
+              <div class="meter cover"><i style="width: 54%"></i></div>
+              <span class="effort hot num"><b>1,97</b><svg width="64" height="18" viewBox="0 0 64 18"><path d="M0 13 L16 12 L32 10 L48 6 L64 4" fill="none" stroke="#93312b" stroke-width="1.5"/><circle cx="64" cy="4" r="2" fill="#93312b"/></svg></span>
+              <span class="flow num">15 von 28 · +1,7 / −3,3</span>
+            </div>
+            <div class="stand">
+              <span class="label">Totholz</span>
+              <div class="meter cover"><i style="width: 95%"></i></div>
+              <span class="effort num"><b>1,05</b><svg width="64" height="18" viewBox="0 0 64 18"><path d="M0 9 L64 8" fill="none" stroke="#5c6660" stroke-width="1.5"/><circle cx="64" cy="8" r="2" fill="#5c6660"/></svg></span>
+              <span class="flow num">275 von 288 · +2,9 / −4,9</span>
+            </div>
+            <div class="stand">
+              <span class="label">Muscheln</span>
+              <div class="meter cover"><i style="width: 100%"></i></div>
+              <span class="effort num"><b>1,00</b><svg width="64" height="18" viewBox="0 0 64 18"><path d="M0 9 L64 9" fill="none" stroke="#5c6660" stroke-width="1.5"/></svg></span>
+              <span class="flow num">69 von 69 · unberührt — die Reserve</span>
+            </div>
+          </div>
+          <div class="movebox">
+            <div class="pair">
+              <span><b>Weiterziehen?</b> <span class="num">eigenes Land 1,00 · Angebot 0,93</span></span>
+              <button>Weiterziehen</button>
+            </div>
+            <span class="gain num">Dort: Wild und Fisch halb erholt · Suchkosten ~2,0 statt 2,4</span>
+            <span class="price num">Zurück bleiben: 3 Gruben (54 Speicher) · 20 Nahrung · 14 Holz</span>
+          </div>
+        </section>
+
+        <section class="tile stores">
+          <h2>Vorräte</h2>
+          <div class="storeline">
+            <div class="head"><span><b>Nahrung</b> <span class="chip">Ziel = was die Gruben fassen</span></span><span class="num">20 / 54</span></div>
+            <div class="meter store"><i style="width: 37%"></i></div>
+            <div class="sub"><span>Kapazität: 3 Gruben, leiser Verfall</span><svg width="90" height="16" viewBox="0 0 90 16"><path d="M0 14 L22 14 L22 9 L48 9 L48 5 L74 5 L74 4 L90 4" fill="none" stroke="#33707c" stroke-width="1.5"/></svg></div>
+          </div>
+          <div class="storeline">
+            <div class="head"><span><b>Holz</b></span><span class="num">14 / 14</span></div>
+            <div class="meter store"><i style="width: 100%"></i></div>
+            <div class="sub"><span>Ziel</span><div class="slider" style="width: 130px"><span class="knob" style="left: 46%"></span></div><span class="num">14</span></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Rahmen rechts -->
+      <div class="frame">
+        <section class="tile people">
+          <h2>Menschen</h2>
+          <div class="count num">27</div>
+          <p class="kaiser num">diesen Tick: 1 gestorben · niemand geboren</p>
+          <div class="chart">
+            <svg width="100%" height="84" viewBox="0 0 272 84">
+              <path d="M0 24 L40 20 L80 16 L110 30 L150 34 L190 30 L230 28 L272 30 L272 84 L0 84 Z" fill="#b0722a" opacity="0.5"/>
+              <path d="M0 52 L40 48 L80 44 L110 56 L150 60 L190 57 L230 55 L272 57 L272 84 L0 84 Z" fill="#33707c" opacity="0.55"/>
+              <line x1="110" y1="8" x2="110" y2="84" stroke="#93312b" stroke-width="1" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="legend"><span><i class="dot" style="background: #b0722a; opacity: 0.6"></i>erwachsen 18</span><span><i class="dot" style="background: #33707c; opacity: 0.6"></i>wachsend 9</span></div>
+          <div class="brake num">Geburtenbremse ×0,46 <svg width="70" height="20" viewBox="0 0 70 20"><path d="M0 4 L18 8 L36 14 L54 12 L70 13" fill="none" stroke="#5c6660" stroke-width="1.5"/><circle cx="70" cy="13" r="2" fill="#5c6660"/></svg><span class="q">?</span></div>
+        </section>
+
+        <section class="tile log">
+          <h2>Ereignisse</h2>
+          <p class="weather num">Wetterwurf 1,31</p>
+          <ul>
+            <li><span class="t num">96</span><span class="crisis">Der harte Winter fordert 1 — der Fang blieb aus</span></li>
+            <li><span class="t num">94</span><span>Feuerlegen ist wieder ausführbar</span></li>
+            <li><span class="t num">90</span><span>Zwirnen fertiggestellt</span></li>
+            <li><span class="t num">88</span><span>Fischernetz ist jetzt ausführbar</span></li>
+            <li><span class="t num">84</span><span class="crisis">Der harte Winter fordert 2 — Sättigung fehlte</span></li>
+            <li><span class="t num">76</span><span>Vorratsgrube fertiggestellt <span class="num">(×3)</span></span></li>
+            <li><span class="t num">60</span><span>Steinaxt fertiggestellt</span></li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </body>
+</html>
