@@ -3763,6 +3763,16 @@ Spiels: so angelegt, dass Didaktik und Erzählung später hineinpassen, ohne das
 überarbeitet werden muss. Übersetzungsschicht von Anfang an, mit Deutsch und Englisch
 (T6).
 
+**Gestaltungsmaß: Tablet im Querformat, und der Desktop-Browser gleichwertig** — beide
+müssen gut funktionieren. Der Grund für dieses Maß: Der Spieler soll **alle wichtigen
+Größen der Ökonomie auf einem Bildschirm** sehen, nach Möglichkeit samt ihrer
+Entwicklung über das ganze Spiel — ohne Blättern und ohne Pflicht-Verstecke; die
+Aktionen dürfen in einer aufklappbaren Leiste liegen. Auf einem Telefon ginge das nur
+mit Verstecken, also ist das Telefon **kein Ziel** — durch die Bausteinbauweise aber
+auch nicht verbaut. Die Anzeige ist **grafisch, nicht nur Zahlen**: Balken für
+Fortschritt, Deckung und Auslastung, Verlaufskurven für die Entwicklung; die Oberfläche
+soll ansprechend aussehen.
+
 **Kein Speichern und Laden in der ersten Stufe.** Statt dessen kennt die Oberfläche
 **den ganzen Verlauf des Laufs**, nicht nur den letzten Tick: Für Testzwecke lässt sich
 damit einfach zurückrollen. Ob der Spieler später auch zurückrollen kann, ist offen.
