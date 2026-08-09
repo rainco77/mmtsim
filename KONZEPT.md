@@ -3838,8 +3838,15 @@ bei der Umsetzung ändern, wenn es gute Gründe gibt. Sechs Kacheln, eine domina
   Zeile in der Rangleiter — es sind dieselben Einstellwerte, zwei Fenster auf eine
   Einstellung. Der Rang-Griff zeigt die Position („zwischen Kleidung und Sättigung"),
   und ein Tipp auf die Vorratszeile hebt ihre Zeile in der Leiter hervor.
-- **Projekte**: der Katalog — sichtbar, ausführbar, dazu noch einmal die laufenden.
-  Sichtbare, noch nicht ausführbare stehen nie in der Leiter: Sie beanspruchen nichts.
+- **Projekte**: der Katalog in drei Gruppen. **Laufend** (steht zusätzlich in der
+  Leiter): Fortschritt, der Hinweis „bekommt gerade keine Hände", Griffe Rang/Pause/
+  Abbruch. **Ausführbar**: je Projekt die zweigeteilte Auskunft — Nutzen-Satz von
+  Hand, Kosten und Dauer generisch —, der Start-Griff, bei Wiederholbaren der Zähler
+  („Grube ×5"). **Sichtbar, noch nicht ausführbar**: dieselbe Karte plus der
+  Hat/Braucht-Balken je Bedingung. Was einmal sichtbar war, bleibt sichtbar. Sichtbare,
+  noch nicht ausführbare stehen nie in der Leiter: Sie beanspruchen nichts. Keine
+  Baum-Ansicht in der ersten Stufe — die Abhängigkeiten nennt das Verriegelte selbst;
+  ein gezeichneter Baum ist Didaktik späterer Stufen.
 - **Ereignis-Log**: rollend, die letzten Nachrichten immer sichtbar; der Wetterwurf
   klein daneben.
 
