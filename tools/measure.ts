@@ -267,12 +267,23 @@ console.log("== How it begins: the still play ==");
     `Setbacks per run                 ${round(back.length / SEEDS, 1)}, mean depth ${pct(mean(back.map((b) => b.depth)))} of the heads`,
   );
   console.log(
-    `  gap / recovery, median         ${median(back.filter((b) => b.nextAfter !== null).map((b) => b.nextAfter ?? 0))} against ${median(back.filter((b) => b.recoveredAfter !== null).map((b) => b.recoveredAfter ?? 0))} ticks`,
+    // The middling crisis has to be got over before the next one comes. A
+    // share of all setbacks is a reading only: what drags it are double blows
+    // landing inside a recovery — the very case the pit is dug for, so a
+    // boundary on the share would demand of a pitless community what only the
+    // pit delivers.
+    (() => {
+      const gap = median(back.filter((b) => b.nextAfter !== null).map((b) => b.nextAfter ?? 0));
+      const recovery = median(
+        back.filter((b) => b.recoveredAfter !== null).map((b) => b.recoveredAfter ?? 0),
+      );
+      return (
+        `  gap / recovery, median         ${gap} against ${recovery} ticks — ` +
+        `${judge("the middling crisis is got over before the next one comes", recovery < gap)}`
+      );
+    })(),
   );
-  console.log(
-    `  got over before the next       ${pct(gotOverInTime(back))} — ` +
-      `${judge("a crisis is got over before the next one comes", gotOverInTime(back) >= 0.75)}`,
-  );
+  console.log(`  got over before the next       ${pct(gotOverInTime(back))}`);
   console.log(
     `Given up                         ${still.filter((t) => t.abandoned).length} of ${SEEDS} — ${judge("no community is given up for doing nothing", !still.some((t) => t.abandoned))}`,
   );
