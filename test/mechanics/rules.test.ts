@@ -1154,3 +1154,51 @@ describe("supply chains (E4)", () => {
     expect(d.binding.what).toBe("deadwood");
   });
 });
+
+describe("the tick's record says what the tick did", () => {
+  // The view must never recompute what happened: a fresh allocation on the end
+  // state is a different allocation, and it has told a shifted story before —
+  // the collapse a tick early, the recovery a tick late. So the state records
+  // what the population phase actually applied, and the cohorts must follow
+  // from that record exactly.
+  it("carries every cohort by the recorded survival, moves and births", () => {
+    const index = indexConfig(STAGE1);
+    const population = STAGE1.population;
+    let state = createState(STAGE1, { seed: 11 });
+    let checked = 0;
+    for (let i = 0; i < 60 && state.abandonedAt === undefined; i += 1) {
+      const before = { ...(state.sectors["households"]?.cohorts ?? {}) };
+      const next = tick(state, index);
+      const expected: Record<string, number> = {};
+      for (const cohort of population.cohorts) {
+        expected[cohort.id] = Math.max(
+          0,
+          (before[cohort.id] ?? 0) * (next.lastSurvival[cohort.id] ?? 1),
+        );
+      }
+      for (const move of population.transitions) {
+        const moving = Math.max(0, (before[move.from] ?? 0) * move.perTick);
+        expected[move.from] = Math.max(0, (expected[move.from] ?? 0) - moving);
+        expected[move.to] = (expected[move.to] ?? 0) + moving;
+      }
+      expected[population.birthsInto] = (expected[population.birthsInto] ?? 0) + next.lastBorn;
+      const after = next.sectors["households"]?.cohorts ?? {};
+      for (const cohort of population.cohorts) {
+        expect(after[cohort.id] ?? 0).toBeCloseTo(expected[cohort.id] ?? 0, 8);
+        checked += 1;
+      }
+      state = next;
+    }
+    expect(checked).toBeGreaterThan(0);
+  });
+
+  it("records a labour split whose parts add up to what was performed", () => {
+    const index = indexConfig(STAGE1);
+    let state = createState(STAGE1, { seed: 11 });
+    for (let i = 0; i < 20; i += 1) {
+      state = tick(state, index);
+      const labor = state.lastLabor;
+      expect(labor.toProduction + labor.toProjects + labor.unused).toBeCloseTo(labor.available, 8);
+    }
+  });
+});

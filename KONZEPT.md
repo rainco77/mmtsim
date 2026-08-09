@@ -1918,6 +1918,17 @@ Produktivität braucht Deckung. Nach T2 wird der Kreis aufgetrennt, indem beide 
 mitgeführt und am Ende des Ticks aus der frisch berechneten Deckung fortgeschrieben
 werden. Sie sind damit auch der Ort, an dem später Gesundheit und Bildung einzahlen.
 
+**Der Zustand hält außerdem fest, was der letzte Tick wirklich getan hat:** Deckung je
+Rang, Suchkosten, Geburten, Überlebensfaktor je Kohorte und die Aufteilung der Arbeit
+(in Herstellung, in Projekte, ungenutzt) — so, wie die Zuteilung sie in diesem Tick
+angewandt hat. Der Grund ist ein Befund aus dem Probespielen: Eine Anzeige, die die
+Zuteilung am Tickende neu rechnet, rechnet mit inzwischen geleerten oder nachgewachsenen
+Beständen und der schon geschrumpften Bevölkerung — sie zeigte den Einbruch einen Tick
+zu früh und die Erholung einen Tick zu spät, und am schlimmsten Tick stand „alles
+gedeckt" neben den Toten. **Was als Geschehen angezeigt wird, kommt aus dieser
+Aufzeichnung und wird nie neu gerechnet.** Die frisch gerechnete Ableitung bleibt für
+Entscheidungsgrundlagen — was eine Zuteilung aus dem jetzigen Stand ergäbe.
+
 **Abgeleitet — jeden Tick neu, nirgends abgelegt:**
 
 Köpfe (die Summe über die Kohorten) · Arbeitsvolumen = gewichtete Kopfzahl ×

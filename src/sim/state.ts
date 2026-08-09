@@ -155,6 +155,31 @@ export interface GameState {
   readonly lastLabourPerHead: Readonly<Record<string, number>>;
   readonly lastUtilisation: Readonly<Record<CapacityId, number>>;
 
+  /**
+   * How many were born last tick, and the survival factor each cohort was
+   * carried through with — as the population phase actually applied them.
+   *
+   * History like `lastCoverage` above, and for the same reason: the phase
+   * works with the tick's own allocation, which is gone by the time anything
+   * else asks. A view that recomputes births and deaths from the end state
+   * tells a shifted story — the collapse a tick early, the recovery a tick
+   * late — so whatever shows them reads these and never recomputes.
+   */
+  readonly lastBorn: number;
+  readonly lastSurvival: Readonly<Record<CohortId, number>>;
+
+  /**
+   * How the tick's labour actually split (E16, E21): performed, into
+   * production, into projects, left unused. Recorded from the allocation that
+   * ran, for the same reason as `lastBorn` beside it.
+   */
+  readonly lastLabor: {
+    readonly available: number;
+    readonly toProduction: number;
+    readonly toProjects: number;
+    readonly unused: number;
+  };
+
   /** Which process led per branch last tick — shown, not used to decide (E5). */
   readonly leadProcess: Readonly<Record<BranchId, ProcessId>>;
 

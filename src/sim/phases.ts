@@ -498,6 +498,12 @@ export class ProductionPhase implements Phase {
       leadProcess: result.leadProcess,
       lastCoverage: Object.fromEntries(result.tiers.map((t) => [t.tier, t.coverage])),
       lastEffort: result.effortPerStock,
+      lastLabor: {
+        available: result.laborAvailable,
+        toProduction: result.laborToProduction,
+        toProjects: result.laborToProjects,
+        unused: result.laborUnused,
+      },
       lastLabourPerHead: labourPerHead(result, index, totalHeads(sector.cohorts)),
       lastUtilisation: utilisationOf(result),
       experience,
@@ -613,6 +619,8 @@ export class PopulationPhase implements Phase {
     const next: GameState = {
       ...state,
       sectors: { ...state.sectors, [HOUSEHOLDS]: { ...sector, cohorts: after } },
+      lastBorn: Math.max(0, born),
+      lastSurvival: survival,
     };
 
     // Below the minimum viable size the community is given up (E20), and that

@@ -150,13 +150,24 @@ const scope = {
       tick: d.tick,
       people: round(d.heads),
       cohorts: from(Object.keys(d.cohorts), (id) => round(d.cohorts[id] ?? 0)),
-      born: round(d.born),
-      survival: from(Object.keys(d.survival), (id) => round(d.survival[id] ?? 0)),
+      // What the tick actually did, read from the state's record — a fresh
+      // derive() on the end state is a different allocation and has told a
+      // shifted story before (the collapse a tick early, the recovery late).
+      born: round(state.lastBorn),
+      survival: from(Object.keys(d.survival), (id) =>
+        round(state.lastSurvival[id] ?? d.survival[id] ?? 0),
+      ),
       abandoned: d.communityGivenUp,
       needs: from(
         d.tiers.map((t) => t.tier),
-        (id) => round(d.coverage[id] ?? 0),
+        (id) => round(state.lastCoverage[id] ?? d.coverage[id] ?? 0),
       ),
+      labor: {
+        performed: round(state.lastLabor.available),
+        toProduction: round(state.lastLabor.toProduction),
+        toProjects: round(state.lastLabor.toProjects),
+        free: round(state.lastLabor.unused),
+      },
       capacities: from(
         session.cfg.capacities.map((c) => c.id),
         (id) => ({ held: round(d.capacityTotal[id] ?? 0), used: round(d.utilization[id] ?? 0) }),
