@@ -329,7 +329,7 @@ console.log("\n== What moving buys: moving against still — a reading, no verdi
   // lucky few. Judged only once the cycle is lived often enough to be read.
   console.log(
     `Idle hands over the range cycle  fresh ${pct(mean(fresh))} -> before the move ${pct(mean(worn))}, ` +
-      `sinking in ${sinking} of ${cycles} cycles — ` +
+      `sinking in ${sinking} of ${cycles} cycles (${pct(sinking / Math.max(1, cycles))}) — ` +
       `${judge("a move frees the hands, the wearing range binds them again", cycles >= 8 && mean(fresh) > mean(worn) && sinking / Math.max(1, cycles) >= 2 / 3)}`,
   );
 }
