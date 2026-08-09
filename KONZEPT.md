@@ -3893,6 +3893,31 @@ eine Gemeinschaft, deren Geburten unter die Alltagssterblichkeit gebremst sind,
 schrumpft, ohne dass etwas schiefgeht. Der **freie Lauf** ignoriert die weichen
 Haltepunkte (Projekte), hält aber bei Not-Toten und am Ende; Pause geht jederzeit.
 
+**Die Momente.** Zwei Stufen, klar getrennt. **Große Momente** sind Einblendungen, die
+den Lauf anhalten, selten und darum wertvoll: die Begrüßung am Start (ein Satz Lage,
+ein Hook, endet in der ersten Entscheidung) · das erste fertige Projekt · jedes fertige
+neuartige Werkzeug oder Bauwerk (nicht die dritte Grube) · die **erste** Krise — ihr
+Anfang ernst und mit Handlungsangebot, ihr Ende als Rückblick mit der Lehre · der
+erste Umzug · das Epochenende als Finale. Spätere Krisen und Umzüge laufen klein,
+außer eine Krise ist schlimmer als alles bisher Erlebte. **Kleine Momente** sind
+Belohnung im Fluss, ohne Text: die Kapazitätslinie springt sichtbar, eine Karte pulst,
+ein Balken schnellt animiert hoch. Der Krisenbeginn als Gegenmoment zeigt, was fehlt
+und was jetzt zu tun ist — eine Engpass-Anzeige ohne Handlungsangebot ist Lärm.
+
+**Die Dramaturgie der Momente ist der Bogen der Epoche: vom Ziehen zum Bleiben.**
+Ziehen ist anfangs der Normalzustand und wird angeleitet („Dein Volk lebt vom
+Weiterziehen"); das Preisschild am Weiterziehen-Knopf markiert später den Wendepunkt,
+an dem Gebautes bindet.
+
+**Momente sprechen den Spieler mit Du an**, auf Augenhöhe, in beiden Sprachen. Und sie
+sprechen **in Menschen und Ticks**, nicht in technischen Zahlen: „Die Sichel ernährt
+zwei Köpfe mehr", „Die Grube hält Vorrat für vier Ticks Hunger". Prozent nur, wo das
+nicht geht; nackte Vorher/Nachher-Zahlenpaare gar nicht.
+
+**Layout-Gesetze:** Die Seite scrollt nie als Ganzes — wo nötig, scrollt eine einzelne
+Kachel innen. Alle Bedienziele sind fingergroß; entworfen wird für Berührung, die Maus
+ist der Sonderfall.
+
 **Kein Speichern und Laden in der ersten Stufe.** Statt dessen kennt die Oberfläche
 **den ganzen Verlauf des Laufs**, nicht nur den letzten Tick: Für Testzwecke lässt sich
 damit einfach zurückrollen. Ob der Spieler später auch zurückrollen kann, ist offen.
