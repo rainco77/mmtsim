@@ -3912,6 +3912,22 @@ Belohnung im Fluss, ohne Text: die Kapazitätslinie springt sichtbar, eine Karte
 ein Balken schnellt animiert hoch. Der Krisenbeginn als Gegenmoment zeigt, was fehlt
 und was jetzt zu tun ist — eine Engpass-Anzeige ohne Handlungsangebot ist Lärm.
 
+**Der Krisen-Halt hängt an markierten Rängen, nicht am Sterben schlechthin.** Der Lauf
+hält (und die Meldung entsteht), wenn ein als **Notlage markierter Rang** unter voller
+Deckung lag und dadurch Menschen starben. Die Markierung ist Oberflächen-Politik und
+lebt in einer **eigenen Präsentations-Sektion der Oberfläche** je Epoche — nie in der
+Modell-Definition des Bedarfs. In Epoche 1 markiert: Hunger und Feuer, deren Ausfall
+die ganze Gemeinschaft unmittelbar tötet; Betreuung und Behaglichkeit wirken mild und
+chronisch und sind kein Alarm (der Befund dazu: Behaglichkeit ist im frühen Spiel
+ständig unterdeckt — ein Halt daran hielte dauernd). Dies ersetzt die frühere
+Fassung „Überlebensfaktor unter Grundrate".
+
+**Krisen tragen Namen.** Aus einem kleinen epochen-eigenen Vorrat („ein harter
+Winter", „Dürre"), deterministisch aus Wurfstärke und dem, was der Wurf traf, damit
+derselbe Seed dieselbe Geschichte erzählt. Die Meldung nennt Name und Ursache: „Der
+harte Winter fordert 3 Menschen — der Fang blieb aus." Kein Kunstwort am Spieler;
+intern heißt es schlicht Krise.
+
 **Die Dramaturgie der Momente ist der Bogen der Epoche: vom Ziehen zum Bleiben.**
 Ziehen ist anfangs der Normalzustand und wird angeleitet („Dein Volk lebt vom
 Weiterziehen"); das Preisschild am Weiterziehen-Knopf markiert später den Wendepunkt,
