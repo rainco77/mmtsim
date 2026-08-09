@@ -171,7 +171,10 @@ export function solve(program: Program): Solution {
         const a = rows[i]![enter]!;
         if (a <= NOTHING) continue;
         const ratio = rhs[i]! / a;
-        if (ratio < best - NOTHING || (ratio < best + NOTHING && (leave < 0 || basis[i]! < basis[leave]!))) {
+        if (
+          ratio < best - NOTHING ||
+          (ratio < best + NOTHING && (leave < 0 || basis[i]! < basis[leave]!))
+        ) {
           best = ratio;
           leave = i;
         }
@@ -216,7 +219,12 @@ export function solve(program: Program): Solution {
 }
 
 /** What a slack still holds, whether or not it is in the basis. */
-function slackOf(basis: Int32Array, rhs: Float64Array, column: number, m: number): number {
+function slackOf(
+  basis: Int32Array,
+  rhs: Float64Array,
+  column: number,
+  m: number,
+): number {
   for (let i = 0; i < m; i += 1) if (basis[i] === column) return rhs[i]!;
   return 0;
 }

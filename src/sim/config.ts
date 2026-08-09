@@ -376,9 +376,17 @@ export type Condition =
   | { readonly kind: "population"; readonly min: number }
   | { readonly kind: "projectDone"; readonly id: ProjectId; readonly min: number }
   | { readonly kind: "rule"; readonly id: RuleId; readonly set: boolean }
-  | { readonly kind: "unownedCapacity"; readonly capacity: CapacityId; readonly min: number }
+  | {
+      readonly kind: "unownedCapacity";
+      readonly capacity: CapacityId;
+      readonly min: number;
+    }
   /** Capacity the sector holds — the mirror of `unownedCapacity`. */
-  | { readonly kind: "ownedCapacity"; readonly capacity: CapacityId; readonly min: number }
+  | {
+      readonly kind: "ownedCapacity";
+      readonly capacity: CapacityId;
+      readonly min: number;
+    }
   | { readonly kind: "coverage"; readonly tier: NeedTierId; readonly min: number }
   /**
    * A stock actually held, measured per head so it scales with the community.
@@ -791,7 +799,6 @@ export interface RiskConfig {
   readonly caution: number;
 }
 
-
 // ---------------------------------------------------------------- land
 
 export interface LandConfig {
@@ -915,10 +922,12 @@ function checkCohortVectors(config: Config): void {
   const ids = config.population.cohorts.map((cohort) => cohort.id);
   const check = (where: string, vector: CohortVector): void => {
     for (const id of ids) {
-      if (vector[id] === undefined) throw new Error(`${where} says nothing about cohort ${id}`);
+      if (vector[id] === undefined)
+        throw new Error(`${where} says nothing about cohort ${id}`);
     }
     for (const id of Object.keys(vector)) {
-      if (!ids.includes(id)) throw new Error(`${where} names cohort ${id}, which does not exist`);
+      if (!ids.includes(id))
+        throw new Error(`${where} names cohort ${id}, which does not exist`);
     }
   };
 
@@ -930,19 +939,26 @@ function checkCohortVectors(config: Config): void {
   if (config.population.backload !== undefined) {
     check("population.backload.loadWeight", config.population.backload.loadWeight);
     if (!(config.population.backload.strength >= 0)) {
-      throw new Error("the carrying brake's strength must be a figure of at least nought");
+      throw new Error(
+        "the carrying brake's strength must be a figure of at least nought",
+      );
     }
   }
   if (!ids.includes(config.population.birthsInto)) {
-    throw new Error(`births land in cohort ${config.population.birthsInto}, which does not exist`);
+    throw new Error(
+      `births land in cohort ${config.population.birthsInto}, which does not exist`,
+    );
   }
   for (const move of config.population.transitions) {
-    if (!ids.includes(move.from)) throw new Error(`a transition comes from ${move.from}, which does not exist`);
-    if (!ids.includes(move.to)) throw new Error(`a transition goes to ${move.to}, which does not exist`);
+    if (!ids.includes(move.from))
+      throw new Error(`a transition comes from ${move.from}, which does not exist`);
+    if (!ids.includes(move.to))
+      throw new Error(`a transition goes to ${move.to}, which does not exist`);
   }
   for (const tier of config.needTiers) {
     check(`tier ${tier.id} perHeadWeight`, tier.perHeadWeight);
-    if (tier.survival !== undefined) check(`tier ${tier.id} survival.per`, tier.survival.per);
+    if (tier.survival !== undefined)
+      check(`tier ${tier.id} survival.per`, tier.survival.per);
   }
 }
 

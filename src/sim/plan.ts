@@ -21,7 +21,9 @@ import type { CapacityId, ProcessId, StockId } from "./ids.ts";
 
 /** What a plan may draw on. Each entry is an absolute amount. */
 export interface Supplies {
-  readonly capacityHeld: Readonly<Record<CapacityId, { amount: number; quality: number }>>;
+  readonly capacityHeld: Readonly<
+    Record<CapacityId, { amount: number; quality: number }>
+  >;
   readonly stocks: Readonly<Record<StockId, number>>;
 }
 
@@ -85,7 +87,6 @@ export interface PlanContext {
   /** Ordering within one stock, best first — see E5. */
   order(stock: StockId, processes: readonly ProcessDef[]): readonly ProcessDef[];
 }
-
 
 /**
  * How much of one input a process needs **all told** — its own use plus what
@@ -203,7 +204,8 @@ function available(input: InputId, ctx: PlanContext): number {
 }
 
 function computeAvailable(input: InputId, ctx: PlanContext): number {
-  if (input.startsWith("capacity:")) return ctx.supplies.capacityHeld[input.slice("capacity:".length)]?.amount ?? 0;
+  if (input.startsWith("capacity:"))
+    return ctx.supplies.capacityHeld[input.slice("capacity:".length)]?.amount ?? 0;
   if (input.startsWith("stock:")) return ctx.supplies.stocks[input.slice(6)] ?? 0;
   return 0;
 }
@@ -261,8 +263,10 @@ function inputsOf(ctx: PlanContext): readonly InputId[] {
 
   const inputs = new Set<InputId>();
   for (const process of ctx.available) {
-    for (const type of Object.keys(process.capacityPerOutput)) inputs.add(capacityInput(type));
-    for (const id of Object.keys(process.intermediatesPerOutput)) inputs.add(stockInput(id));
+    for (const type of Object.keys(process.capacityPerOutput))
+      inputs.add(capacityInput(type));
+    for (const id of Object.keys(process.intermediatesPerOutput))
+      inputs.add(stockInput(id));
   }
   cache.inputs = [...inputs].sort();
   return cache.inputs;
@@ -495,9 +499,14 @@ function coverOrder(ctx: PlanContext): readonly InputId[] {
   const done = new Set<InputId>();
   const order: InputId[] = [];
   while (order.length < stocks.length) {
-    const ready = stocks.filter((one) => !done.has(one) && ![...stocks].some(
-      (other) => !done.has(other) && other !== one && (before.get(other)?.has(one) ?? false),
-    ));
+    const ready = stocks.filter(
+      (one) =>
+        !done.has(one) &&
+        ![...stocks].some(
+          (other) =>
+            !done.has(other) && other !== one && (before.get(other)?.has(one) ?? false),
+        ),
+    );
     // A cycle cannot arise from the content we have; if one ever did, the rest
     // follows in declared order and the plan simply covers less precisely.
     const batch = ready.length > 0 ? ready : stocks.filter((one) => !done.has(one));
@@ -601,7 +610,8 @@ export function makePlan(demands: readonly Demand[], ctx: PlanContext): Plan {
         high = mid;
       }
     }
-    if (low > 0) accepted = [...accepted, ...group.map((d) => ({ ...d, amount: d.amount * low }))];
+    if (low > 0)
+      accepted = [...accepted, ...group.map((d) => ({ ...d, amount: d.amount * low }))];
     dropped.push(tier);
     // Carry on with the next rank instead of stopping. A rank stopped by the
     // forest does not stop a rank that hangs on the wilderness; the ranking

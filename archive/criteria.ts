@@ -1,7 +1,15 @@
 import { STAGE1 } from "../src/content/stage1.ts";
 import { PassivePolicy, PoorPolicy, SensiblePolicy } from "./bots/index.ts";
 import type { Policy } from "../src/policy/policy.ts";
-import { apply, createState, derive, indexConfig, livesOn, tick, totalHeads } from "../src/sim/index.ts";
+import {
+  apply,
+  createState,
+  derive,
+  indexConfig,
+  livesOn,
+  tick,
+  totalHeads,
+} from "../src/sim/index.ts";
 import type { Derived, GameState, ProcessDef } from "../src/sim/index.ts";
 
 /**
@@ -55,7 +63,8 @@ const drawsOn = (process: ProcessDef, capacity: string): boolean =>
 
 const mean = (xs: readonly number[]): number =>
   xs.reduce((a, b) => a + b, 0) / (xs.length || 1);
-const share = (xs: readonly boolean[]): number => xs.filter(Boolean).length / (xs.length || 1);
+const share = (xs: readonly boolean[]): number =>
+  xs.filter(Boolean).length / (xs.length || 1);
 const round = (value: number): number => Math.round(value * 1000) / 1000;
 const seedOf = (i: number): number => 101 + i * 13;
 
@@ -111,14 +120,15 @@ const CLAIM_BAND = 1 / 3;
  */
 const REGULATOR_FLOOR = 0.05;
 
-
 /** Labour to make one unit of a good, its inputs chained in — the cheapest way. */
 function labourPerUnit(stock: string, seen: ReadonlySet<string> = new Set()): number {
   if (stock === "labor") return 1;
   if (seen.has(stock)) return 0;
   const branch = STAGE1.branches.find((b) => b.produces === stock);
   if (branch === undefined) return 0;
-  const runs = STAGE1.processes.filter((p) => p.branch === branch.id && p.unlockedFromStart);
+  const runs = STAGE1.processes.filter(
+    (p) => p.branch === branch.id && p.unlockedFromStart,
+  );
   if (runs.length === 0) return 0;
   const next = new Set([...seen, stock]);
   return Math.min(
@@ -134,7 +144,10 @@ function labourPerUnit(stock: string, seen: ReadonlySet<string> = new Set()): nu
 function claimsOnWork(): Record<string, number> {
   const pop = STAGE1.population;
   const weighed = (w: Readonly<Record<string, number>>): number =>
-    pop.cohorts.reduce((sum, c) => sum + (pop.shareAtStart[c.id] ?? 0) * (w[c.id] ?? 0), 0);
+    pop.cohorts.reduce(
+      (sum, c) => sum + (pop.shareAtStart[c.id] ?? 0) * (w[c.id] ?? 0),
+      0,
+    );
   const work = weighed(pop.labourWeight) * STAGE1.carried.baseProductivity;
 
   const out: Record<string, number> = {};
@@ -142,7 +155,8 @@ function claimsOnWork(): Record<string, number> {
     // What is used up is asked for again every tick; what is only worn is asked
     // for at the rate it wears out.
     const decay = STAGE1.stocks.find((s) => s.id === tier.stock)?.decayPerTick ?? 0;
-    const per = tier.consumedOnUse > 0 ? tier.perHead * tier.consumedOnUse : tier.perHead * decay;
+    const per =
+      tier.consumedOnUse > 0 ? tier.perHead * tier.consumedOnUse : tier.perHead * decay;
     out[tier.id] = (per * weighed(tier.perHeadWeight) * labourPerUnit(tier.stock)) / work;
   }
   return out;
@@ -159,7 +173,14 @@ function claimsOnWork(): Record<string, number> {
 const STANDS: Readonly<Record<string, readonly string[]>> = {
   raw: [],
   opened: ["mortar", "earth_oven"],
-  equipped: ["mortar", "earth_oven", "sickle", "bow_and_arrow", "fishing_net", "stone_axe"],
+  equipped: [
+    "mortar",
+    "earth_oven",
+    "sickle",
+    "bow_and_arrow",
+    "fishing_net",
+    "stone_axe",
+  ],
   full: [
     "mortar",
     "earth_oven",
@@ -285,7 +306,8 @@ function at(stand: readonly string[], heads: number, seed: number): Cell {
   for (const axis of AXES) {
     const area = extent[axis] ?? 0;
     yieldPer[axis] = area > 0 && ticks > 0 ? (output[axis] ?? 0) / ticks / area : 0;
-    laborPer[axis] = (output[axis] ?? 0) > 0 ? (labor[axis] ?? 0) / (output[axis] ?? 1) : 0;
+    laborPer[axis] =
+      (output[axis] ?? 0) > 0 ? (labor[axis] ?? 0) / (output[axis] ?? 1) : 0;
   }
   return {
     foodPerHead: heads > 0 && ticks > 0 ? food / ticks / heads : 0,
@@ -299,7 +321,9 @@ function at(stand: readonly string[], heads: number, seed: number): Cell {
 function cell(stand: readonly string[], heads: number): Cell {
   const runs = Array.from({ length: 8 }, (_, i) => at(stand, heads, seedOf(i)));
   const perAxis = (pick: (c: Cell) => Readonly<Record<string, number>>) =>
-    Object.fromEntries(AXES.map((axis) => [axis, mean(runs.map((r) => pick(r)[axis] ?? 0))]));
+    Object.fromEntries(
+      AXES.map((axis) => [axis, mean(runs.map((r) => pick(r)[axis] ?? 0))]),
+    );
   return {
     foodPerHead: mean(runs.map((r) => r.foodPerHead)),
     yieldPer: perAxis((r) => r.yieldPer),
@@ -309,7 +333,10 @@ function cell(stand: readonly string[], heads: number): Cell {
 }
 
 const grid = Object.fromEntries(
-  Object.entries(STANDS).map(([name, stand]) => [name, DENSITIES.map((n) => cell(stand, n))]),
+  Object.entries(STANDS).map(([name, stand]) => [
+    name,
+    DENSITIES.map((n) => cell(stand, n)),
+  ]),
 );
 
 /** Does the series fall from first to last, at every stand? */
@@ -460,12 +487,17 @@ function play(seed: number, policy: Policy): Trace {
 
     idle += d.laborUnused;
     available += d.laborPerformance;
-    if (idleBreachAt === null && d.laborPerformance > 0 && d.laborUnused / d.laborPerformance > IDLE_LIMIT) {
+    if (
+      idleBreachAt === null &&
+      d.laborPerformance > 0 &&
+      d.laborUnused / d.laborPerformance > IDLE_LIMIT
+    ) {
       idleBreachAt = state.tick;
     }
 
     for (const renewal of Object.values(d.renewable)) {
-      if (renewal.ceiling > 0) thinnest = Math.min(thinnest, renewal.held / renewal.ceiling);
+      if (renewal.ceiling > 0)
+        thinnest = Math.min(thinnest, renewal.held / renewal.ceiling);
     }
 
     const open = offers(d);
@@ -526,8 +558,12 @@ function play(seed: number, policy: Policy): Trace {
   };
 }
 
-const thoughtful = Array.from({ length: SEEDS }, (_, i) => play(seedOf(i), new SensiblePolicy()));
-const passive = Array.from({ length: SEEDS }, (_, i) => play(seedOf(i), new PassivePolicy()));
+const thoughtful = Array.from({ length: SEEDS }, (_, i) =>
+  play(seedOf(i), new SensiblePolicy()),
+);
+const passive = Array.from({ length: SEEDS }, (_, i) =>
+  play(seedOf(i), new PassivePolicy()),
+);
 const poor = Array.from({ length: SEEDS }, (_, i) => play(seedOf(i), new PoorPolicy()));
 
 /** The first place a per-tick tripwire broke, so it can be replayed (E30). */
@@ -566,7 +602,9 @@ const report = {
         .filter(([, [want, tiers]]) => Math.abs(share(tiers) - want) > want * CLAIM_BAND)
         .map(([need, [want, tiers]]) => ({ need, want, is: round(share(tiers)) }));
       return {
-        share: Object.fromEntries(Object.entries(claims).map(([id, v]) => [id, round(v)])),
+        share: Object.fromEntries(
+          Object.entries(claims).map(([id, v]) => [id, round(v)]),
+        ),
         leftForProjects: round(1 - Object.values(claims).reduce((a, b) => a + b, 0)),
         band: CLAIM_BAND,
         off,
@@ -731,12 +769,16 @@ const report = {
       hideShareMean: round(mean(thoughtful.map((t) => t.hideShare))),
       fibreShareMean: round(mean(thoughtful.map((t) => t.fibreShare))),
       seeds: failedSeeds(thoughtful, (t) => t.hideShare < 0.05 || t.fibreShare < 0.05),
-      pass: mean(thoughtful.map((t) => t.hideShare)) > 0.05 &&
+      pass:
+        mean(thoughtful.map((t) => t.hideShare)) > 0.05 &&
         mean(thoughtful.map((t) => t.fibreShare)) > 0.05,
     },
     "the water carries part of the food, not all of it (E29)": {
       waterFoodShareMean: round(mean(thoughtful.map((t) => t.waterFoodShare))),
-      seeds: failedSeeds(thoughtful, (t) => t.waterFoodShare < 0.05 || t.waterFoodShare > 0.95),
+      seeds: failedSeeds(
+        thoughtful,
+        (t) => t.waterFoodShare < 0.05 || t.waterFoodShare > 0.95,
+      ),
       pass:
         mean(thoughtful.map((t) => t.waterFoodShare)) > 0.05 &&
         mean(thoughtful.map((t) => t.waterFoodShare)) < 0.95,
@@ -745,7 +787,9 @@ const report = {
     // a run could fish its water out entirely and pass every other tripwire.
     "no renewable stock is run into the ground (E29)": {
       thinnestMean: round(mean(thoughtful.map((t) => t.thinnestStock))),
-      thinnestSeen: round(thoughtful.reduce((low, t) => Math.min(low, t.thinnestStock), 1)),
+      thinnestSeen: round(
+        thoughtful.reduce((low, t) => Math.min(low, t.thinnestStock), 1),
+      ),
       limit: 0.2,
       seeds: failedSeeds(thoughtful, (t) => t.thinnestStock < 0.2),
       pass: thoughtful.every((t) => t.thinnestStock >= 0.2),

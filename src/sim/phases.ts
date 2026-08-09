@@ -15,7 +15,12 @@ import {
   type GameState,
   type SectorState,
 } from "./state.ts";
-import { allHold, computeUnlocks, type ConditionContext, type Unlocks } from "./unlocks.ts";
+import {
+  allHold,
+  computeUnlocks,
+  type ConditionContext,
+  type Unlocks,
+} from "./unlocks.ts";
 
 /**
  * The tick is an ordered list of phases (T2). Introducing money later means one
@@ -64,7 +69,6 @@ export function drawLandOffer(
   const result = draw(random, LAND_STREAM);
   return { offer: 1 + spread * (2 * result.value - 1), random: result.random };
 }
-
 
 /**
  * The carrying brake on the births (E20, E29): how hard the children weigh is
@@ -118,7 +122,10 @@ export function backloadFactor(
  * twice — somebody who supplies no labour cannot be made less productive in any
  * way that shows.
  */
-export function laborPerformance(sector: SectorState | undefined, config: Config): number {
+export function laborPerformance(
+  sector: SectorState | undefined,
+  config: Config,
+): number {
   if (sector === undefined) return 0;
   return (
     weighedHeads(sector.cohorts, config.population.labourWeight) *
@@ -165,7 +172,11 @@ export class ShockPhase implements Phase {
  * The view keeps showing the raw holdings, which are the fact of the matter.
  * Only the allocation reckons with what is left after the decay.
  */
-export function decayed(state: GameState, index: ConfigIndex, unlocks: Unlocks): GameState {
+export function decayed(
+  state: GameState,
+  index: ConfigIndex,
+  unlocks: Unlocks,
+): GameState {
   const sectors: Record<SectorId, SectorState> = {};
   for (const [id, sector] of Object.entries(state.sectors)) {
     const stocks: Record<StockId, number> = {};
@@ -179,16 +190,20 @@ export function decayed(state: GameState, index: ConfigIndex, unlocks: Unlocks):
       }
       // A store is capacity, not a container (E19): what it covers keeps, the
       // rest spoils at the ordinary rate. There is no "store full".
-      const covered = Math.min(amount, capacityOf(sector.capacityHeld, shelter.capacity).amount);
+      const covered = Math.min(
+        amount,
+        capacityOf(sector.capacityHeld, shelter.capacity).amount,
+      );
       const sheltered =
-        shelter.decayWhenRule?.find((entry) => unlocks.rules.has(entry.rule))?.decayPerTick ??
-        shelter.decayPerTick;
+        shelter.decayWhenRule?.find((entry) => unlocks.rules.has(entry.rule))
+          ?.decayPerTick ?? shelter.decayPerTick;
       stocks[stockId] = covered * (1 - sheltered) + (amount - covered) * (1 - ordinary);
     }
     // Capacity decays too, and keeping it means building it again (E19).
     const capacityHeld: Record<CapacityId, Capacity> = {};
     for (const [held_id, held] of Object.entries(sector.capacityHeld)) {
-      const rate = index.config.capacities.find((c) => c.id === held_id)?.decayPerTick ?? 0;
+      const rate =
+        index.config.capacities.find((c) => c.id === held_id)?.decayPerTick ?? 0;
       capacityHeld[held_id] = { ...held, amount: held.amount * (1 - rate) };
     }
     sectors[id] = { ...sector, stocks, capacityHeld };
@@ -607,24 +622,32 @@ export class PopulationPhase implements Phase {
       const kept = tierEffectAt(tier.survival, outcome.coverage);
       for (const cohort of population.cohorts) {
         const sensitivity = tier.survival.per[cohort.id] ?? 1;
-        survival[cohort.id] = (survival[cohort.id] ?? 1) * Math.max(0, 1 - sensitivity * (1 - kept));
+        survival[cohort.id] =
+          (survival[cohort.id] ?? 1) * Math.max(0, 1 - sensitivity * (1 - kept));
       }
     }
 
     const carrying = backloadFactor(before, allocation, ctx.unlocks, index);
     const born =
-      population.baseBirthRate * birthFactor * carrying * weighedHeads(before, population.birthWeight);
+      population.baseBirthRate *
+      birthFactor *
+      carrying *
+      weighedHeads(before, population.birthWeight);
 
     const after: Record<string, number> = {};
     for (const cohort of population.cohorts) {
-      after[cohort.id] = Math.max(0, (before[cohort.id] ?? 0) * (survival[cohort.id] ?? 1));
+      after[cohort.id] = Math.max(
+        0,
+        (before[cohort.id] ?? 0) * (survival[cohort.id] ?? 1),
+      );
     }
     for (const move of population.transitions) {
       const moving = Math.max(0, (before[move.from] ?? 0) * move.perTick);
       after[move.from] = Math.max(0, (after[move.from] ?? 0) - moving);
       after[move.to] = (after[move.to] ?? 0) + moving;
     }
-    after[population.birthsInto] = (after[population.birthsInto] ?? 0) + Math.max(0, born);
+    after[population.birthsInto] =
+      (after[population.birthsInto] ?? 0) + Math.max(0, born);
 
     const next: GameState = {
       ...state,

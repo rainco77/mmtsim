@@ -1,4 +1,10 @@
-import type { Action, ConfigIndex, Derived, GameState, StockId } from "../../sim/index.ts";
+import type {
+  Action,
+  ConfigIndex,
+  Derived,
+  GameState,
+  StockId,
+} from "../../sim/index.ts";
 import type { Policy } from "../policy.ts";
 
 /**
@@ -48,10 +54,14 @@ export class MovingPolicy implements Policy {
 
   decide(_state: GameState, derived: Derived, index: ConfigIndex): readonly Action[] {
     if (derived.projects.some((project) => project.running)) return [];
-    const idle = derived.laborPerformance > 0 ? derived.laborUnused / derived.laborPerformance : 1;
+    const idle =
+      derived.laborPerformance > 0 ? derived.laborUnused / derived.laborPerformance : 1;
     if (idle > BOUND) return [];
     if (!this.braked(derived, index)) return [];
-    if (derived.nextTakingQuality < WORTH_LEAVING_FOR * this.landQuality(derived, index)) {
+    if (
+      derived.nextTakingQuality <
+      WORTH_LEAVING_FOR * this.landQuality(derived, index)
+    ) {
       return [];
     }
 

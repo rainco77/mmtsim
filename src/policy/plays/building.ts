@@ -39,10 +39,17 @@ export class BuildingPolicy implements Policy {
     const burn = derived.tiers.find((tier) => tier.tier === "warmth_fire")?.need ?? 0;
     const want = Math.round(burn * RESERVE_TICKS * 10) / 10;
     if (Math.abs((state.stockTargets["wood"] ?? 0) - want) > 0.5) {
-      actions.push({ type: "setStockTarget", stock: "wood", amount: want, rank: RESERVE_RANK });
+      actions.push({
+        type: "setStockTarget",
+        stock: "wood",
+        amount: want,
+        rank: RESERVE_RANK,
+      });
     }
 
-    const offered = derived.projects.filter((project) => project.available && !project.running);
+    const offered = derived.projects.filter(
+      (project) => project.available && !project.running,
+    );
     if (this.settlesEagerly) {
       const settle = offered.find((project) => project.id === "sedentism");
       if (settle !== undefined) {
@@ -79,7 +86,8 @@ export class BuildingPolicy implements Policy {
     // taken every time, and the rest of the tree is never reached.
     const storagePerHead =
       (derived.ownedCapacity["storage"]?.amount ?? 0) / Math.max(1, derived.heads);
-    const worthDigging = (id: string): boolean => id !== "storage_pit" || storagePerHead < 3;
+    const worthDigging = (id: string): boolean =>
+      id !== "storage_pit" || storagePerHead < 3;
     // As with the pits: no fifth hull while the water already reaches.
     const ownedWater = derived.ownedCapacity["water"]?.amount ?? 0;
     const worthLaunching = (id: string): boolean => id !== "boat" || ownedWater < 26;

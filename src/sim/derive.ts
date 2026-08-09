@@ -241,7 +241,8 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     const kept = tierEffectAt(tier.survival, outcome.coverage);
     for (const cohort of index.config.population.cohorts) {
       const sensitivity = tier.survival.per[cohort.id] ?? 1;
-      survival[cohort.id] = (survival[cohort.id] ?? 1) * Math.max(0, 1 - sensitivity * (1 - kept));
+      survival[cohort.id] =
+        (survival[cohort.id] ?? 1) * Math.max(0, 1 - sensitivity * (1 - kept));
     }
   }
   const born =
@@ -253,7 +254,8 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
   const utilization: Record<CapacityId, number> = {};
   for (const type of index.config.capacities) {
     const total = allocation.capacityTotal[type.id] ?? 0;
-    utilization[type.id] = total > 0 ? (allocation.capacityUsed[type.id] ?? 0) / total : 0;
+    utilization[type.id] =
+      total > 0 ? (allocation.capacityUsed[type.id] ?? 0) / total : 0;
   }
 
   const ctx: ConditionContext = {
@@ -277,7 +279,9 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
    * the other way about. Neither had to be told when its turn is.
    */
   const idleShare =
-    allocation.laborAvailable > 0 ? allocation.laborUnused / allocation.laborAvailable : 1;
+    allocation.laborAvailable > 0
+      ? allocation.laborUnused / allocation.laborAvailable
+      : 1;
   const laborScarcity = Math.max(0, Math.min(1, 1 - idleShare));
 
   /**
@@ -360,7 +364,8 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
         if (price === undefined || price <= 0 || per <= 0) continue;
         let best = Infinity;
         for (const other of index.config.processes) {
-          if (other.branch !== opened.branch || !unlocks.processes.has(other.id)) continue;
+          if (other.branch !== opened.branch || !unlocks.processes.has(other.id))
+            continue;
           const theirs = other.intermediatesPerOutput[stockId] ?? 0;
           if (theirs > 0) best = Math.min(best, theirs);
         }
@@ -375,7 +380,8 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     const done = state.completedProjects[def.id] ?? 0;
     // A finished one-off project is not available any more, and neither is one
     // already under way. Otherwise a strategy would keep reaching for it.
-    const startable = active === undefined && (def.limit === undefined || done < def.limit);
+    const startable =
+      active === undefined && (def.limit === undefined || done < def.limit);
     // **What the content demands is the whole of it.** A ceiling on how many
     // may stand open at once is gone: where several needs are short, several
     // answers have to be there. What keeps the opening from being a wall of
@@ -389,7 +395,8 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     // Once shown, always shown — the phase wrote down when it first was, and
     // that cannot come undone. And nothing is startable that is not on the
     // screen: availability is the second gate, not a separate door.
-    const visible = state.seenProjects[def.id] !== undefined || allHold(def.visibleWhen, ctx);
+    const visible =
+      state.seenProjects[def.id] !== undefined || allHold(def.visibleWhen, ctx);
     return {
       id: def.id,
       visible,
@@ -461,14 +468,33 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
   };
 }
 
-
 /** One consequence of starting a project, in numbers (T6). */
 export type Consequence =
-  | { readonly kind: "capacity"; readonly capacity: CapacityId; readonly from: number; readonly to: number }
-  | { readonly kind: "stock"; readonly stock: StockId; readonly from: number; readonly to: number }
-  | { readonly kind: "quality"; readonly capacity: CapacityId; readonly from: number; readonly to: number }
+  | {
+      readonly kind: "capacity";
+      readonly capacity: CapacityId;
+      readonly from: number;
+      readonly to: number;
+    }
+  | {
+      readonly kind: "stock";
+      readonly stock: StockId;
+      readonly from: number;
+      readonly to: number;
+    }
+  | {
+      readonly kind: "quality";
+      readonly capacity: CapacityId;
+      readonly from: number;
+      readonly to: number;
+    }
   /** What one head needs of a good, before and after (E9). */
-  | { readonly kind: "need"; readonly tier: string; readonly from: number; readonly to: number }
+  | {
+      readonly kind: "need";
+      readonly tier: string;
+      readonly from: number;
+      readonly to: number;
+    }
   /** A way of producing that would open, in its own figures. */
   | {
       readonly kind: "process";
@@ -537,7 +563,12 @@ function consequencesOf(
       }
       case "stock": {
         const from = sector?.stocks[effect.id] ?? 0;
-        out.push({ kind: "stock", stock: effect.id, from, to: levelOf(effect.to, state, index, effect.id) });
+        out.push({
+          kind: "stock",
+          stock: effect.id,
+          from,
+          to: levelOf(effect.to, state, index, effect.id),
+        });
         break;
       }
       case "setCapacity": {
@@ -605,8 +636,10 @@ function qualityOf(
     case "fixed":
       return source.value;
     case "from":
-      return capacityOf(state.sectors[HOUSEHOLDS]?.capacityHeld ?? {}, source.capacity).amount > 0
-        ? capacityOf(state.sectors[HOUSEHOLDS]?.capacityHeld ?? {}, source.capacity).quality
+      return capacityOf(state.sectors[HOUSEHOLDS]?.capacityHeld ?? {}, source.capacity)
+        .amount > 0
+        ? capacityOf(state.sectors[HOUSEHOLDS]?.capacityHeld ?? {}, source.capacity)
+            .quality
         : capacityOf(state.unownedCapacity, source.capacity).quality;
     case "nextTaking":
       return nextRangeQuality(state, index.config, capacity);

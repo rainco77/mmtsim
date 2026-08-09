@@ -37,7 +37,12 @@ export function createState(config: Config, options: StartOptions): GameState {
   // options are there for tests and measurements, not for the game.
   const unownedCapacity: Record<CapacityId, Capacity> = {};
   for (const [id, perHead] of Object.entries(config.land.perHeadAtStart)) {
-    const override = id === "wilderness" ? options.wilderness : id === "water" ? options.water : undefined;
+    const override =
+      id === "wilderness"
+        ? options.wilderness
+        : id === "water"
+          ? options.water
+          : undefined;
     unownedCapacity[id] = {
       amount: override ?? heads * perHead,
       quality: config.land.baseQuality,
@@ -67,7 +72,8 @@ export function createState(config: Config, options: StartOptions): GameState {
     const rule = stock.regrowth;
     if (rule === undefined) continue;
     const range = unownedCapacity[rule.capacity];
-    stocks[stock.id] = (range === undefined ? 0 : carryingArea(range)) * rule.densityPerArea;
+    stocks[stock.id] =
+      (range === undefined ? 0 : carryingArea(range)) * rule.densityPerArea;
   }
 
   // **What is worn rather than used up is already there.** The community is
@@ -88,8 +94,10 @@ export function createState(config: Config, options: StartOptions): GameState {
   for (const tier of config.needTiers) {
     const kept = tier.perHead * (1 - tier.consumedOnUse);
     if (kept <= 0) continue;
-    if (config.branches.find((b) => b.id === tier.branch)?.unlockedFromStart !== true) continue;
-    stocks[tier.stock] = (stocks[tier.stock] ?? 0) + weighedHeads(cohorts, tier.perHeadWeight) * kept;
+    if (config.branches.find((b) => b.id === tier.branch)?.unlockedFromStart !== true)
+      continue;
+    stocks[tier.stock] =
+      (stocks[tier.stock] ?? 0) + weighedHeads(cohorts, tier.perHeadWeight) * kept;
   }
 
   const opening: GameState = {
@@ -209,16 +217,29 @@ function atRest(opening: GameState, config: Config): GameState {
     for (const [id, stand] of Object.entries(renewals(state, index))) {
       const rule = index.stock.get(id)?.regrowth;
       if (rule === undefined || stand === undefined) continue;
-      const rest = restingStand(taken[id] ?? 0, rule.ratePerTick, stand.ceiling, rule.refuge);
+      const rest = restingStand(
+        taken[id] ?? 0,
+        rule.ratePerTick,
+        stand.ceiling,
+        rule.refuge,
+      );
       stocks[id] = stand.held + (rest - stand.held) * SETTLE_STEP;
     }
-    state = { ...state, sectors: { ...state.sectors, [HOUSEHOLDS]: { ...sector, stocks } } };
+    state = {
+      ...state,
+      sectors: { ...state.sectors, [HOUSEHOLDS]: { ...sector, stocks } },
+    };
   }
   return state;
 }
 
 /** Where one stand rests: the upper root of growth against taking. */
-function restingStand(taken: number, rate: number, ceiling: number, refuge: number): number {
+function restingStand(
+  taken: number,
+  rate: number,
+  ceiling: number,
+  refuge: number,
+): number {
   if (ceiling <= 0 || rate <= 0) return 0;
   const gap = (ceiling + refuge) ** 2 - (4 * taken * ceiling) / rate;
   const peak = (ceiling - refuge) / 2;

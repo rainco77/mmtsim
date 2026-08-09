@@ -64,8 +64,15 @@ class CapacityEffectHandler implements EffectHandler<CapacityEffect> {
     config: Config,
     sector: SectorId,
   ): GameState {
-    const { quality, advanceTaking } = resolveQuality(state, config, effect, effect.capacity);
-    const withTaking = advanceTaking ? { ...state, landTakings: state.landTakings + 1 } : state;
+    const { quality, advanceTaking } = resolveQuality(
+      state,
+      config,
+      effect,
+      effect.capacity,
+    );
+    const withTaking = advanceTaking
+      ? { ...state, landTakings: state.landTakings + 1 }
+      : state;
     // New country comes with what lives on it (E29). Opening water without its
     // fish left the same fish spread over four times the water, so the boat —
     // which is supposed to open the water — made fishing dearer instead:
@@ -119,7 +126,9 @@ export function nextRangeQuality(
   capacity: CapacityId,
 ): number {
   return (
-    averageQuality(state, capacity) * (1 - config.land.qualityDecayPerTaking) * state.landOffer
+    averageQuality(state, capacity) *
+    (1 - config.land.qualityDecayPerTaking) *
+    state.landOffer
   );
 }
 
@@ -226,7 +235,12 @@ function levelOf(
 class StockEffectHandler implements EffectHandler<StockEffect> {
   readonly type = "stock" as const;
 
-  apply(state: GameState, effect: StockEffect, config: Config, sector: SectorId): GameState {
+  apply(
+    state: GameState,
+    effect: StockEffect,
+    config: Config,
+    sector: SectorId,
+  ): GameState {
     const holder = state.sectors[sector];
     if (holder === undefined) return state;
     return {
@@ -324,7 +338,9 @@ class CarriesEffectHandler implements EffectHandler<CarriesEffect> {
   apply(state: GameState, effect: CarriesEffect, config: Config): GameState {
     const rule = config.stocks.find((stock) => stock.id === effect.stock)?.regrowth;
     const added =
-      effect.reset === true ? -(state.rangeCarries[effect.stock] ?? 0) : effect.addPerArea;
+      effect.reset === true
+        ? -(state.rangeCarries[effect.stock] ?? 0)
+        : effect.addPerArea;
     if (rule === undefined || added === 0) return state;
     const was = carriedPerArea(state, rule.densityPerArea, effect.stock);
     const now = Math.max(0, was + added);
@@ -335,7 +351,10 @@ class CarriesEffectHandler implements EffectHandler<CarriesEffect> {
     for (const [id, holder] of Object.entries(state.sectors)) {
       sectors[id] = {
         ...holder,
-        stocks: { ...holder.stocks, [effect.stock]: (holder.stocks[effect.stock] ?? 0) * factor },
+        stocks: {
+          ...holder.stocks,
+          [effect.stock]: (holder.stocks[effect.stock] ?? 0) * factor,
+        },
       };
     }
     return {

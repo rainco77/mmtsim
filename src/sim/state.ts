@@ -296,7 +296,10 @@ export interface ActiveProject {
 
 export const EMPTY_AREA: Capacity = { amount: 0, quality: 1 };
 
-export function capacityOf(capacityHeld: Readonly<Record<CapacityId, Capacity>>, id: CapacityId): Capacity {
+export function capacityOf(
+  capacityHeld: Readonly<Record<CapacityId, Capacity>>,
+  id: CapacityId,
+): Capacity {
   return capacityHeld[id] ?? EMPTY_AREA;
 }
 
@@ -346,7 +349,8 @@ export function weighedHeads(
   weight: Readonly<Record<CohortId, number>>,
 ): number {
   let sum = 0;
-  for (const [cohort, heads] of Object.entries(cohorts)) sum += heads * (weight[cohort] ?? 0);
+  for (const [cohort, heads] of Object.entries(cohorts))
+    sum += heads * (weight[cohort] ?? 0);
   return sum;
 }
 
