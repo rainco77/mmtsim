@@ -52,9 +52,16 @@ export class BuildingPolicy implements Policy {
     }
 
     // Moving answers a range gone thin and does not wait for a free hand; the
-    // waiting is what makes it too late.
-    const move = this.moving.decide(state, derived, index);
-    if (move.length > 0) return [...actions, ...move];
+    // waiting is what makes it too late. But built things bind: whoever has
+    // his pits standing or a hull at the shore does not walk away from them —
+    // the trap the epoch is about, chosen here as the play's own judgement.
+    const anchored =
+      (derived.ownedCapacity["storage"]?.amount ?? 0) / Math.max(1, derived.heads) >= 2 ||
+      (derived.ownedCapacity["water"]?.amount ?? 0) > 0;
+    if (!anchored) {
+      const move = this.moving.decide(state, derived, index);
+      if (move.length > 0) return [...actions, ...move];
+    }
 
     if (state.activeProjects.length > 0) return actions;
 
@@ -72,7 +79,10 @@ export class BuildingPolicy implements Policy {
     // taken every time, and the rest of the tree is never reached.
     const storagePerHead =
       (derived.ownedCapacity["storage"]?.amount ?? 0) / Math.max(1, derived.heads);
-    const worthDigging = (id: string): boolean => id !== "storage_pit" || storagePerHead < 4;
+    const worthDigging = (id: string): boolean => id !== "storage_pit" || storagePerHead < 3;
+    // As with the pits: no fifth hull while the water already reaches.
+    const ownedWater = derived.ownedCapacity["water"]?.amount ?? 0;
+    const worthLaunching = (id: string): boolean => id !== "boat" || ownedWater < 26;
 
     const pit = offered.find(
       (project) => project.id === "storage_pit" && worthDigging(project.id),
@@ -81,7 +91,10 @@ export class BuildingPolicy implements Policy {
       pit ??
       offered.find(
         (project) =>
-          project.id !== "range_change" && worthBurning(project.id) && worthDigging(project.id),
+          project.id !== "range_change" &&
+          worthBurning(project.id) &&
+          worthDigging(project.id) &&
+          worthLaunching(project.id),
       );
     if (next !== undefined) actions.push({ type: "startProject", id: next.id });
     return actions;

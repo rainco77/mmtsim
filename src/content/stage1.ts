@@ -1177,6 +1177,13 @@ export const STAGE1: Config = {
           sector: "households",
           to: { kind: "fixed", value: 0 },
         },
+        {
+          // The hulls stay at the old shore, like the pits in the old ground.
+          type: "setCapacity",
+          capacity: "water",
+          sector: "households",
+          to: { kind: "fixed", value: 0 },
+        },
         { type: "stock", id: "food", to: { kind: "fixed", value: 0 } },
         { type: "stock", id: "wood", to: { kind: "fixed", value: 0 } },
         // Same size, a little poorer — and the good ranges of the world are
@@ -1315,10 +1322,11 @@ export const STAGE1: Config = {
       minTicks: 6,
       effects: [
         {
+          // One pit holds a pit's worth: real protection wants several dug.
           type: "capacity",
           capacity: "storage",
           sector: "households",
-          amount: 100,
+          amount: 20,
           quality: { kind: "fixed", value: 1 },
         },
       ],
@@ -1486,11 +1494,13 @@ export const STAGE1: Config = {
         { kind: "projectDone", id: "fishing_net", min: 1 },
       ],
       defaultRank: PROJECTS_LAST,
-      laborCost: 120,
-      stockCost: { wood: 60 },
-      minTicks: 20,
-      limit: 1,
-      effects: [{ type: "capacity", capacity: "water", amount: 40 }],
+      // One hull, one crew's reach: a boat opens its own slice of water, and
+      // whoever wants more fish builds more boats. Built things stay with the
+      // place — a move leaves the hulls at the old shore.
+      laborCost: 40,
+      stockCost: { wood: 12 },
+      minTicks: 7,
+      effects: [{ type: "capacity", capacity: "water", sector: "households", amount: 13 }],
       sector: "households",
     },
 
@@ -1512,7 +1522,8 @@ export const STAGE1: Config = {
         // One settles at the water: the settled forager sites are shore
         // places, storage and boats together the built tie to the spot —
         // people settled down at the fish before they settled at the grain.
-        { kind: "projectDone", id: "boat", min: 1 },
+        // Physical, not remembered: the hulls have to lie at this shore.
+        { kind: "ownedCapacity", capacity: "water", min: 25 },
       ],
       defaultRank: PROJECTS_LAST,
       laborCost: 120,
