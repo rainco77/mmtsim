@@ -630,30 +630,17 @@ describe("allocation runs rank by rank (E21)", () => {
 });
 
 describe("population (E20)", () => {
-  it("grows only when the buffer above the deadly ranks is served (E20)", () => {
-    // The base rates used to be reciprocal, so that a community with the deadly
-    // ranks covered stood still. It no longer stands still: what carries growth
-    // is the buffer — being sated and warm beyond the minimum. With the buffer
-    // gone but nobody dying, the community shrinks, slowly and without a
-    // catastrophe; with it served, it grows. That is the regulator this epoch
-    // is meant to have, and the number it settles at is a matter of balance,
-    // not of this test.
-    const pop = STAGE1.population;
-    // A standing group in the shares the content starts at, so births per head
-    // and deaths per head can be held against each other at all.
-    const cohorts = asCohorts(100);
-    const bearing = cohorts["grown"]!;
-    const dying = Object.entries(cohorts).reduce(
-      (sum, [id, heads]) => sum + heads * (1 - (pop.baseSurvival[id] ?? 1)),
-      0,
-    );
-    const onBirths = STAGE1.needTiers.filter((t) => t.birthRate !== undefined);
-
-    const served = onBirths.reduce((f, t) => f * (t.birthRate?.atFull ?? 1), 1);
-    const starved = onBirths.reduce((f, t) => f * (t.birthRate?.atZero ?? 1), 1);
-
-    expect(pop.baseBirthRate * served * bearing).toBeGreaterThan(dying);
-    expect(pop.baseBirthRate * starved * bearing).toBeLessThan(dying);
+  it("plenty decides who comes through, the carrying decides who is born (E20, E29)", () => {
+    // No need tier moves the births: their pace is the base rate, their level
+    // is the carrying brake. What want moves instead is the survival of the
+    // growing — care and comfort touch the children and never the grown.
+    for (const tier of STAGE1.needTiers) expect(tier.birthRate).toBeUndefined();
+    for (const id of ["childcare", "warmth_comfort"]) {
+      const tier = STAGE1.needTiers.find((t) => t.id === id);
+      expect(tier?.survival).toBeDefined();
+      expect(tier?.survival?.per["grown"]).toBe(0);
+      expect(tier?.survival?.per["growing"]).toBeGreaterThan(0);
+    }
   });
 
   it("shrinks under famine and grows when sated", () => {

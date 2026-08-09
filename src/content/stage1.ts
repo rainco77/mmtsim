@@ -941,18 +941,16 @@ export const STAGE1: Config = {
       perHead: 0.5,
       perHeadWeight: { growing: 1, grown: 0 },
       consumedOnUse: 1,
-      // Whoever cannot look after his children has fewer. Four fifths at no
-      // coverage against a half for comfort — 0.8 × 0.5 = 0.4, the scale the
-      // base birth rate was reckoned on. Care carries the smaller part of the
-      // band because it stands low in the ranking and is nearly always covered:
-      // when it does fail, things are already grave.
-      birthRate: { atZero: 0.8, atFull: 1 },
+      // Unwatched children come to harm. Care acts on the survival of the
+      // growing and on nothing else: whoever lets the minding slip loses
+      // children — visibly and soon, not as fewer births someday. The grown
+      // are untouched; a grown-up needs no minder.
+      survival: { atZero: 0.9, atFull: 1, per: { growing: 1, grown: 0 } },
     },
     {
-      // Warmth beyond the minimum: cooked food, shorter nights at the fire,
-      // people who have rested. It costs **productivity** — clothing already
-      // carries the ability to work, and the two ought to stay distinguishable
-      // (E16).
+      // Warmth beyond the minimum: cooked food, shorter nights at the fire, a
+      // camp the small ones live through the winter in. The upper half of the
+      // split warmth — the buffer a poor draw eats before it reaches the fire.
       id: "warmth_comfort",
       rank: 600,
       exposure: { weather: 0.4 },
@@ -963,31 +961,19 @@ export const STAGE1: Config = {
       // its warmth, so it needs nearly as much as a large one.
       perHeadWeight: { growing: 0.9, grown: 1 },
       consumedOnUse: 1,
-      // And it carries the children. A small body has a great deal of surface
-      // for its size and cannot hold its warmth, so being cold costs infants
-      // first — and an infant that does not live is, to a model without ages,
-      // very near a birth that did not happen. Folding it in here is therefore
-      // the honest simplification rather than inventing a mortality of its own.
+      // A cold camp costs infants. A small body has a great deal of surface
+      // for its size and cannot hold its warmth, so want of warmth beyond the
+      // bare fire falls on the smallest — the winter excess mortality of
+      // infants, well attested wherever it was counted. Mild against the
+      // minding: cold gnaws, neglect kills. The grown are untouched; what
+      // kills a grown-up is the fire going out, and that stands two ranks
+      // higher and stays hard.
       //
-      // It is also what regulated these populations. Forager numbers were held
-      // by fertility, not by famine (Wood, Pennington): birth intervals of four
-      // years and more came out of what mothers could carry and spare, and
-      // hunger was the crisis and not the daily rule (E29). Ours did it the
-      // other way about — births stood at their maximum almost always and the
-      // regulator was catastrophe.
-      //
-      // **Comfort is the top rank, so it is the first thing to go**, which
-      // makes it the regulator of an ordinary tick — and that is why it carries
-      // the larger half of the band: at no coverage the births run at a half.
-      // Together with care, 0.5 × 0.8 = 0.4, and a community fed and warm and
-      // nothing more loses one in a hundred a tick.
-      //
-      // It used to read 0.99 to 1.01, and that looked like a hundredth of a
-      // band only because it multiplied a *growth* factor rather than the
-      // births themselves. A hundredth off the growth of a community is a third
-      // of all its births. Nothing was widened here; it was put on the right
-      // quantity.
-      birthRate: { atZero: 0.5, atFull: 1 },
+      // The births carry no coverage factor at all any more: their pace is the
+      // base rate, their level is the carrying brake (E20, E29). Plenty decides
+      // how many children come through — these two ranks — not how many are
+      // conceived.
+      survival: { atZero: 0.96, atFull: 1, per: { growing: 1, grown: 0 } },
     },
     {
       // The dispensable third of the food, and the community's whole buffer
