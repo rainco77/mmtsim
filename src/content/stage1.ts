@@ -517,7 +517,11 @@ export const STAGE1: Config = {
       activity: "fishing",
       priority: 75,
       capacityPerOutput: {},
-      intermediatesPerOutput: { labor: 3.3, shellfish: 1.0 },
+      // Plenty, reliable, nearly weatherproof — and too toilsome per meal for
+      // the everyday: the hunger-time food of every shore. Dear enough that
+      // nobody gathers them while fish and plants come cheaper, cheap enough
+      // that they step in when a poor draw guts the exposed sources.
+      intermediatesPerOutput: { labor: 2.0, shellfish: 1.0 },
       exposure: { weather: 0.1 },
       qualityWeight: 0,
       // Nobody sows in this epoch: the return shows itself while one looks (E24).
