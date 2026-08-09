@@ -4,9 +4,12 @@
   import { LANGUAGES, translate } from "../i18n/t.ts";
   import { derive } from "../sim/index.ts";
   import { currentState, game, index, pause, runFree, runToStop, step } from "./game.ts";
+  import Events from "./tiles/Events.svelte";
   import Ladder from "./tiles/Ladder.svelte";
   import People from "./tiles/People.svelte";
+  import Projects from "./tiles/Projects.svelte";
   import Range from "./tiles/Range.svelte";
+  import Stores from "./tiles/Stores.svelte";
 
   // One translating function per language switch, not one per render — the
   // store changes only when the language does.
@@ -58,6 +61,12 @@
         <People />
       {:else if tile === "tile.range"}
         <Range />
+      {:else if tile === "tile.stores"}
+        <Stores />
+      {:else if tile === "tile.projects"}
+        <Projects />
+      {:else if tile === "tile.events"}
+        <Events />
       {:else}
         <p class="pending">{$t("tile.pending")}</p>
       {/if}
