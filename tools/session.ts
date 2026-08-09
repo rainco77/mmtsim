@@ -187,7 +187,10 @@ const scope = {
           for (const run of d.runs) {
             taken += run.output * (session.idx.process.get(run.process)?.intermediatesPerOutput[id] ?? 0);
           }
-          return [id, { held: round(r.held), of: round(r.ceiling), grows: round(r.growth), taken: round(taken) }];
+          // `tended`: what husbandry has added per unit of ground (a burn, in
+          // later epochs manure or breeding), fading — the judgement figure
+          // for whether tending again is worth it yet.
+          return [id, { held: round(r.held), of: round(r.ceiling), grows: round(r.growth), taken: round(taken), tended: round(state.rangeCarries[id] ?? 0) }];
         }),
       ),
       // The move decision, side by side: what the land under one's feet is
