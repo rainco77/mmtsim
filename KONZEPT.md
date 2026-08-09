@@ -2939,11 +2939,13 @@ Feuerlegen, das Fällen ist in die Siedlungs-Epoche gewandert):
 |---|---|---|---|
 | **Sichel** | Sammeln | je Hand | Natufien, Klingen mit Sichelglanz; Harlans Erntversuch |
 | **Mörser und Stößel** | Sammeln | je Fläche | Natufien, Wadi Hammeh; Flannerys *broad spectrum revolution* |
+| **Feuerlegen** | das Revier selbst | **je Fläche** — der Brand hebt die Pflanzendichte, der Bonus verblasst mit dem nachwachsenden Unterholz | mesolithisches Brennen aus Holzkohle- und Pollenprofilen (Mellars) |
 | **Pfeil und Bogen** | Jagen | je Hand | Stellmoor ~10.000 v. Chr., Bögen von Holmegaard |
+| **Angelhaken** | Fischen | je Hand | Widerhaken und Haken aus Knochen und Geweih, mesolithischer Massenbefund; die Schnur ist gezwirnter Bast |
 | **Fischernetz** | Fischen | je Hand | Netz von Antrea ~8300 v. Chr., aus Bastfaser |
 | **Boot** | Fischen | **mehr Fläche** — nutzbares Wasser | Einbaum von Pesse ~8000 v. Chr. |
 | **Vorratsgrube** | Speicher | gegen den Verfall | Dhra' ~9500 v. Chr. (Kuijt & Finlayson 2009) |
-| **Steinaxt** | Holz sammeln → **Bäume fällen** | **je Fläche** — erschließt den stehenden Wald, größter Sprung der Epoche | mesolithische Kernbeile |
+| **Steinaxt** | Holz sammeln | je Hand; dazu Tor zu Grube und Boot | mesolithische Kernbeile |
 | **Erdofen** | Feuer machen | **je Vorleistung** | Kochgruben und Brandhügel, mesolithischer Massenbefund |
 | **Gerben** | Felle zurichten | je Hand | Rinden- und Hirngerbung |
 | **Zwirnen** | Flechten | je Hand | Zwirnbindung; gedrehte Faser vom Abri du Maras, Schnurabdrücke durchs Mesolithikum |
