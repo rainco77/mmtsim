@@ -1693,10 +1693,9 @@ export const STAGE1: Config = {
     // meets this rate. After a crisis the brake is light — few to carry, short
     // ways — so the recovery runs at nearly this full rate.
     //
-    // Kept below the line where births outrun deaths with comfort and care
-    // wholly unserved: beyond it starvation becomes the brake, which is the
-    // opposite of what the epoch wants. The test beside this one draws that
-    // line.
+    // No coverage moves the births any more: this rate against the carrying
+    // brake is the whole of it. Kept where the brake, not starvation, is what
+    // holds the community.
     baseBirthRate: 0.17,
 
     // The carrying brake (E20, E29): the growing are carried, the grown carry,

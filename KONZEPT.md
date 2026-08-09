@@ -1447,7 +1447,7 @@ Bau entschieden.
 ```
 Köpfe'      = Köpfe ⊙ Überleben ⊕ Neugeborene in ihrer Kohorte
 Überleben   = Grundüberleben × Faktor je Bedarf …      je Kohorte
-Neugeborene = Grundrate × Faktor je Bedarf … × Traglastfaktor × (Gewichte · Köpfe)
+Neugeborene = Grundrate × Traglastfaktor × (Gewichte · Köpfe)
 Arbeit      = (Gewichte · Köpfe) × Arbeitsfähigkeit × Produktivität
 ```
 
@@ -1456,8 +1456,8 @@ Skalarprodukt. Addiert wird an genau einer Stelle, und dort ist es keine Rate, s
 Menschen: die Neugeborenen, die in ihre Kohorte kommen.
 
 **Die Geburten sind eine Zahl von Menschen, kein Faktor auf alle.** Sie folgen aus einer
-Grundrate je Erwachsenem, mal den Faktoren der Bedarfe, mal dem Traglastfaktor, mal der
-Zahl derer, die Kinder bekommen können — und sie kommen in die untere Kohorte.
+Grundrate je Erwachsenem, mal dem Traglastfaktor, mal der Zahl derer, die Kinder bekommen
+können — kein Bedarf trägt einen Geburtenfaktor — und sie kommen in die untere Kohorte.
 
 **Der Traglastfaktor ist die Bremse der wandernden Lebensweise** (E29, „Wie sich die
 Gemeinschaft einregelt"): Er fällt, je mehr Kinderlast je Tragendem schon da ist und je
@@ -2597,11 +2597,11 @@ Was braucht ein Mensch, damit er nicht stirbt, Kinder bekommt und arbeiten kann.
 |---|---|---|---|
 | 100 | **Hunger** | Nahrung | Überleben |
 | 200 | **Feuer** | Wärme, aus Holz | Überleben |
-| 300 | **Betreuung** | Betreuung, nur aus Arbeit | Geburten; bemisst sich je Heranwachsendem |
+| 300 | **Betreuung** | Betreuung, nur aus Arbeit | Überleben der Kinder; bemisst sich je Heranwachsendem |
 | 400 | **Kleidung** | Kleidung, aus Fell oder Faser | Arbeitsfähigkeit |
 | ganz hinten | *Vorrat anlegen* | — | siehe E19: Ziel ist die Speicherkapazität |
 | 500 | **Sättigung** | Nahrung | Produktivität |
-| 600 | **Behaglichkeit** | Wärme | Geburten |
+| 600 | **Behaglichkeit** | Wärme | Überleben der Kinder, mild |
 
 Wieviel ein Rang je Kopf verlangt und wie hart seine Unterdeckung wirkt, steht im
 Inhalt; das Konzept führt diese Zahlen nicht, damit es nicht mit jedem Austarieren
@@ -2932,7 +2932,8 @@ Die Jagd ist ausdrücklich **nicht** freizuschalten: Der Mensch jagt Großwild s
 hunderttausenden Jahren (Schöninger Speere). Ein Spiel, in dem man sie erfinden muss,
 behauptet Unsinn.
 
-**Die dreizehn Projekte der Epoche:**
+**Die Projekte der Epoche** (Stand siehe Inhalt; dazugekommen sind Angelhaken und
+Feuerlegen, das Fällen ist in die Siedlungs-Epoche gewandert):
 
 | Projekt | wirkt auf | Achse | Anker |
 |---|---|---|---|
