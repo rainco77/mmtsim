@@ -3870,6 +3870,15 @@ bei der Umsetzung ändern, wenn es gute Gründe gibt. Sechs Kacheln, eine domina
   Die Liste ist zugleich die Kandidatenliste für die Haltepunkte des automatischen
   Laufs, und ihre Ticknummern sind die Anker fürs Zurückrollen beim Testen.
 
+**Keine Aktionsleiste — die Griffe wohnen im Kontext.** Alle sechs Handlungen haben in
+den Kacheln ihr Zuhause: Starten im Projektkatalog (der Umzug zusätzlich als
+„Weiterziehen" mit Preisschild im Revier), Rang/Pause/Abbruch an Leiter-Zeile und
+Katalog, die Reihenfolge bei gleichem Rang durch Ziehen in der Leiter, die
+Vorratsvorgabe an Vorratszeile und Leiter-Zeile. Was bleibt, ist eine **schmale
+Kopfleiste** mit der Ticknummer und den Zeit-Griffen: einen Tick weiter, Lauf bis zum
+nächsten Haltepunkt, freier Lauf, Pause. Jeder Zeit-Griff ist nur erreichbar, wenn er
+gerade Sinn ergibt — die Pause nur, während es läuft; Schritt und Lauf nur im Stand.
+
 **Kein Speichern und Laden in der ersten Stufe.** Statt dessen kennt die Oberfläche
 **den ganzen Verlauf des Laufs**, nicht nur den letzten Tick: Für Testzwecke lässt sich
 damit einfach zurückrollen. Ob der Spieler später auch zurückrollen kann, ist offen.
