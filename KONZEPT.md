@@ -3783,6 +3783,16 @@ auch nicht verbaut. Die Anzeige ist **grafisch, nicht nur Zahlen**: Balken für
 Fortschritt, Deckung und Auslastung, Verlaufskurven für die Entwicklung; die Oberfläche
 soll ansprechend aussehen.
 
+**Die Projektauskunft hat zwei Hälften.** Die mechanischen Fakten — Kosten, Dauer, bei
+verriegelten Projekten das Hat/Braucht je Bedingung — erzeugt die Oberfläche
+**generisch aus den Daten**, als Schablone, die für jedes Projekt und jede spätere
+Zahlenänderung von selbst stimmt und nie von Hand gepflegt wird. Der **Nutzen-Satz** je
+Projekt wird dagegen von Hand geschrieben und lebt als Schlüssel in der
+Übersetzungsschicht. Der Grund: Maschinell aus den Wirkungsdaten erzeugte Sätze wären
+in jeder Sprache hölzern und müssten trotzdem übersetzt werden; ein Satz je Projekt ist
+billig, und die mechanische Hälfte daneben zeigt immer die aktuelle Wahrheit aus den
+Daten.
+
 **Kein Speichern und Laden in der ersten Stufe.** Statt dessen kennt die Oberfläche
 **den ganzen Verlauf des Laufs**, nicht nur den letzten Tick: Für Testzwecke lässt sich
 damit einfach zurückrollen. Ob der Spieler später auch zurückrollen kann, ist offen.
