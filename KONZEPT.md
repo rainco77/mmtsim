@@ -3122,16 +3122,16 @@ schon feststeht, ist das Zielband der Amortisation: **klein 10–15, mittel 20�
 braucht, trifft eine Entscheidung, deren Nutzen er nie erlebt.
 
 Dass die Entscheidung dadurch nicht wertlos wird, liegt nicht an der Rechnung, sondern
-am **Zeitpunkt**: Ein Fünftel der Hände zwölf Ticks lang heißt, die Nahrung fällt
-*jetzt* und der Gewinn kommt *später* — und dazwischen liegt ein Tick, der schlecht sein
-kann. Die Disziplin kommt aus dem Risiko, nicht aus der Amortisationsdauer.
+am **Zeitpunkt**: Ein merklicher Teil der Hände über etliche Ticks heißt, die Nahrung
+fällt *jetzt* und der Gewinn kommt *später* — und dazwischen liegt ein Tick, der schlecht
+sein kann. Die Disziplin kommt aus dem Risiko, nicht aus der Amortisationsdauer.
 
-**An der ersten Fassung gemessen, und darum steht es hier: Die Kosten beißen bei 90
-Arbeitsleistung über mindestens 12 Ticks, also einem Viertel aller Hände einer Gruppe
-von dreißig.** Vorher waren es 6 %, und deshalb gab es nie eine
-Konkurrenz. Zwei Projekte gleichzeitig kosten die Hälfte, drei drei Viertel — gemessen
-stirbt eine Siedlung, die alle drei sofort anfängt, in **100 %** der Läufe. „Sofort
-alles nehmen" ist damit keine entschlossenere Spielweise, sondern eine schlechtere.
+**Die Kosten müssen beißen.** Ein Projekt bindet einen merklichen Teil aller Hände über
+mehrere Ticks — so viel, dass zwei gleichzeitig eine Entscheidung sind und die
+Gemeinschaft daran zugrunde gehen kann, wenn sie alles auf einmal anfängt. Bei einem
+Bruchteil davon gäbe es überhaupt keine Konkurrenz zwischen den Projekten, und „sofort
+alles nehmen" wäre die beste Spielweise statt der schlechtesten. Wie groß der Teil ist,
+steht im Inhalt und wird dort gemessen.
 
 **Der Schmerz, gegen den der Vorrat hilft.** Vorher konnte das Überleben gar nicht
 ausfallen: Die Sättigung machte 44 % des Nahrungsbedarfs aus und der schlechteste Tick
