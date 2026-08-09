@@ -613,7 +613,23 @@ console.log("\n== The whole tree before settling — the thorough play ==");
       `${judge("every project's craft runs in some run, and every craft on from the start", neverRan.length === 0)}`,
   );
 
-  const stands = STAGE1.stocks.filter((s) => s.regrowth !== undefined).map((s) => s.id);
+  // Only stands an epoch process can reach at all: what waits for the settled
+  // stage (the trees, until felling moves in there) is no gap in this one.
+  const openedInEpoch = new Set<string>();
+  for (const project of STAGE1.projects) {
+    if (afterSettling(project.id) || project.id === "sedentism") continue;
+    for (const effect of project.effects) if (effect.type === "process") openedInEpoch.add(effect.id);
+  }
+  const reachableProcs = STAGE1.processes.filter(
+    (proc) =>
+      proc.unlockedFromStart || openedInEpoch.has(proc.id) || (proc.needsProjects ?? []).length > 0,
+  );
+  const stands = STAGE1.stocks
+    .filter((s) => s.regrowth !== undefined)
+    .map((s) => s.id)
+    .filter((id) =>
+      reachableProcs.some((proc) => (proc.intermediatesPerOutput[id] ?? 0) > 0),
+    );
   const neverDrawn = stands.filter((id) => !drawnSomewhere.has(id));
   console.log(
     `Never drawn from                 ${neverDrawn.length === 0 ? "none" : neverDrawn.join(", ")} — ` +
@@ -658,7 +674,6 @@ console.log("\n== The whole tree before settling — the thorough play ==");
     { good: "food", road: "fish", processes: drawing(byBranch("food"), "fish") },
     { good: "food", road: "shellfish", processes: drawing(byBranch("food"), "shellfish") },
     { good: "wood", road: "deadwood", processes: drawing(byBranch("wood"), "deadwood") },
-    { good: "wood", road: "trees", processes: drawing(byBranch("wood"), "trees"), opener: "stone_axe" },
   ];
   // The shellfish are the reserve: they are not held to an everyday share but
   // to showing themselves in the crises of the still and moving worlds.

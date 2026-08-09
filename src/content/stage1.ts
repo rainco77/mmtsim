@@ -634,6 +634,21 @@ export const STAGE1: Config = {
       unlockedFromStart: true,
     },
     {
+      // The same walking, the axe at the fallen wood: limbs cut and split on
+      // the spot instead of dragged whole. What a stone axe really did for a
+      // forager's fuel — the trunk it fells waits for the settled stage.
+      id: "wood_gathering_axe",
+      branch: "wood",
+      activity: "woodcutting",
+      priority: 105,
+      capacityPerOutput: {},
+      intermediatesPerOutput: { labor: 0.45, deadwood: 1.0 },
+      exposure: { weather: 0.2 },
+      qualityWeight: 0,
+      yield: "found",
+      unlockedFromStart: false,
+    },
+    {
       // Taking what stands instead of what lies. The biggest single jump of the
       // epoch, and the same sentence as the boat: technology does not create
       // the resource, it opens it.
@@ -1243,7 +1258,7 @@ export const STAGE1: Config = {
       stockCost: { wood: 20 },
       minTicks: 12,
       limit: 1,
-      effects: [{ type: "process", id: "felling" }],
+      effects: [{ type: "process", id: "wood_gathering_axe" }],
       sector: "households",
     },
     {
