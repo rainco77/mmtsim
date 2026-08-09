@@ -119,6 +119,10 @@ export function createState(config: Config, options: StartOptions): GameState {
     lastEffort: {},
     lastLabourPerHead: {},
     lastUtilisation: {},
+    // No tick has run, so nothing has been done yet.
+    lastBorn: 0,
+    lastSurvival: {},
+    lastLabor: { available: 0, toProduction: 0, toProjects: 0, unused: 0 },
     completedProjects: {},
     activeProjects: [],
     leadProcess: {},
