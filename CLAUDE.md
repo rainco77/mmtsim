@@ -329,7 +329,7 @@ Code etwas anderes tut als das Konzept.
 1. **`KONZEPT.md` nachziehen.** Jede Stelle, die durch die Änderung falsch geworden ist,
    wird sofort korrigiert. Ein Widerspruch im Dokument ist immer mein Versäumnis und
    niemals etwas, das zur Entscheidung vorgelegt wird.
-2. **`tools/criteria.ts` ausführen und je Kriterium einzeln entscheiden:** Misst es nach
+2. **`tools/measure.ts` ausführen und je Kriterium einzeln entscheiden:** Misst es nach
    der Änderung noch, was es messen soll? Dann muss der Inhalt austariert werden, bis es
    besteht. Misst es eine Größe, die es nicht mehr gibt, muss das **Maß** geändert werden.
    Ein Kriterium, das leer besteht, weil das geprüfte Ereignis nie eintritt, zählt als
