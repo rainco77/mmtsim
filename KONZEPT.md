@@ -916,17 +916,14 @@ Epoche — sie muss jedes Mal neu gemessen werden, wenn die sich ändern. Gemess
 an einer Siedlung, die **nichts entscheidet**: Wo deren Bevölkerung stehen bleibt, das
 ist die Tragfähigkeit des Reviers.
 
-**Sie soll dort liegen, wo die Gemeinschaft anfängt.** Wer die Gruppe übernimmt,
+**Sie soll knapp unter der Gruppe liegen, die man übernimmt.** Wer sie übernimmt,
 übernimmt keine, die eben erst in die Welt gesetzt wurde: Sie lebt seit Generationen auf
 diesem Revier und steht an dessen Tragfähigkeit — genau das, was weiter oben über die
-Startaufstellung steht. Ohne jede Entscheidung soll sie deshalb ungefähr bleiben, wo sie
-ist, und nicht von allein auf das Doppelte wachsen. Gemessen liegt sie bei rund
-siebenundzwanzig gegen eine Startgruppe von fünfundzwanzig.
-
-> *Hier stand vorher „sie soll nahe bei fünfzig liegen".* Das war die Zahl aus der Zeit,
-> als die Startgruppe fünfzig war; mit einer Gruppe von fünfundzwanzig hieße es, dass sich
-> die Gemeinschaft ohne einen einzigen Handgriff verdoppelt — und dann hat das Wachstum
-> nichts mehr mit dem Spielen zu tun.
+Startaufstellung steht. Von allein auf ein Vielfaches zu wachsen ist deshalb falsch; dann
+hätte das Wachstum nichts mehr mit dem Spielen zu tun. Ebenso stehenzubleiben ist es aber
+auch: **Stillhalten kostet** (E29). Wer nichts entscheidet, geht langsam zurück und kommt
+unterhalb seines Ausgangspunkts wieder zur Ruhe — nicht so weit, dass es tödlich wäre,
+aber weit genug, dass man es sieht.
 
 **Der Leerlauf ist dabei der eigentliche Befund, nicht die Kopfzahl.** Ein zu großes
 Revier lässt einen erheblichen Teil aller Hände brachliegen, weil das Land nie knapp wird;
