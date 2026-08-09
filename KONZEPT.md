@@ -3798,6 +3798,29 @@ späteren Epochen Dung und Zucht) dem Land gerade hinzufügt, samt seinem Verbla
 Damit ist ohne neue Größe und ohne Erklärtext ablesbar, ob sich erneutes Pflegen schon
 wieder lohnt: Zuschlag groß → warten, fast weg → wieder dran.
 
+**Der Grundriss des Bildschirms — ausdrücklich ein Entwurf:** Alles hieran kann sich
+bei der Umsetzung ändern, wenn es gute Gründe gibt. Sechs Kacheln, eine dominant:
+
+- **Die Rangleiter** (das Zentrum): alle Ansprüche in Rangfolge — Bedarfsränge,
+  laufende Projekte (Rang verschiebbar), Vorratsvorgaben (Höhe und Rang einstellbar).
+  Je Zeile Deckung bzw. Fortschritt und Arbeitsanteil; aufklappbar der Verlauf und die
+  Verfahren dahinter mit Arbeit, Ertrag und den Suchkosten der angezapften Bestände.
+  Bei einem Gut mit Vorrat zeigt die aufgeklappte Zeile den Stand vor und nach dem
+  Tick — ob von der Substanz gelebt wurde. Eine Zuordnung „Rang X bekam Y aus dem
+  Vorrat" gibt es bewusst nicht: Eine Einheit im Topf weiß nicht, wann sie hineinkam
+  (E21). Fußzeile der Leiter: die freie Arbeit.
+- **Menschen**: Kopfzahl mit Verlauf, Geburten und Tode aus der Aufzeichnung,
+  Zusammensetzung nach Kohorten.
+- **Revier**: je Naturbestand Stand gegen Decke, entnommen, nachgewachsen, Suchkosten,
+  gepflegter Zuschlag; aufklappbar die Verfahren, die entnehmen. Daneben das
+  Wander-Paar: Güte des eigenen Landes gegen das Angebot.
+- **Vorräte**: Füllstand gegen Speicherkapazität; die zugehörige Vorgabe-Zeile steht
+  in der Leiter — Anspruch und Inhalt sind zwei Dinge und stehen an zwei Orten.
+- **Projekte**: der Katalog — sichtbar, ausführbar, dazu noch einmal die laufenden.
+  Sichtbare, noch nicht ausführbare stehen nie in der Leiter: Sie beanspruchen nichts.
+- **Ereignis-Log**: rollend, die letzten Nachrichten immer sichtbar; der Wetterwurf
+  klein daneben.
+
 **Kein Speichern und Laden in der ersten Stufe.** Statt dessen kennt die Oberfläche
 **den ganzen Verlauf des Laufs**, nicht nur den letzten Tick: Für Testzwecke lässt sich
 damit einfach zurückrollen. Ob der Spieler später auch zurückrollen kann, ist offen.
