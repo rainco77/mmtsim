@@ -71,7 +71,15 @@ let expected: GameState = session.s;
 
 /** Helpers put into scope of every expression. */
 const scope = {
-  tick: (state: GameState) => tick(state, session.idx),
+  // Every helper that advances the state also advances `expected`, so a loop
+  // of ticks inside one call stays recognised as honest play. Detection works
+  // by reference: a state that came out of a helper is the very object the
+  // helper produced.
+  tick: (state: GameState) => {
+    const next = tick(state, session.idx);
+    expected = next;
+    return next;
+  },
   derive: (state: GameState) => derive(state, session.idx),
   act: (state: GameState, action: Action) => {
     const result = apply(state, action, session.idx);
@@ -124,7 +132,9 @@ const scope = {
       if (result.rejected !== undefined) throw new Error(`Tick ${t}: ${result.rejected}`);
       next = result.state;
     }
-    return tick(next, session.idx);
+    const after = tick(next, session.idx);
+    expected = after;
+    return after;
   },
   config: () => session.cfg,
 
@@ -290,10 +300,14 @@ function evaluate(source: string): unknown {
   if (fn === undefined) throw new Error("could not compile");
 
   const out = fn(...values);
-  // Anything that reached the state other than through `act`, `reset`, `run` or
-  // a plain `tick` — an experiment writing into `s` — is noted, because from
-  // then on the log no longer reproduces what is on the screen.
-  if (out.__state !== expected && out.__state !== tick(expected, session.idx)) {
+  // Anything that reached the state other than through a helper — an
+  // experiment writing into `s` — is noted, because from then on the log no
+  // longer reproduces what is on the screen. Two references are honest: the
+  // object the last helper produced (`expected`), and the untouched session
+  // state itself (a call that only looked). Comparing against a freshly
+  // computed tick can never work — a recomputation is always a new object,
+  // and that comparison once stamped every loop of honest ticks as edited.
+  if (out.__state !== expected && out.__state !== session.s) {
     play.handEdited = true;
   }
   expected = out.__state;
