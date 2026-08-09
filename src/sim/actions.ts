@@ -50,7 +50,10 @@ export function apply(
       return {
         state: {
           ...state,
-          stockTargets: { ...state.stockTargets, [action.stock]: Math.max(0, action.amount) },
+          stockTargets: {
+            ...state.stockTargets,
+            [action.stock]: Math.max(0, action.amount),
+          },
           stockRanks:
             action.rank === undefined
               ? state.stockRanks
@@ -109,7 +112,6 @@ function startProject(
   };
   return { state: { ...state, activeProjects: [...state.activeProjects, active] } };
 }
-
 
 function mapProject(
   state: GameState,

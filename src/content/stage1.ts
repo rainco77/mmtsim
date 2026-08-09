@@ -940,7 +940,7 @@ export const STAGE1: Config = {
       // of cold while it was still feeding itself. At 0.94 the fire going out
       // costs six per cent, and the deaths of a bad tick are the hunger's, which
       // is where the epoch means them to be.
-            // Twice as hard on the growing, as hunger is.
+      // Twice as hard on the growing, as hunger is.
       survival: { atZero: 0.94, atFull: 1, per: { growing: 2, grown: 1 } },
     },
     {
@@ -1105,7 +1105,9 @@ export const STAGE1: Config = {
       id: "earth_oven",
       // It answers the fuel running short, and earlier than the axe does: it
       // needs no timber, only the wit to cover the fire over.
-      visibleWhen: [{ kind: "strain", measure: { searchCost: "deadwood" }, factor: 1.08 }],
+      visibleWhen: [
+        { kind: "strain", measure: { searchCost: "deadwood" }, factor: 1.08 },
+      ],
       availableWhen: [{ kind: "experience", activities: ["firemaking"], min: 10 }],
       defaultRank: PROJECTS_LAST,
       laborCost: 32,
@@ -1323,7 +1325,9 @@ export const STAGE1: Config = {
       // The larger of the two answers on the water, so it is called for later
       // than the hook: the strain has to have grown before a whole net is worth
       // the fibre it costs.
-      visibleWhen: [{ kind: "strain", measure: { labourPerHead: "fishing" }, factor: 1.3 }],
+      visibleWhen: [
+        { kind: "strain", measure: { labourPerHead: "fishing" }, factor: 1.3 },
+      ],
       // Twisting cord comes first: a net is nothing but a great deal of it.
       availableWhen: [
         { kind: "projectDone", id: "twining", min: 1 },
@@ -1353,7 +1357,9 @@ export const STAGE1: Config = {
       // mass find, and the line is twisted bast — the same craft as the net of
       // Antrea.
       id: "fish_hook",
-      visibleWhen: [{ kind: "strain", measure: { labourPerHead: "fishing" }, factor: 1.15 }],
+      visibleWhen: [
+        { kind: "strain", measure: { labourPerHead: "fishing" }, factor: 1.15 },
+      ],
       availableWhen: [
         { kind: "projectDone", id: "twining", min: 1 },
         { kind: "experience", activities: ["fishing"], min: 20 },
@@ -1481,7 +1487,9 @@ export const STAGE1: Config = {
       laborCost: 40,
       stockCost: { wood: 12 },
       minTicks: 7,
-      effects: [{ type: "capacity", capacity: "water", sector: "households", amount: 13 }],
+      effects: [
+        { type: "capacity", capacity: "water", sector: "households", amount: 13 },
+      ],
       sector: "households",
     },
 

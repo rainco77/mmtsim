@@ -35,7 +35,8 @@ const asCohorts = (heads: number): Record<string, number> =>
 const grows = (state: GameState, index: ConfigIndex): boolean => {
   const d = derive(state, index);
   let died = 0;
-  for (const [id, heads] of Object.entries(d.cohorts)) died += heads * (1 - (d.survival[id] ?? 1));
+  for (const [id, heads] of Object.entries(d.cohorts))
+    died += heads * (1 - (d.survival[id] ?? 1));
   return d.born > died;
 };
 
@@ -73,7 +74,11 @@ function finish(state: GameState, projectId: string, on: ConfigIndex = index): G
   ).state;
   const def = on.project.get(projectId);
   if (def === undefined) throw new Error(projectId);
-  for (let i = 0; i < def.minTicks * 20 && completedCount(next, projectId) === 0; i += 1) {
+  for (
+    let i = 0;
+    i < def.minTicks * 20 && completedCount(next, projectId) === 0;
+    i += 1
+  ) {
     next = tick(next, on);
   }
   return next;
@@ -122,13 +127,15 @@ describe("content is well formed (T3)", () => {
     }
     const projects = new Set(STAGE1.projects.map((p) => p.id));
     for (const process of STAGE1.processes) {
-      for (const id of process.needsProjects ?? []) expect(projects.has(id), id).toBe(true);
+      for (const id of process.needsProjects ?? [])
+        expect(projects.has(id), id).toBe(true);
     }
     for (const project of STAGE1.projects) {
       for (const effect of project.effects) {
         if (effect.type === "process") expect(processes.has(effect.id)).toBe(true);
         if (effect.type === "branch") expect(branches.has(effect.id)).toBe(true);
-        if (effect.type === "capacity") expect(capacityHeld.has(effect.capacity)).toBe(true);
+        if (effect.type === "capacity")
+          expect(capacityHeld.has(effect.capacity)).toBe(true);
       }
     }
   });
@@ -173,7 +180,8 @@ describe("the opening country (E14)", () => {
     const density = (state: GameState): number => {
       const shares: number[] = [];
       for (const stand of Object.values(derive(state, index).renewable)) {
-        if (stand !== undefined && stand.ceiling > 0) shares.push(stand.held / stand.ceiling);
+        if (stand !== undefined && stand.ceiling > 0)
+          shares.push(stand.held / stand.ceiling);
       }
       return shares.reduce((a, b) => a + b, 0) / Math.max(1, shares.length);
     };
@@ -198,7 +206,10 @@ describe("the opening country (E14)", () => {
       stocks: STAGE1.stocks.map((s) =>
         s.regrowth === undefined
           ? s
-          : { ...s, regrowth: { ...s.regrowth, densityPerArea: s.regrowth.densityPerArea / 2 } },
+          : {
+              ...s,
+              regrowth: { ...s.regrowth, densityPerArea: s.regrowth.densityPerArea / 2 },
+            },
       ),
     };
     const local = indexConfig(thin);
@@ -330,7 +341,10 @@ describe("projects (E18)", () => {
   });
 
   it("effects apply exactly once, on completion", () => {
-    const state = finish(createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600 }), "sickle");
+    const state = finish(
+      createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600 }),
+      "sickle",
+    );
     expect(completedCount(state, "sickle")).toBe(1);
     expect(computeUnlocks(state, index).processes.has("gathering_sickle")).toBe(true);
     expect(state.activeProjects.some((p) => p.id === "sickle")).toBe(false);
@@ -393,7 +407,10 @@ describe("processes and the fallback level (E5)", () => {
     // demand falls through to a further one is.
     const food = derive(state, plain)
       .runs.map((r) => r.process)
-      .filter((id) => plain.branch.get(plain.process.get(id)?.branch ?? "")?.produces === "food");
+      .filter(
+        (id) =>
+          plain.branch.get(plain.process.get(id)?.branch ?? "")?.produces === "food",
+      );
     // Named processes are deliberately not asserted, as the comment above says:
     // once the ordering came to cost the searching, the cheapest way of feeding
     // two hundred people stopped being the fields. What is under test is that a
@@ -465,18 +482,25 @@ describe("processes and the fallback level (E5)", () => {
 
     // Land short, hands to spare: the technique that spares land carries it.
     const tightLand = settled(60, 400);
-    expect(output(tightLand, "farming_fallow")).toBeGreaterThan(output(tightLand, "farming"));
+    expect(output(tightLand, "farming_fallow")).toBeGreaterThan(
+      output(tightLand, "farming"),
+    );
 
     // Hands short, land to spare: the other way round, by the same rule.
     const tightLabor = settled(5000, 40);
-    expect(output(tightLabor, "farming")).toBeGreaterThan(output(tightLabor, "farming_fallow"));
+    expect(output(tightLabor, "farming")).toBeGreaterThan(
+      output(tightLabor, "farming_fallow"),
+    );
   });
 
   it("when the wild growth runs out, farming absorbs the rest — Boserup (E6, E13)", () => {
     // Not a switch but a mix: the labour-richest process runs until *its own*
     // limit is reached, and the next takes what is left. With only a little
     // left to gather, gathering cannot carry the settlement and farming must.
-    let state = finish(createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600 }), "sickle");
+    let state = finish(
+      createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600 }),
+      "sickle",
+    );
     state = {
       ...state,
       completedProjects: { ...state.completedProjects, sedentism: 1 },
@@ -484,7 +508,10 @@ describe("processes and the fallback level (E5)", () => {
       // wild, and since fishing came down to the price of gathering it would
       // otherwise be the water that absorbs the rest — true, but a different
       // sentence.
-      unownedCapacity: { wilderness: { amount: 30, quality: 1 }, water: { amount: 0, quality: 1 } },
+      unownedCapacity: {
+        wilderness: { amount: 30, quality: 1 },
+        water: { amount: 0, quality: 1 },
+      },
       sectors: {
         ...state.sectors,
         households: {
@@ -506,7 +533,9 @@ describe("processes and the fallback level (E5)", () => {
     // has changed more than once. What is under test is that a demand the
     // leading way cannot carry falls through to further ones at all.
     const carrying = d.runs.filter(
-      (r) => r.output > 0.01 && index.branch.get(index.process.get(r.process)?.branch ?? "")?.produces === "food",
+      (r) =>
+        r.output > 0.01 &&
+        index.branch.get(index.process.get(r.process)?.branch ?? "")?.produces === "food",
     );
     expect(carrying.length).toBeGreaterThan(1);
     // And the fields really do carry: on thirty of cleared ground they feed
@@ -576,7 +605,9 @@ describe("processes and the fallback level (E5)", () => {
         (id) => index.stock.get(id)?.regrowth !== undefined,
       );
 
-    const leadBefore = derive(state, index).ordering.find((o) => o.branch === "food")?.lead;
+    const leadBefore = derive(state, index).ordering.find(
+      (o) => o.branch === "food",
+    )?.lead;
     const quarry = quarryOf(leadBefore ?? "");
     expect(quarry).toBeDefined();
 
@@ -591,7 +622,9 @@ describe("processes and the fallback level (E5)", () => {
       },
     };
 
-    const leadAfter = derive(thinned, index).ordering.find((o) => o.branch === "food")?.lead;
+    const leadAfter = derive(thinned, index).ordering.find(
+      (o) => o.branch === "food",
+    )?.lead;
     expect(leadAfter).not.toBe(leadBefore);
     expect(quarryOf(leadAfter ?? "")).not.toBe(quarry);
   });
@@ -618,7 +651,13 @@ describe("allocation runs rank by rank (E21)", () => {
     // A small country, already picked over: the lowest rank cannot be covered,
     // and what is reported is an *input* — never "food is missing", which is
     // the one thing the player can already see for himself.
-    const start = createState(STAGE1, { seed: 7, heads: 25, wilderness: 1, water: 1, food: 0 });
+    const start = createState(STAGE1, {
+      seed: 7,
+      heads: 25,
+      wilderness: 1,
+      water: 1,
+      food: 0,
+    });
     const state = {
       ...start,
       sectors: {
@@ -649,7 +688,13 @@ describe("population (E20)", () => {
   });
 
   it("shrinks under famine and grows when sated", () => {
-    const start = createState(STAGE1, { seed: 7, heads: 200, wilderness: 20, water: 8, food: 0 });
+    const start = createState(STAGE1, {
+      seed: 7,
+      heads: 200,
+      wilderness: 20,
+      water: 8,
+      food: 0,
+    });
     // A small range that has already been eaten bare: a full country can be
     // plundered for one tick however many mouths there are, so famine is a
     // state of the *stocks*, not of the area.
@@ -664,7 +709,13 @@ describe("population (E20)", () => {
 
     expect(
       grows(
-        createState(STAGE1, { seed: 7, heads: 20, wilderness: 4000, water: 1600, food: 200 }),
+        createState(STAGE1, {
+          seed: 7,
+          heads: 20,
+          wilderness: 4000,
+          water: 1600,
+          food: 200,
+        }),
         index,
       ),
     ).toBe(true);
@@ -681,7 +732,12 @@ describe("population (E20)", () => {
         transitions: [],
       },
     });
-    const state = createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600, food: 400 });
+    const state = createState(STAGE1, {
+      seed: 7,
+      wilderness: 4000,
+      water: 1600,
+      food: 400,
+    });
     const before = state.sectors["households"]!.cohorts;
     const born = derive(state, only).born;
     const after = tick(state, only).sectors["households"]!.cohorts;
@@ -714,7 +770,12 @@ describe("population (E20)", () => {
         households: { ...state.sectors["households"]!, cohorts: { growing, grown } },
       },
     });
-    const base = createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600, food: 400 });
+    const base = createState(STAGE1, {
+      seed: 7,
+      wilderness: 4000,
+      water: 1600,
+      food: 400,
+    });
     const askedFor = (state: GameState): number =>
       derive(state, index).tiers.find((t) => t.tier === "childcare")?.need ?? 0;
 
@@ -755,7 +816,12 @@ describe("population (E20)", () => {
           : { survival: { ...t.survival, per: { first: 1, second: 1, third: 1 } } }),
       })),
     });
-    const start = createState(chain.config, { seed: 7, wilderness: 4000, water: 1600, food: 400 });
+    const start = createState(chain.config, {
+      seed: 7,
+      wilderness: 4000,
+      water: 1600,
+      food: 400,
+    });
     const moved = tick(start, chain).sectors["households"]!.cohorts;
 
     expect(moved["first"]).toBeCloseTo(0, 9);
@@ -850,9 +916,13 @@ describe("combined techniques (E5)", () => {
       ...base,
       completedProjects: done,
     });
-    expect(computeUnlocks(withDone({}), index).processes.has("gathering_sickle_mortar")).toBe(false);
     expect(
-      computeUnlocks(withDone({ sickle: 1 }), index).processes.has("gathering_sickle_mortar"),
+      computeUnlocks(withDone({}), index).processes.has("gathering_sickle_mortar"),
+    ).toBe(false);
+    expect(
+      computeUnlocks(withDone({ sickle: 1 }), index).processes.has(
+        "gathering_sickle_mortar",
+      ),
     ).toBe(false);
     expect(
       computeUnlocks(withDone({ sickle: 1, mortar: 1 }), index).processes.has(
@@ -903,7 +973,9 @@ describe("the burnt range (E29)", () => {
     const state = createState(STAGE1, { seed: 7 });
     const before = wood(state);
     const burnt = finish(state, "fire_setting");
-    const cost = STAGE1.projects.find((p) => p.id === "fire_setting")!.stockCost["deadwood"]!;
+    const cost = STAGE1.projects.find((p) => p.id === "fire_setting")!.stockCost[
+      "deadwood"
+    ]!;
     expect(wood(burnt)).toBeLessThan(before - cost * 0.5);
   });
 });
@@ -928,7 +1000,9 @@ describe("the carrying brake (E20, E29)", () => {
   });
 
   it("nobody to carry, no brake — however dear the searching", () => {
-    expect(backloadFactor({ growing: 0, grown: 15 }, searched(2.0), undefined, index)).toBe(1);
+    expect(
+      backloadFactor({ growing: 0, grown: 15 }, searched(2.0), undefined, index),
+    ).toBe(1);
   });
 
   it("settling lifts it for good", () => {
@@ -961,7 +1035,10 @@ describe("the carrying brake (E20, E29)", () => {
 
 describe("sedentism (E29)", () => {
   it("opens branches, processes, the rule and the first fields", () => {
-    let state = finish(createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600 }), "sickle");
+    let state = finish(
+      createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600 }),
+      "sickle",
+    );
     state = {
       ...state,
       sectors: {
@@ -977,7 +1054,10 @@ describe("sedentism (E29)", () => {
     const unlocks = computeUnlocks(state, index);
     expect(unlocks.rules.has("settled")).toBe(true);
     expect(unlocks.processes.has("farming")).toBe(true);
-    expect(state.sectors["households"]?.capacityHeld["cleared"]?.amount).toBeCloseTo(20, 9);
+    expect(state.sectors["households"]?.capacityHeld["cleared"]?.amount).toBeCloseTo(
+      20,
+      9,
+    );
   });
 
   it("a project effect opens a whole branch (E12)", () => {
@@ -991,7 +1071,9 @@ describe("sedentism (E29)", () => {
         { id: "later", produces: "later", unlockedFromStart: false },
       ],
       projects: STAGE1.projects.map((p) =>
-        p.id === "sedentism" ? { ...p, effects: [...p.effects, { type: "branch", id: "later" }] } : p,
+        p.id === "sedentism"
+          ? { ...p, effects: [...p.effects, { type: "branch", id: "later" }] }
+          : p,
       ),
     });
 
@@ -1041,7 +1123,10 @@ describe("sedentism (E29)", () => {
   it("clearing turns wilderness into cleared land, keeping the total (E13)", () => {
     // Room enough that the conversions are not clamped at zero: the point is
     // that the total is preserved, not what a community's own range holds.
-    let state = finish(createState(STAGE1, { seed: 7, wilderness: 300, water: 120 }), "sickle");
+    let state = finish(
+      createState(STAGE1, { seed: 7, wilderness: 300, water: 120 }),
+      "sickle",
+    );
     state = {
       ...state,
       sectors: {
@@ -1063,13 +1148,16 @@ describe("sedentism (E29)", () => {
       (after.sectors["households"]?.capacityHeld["cleared"]?.amount ?? 0);
 
     expect(total).toBeCloseTo(before, 6);
-    expect(after.sectors["households"]?.capacityHeld["cleared"]?.amount ?? 0).toBeGreaterThan(
-      state.sectors["households"]?.capacityHeld["cleared"]?.amount ?? 0,
-    );
+    expect(
+      after.sectors["households"]?.capacityHeld["cleared"]?.amount ?? 0,
+    ).toBeGreaterThan(state.sectors["households"]?.capacityHeld["cleared"]?.amount ?? 0);
   });
 
   it("each taking brings worse land than the one before (E13, Ricardo)", () => {
-    let state = finish(createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600 }), "sickle");
+    let state = finish(
+      createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600 }),
+      "sickle",
+    );
     state = {
       ...state,
       sectors: {
@@ -1122,7 +1210,10 @@ describe("supply chains (E4)", () => {
     // Wood is short because there is nothing left to pick up — that is what
     // should be reported, not "wood is missing". Without the axe the standing
     // wood is out of reach, so the fallen wood is the whole of the supply.
-    let state = finish(createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600 }), "sickle");
+    let state = finish(
+      createState(STAGE1, { seed: 7, wilderness: 4000, water: 1600 }),
+      "sickle",
+    );
     state = {
       ...state,
       unownedCapacity: { wilderness: { amount: 0.01, quality: 1 } },
@@ -1181,7 +1272,8 @@ describe("the tick's record says what the tick did", () => {
         expected[move.from] = Math.max(0, (expected[move.from] ?? 0) - moving);
         expected[move.to] = (expected[move.to] ?? 0) + moving;
       }
-      expected[population.birthsInto] = (expected[population.birthsInto] ?? 0) + next.lastBorn;
+      expected[population.birthsInto] =
+        (expected[population.birthsInto] ?? 0) + next.lastBorn;
       const after = next.sectors["households"]?.cohorts ?? {};
       for (const cohort of population.cohorts) {
         expect(after[cohort.id] ?? 0).toBeCloseTo(expected[cohort.id] ?? 0, 8);
@@ -1198,7 +1290,10 @@ describe("the tick's record says what the tick did", () => {
     for (let i = 0; i < 20; i += 1) {
       state = tick(state, index);
       const labor = state.lastLabor;
-      expect(labor.toProduction + labor.toProjects + labor.unused).toBeCloseTo(labor.available, 8);
+      expect(labor.toProduction + labor.toProjects + labor.unused).toBeCloseTo(
+        labor.available,
+        8,
+      );
     }
   });
 

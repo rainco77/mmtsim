@@ -70,7 +70,6 @@ export class DeclaredOrdering implements ProcessOrdering {
   }
 }
 
-
 /**
  * Ordered by **dominance** (E4: labour is an input like any other).
  *
@@ -123,7 +122,8 @@ export class DominanceOrdering implements ProcessOrdering {
           const type = key.slice(2);
           const base = process.capacityPerOutput[type] ?? 0;
           if (base === 0) return 0;
-          const factor = 1 - process.qualityWeight + process.qualityWeight * ctx.quality(type);
+          const factor =
+            1 - process.qualityWeight + process.qualityWeight * ctx.quality(type);
           return (base * risk * effort) / Math.max(1e-12, factor);
         }
         const id = key.slice(2);
@@ -214,7 +214,10 @@ export class DominanceOrdering implements ProcessOrdering {
     const led = ordered[0];
     const wouldLead = byRoutine.find((p) => ordered.includes(p));
     const reason: OrderingReason =
-      riskWeight > 0 && led !== undefined && wouldLead !== undefined && led.id !== wouldLead.id
+      riskWeight > 0 &&
+      led !== undefined &&
+      wouldLead !== undefined &&
+      led.id !== wouldLead.id
         ? { kind: "risk", buffer: ctx.buffer }
         : { kind: "declared" };
 

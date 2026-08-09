@@ -105,7 +105,9 @@ export function conditionHolds(condition: Condition, ctx: ConditionContext): boo
     case "rule":
       return ctx.unlocks.rules.has(condition.id) === condition.set;
     case "unownedCapacity":
-      return capacityOf(ctx.state.unownedCapacity, condition.capacity).amount >= condition.min;
+      return (
+        capacityOf(ctx.state.unownedCapacity, condition.capacity).amount >= condition.min
+      );
     case "coverage":
       return (ctx.coverage[condition.tier] ?? 0) >= condition.min;
     case "ownedCapacity": {
@@ -146,7 +148,8 @@ function strainOf(ctx: ConditionContext, measure: StrainMeasure): number {
   if ("labourPerHead" in measure) {
     return ctx.state.lastLabourPerHead[measure.labourPerHead] ?? 0;
   }
-  if ("searchCost" in measure) return Math.max(1, ctx.state.lastEffort[measure.searchCost] ?? 1);
+  if ("searchCost" in measure)
+    return Math.max(1, ctx.state.lastEffort[measure.searchCost] ?? 1);
   return ctx.state.lastUtilisation[measure.utilisation] ?? 0;
 }
 
@@ -179,7 +182,8 @@ function keyOf(measure: StrainMeasure): string {
 function dearest(ctx: ConditionContext, stock?: string): number {
   if (stock !== undefined) return Math.max(1, ctx.state.lastEffort[stock] ?? 1);
   let highest = 1;
-  for (const price of Object.values(ctx.state.lastEffort)) highest = Math.max(highest, price);
+  for (const price of Object.values(ctx.state.lastEffort))
+    highest = Math.max(highest, price);
   return highest;
 }
 
@@ -240,15 +244,24 @@ function standing(condition: Condition, ctx: ConditionContext): Unmet {
     case "rule":
       return at(ctx.unlocks.rules.has(condition.id) === condition.set ? 1 : 0, 1);
     case "unownedCapacity":
-      return at(capacityOf(ctx.state.unownedCapacity, condition.capacity).amount, condition.min);
+      return at(
+        capacityOf(ctx.state.unownedCapacity, condition.capacity).amount,
+        condition.min,
+      );
     case "ownedCapacity":
       return at(held(ctx, condition.capacity), condition.min);
     case "coverage":
       return at(ctx.coverage[condition.tier] ?? 0, condition.min);
     case "capacityPerHead":
-      return at(ctx.population <= 0 ? 0 : held(ctx, condition.capacity) / ctx.population, condition.min);
+      return at(
+        ctx.population <= 0 ? 0 : held(ctx, condition.capacity) / ctx.population,
+        condition.min,
+      );
     case "stockPerHead":
-      return at(ctx.population <= 0 ? 0 : stock(ctx, condition.stock) / ctx.population, condition.min);
+      return at(
+        ctx.population <= 0 ? 0 : stock(ctx, condition.stock) / ctx.population,
+        condition.min,
+      );
     case "experience":
       return at(practised(ctx, condition.activities), condition.min);
     case "stockDear":

@@ -109,7 +109,10 @@ const scope = {
   log: () => ({
     text: [
       `Play log — seed ${play.seed}`,
-      ...play.actions.map(([t, a]) => `${String(t).padStart(3)}  ${a.type} ${"id" in a ? a.id : JSON.stringify(a)}`),
+      ...play.actions.map(
+        ([t, a]) =>
+          `${String(t).padStart(3)}  ${a.type} ${"id" in a ? a.id : JSON.stringify(a)}`,
+      ),
       play.actions.length === 0 ? "(no actions)" : "(nothing else)",
       ...(play.handEdited
         ? ["WARNING: the state was edited by hand — this log does NOT replay the run"]
@@ -180,14 +183,19 @@ const scope = {
       },
       capacities: from(
         session.cfg.capacities.map((c) => c.id),
-        (id) => ({ held: round(d.capacityTotal[id] ?? 0), used: round(d.utilization[id] ?? 0) }),
+        (id) => ({
+          held: round(d.capacityTotal[id] ?? 0),
+          used: round(d.utilization[id] ?? 0),
+        }),
       ),
       stocks: from(
         session.cfg.stocks.map((st) => st.id),
         (id) => round(d.stocks[id] ?? 0),
       ),
       running: Object.fromEntries(
-        state.lastRuns.filter((r) => r.output > 0).map((r) => [r.process, round(r.output)]),
+        state.lastRuns
+          .filter((r) => r.output > 0)
+          .map((r) => [r.process, round(r.output)]),
       ),
       // Where a renewable stock stands, and whether what is being taken can
       // last (E29). Config-driven like the rest: nothing is named here.
@@ -195,12 +203,23 @@ const scope = {
         Object.entries(d.renewable).map(([id, r]) => {
           let taken = 0;
           for (const run of state.lastRuns) {
-            taken += run.output * (session.idx.process.get(run.process)?.intermediatesPerOutput[id] ?? 0);
+            taken +=
+              run.output *
+              (session.idx.process.get(run.process)?.intermediatesPerOutput[id] ?? 0);
           }
           // `tended`: what husbandry has added per unit of ground (a burn, in
           // later epochs manure or breeding), fading — the judgement figure
           // for whether tending again is worth it yet.
-          return [id, { held: round(r.held), of: round(r.ceiling), grows: round(r.growth), taken: round(taken), tended: round(state.rangeCarries[id] ?? 0) }];
+          return [
+            id,
+            {
+              held: round(r.held),
+              of: round(r.ceiling),
+              grows: round(r.growth),
+              taken: round(taken),
+              tended: round(state.rangeCarries[id] ?? 0),
+            },
+          ];
         }),
       ),
       // The move decision, side by side: what the land under one's feet is
@@ -222,7 +241,8 @@ const scope = {
         };
       })(),
       shocks: from(Object.keys(session.cfg.shocks), (id) => round(d.shocks[id] ?? 1)),
-      short: d.binding.kind === "none" ? null : `${d.binding.kind}:${d.binding.what ?? ""}`,
+      short:
+        d.binding.kind === "none" ? null : `${d.binding.kind}:${d.binding.what ?? ""}`,
       projects: {
         building: Object.fromEntries(
           d.projects.filter((p) => p.running).map((p) => [p.id, round(p.progress)]),

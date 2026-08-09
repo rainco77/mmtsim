@@ -1,4 +1,5 @@
 import js from "@eslint/js";
+import svelte from "eslint-plugin-svelte";
 import tseslint from "typescript-eslint";
 
 /**
@@ -21,6 +22,12 @@ export default tseslint.config(
   { ignores: ["dist", "node_modules", "coverage", "archive"] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
+  // Svelte templates are linted too (T8); their script blocks are TypeScript.
+  ...svelte.configs.recommended,
+  {
+    files: ["**/*.svelte"],
+    languageOptions: { parserOptions: { parser: tseslint.parser } },
+  },
   {
     files: ["src/sim/**/*.ts", "src/content/**/*.ts"],
     rules: {

@@ -1,5 +1,11 @@
 import { livesOn, weighedHeads, yieldPerCapacity } from "../src/sim/index.ts";
-import type { Action, ConfigIndex, Derived, GameState, ProcessDef } from "../src/sim/index.ts";
+import type {
+  Action,
+  ConfigIndex,
+  Derived,
+  GameState,
+  ProcessDef,
+} from "../src/sim/index.ts";
 import type { Policy } from "../src/policy/policy.ts";
 
 /** Net effect of a project on each capacity — the sign is what matters. */
@@ -13,7 +19,10 @@ function moves(id: string, index: ConfigIndex): ReadonlyMap<string, number> {
 }
 
 /** Do these two pull the same capacity in opposite directions? */
-function opposes(a: ReadonlyMap<string, number>, b: ReadonlyMap<string, number>): boolean {
+function opposes(
+  a: ReadonlyMap<string, number>,
+  b: ReadonlyMap<string, number>,
+): boolean {
   for (const [capacity, one] of a) {
     const two = b.get(capacity) ?? 0;
     if (one * two < 0) return true;
@@ -160,7 +169,8 @@ export class SensiblePolicy implements Policy {
                 (sum, run) =>
                   sum +
                   run.output *
-                    (index.process.get(run.process)?.intermediatesPerOutput[stock.id] ?? 0),
+                    (index.process.get(run.process)?.intermediatesPerOutput[stock.id] ??
+                      0),
                 0,
               ) * KEEP_TICKS,
             );
@@ -170,7 +180,12 @@ export class SensiblePolicy implements Policy {
       // must not use up the turn. Returning here meant the player adjusted his
       // woodpile every tick and never once got as far as deciding what to
       // build — ten offers stood open and nothing was ever finished.
-      keep.push({ type: "setStockTarget", stock: stock.id, amount: want, rank: BOUGHT_WITH_COMFORT });
+      keep.push({
+        type: "setStockTarget",
+        stock: stock.id,
+        amount: want,
+        rank: BOUGHT_WITH_COMFORT,
+      });
     }
 
     // One thing at a time, unless there are hands genuinely lying idle.
@@ -294,7 +309,10 @@ export class SensiblePolicy implements Policy {
         ),
     );
     if (institution !== undefined) {
-      return [...keep, { type: "startProject", id: institution.id, rank: BOUGHT_WITH_COMFORT }];
+      return [
+        ...keep,
+        { type: "startProject", id: institution.id, rank: BOUGHT_WITH_COMFORT },
+      ];
     }
 
     // Moving on used to be taken out of turn, the moment anything cost half as

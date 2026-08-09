@@ -135,7 +135,8 @@ function searchCost(renewal: Renewal, from: number, to: number, cap: number): nu
   const held = Math.max(1e-9, renewal.held);
   const width = to - from;
   if (width <= 1e-12) return Math.min(cap, renewal.ceiling / held);
-  const mean = (renewal.ceiling / width) * Math.log((held - from) / Math.max(1e-9, held - to));
+  const mean =
+    (renewal.ceiling / width) * Math.log((held - from) / Math.max(1e-9, held - to));
   return Math.min(cap, Math.max(1, mean));
 }
 
@@ -149,9 +150,15 @@ function columnsOf(input: ProgramInput): Column[] {
     if (branch === undefined) continue;
     const quarry = quarryOf(process, input.index);
     const renewal = quarry === undefined ? undefined : input.standing[quarry];
-    const rule = quarry === undefined ? undefined : input.index.stock.get(quarry)?.regrowth;
+    const rule =
+      quarry === undefined ? undefined : input.index.stock.get(quarry)?.regrowth;
 
-    if (quarry === undefined || renewal === undefined || rule === undefined || renewal.held <= 1e-9) {
+    if (
+      quarry === undefined ||
+      renewal === undefined ||
+      rule === undefined ||
+      renewal.held <= 1e-9
+    ) {
       columns.push(column(process, branch.produces, input, shock, 1, Infinity, quarry));
       continue;
     }
@@ -163,7 +170,9 @@ function columnsOf(input: ProgramInput): Column[] {
       const effort = searchCost(renewal, from, to, rule.maxEffort);
       // How much *output* this slice of the stand can carry.
       const ceiling = perOutput > 0 ? (to - from) / perOutput : Infinity;
-      columns.push(column(process, branch.produces, input, shock, effort, ceiling, quarry, step));
+      columns.push(
+        column(process, branch.produces, input, shock, effort, ceiling, quarry, step),
+      );
     }
   }
   // **Among equally good answers, prefer the one that spends fewer hands.**
@@ -194,7 +203,10 @@ function column(
     if (base <= 0) continue;
     const quality = input.supplies.capacityHeld[id]?.quality ?? 1;
     const factor = 1 - process.qualityWeight + process.qualityWeight * quality;
-    inputs.set(`capacity:${id}`, factor > 0 ? (base * effort) / factor / shock : Infinity);
+    inputs.set(
+      `capacity:${id}`,
+      factor > 0 ? (base * effort) / factor / shock : Infinity,
+    );
   }
   for (const [id, base] of Object.entries(process.intermediatesPerOutput)) {
     if (base <= 0) continue;
@@ -227,7 +239,10 @@ export function planByProgram(input: ProgramInput): Plan {
     columns.push({
       // A claim on a good that is used up takes it; a claim on one that is only
       // *held* takes nothing, and is tied to the closing balance further down.
-      inputs: claim.tier.consumedOnUse > 1e-9 ? new Map([[`stock:${claim.stock}`, 1]]) : new Map(),
+      inputs:
+        claim.tier.consumedOnUse > 1e-9
+          ? new Map([[`stock:${claim.stock}`, 1]])
+          : new Map(),
       ceiling: claim.amount,
       // A claim searches for nothing; it only asks.
       effort: 1,
@@ -279,7 +294,10 @@ export function planByProgram(input: ProgramInput): Plan {
       const key = `${col.quarry}#${col.step}`;
       const row = depths.get(key)?.coefficients ?? zero();
       row[j] = (row[j] ?? 0) + (col.inputs.get(`stock:${col.quarry}`) ?? 0);
-      depths.set(key, { coefficients: row, limit: col.ceiling * (col.inputs.get(`stock:${col.quarry}`) ?? 1) });
+      depths.set(key, {
+        coefficients: row,
+        limit: col.ceiling * (col.inputs.get(`stock:${col.quarry}`) ?? 1),
+      });
     }
   }
 
@@ -311,7 +329,9 @@ export function planByProgram(input: ProgramInput): Plan {
     limits.push({
       id: `stock:${id}`,
       coefficients: row,
-      limit: natural ? (input.standing[id]?.held ?? 0) * REACH : (input.supplies.stocks[id] ?? 0),
+      limit: natural
+        ? (input.standing[id]?.held ?? 0) * REACH
+        : (input.supplies.stocks[id] ?? 0),
     });
   }
 
@@ -368,7 +388,10 @@ export function planByProgram(input: ProgramInput): Plan {
     const col = columns[j]!;
     if (col.process === undefined || col.produces === undefined) continue;
     levels.set(col.process.id, (levels.get(col.process.id) ?? 0) + level);
-    weighted.set(col.process.id, (weighted.get(col.process.id) ?? 0) + level * col.effort);
+    weighted.set(
+      col.process.id,
+      (weighted.get(col.process.id) ?? 0) + level * col.effort,
+    );
     output[col.produces] = (output[col.produces] ?? 0) + level;
   }
   const effortPerProcess = new Map<ProcessId, number>();
@@ -392,7 +415,9 @@ export function planByProgram(input: ProgramInput): Plan {
   const shortfall = new Map<string, number>();
   if (missing > 1e-9) {
     for (const id of answer.binding) {
-      const input = id.startsWith("depth:") ? `stock:${id.slice(6).split("#")[0] ?? ""}` : id;
+      const input = id.startsWith("depth:")
+        ? `stock:${id.slice(6).split("#")[0] ?? ""}`
+        : id;
       if (input.startsWith("capacity:") || input.startsWith("stock:")) {
         shortfall.set(input, (shortfall.get(input) ?? 0) + missing);
       }

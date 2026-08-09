@@ -16,7 +16,8 @@ function lawful(program: Program, levels: readonly number[]): boolean {
   if (levels.some((x) => x < -1e-9)) return false;
   return program.limits.every((limit) => {
     let used = 0;
-    for (let j = 0; j < program.activities; j += 1) used += (limit.coefficients[j] ?? 0) * levels[j]!;
+    for (let j = 0; j < program.activities; j += 1)
+      used += (limit.coefficients[j] ?? 0) * levels[j]!;
     return used <= limit.limit + 1e-9;
   });
 }
@@ -24,7 +25,8 @@ function lawful(program: Program, levels: readonly number[]): boolean {
 function valueOf(program: Program, levels: readonly number[], r: number): number {
   const objective = program.objectives[r]!;
   let total = 0;
-  for (let j = 0; j < program.activities; j += 1) total += (objective.coefficients[j] ?? 0) * levels[j]!;
+  for (let j = 0; j < program.activities; j += 1)
+    total += (objective.coefficients[j] ?? 0) * levels[j]!;
   return total;
 }
 
@@ -38,7 +40,10 @@ function corners(program: Program): number[][] {
     limit: l.limit,
   }));
   for (let j = 0; j < n; j += 1) {
-    walls.push({ coefficients: Array.from({ length: n }, (_, i) => (i === j ? 1 : 0)), limit: 0 });
+    walls.push({
+      coefficients: Array.from({ length: n }, (_, i) => (i === j ? 1 : 0)),
+      limit: 0,
+    });
   }
   const pick = (start: number, chosen: number[]): void => {
     if (chosen.length === n) {
@@ -94,7 +99,8 @@ describe("the ranked solver", () => {
     expect(lawful(program, answer.levels)).toBe(true);
 
     let best = 0;
-    for (const corner of corners(program)) best = Math.max(best, valueOf(program, corner, 0));
+    for (const corner of corners(program))
+      best = Math.max(best, valueOf(program, corner, 0));
     expect(answer.values[0]).toBeCloseTo(best, 9);
   });
 
@@ -150,7 +156,8 @@ describe("the ranked solver", () => {
     expect(answer.steps).toBeLessThan(100);
     expect(lawful(program, answer.levels)).toBe(true);
     let best = 0;
-    for (const corner of corners(program)) best = Math.max(best, valueOf(program, corner, 0));
+    for (const corner of corners(program))
+      best = Math.max(best, valueOf(program, corner, 0));
     expect(answer.values[0]).toBeCloseTo(best, 9);
   });
 
@@ -204,22 +211,38 @@ describe("the ranked solver", () => {
       const activities = 2 + Math.floor(next() * 3);
       const limits = Array.from({ length: 2 + Math.floor(next() * 3) }, (_, i) => ({
         id: `l${i}`,
-        coefficients: Array.from({ length: activities }, () => Math.round(next() * 30) / 10),
+        coefficients: Array.from(
+          { length: activities },
+          () => Math.round(next() * 30) / 10,
+        ),
         limit: Math.round(next() * 200) / 10,
       }));
       const program: Program = {
         activities,
         limits,
         objectives: [
-          { id: "first", coefficients: Array.from({ length: activities }, () => Math.round(next() * 50) / 10) },
-          { id: "second", coefficients: Array.from({ length: activities }, () => Math.round(next() * 50) / 10) },
+          {
+            id: "first",
+            coefficients: Array.from(
+              { length: activities },
+              () => Math.round(next() * 50) / 10,
+            ),
+          },
+          {
+            id: "second",
+            coefficients: Array.from(
+              { length: activities },
+              () => Math.round(next() * 50) / 10,
+            ),
+          },
         ],
       };
       const answer = solve(program);
       if (answer.unbounded) continue;
       expect(lawful(program, answer.levels)).toBe(true);
       let best = 0;
-      for (const corner of corners(program)) best = Math.max(best, valueOf(program, corner, 0));
+      for (const corner of corners(program))
+        best = Math.max(best, valueOf(program, corner, 0));
       expect(answer.values[0]).toBeCloseTo(best, 6);
     }
   });

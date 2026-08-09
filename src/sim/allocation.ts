@@ -18,16 +18,8 @@ import {
  */
 const LABOR_STOCK: StockId = "labor";
 
-
-
-
 import { planByProgram } from "./program.ts";
-import {
-  makePlan,
-  type Demand,
-  type Plan,
-  type PlanContext,
-} from "./plan.ts";
+import { makePlan, type Demand, type Plan, type PlanContext } from "./plan.ts";
 import { shockFactor, type Shocks } from "./risk.ts";
 import { renewals, type Renewal } from "./phases.ts";
 import { capacityOf, weighedHeads, type GameState } from "./state.ts";
@@ -164,7 +156,9 @@ function poolCapacities(
       };
       continue;
     }
-    const owned = sector ? capacityOf(sector.capacityHeld, type.id) : { amount: 0, quality: 1 };
+    const owned = sector
+      ? capacityOf(sector.capacityHeld, type.id)
+      : { amount: 0, quality: 1 };
     const unowned = capacityOf(state.unownedCapacity, type.id);
     const total = owned.amount + unowned.amount;
     const quality =
@@ -191,9 +185,6 @@ function effectiveCapacityPerOutput(
   const factor = 1 - process.qualityWeight + process.qualityWeight * quality;
   return factor > 0 ? base / factor : Infinity;
 }
-
-
-
 
 /**
  * The draw the plan reckons with (E24) — not the one that happens.
@@ -335,7 +326,8 @@ function takingOf(
     const shock = shockOf(process);
     for (const [stockId, per] of Object.entries(process.intermediatesPerOutput)) {
       if (per <= 0 || index.stock.get(stockId)?.regrowth === undefined) continue;
-      out[stockId] = (out[stockId] ?? 0) + (shock > 0 ? (level * per) / shock : level * per);
+      out[stockId] =
+        (out[stockId] ?? 0) + (shock > 0 ? (level * per) / shock : level * per);
     }
   }
   return out;
@@ -409,8 +401,6 @@ function feasiblePace(
   return pace;
 }
 
-
-
 export interface AllocationInput {
   readonly state: GameState;
   readonly index: ConfigIndex;
@@ -475,7 +465,8 @@ export function allocate(input: AllocationInput): AllocationResult {
 
   const availableProcesses = config.processes.filter(
     (process) =>
-      input.unlockedProcesses.has(process.id) && input.unlockedBranches.has(process.branch),
+      input.unlockedProcesses.has(process.id) &&
+      input.unlockedBranches.has(process.branch),
   );
   const buffer = survivalBuffer(state, index, sectorId);
 
@@ -487,25 +478,27 @@ export function allocate(input: AllocationInput): AllocationResult {
 
   /** Ordered afresh whenever `taking` changes, so it costs what is intended. */
   const orderAll = (): void => {
-  for (const branch of config.branches) {
-    if (!input.unlockedBranches.has(branch.id)) continue;
-    const forBranch = availableProcesses.filter((process) => process.branch === branch.id);
-    const orderCtx: OrderingContext = {
-      index,
-      available: forBranch,
-      buffer,
-      quality: (capacity: string) => pools.amount[capacity]?.quality ?? 1,
-      // What searching costs, out of `taking` once the draft has said what this
-      // tick means to take — see below. On the first pass that is empty, so the
-      // ordering is priced at the margin; on the second it sees the real thing.
-      effort: (process: ProcessDef) => effortFactor(process, index, standing, taking),
-    };
-    const resolved = ORDERING_RESOLVER.resolve(branch, orderCtx);
-    ordering.set(branch.id, resolved.processes);
-    orderingReason.set(branch.id, resolved.reason);
-    const first = resolved.processes[0];
-    if (first !== undefined) leadProcess.set(branch.id, first.id);
-  }
+    for (const branch of config.branches) {
+      if (!input.unlockedBranches.has(branch.id)) continue;
+      const forBranch = availableProcesses.filter(
+        (process) => process.branch === branch.id,
+      );
+      const orderCtx: OrderingContext = {
+        index,
+        available: forBranch,
+        buffer,
+        quality: (capacity: string) => pools.amount[capacity]?.quality ?? 1,
+        // What searching costs, out of `taking` once the draft has said what this
+        // tick means to take — see below. On the first pass that is empty, so the
+        // ordering is priced at the margin; on the second it sees the real thing.
+        effort: (process: ProcessDef) => effortFactor(process, index, standing, taking),
+      };
+      const resolved = ORDERING_RESOLVER.resolve(branch, orderCtx);
+      ordering.set(branch.id, resolved.processes);
+      orderingReason.set(branch.id, resolved.reason);
+      const first = resolved.processes[0];
+      if (first !== undefined) leadProcess.set(branch.id, first.id);
+    }
   };
   orderAll();
 
@@ -533,8 +526,8 @@ export function allocate(input: AllocationInput): AllocationResult {
           stock: stockId,
           branch: index.config.branches.find((b) => b.produces === stockId)?.id ?? "",
           perHead: 0,
-        // Not counted over heads at all — the amount is named outright.
-        perHeadWeight: {},
+          // Not counted over heads at all — the amount is named outright.
+          perHeadWeight: {},
           consumedOnUse: 1,
         },
         stock: stockId,
@@ -544,7 +537,9 @@ export function allocate(input: AllocationInput): AllocationResult {
   }
 
   const consumed: Record<StockId, number> = {};
-  const tierList = index.tiersByRank.filter((tier) => input.unlockedBranches.has(tier.branch));
+  const tierList = index.tiersByRank.filter((tier) =>
+    input.unlockedBranches.has(tier.branch),
+  );
 
   // The demand side of a shock (E24): a poor draw asks for more, where a
   // process would deliver less. Same draw, opposite direction.
@@ -731,7 +726,9 @@ export function allocate(input: AllocationInput): AllocationResult {
       : undefined;
 
   const draft = byProgram ?? makePlan(demands, planCtx);
-  taking = takingOf(draft.levels, index, (process) => shockFactor(process, planningShocks(process)));
+  taking = takingOf(draft.levels, index, (process) =>
+    shockFactor(process, planningShocks(process)),
+  );
   const effortPerStock = pricePerStock(standing, taking, index);
   // Now that the tick has said what it means to take, order and plan again with
   // what that taking really costs. The ordering used to sit outside this and
@@ -785,7 +782,8 @@ export function allocate(input: AllocationInput): AllocationResult {
     // plan held warmth at 0.94 of 0.94 with the wood for it, gathering ran
     // first and spent those hands, the fire came out at nought and the
     // community was given up in its first tick.
-    const effort = plan.effortPerProcess?.get(id) ?? effortFactor(process, index, standing, taking);
+    const effort =
+      plan.effortPerProcess?.get(id) ?? effortFactor(process, index, standing, taking);
     const level = planned * feasiblePace(process, planned, pools, effort, index);
     // Labour the plan had earmarked for this process and that it did not take,
     // because the process could not run at the planned level. It is idle, not
@@ -821,9 +819,14 @@ export function allocate(input: AllocationInput): AllocationResult {
   // booked as going to projects, even when every project was paused. It is
   // idle: made, wanted by nobody, and gone at the tick's end (E10).
   const laborWanted = demands
-    .filter((demand) => demand.tier.id.startsWith("project:") && demand.stock === LABOR_STOCK)
+    .filter(
+      (demand) => demand.tier.id.startsWith("project:") && demand.stock === LABOR_STOCK,
+    )
     .reduce((sum, demand) => sum + demand.amount, 0);
-  const laborToProjects = Math.min(Math.max(0, laborReserve - laborStoodStill), laborWanted);
+  const laborToProjects = Math.min(
+    Math.max(0, laborReserve - laborStoodStill),
+    laborWanted,
+  );
   const laborSpilled = Math.max(0, laborReserve - laborStoodStill) - laborToProjects;
   const withShares = runs.map((run) => ({
     ...run,
@@ -863,7 +866,8 @@ export function allocate(input: AllocationInput): AllocationResult {
     pools.stock[tier.stock] = (pools.stock[tier.stock] ?? 0) - served;
 
     const coverage = need > 0 ? Math.min(1, served / need) : 1;
-    const binding = coverage < 1 - 1e-9 ? bindingFromPlan(plan) : { kind: "none" as const };
+    const binding =
+      coverage < 1 - 1e-9 ? bindingFromPlan(plan) : { kind: "none" as const };
     tiers.push({ tier: tier.id, rank: tier.rank, need, served, coverage, binding });
     if (coverage < 1 - 1e-9 && bindingTier === undefined) {
       overallBinding = binding;
@@ -917,13 +921,15 @@ export function allocate(input: AllocationInput): AllocationResult {
   };
 }
 
-
 /**
  * Orders processes so that everything a process needs has been made before it
  * runs. A pairwise comparison is not enough: with three levels — labour, wood,
  * house — it can order them wrongly.
  */
-function topological(ids: readonly ProcessId[], index: ConfigIndex): readonly ProcessId[] {
+function topological(
+  ids: readonly ProcessId[],
+  index: ConfigIndex,
+): readonly ProcessId[] {
   const needs = new Map<ProcessId, Set<ProcessId>>();
   for (const id of ids) {
     const process = index.process.get(id);
@@ -973,8 +979,6 @@ function bindingFromPlan(plan: Plan): Binding {
   }
   return { kind: "stock", what: worst.slice("stock:".length) };
 }
-
-
 
 /**
  * How thin the store is at the lowest rank (E5). One means comfortable, zero

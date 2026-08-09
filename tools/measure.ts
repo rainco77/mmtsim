@@ -1,5 +1,10 @@
 import { STAGE1 } from "../src/content/stage1.ts";
-import { StillPolicy, MovingPolicy, BuildingPolicy, ThoroughPolicy } from "../src/policy/plays/index.ts";
+import {
+  StillPolicy,
+  MovingPolicy,
+  BuildingPolicy,
+  ThoroughPolicy,
+} from "../src/policy/plays/index.ts";
 import type { Policy } from "../src/policy/policy.ts";
 import {
   apply,
@@ -88,7 +93,8 @@ interface Setback {
 function setbacksIn(rows: readonly Row[]): Setback[] {
   const starts: number[] = [];
   for (let i = 1; i < rows.length; i += 1) {
-    if ((rows[i]?.hunger ?? 1) < 0.999 && (rows[i - 1]?.hunger ?? 1) >= 0.999) starts.push(i);
+    if ((rows[i]?.hunger ?? 1) < 0.999 && (rows[i - 1]?.hunger ?? 1) >= 0.999)
+      starts.push(i);
   }
   return starts.map((at, k) => {
     const before = rows[at - 1]?.heads ?? 0;
@@ -122,7 +128,9 @@ function setbacksIn(rows: readonly Row[]): Setback[] {
 function gotOverInTime(all: readonly Setback[]): number {
   if (all.length === 0) return 1;
   const done = all.filter(
-    (s) => s.recoveredAfter !== null && (s.nextAfter === null || s.recoveredAfter < s.nextAfter),
+    (s) =>
+      s.recoveredAfter !== null &&
+      (s.nextAfter === null || s.recoveredAfter < s.nextAfter),
   ).length;
   return done / all.length;
 }
@@ -183,20 +191,24 @@ function play(seed: number, policy: Policy, settle = true, forbid?: string): Tra
     for (const action of policy.decide(state, d, index)) {
       // Held back rather than filtered inside the strategy, so the same written
       // rule is measured either way and only the horizon differs.
-      if (!settle && action.type === "startProject" && action.id === "sedentism") continue;
-      if (forbid !== undefined && action.type === "startProject" && action.id === forbid) continue;
+      if (!settle && action.type === "startProject" && action.id === "sedentism")
+        continue;
+      if (forbid !== undefined && action.type === "startProject" && action.id === forbid)
+        continue;
       const result = apply(state, action, index);
       if (result.rejected === undefined) state = result.state;
     }
 
-    if (pitAt === null && (state.completedProjects["storage_pit"] ?? 0) > 0) pitAt = state.tick;
+    if (pitAt === null && (state.completedProjects["storage_pit"] ?? 0) > 0)
+      pitAt = state.tick;
 
     const after = derive(state, index);
     const inCrisis = (after.coverage["food_survival"] ?? 1) < 0.999;
     for (const project of after.projects) if (project.visible) seen.add(project.id);
     for (const run of after.runs) {
       labour[run.process] = (labour[run.process] ?? 0) + run.labor;
-      if (inCrisis) crisisLabour[run.process] = (crisisLabour[run.process] ?? 0) + run.labor;
+      if (inCrisis)
+        crisisLabour[run.process] = (crisisLabour[run.process] ?? 0) + run.labor;
       if (run.output <= 0) continue;
       const def = index.process.get(run.process);
       if (def === undefined) continue;
@@ -209,7 +221,8 @@ function play(seed: number, policy: Policy, settle = true, forbid?: string): Tra
     }
     const shares: number[] = [];
     for (const stand of Object.values(after.renewable)) {
-      if (stand !== undefined && stand.ceiling > 0) shares.push(stand.held / stand.ceiling);
+      if (stand !== undefined && stand.ceiling > 0)
+        shares.push(stand.held / stand.ceiling);
     }
     rows.push({
       tick: state.tick,
@@ -293,7 +306,8 @@ const thorough = seeds.map((s) => play(s, new ThoroughPolicy()));
 /** The tripwire: burning before everything. */
 const burner = seeds.map((s) => play(s, new BurnerPolicy()));
 
-const restingOf = (runs: readonly Trace[]): number => mean(runs.map((t) => mean(late(t).map((r) => r.heads))));
+const restingOf = (runs: readonly Trace[]): number =>
+  mean(runs.map((t) => mean(late(t).map((r) => r.heads))));
 const startHeads = mean(still.map((t) => t.rows[0]?.heads ?? 0));
 
 const verdicts: [string, boolean][] = [];
@@ -302,7 +316,9 @@ const judge = (what: string, pass: boolean): string => {
   return pass ? "ja" : "NEIN";
 };
 
-console.log(`Seeds 1..${SEEDS}, up to tick ${CAP}, resting level read between ticks ${REST_FROM} and ${REST_TO}.\n`);
+console.log(
+  `Seeds 1..${SEEDS}, up to tick ${CAP}, resting level read between ticks ${REST_FROM} and ${REST_TO}.\n`,
+);
 
 // ---------------------------------------------------------- 1: how it begins
 console.log("== How it begins: the still play ==");
@@ -329,8 +345,12 @@ console.log("== How it begins: the still play ==");
       `${judge("the range thins instead of recovering", first >= settledDensity)}`,
   );
   console.log(`Idle hands on average            ${pct(idle)}`);
-  console.log(`  ticks with more than 5 % free  ${pct(rows.filter((r) => r.idle > 0.05).length / Math.max(1, rows.length))}`);
-  console.log(`Hunger ticks per hundred         ${round((rows.filter((r) => r.hunger < 0.999).length / Math.max(1, rows.length)) * 100, 1)}`);
+  console.log(
+    `  ticks with more than 5 % free  ${pct(rows.filter((r) => r.idle > 0.05).length / Math.max(1, rows.length))}`,
+  );
+  console.log(
+    `Hunger ticks per hundred         ${round((rows.filter((r) => r.hunger < 0.999).length / Math.max(1, rows.length)) * 100, 1)}`,
+  );
   console.log(
     `Setbacks per run                 ${round(back.length / SEEDS, 1)}, mean depth ${pct(mean(back.map((b) => b.depth)))} of the heads`,
   );
@@ -341,7 +361,9 @@ console.log("== How it begins: the still play ==");
     // boundary on the share would demand of a pitless community what only the
     // pit delivers.
     (() => {
-      const gap = median(back.filter((b) => b.nextAfter !== null).map((b) => b.nextAfter ?? 0));
+      const gap = median(
+        back.filter((b) => b.nextAfter !== null).map((b) => b.nextAfter ?? 0),
+      );
       const recovery = median(
         back.filter((b) => b.recoveredAfter !== null).map((b) => b.recoveredAfter ?? 0),
       );
@@ -362,11 +384,19 @@ console.log("\n== What moving buys: moving against still — a reading, no verdi
 {
   const a = restingOf(still);
   const b = restingOf(moving);
-  console.log(`Moves per run                    ${round(mean(moving.map((t) => t.moves)), 1)}`);
+  console.log(
+    `Moves per run                    ${round(mean(moving.map((t) => t.moves)), 1)}`,
+  );
   console.log(`Resting level still              ${round(a, 1)}`);
-  console.log(`Resting level moving             ${round(b, 1)}  (${b > a ? "+" : ""}${round(((b - a) / Math.max(1e-9, a)) * 100, 1)} %)`);
-  console.log(`Density moving against still     ${round(mean(moving.map((t) => mean(late(t).map((r) => r.density)))))} against ${round(mean(still.map((t) => mean(late(t).map((r) => r.density)))))}`);
-  console.log(`Given up                         ${moving.filter((t) => t.abandoned).length} of ${SEEDS}`);
+  console.log(
+    `Resting level moving             ${round(b, 1)}  (${b > a ? "+" : ""}${round(((b - a) / Math.max(1e-9, a)) * 100, 1)} %)`,
+  );
+  console.log(
+    `Density moving against still     ${round(mean(moving.map((t) => mean(late(t).map((r) => r.density)))))} against ${round(mean(still.map((t) => mean(late(t).map((r) => r.density)))))}`,
+  );
+  console.log(
+    `Given up                         ${moving.filter((t) => t.abandoned).length} of ${SEEDS}`,
+  );
 
   // The idle hands over the range cycle: free on fresh country, bound again as
   // it thins towards the next move. Read on the moving play, because only
@@ -411,9 +441,13 @@ console.log("\n== What progress buys: building against moving ==");
   const beforePit = building.map(
     (t) => setbacksIn(t.rows).filter((s) => t.pitAt === null || s.at < t.pitAt).length,
   );
-  console.log(`Projects per run                 ${round(mean(growing.map((t) => t.projectsDone)), 1)} of ${STAGE1.projects.length}`);
+  console.log(
+    `Projects per run                 ${round(mean(growing.map((t) => t.projectsDone)), 1)} of ${STAGE1.projects.length}`,
+  );
   console.log(`Resting level moving             ${round(a, 1)}`);
-  console.log(`Resting level building           ${round(b, 1)}  — ${judge("progress shows up in heads", b > a)}`);
+  console.log(
+    `Resting level building           ${round(b, 1)}  — ${judge("progress shows up in heads", b > a)}`,
+  );
   console.log(
     `Settled                          ${settled.length} of ${SEEDS}` +
       (settled.length === 0
@@ -421,18 +455,27 @@ console.log("\n== What progress buys: building against moving ==");
         : `, Tick ${Math.min(...settled.map((t) => t.sedentismAt ?? 0))}–${Math.max(...settled.map((t) => t.sedentismAt ?? 0))}`) +
       ` — ${judge("the epoch ends, no run gets stuck", settled.length === SEEDS)}`,
   );
-  console.log(`  heads at settling              ${round(mean(settled.map((t) => t.headsAtSedentism)), 1)}`);
-  console.log(`  crises on the way per run      ${round(mean(building.map((t) => setbacksIn(t.rows).length)), 1)}`);
+  console.log(
+    `  heads at settling              ${round(mean(settled.map((t) => t.headsAtSedentism)), 1)}`,
+  );
+  console.log(
+    `  crises on the way per run      ${round(mean(building.map((t) => setbacksIn(t.rows).length)), 1)}`,
+  );
   console.log(`  crises before the pit per run  ${round(mean(beforePit), 1)}`);
-  console.log(`  of them got over before the next ${pct(gotOverInTime(building.flatMap((t) => setbacksIn(t.rows))))} (still: ${pct(gotOverInTime(still.flatMap((t) => setbacksIn(t.rows))))})`);
-  console.log(`Given up before settling         ${building.filter((t) => t.abandoned && t.sedentismAt === null).length} of ${SEEDS}`);
+  console.log(
+    `  of them got over before the next ${pct(gotOverInTime(building.flatMap((t) => setbacksIn(t.rows))))} (still: ${pct(gotOverInTime(still.flatMap((t) => setbacksIn(t.rows))))})`,
+  );
+  console.log(
+    `Given up before settling         ${building.filter((t) => t.abandoned && t.sedentismAt === null).length} of ${SEEDS}`,
+  );
 }
 
 // ------------------------------------------------ 3b: steht der Baum offen?
 console.log("\n== The tree — a reading, no verdict ==");
 {
   const everSeen = new Set<string>();
-  for (const t of [...still, ...moving, ...growing, ...building]) for (const id of t.seen) everSeen.add(id);
+  for (const t of [...still, ...moving, ...growing, ...building])
+    for (const id of t.seen) everSeen.add(id);
   // What waits on the settling belongs to the next stage and cannot be seen in
   // this one, so it is not a gap in this tree.
   const afterSettling = (id: string): boolean =>
@@ -449,20 +492,42 @@ console.log("\n== The tree — a reading, no verdict ==");
   // Both clothing roads and the water's share — they only say something
   // once the tree is open, so no verdict here.
   const labourOf = (ids: readonly string[]): number =>
-    growing.reduce((sum, t) => sum + ids.reduce((s, id) => s + (t.labour[id] ?? 0), 0), 0);
-  const branchOf = (id: string): string => STAGE1.processes.find((p) => p.id === id)?.branch ?? "";
-  const clothing = STAGE1.processes.filter((p) => branchOf(p.id) === "clothing").map((p) => p.id);
-  const hides = clothing.filter((id) => (STAGE1.processes.find((p) => p.id === id)?.intermediatesPerOutput["hides"] ?? 0) > 0);
-  const fibre = clothing.filter((id) => (STAGE1.processes.find((p) => p.id === id)?.intermediatesPerOutput["fibre"] ?? 0) > 0);
+    growing.reduce(
+      (sum, t) => sum + ids.reduce((s, id) => s + (t.labour[id] ?? 0), 0),
+      0,
+    );
+  const branchOf = (id: string): string =>
+    STAGE1.processes.find((p) => p.id === id)?.branch ?? "";
+  const clothing = STAGE1.processes
+    .filter((p) => branchOf(p.id) === "clothing")
+    .map((p) => p.id);
+  const hides = clothing.filter(
+    (id) =>
+      (STAGE1.processes.find((p) => p.id === id)?.intermediatesPerOutput["hides"] ?? 0) >
+      0,
+  );
+  const fibre = clothing.filter(
+    (id) =>
+      (STAGE1.processes.find((p) => p.id === id)?.intermediatesPerOutput["fibre"] ?? 0) >
+      0,
+  );
   const both = labourOf(hides) + labourOf(fibre);
   console.log(
     `Clothing from hides against fibre ${both <= 0 ? "—" : `${pct(labourOf(hides) / both)} to ${pct(labourOf(fibre) / both)}`}`,
   );
   const food = STAGE1.processes.filter((p) => branchOf(p.id) === "food").map((p) => p.id);
-  const water = food.filter((id) => (STAGE1.processes.find((p) => p.id === id)?.capacityPerOutput["water"] ?? 0) > 0 ||
-    ["fish", "shellfish"].some((s) => (STAGE1.processes.find((p) => p.id === id)?.intermediatesPerOutput[s] ?? 0) > 0));
+  const water = food.filter(
+    (id) =>
+      (STAGE1.processes.find((p) => p.id === id)?.capacityPerOutput["water"] ?? 0) > 0 ||
+      ["fish", "shellfish"].some(
+        (s) =>
+          (STAGE1.processes.find((p) => p.id === id)?.intermediatesPerOutput[s] ?? 0) > 0,
+      ),
+  );
   const allFood = labourOf(food);
-  console.log(`Share of the water in the food   ${allFood <= 0 ? "—" : pct(labourOf(water) / allFood)}`);
+  console.log(
+    `Share of the water in the food   ${allFood <= 0 ? "—" : pct(labourOf(water) / allFood)}`,
+  );
 }
 
 // ------------------------------------------------------------ 4: the stocks
@@ -480,9 +545,13 @@ console.log("\n== The stocks ==");
     );
   }
   const thinnest = Math.min(
-    ...[...still, ...moving, ...growing, ...building].flatMap((t) => inside(t).map((r) => r.thinnest)),
+    ...[...still, ...moving, ...growing, ...building].flatMap((t) =>
+      inside(t).map((r) => r.thinnest),
+    ),
   );
-  console.log(`Thinnest stand over all runs      ${round(thinnest)} — ${judge("no renewable stock is run into the ground", thinnest >= 0.2)}`);
+  console.log(
+    `Thinnest stand over all runs      ${round(thinnest)} — ${judge("no renewable stock is run into the ground", thinnest >= 0.2)}`,
+  );
 }
 
 // ------------------------------------------------ 5: the stores and the crisis
@@ -521,13 +590,16 @@ console.log("\n== The stores against the same crisis — a reading, no verdict =
     "pit with food": [],
   };
   for (const trace of still) {
-    const setback = setbacksIn(trace.rows).find((s) => (trace.rows[s.at]?.tick ?? 0) >= 30);
+    const setback = setbacksIn(trace.rows).find(
+      (s) => (trace.rows[s.at]?.tick ?? 0) >= 30,
+    );
     if (setback === undefined) continue;
     const strikesAt = trace.rows[setback.at]!.tick;
     for (const what of Object.keys(depths) as Given[]) {
       let state = createState(STAGE1, { seed: trace.seed });
       while (state.tick < strikesAt - 1) state = tick(state, index);
-      const burn = derive(state, index).tiers.find((t) => t.tier === "warmth_fire")?.need ?? 0;
+      const burn =
+        derive(state, index).tiers.find((t) => t.tier === "warmth_fire")?.need ?? 0;
       state = handed(state, what, burn);
       const before = totalHeads(state.sectors["households"]!.cohorts);
       let trough = before;
@@ -540,7 +612,9 @@ console.log("\n== The stores against the same crisis — a reading, no verdict =
     }
   }
   for (const [what, cost] of Object.entries(depths)) {
-    console.log(`Depth of the setback, given ${what.padEnd(14)} ${pct(mean(cost))} of the heads (${cost.length} crises)`);
+    console.log(
+      `Depth of the setback, given ${what.padEnd(14)} ${pct(mean(cost))} of the heads (${cost.length} crises)`,
+    );
   }
 }
 
@@ -596,7 +670,8 @@ console.log("\n== The whole tree before settling — the thorough play ==");
   for (const project of STAGE1.projects) {
     if (afterSettling(project.id) || project.id === "sedentism") continue;
     const enabled = new Set<string>();
-    for (const effect of project.effects) if (effect.type === "process") enabled.add(effect.id);
+    for (const effect of project.effects)
+      if (effect.type === "process") enabled.add(effect.id);
     for (const proc of STAGE1.processes) {
       if ((proc.needsProjects ?? []).includes(project.id)) enabled.add(proc.id);
     }
@@ -618,11 +693,14 @@ console.log("\n== The whole tree before settling — the thorough play ==");
   const openedInEpoch = new Set<string>();
   for (const project of STAGE1.projects) {
     if (afterSettling(project.id) || project.id === "sedentism") continue;
-    for (const effect of project.effects) if (effect.type === "process") openedInEpoch.add(effect.id);
+    for (const effect of project.effects)
+      if (effect.type === "process") openedInEpoch.add(effect.id);
   }
   const reachableProcs = STAGE1.processes.filter(
     (proc) =>
-      proc.unlockedFromStart || openedInEpoch.has(proc.id) || (proc.needsProjects ?? []).length > 0,
+      proc.unlockedFromStart ||
+      openedInEpoch.has(proc.id) ||
+      (proc.needsProjects ?? []).length > 0,
   );
   const stands = STAGE1.stocks
     .filter((s) => s.regrowth !== undefined)
@@ -639,7 +717,9 @@ console.log("\n== The whole tree before settling — the thorough play ==");
   // No shortcut out of the epoch: half the tree stands when the eager one settles.
   const eagerSettled = building.filter((t) => t.sedentismAt !== null);
   const builtAtSettle = eagerSettled.map(
-    (t) => Object.keys(t.built).filter((id) => id !== "sedentism" && (t.built[id] ?? 0) > 0).length,
+    (t) =>
+      Object.keys(t.built).filter((id) => id !== "sedentism" && (t.built[id] ?? 0) > 0)
+        .length,
   );
   const fewest = builtAtSettle.length ? Math.min(...builtAtSettle) : 0;
   console.log(
@@ -658,7 +738,9 @@ console.log("\n== The whole tree before settling — the thorough play ==");
   const usedBefore = settlers.filter((t) =>
     setbacksIn(t.rows).some((s) => (t.rows[s.at]?.food ?? 0) > 0.5),
   ).length;
-  console.log(`Store stood in a setback         in ${usedBefore} of ${settlers.length} settling runs (a reading — insurance unused is luck, not failure)`);
+  console.log(
+    `Store stood in a setback         in ${usedBefore} of ${settlers.length} settling runs (a reading — insurance unused is luck, not failure)`,
+  );
 
   // Every open supply road carries at least a twentieth of its good.
   const labourInto = (t: Trace, ids: readonly string[]): number =>
@@ -666,14 +748,31 @@ console.log("\n== The whole tree before settling — the thorough play ==");
   const byBranch = (branch: string): string[] =>
     STAGE1.processes.filter((proc) => proc.branch === branch).map((proc) => proc.id);
   const drawing = (ids: readonly string[], stand: string): string[] =>
-    ids.filter((id) => ((STAGE1.processes.find((proc) => proc.id === id)?.intermediatesPerOutput ?? {})[stand] ?? 0) > 0);
+    ids.filter(
+      (id) =>
+        ((STAGE1.processes.find((proc) => proc.id === id)?.intermediatesPerOutput ?? {})[
+          stand
+        ] ?? 0) > 0,
+    );
   const roads: { good: string; road: string; processes: string[]; opener?: string }[] = [
-    { good: "clothing", road: "hides", processes: drawing(byBranch("clothing"), "hides") },
-    { good: "clothing", road: "fibre", processes: drawing(byBranch("clothing"), "fibre") },
+    {
+      good: "clothing",
+      road: "hides",
+      processes: drawing(byBranch("clothing"), "hides"),
+    },
+    {
+      good: "clothing",
+      road: "fibre",
+      processes: drawing(byBranch("clothing"), "fibre"),
+    },
     { good: "food", road: "plants", processes: drawing(byBranch("food"), "plants") },
     { good: "food", road: "game", processes: drawing(byBranch("food"), "game") },
     { good: "food", road: "fish", processes: drawing(byBranch("food"), "fish") },
-    { good: "food", road: "shellfish", processes: drawing(byBranch("food"), "shellfish") },
+    {
+      good: "food",
+      road: "shellfish",
+      processes: drawing(byBranch("food"), "shellfish"),
+    },
     { good: "wood", road: "deadwood", processes: drawing(byBranch("wood"), "deadwood") },
   ];
   // The shellfish are the reserve: they are not held to an everyday share but
@@ -682,7 +781,9 @@ console.log("\n== The whole tree before settling — the thorough play ==");
   let allCarry = true;
   const parts: string[] = [];
   for (const { good, road, processes, opener } of roads) {
-    const open = thorough.filter((t) => opener === undefined || (t.built[opener] ?? 0) > 0);
+    const open = thorough.filter(
+      (t) => opener === undefined || (t.built[opener] ?? 0) > 0,
+    );
     if (open.length === 0) {
       parts.push(`${road} —`);
       continue;
@@ -690,19 +791,27 @@ console.log("\n== The whole tree before settling — the thorough play ==");
     const goodIds = byBranch(good);
     const share =
       open.reduce((s, t) => s + labourInto(t, processes), 0) /
-      Math.max(1e-9, open.reduce((s, t) => s + labourInto(t, goodIds), 0));
+      Math.max(
+        1e-9,
+        open.reduce((s, t) => s + labourInto(t, goodIds), 0),
+      );
     if (share < 0.05 && !RESERVES.has(road)) allCarry = false;
     parts.push(`${road} ${pct(share)}${RESERVES.has(road) ? " (reserve)" : ""}`);
   }
   console.log(`Road shares of their goods       ${parts.join(" · ")}`);
-  console.log(`— ${judge("every everyday supply road carries at least a twentieth", allCarry)}`);
+  console.log(
+    `— ${judge("every everyday supply road carries at least a twentieth", allCarry)}`,
+  );
 
   const crisisRuns = [...still, ...moving];
   const crisisFood = crisisRuns.reduce(
     (s, t) => s + byBranch("food").reduce((x, id) => x + (t.crisisLabour[id] ?? 0), 0),
     0,
   );
-  const crisisShell = crisisRuns.reduce((s, t) => s + (t.crisisLabour["shellfish_gathering"] ?? 0), 0);
+  const crisisShell = crisisRuns.reduce(
+    (s, t) => s + (t.crisisLabour["shellfish_gathering"] ?? 0),
+    0,
+  );
   const shellShare = crisisFood > 0 ? crisisShell / crisisFood : 0;
   console.log(
     `Reserve in the hungry ticks      shellfish ${pct(shellShare)} of the food labour — ` +
@@ -718,12 +827,16 @@ console.log("\n== The tripwires ==");
   const eagerMean = mean(eagerSettled.map((t) => t.sedentismAt ?? 0));
   console.log(
     `Burner settles                   ${burned.length} of ${SEEDS}` +
-      (burned.length === 0 ? "" : `, tick ${Math.min(...burned.map((t) => t.sedentismAt ?? 0))}-${Math.max(...burned.map((t) => t.sedentismAt ?? 0))} against eager mean ${round(eagerMean, 0)}`),
+      (burned.length === 0
+        ? ""
+        : `, tick ${Math.min(...burned.map((t) => t.sedentismAt ?? 0))}-${Math.max(...burned.map((t) => t.sedentismAt ?? 0))} against eager mean ${round(eagerMean, 0)}`),
   );
   const laterOrNever =
     burned.length < eagerSettled.length ||
     (burned.length > 0 && mean(burned.map((t) => t.sedentismAt ?? 0)) > eagerMean);
-  console.log(`— ${judge("burning before everything does not beat building", laterOrNever)}`);
+  console.log(
+    `— ${judge("burning before everything does not beat building", laterOrNever)}`,
+  );
 }
 
 // ------------------------------------- 8: what leaving a project out costs
@@ -738,14 +851,21 @@ if (args.get("paths") !== undefined) {
     .map((p) => p.id)
     .filter((id) => !afterSettling(id) && id !== "sedentism");
   const baseline = PROBE_SEEDS.map((s) => play(s, new BuildingPolicy()));
-  const baseSettle = mean(baseline.filter((t) => t.sedentismAt !== null).map((t) => t.sedentismAt ?? 0));
+  const baseSettle = mean(
+    baseline.filter((t) => t.sedentismAt !== null).map((t) => t.sedentismAt ?? 0),
+  );
   for (const forbidden of buildable) {
     const runs = PROBE_SEEDS.map((s) => play(s, new BuildingPolicy(), true, forbidden));
     const settled = runs.filter((t) => t.sedentismAt !== null);
-    const delta = settled.length === 0 ? null : mean(settled.map((t) => t.sedentismAt ?? 0)) - baseSettle;
+    const delta =
+      settled.length === 0
+        ? null
+        : mean(settled.map((t) => t.sedentismAt ?? 0)) - baseSettle;
     console.log(
       `${forbidden.padEnd(14)} settles ${settled.length}/${PROBE_SEEDS.length}` +
-        (delta === null ? " — never" : `, ${delta >= 0 ? "+" : ""}${round(delta, 0)} ticks`),
+        (delta === null
+          ? " — never"
+          : `, ${delta >= 0 ? "+" : ""}${round(delta, 0)} ticks`),
     );
   }
 }
@@ -757,7 +877,9 @@ function labourPerUnit(stock: string, seen: ReadonlySet<string> = new Set()): nu
   if (seen.has(stock)) return 0;
   const branch = STAGE1.branches.find((b) => b.produces === stock);
   if (branch === undefined) return 0;
-  const runs = STAGE1.processes.filter((p) => p.branch === branch.id && p.unlockedFromStart);
+  const runs = STAGE1.processes.filter(
+    (p) => p.branch === branch.id && p.unlockedFromStart,
+  );
   if (runs.length === 0) return 0;
   const next = new Set([...seen, stock]);
   return Math.min(
@@ -774,12 +896,16 @@ function labourPerUnit(stock: string, seen: ReadonlySet<string> = new Set()): nu
 function claimsOnWork(): Record<string, number> {
   const pop = STAGE1.population;
   const weighed = (w: Readonly<Record<string, number>>): number =>
-    pop.cohorts.reduce((sum, c) => sum + (pop.shareAtStart[c.id] ?? 0) * (w[c.id] ?? 0), 0);
+    pop.cohorts.reduce(
+      (sum, c) => sum + (pop.shareAtStart[c.id] ?? 0) * (w[c.id] ?? 0),
+      0,
+    );
   const work = weighed(pop.labourWeight) * STAGE1.carried.baseProductivity;
   const out: Record<string, number> = {};
   for (const tier of STAGE1.needTiers) {
     const decay = STAGE1.stocks.find((s) => s.id === tier.stock)?.decayPerTick ?? 0;
-    const per = tier.consumedOnUse > 0 ? tier.perHead * tier.consumedOnUse : tier.perHead * decay;
+    const per =
+      tier.consumedOnUse > 0 ? tier.perHead * tier.consumedOnUse : tier.perHead * decay;
     out[tier.id] = (per * weighed(tier.perHeadWeight) * labourPerUnit(tier.stock)) / work;
   }
   return out;
@@ -807,16 +933,22 @@ console.log("\n== Without a run: what the content says by itself ==");
   let ok = true;
   for (const [need, [target, tiers]] of Object.entries(CLAIM_ON_WORK)) {
     const share = tiers.reduce((sum, id) => sum + (claims[id] ?? 0), 0);
-    const inBand = share >= target * (1 - CLAIM_BAND) && share <= target * (1 + CLAIM_BAND);
+    const inBand =
+      share >= target * (1 - CLAIM_BAND) && share <= target * (1 + CLAIM_BAND);
     if (!inBand) ok = false;
-    console.log(`${need.padEnd(10)} ${pct(share)} of ${pct(target)}${inBand ? "" : "   <- off"}`);
+    console.log(
+      `${need.padEnd(10)} ${pct(share)} of ${pct(target)}${inBand ? "" : "   <- off"}`,
+    );
   }
-  console.log(`— ${judge("every need claims about the share of the work it is meant to", ok)}`);
+  console.log(
+    `— ${judge("every need claims about the share of the work it is meant to", ok)}`,
+  );
 
   let switches = true;
   for (const tier of STAGE1.needTiers) {
     if (tier.id === "warmth_fire") continue;
-    const moves = tier.birthRate ?? tier.survival ?? tier.workAbility ?? tier.productivity;
+    const moves =
+      tier.birthRate ?? tier.survival ?? tier.workAbility ?? tier.productivity;
     if (moves === undefined) continue;
     const share = claims[tier.id] ?? 0;
     if (share < REGULATOR_FLOOR) {
