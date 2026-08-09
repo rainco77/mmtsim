@@ -3811,6 +3811,26 @@ späteren Epochen Dung und Zucht) dem Land gerade hinzufügt, samt seinem Verbla
 Damit ist ohne neue Größe und ohne Erklärtext ablesbar, ob sich erneutes Pflegen schon
 wieder lohnt: Zuschlag groß → warten, fast weg → wieder dran.
 
+**Der Epochen-Rahmen.** Der Bildschirm trennt in **Rahmen** und **Mitte**. Der Rahmen
+existiert in jeder Epoche an festem Ort: die Kopfleiste (Zeit und Griffe), die
+Menschen, das Ereignis-Log samt Momente-Maschinerie, der Vorhaben-Katalog. Bei Katalog
+und Log ist **die Mechanik Rahmen, der Inhalt Epoche** — sichtbar/ausführbar/laufend
+gilt für Sichel wie für Münzprägung; Anlässe und Krisennamen stellt die
+Präsentations-Sektion der Epoche. Die **Mitte** ist das Wirtschafts-Zentrum der
+jeweiligen Epoche und ganz epochal: Dort verlieren Dinge erst ihre Griffe, wenn
+Institutionen sie übernehmen, und schrumpfen dann — aus der handbedienten Leiter wird
+eine Anzeige, aus Suchkosten werden Preise; Neues erscheint als Enthüllung. Der
+Umbau der Mitte ist der Übergangs-Teaser des Epilogs.
+
+**Der Rahmen wächst nur.** Manches entsteht in einer Epoche und **steigt in den Rahmen
+auf**, weil es nie wieder verschwindet — Preise, Geldmenge, später ein BIP mit den
+Nationalstaaten. Sein Ort ist die rechte Spalte bei Menschen und Ereignissen: die
+wachsende Messlatte der Zivilisation. Die Mitte dagegen ist Durchgangsraum.
+
+**Die Grob-Aufteilung** (Arbeitsannahme für den Entwurf): Kopfleiste oben ·
+Vorhaben-Katalog links · Mitte als größte Fläche · Menschen, Log und Aufgestiegenes
+rechts · die großen Momente als Überlagerung.
+
 **Der Grundriss des Bildschirms — ausdrücklich ein Entwurf:** Alles hieran kann sich
 bei der Umsetzung ändern, wenn es gute Gründe gibt. Sechs Kacheln, eine dominant:
 
