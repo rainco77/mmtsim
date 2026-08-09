@@ -1507,7 +1507,13 @@ export const STAGE1: Config = {
       //
       // It also has to be this and not the held stock, because a held stock
       // moves with the weather: bad luck may delay a transition, never block it.
-      availableWhen: [{ kind: "capacityPerHead", capacity: "storage", min: 2 }],
+      availableWhen: [
+        { kind: "capacityPerHead", capacity: "storage", min: 2 },
+        // One settles at the water: the settled forager sites are shore
+        // places, storage and boats together the built tie to the spot —
+        // people settled down at the fish before they settled at the grain.
+        { kind: "projectDone", id: "boat", min: 1 },
+      ],
       defaultRank: PROJECTS_LAST,
       laborCost: 120,
       stockCost: { wood: 40 },
