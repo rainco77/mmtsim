@@ -3893,6 +3893,14 @@ eine Gemeinschaft, deren Geburten unter die Alltagssterblichkeit gebremst sind,
 schrumpft, ohne dass etwas schiefgeht. Der **freie Lauf** ignoriert die weichen
 Haltepunkte (Projekte), hält aber bei Not-Toten und am Ende; Pause geht jederzeit.
 
+**Der Lauf zeigt seine Ticks.** „Lauf bis Haltepunkt" rechnet sofort, spielt die
+gerechneten Ticks aber **sichtbar gerafft** ab — Größenordnung zehn je Sekunde, der
+genaue Takt wird am laufenden Spiel austariert —, bis er am Haltepunkt steht. Die
+Kopfleiste zeigt dabei den laufenden Tick; Pause hält am gerade angezeigten, die
+restlichen schon gerechneten verfallen. Der freie Lauf bleibt das gemütlichere Tempo.
+Der Grund: Ein Sprung ans Ende zerreißt die Kausalität — man muss sehen können, wie
+sich die Lage zum Haltepunkt hin entwickelt hat.
+
 **Die Momente.** Zwei Stufen, klar getrennt. **Große Momente** sind Einblendungen, die
 den Lauf anhalten, selten und darum wertvoll: die Begrüßung am Start (ein Satz Lage,
 ein Hook, endet in der ersten Entscheidung) · das erste fertige Projekt · jedes fertige
