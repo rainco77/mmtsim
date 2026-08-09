@@ -3917,6 +3917,14 @@ Ziehen ist anfangs der Normalzustand und wird angeleitet („Dein Volk lebt vom
 Weiterziehen"); das Preisschild am Weiterziehen-Knopf markiert später den Wendepunkt,
 an dem Gebautes bindet.
 
+**Die Schluss-Ticks der Sesshaftigkeit sind der Epilog, kein Leerlauf.** Die Dauer
+bleibt — sie modelliert die Trägheit des Übergangs —, aber sie wird bespielt: Der
+**Babyboom** (die sich lösende Geburtenbremse, sichtbar an der hochschnellenden Kurve)
+ist der Belohnungsmoment der ganzen Epoche; die Oberfläche beginnt als
+Enthüllungs-Teaser ihren Umbau zur nächsten Epoche (was genau, entscheidet der
+Epochen-Rahmen); und das Finale schließt mit der **Bilanz des Laufs** — Ticks, Krisen,
+Tote, Gebautes, Umzüge, aus dem Verlauf gerechnet.
+
 **Momente sprechen den Spieler mit Du an**, auf Augenhöhe, in beiden Sprachen. Und sie
 sprechen **in Menschen und Ticks**, nicht in technischen Zahlen: „Die Sichel ernährt
 zwei Köpfe mehr", „Die Grube hält Vorrat für vier Ticks Hunger". Prozent nur, wo das
