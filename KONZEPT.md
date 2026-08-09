@@ -375,6 +375,11 @@ Zu Spielbeginn hat **jeder Bestand genau ein Lagerverfahren**: „im Freien", oh
 Das ist exakt die feste Verfallsrate aus E19. Die Liste wächst erst mit einem
 Speicherprojekt.
 
+**Verbesserer desselben Handwerks verbinden sich, statt einander zu verdrängen.** Ein
+Verfahren kann mehrere fertige Projekte voraussetzen; die Kombination ist im Inhalt
+ausgeschrieben (Sammeln mit Sichel und Mörser, Fischen mit Netz und Schnur). Wer beide
+Verbesserer baut, hat keinen umsonst gebaut — die höchste freigeschaltete Stufe führt.
+
 ### E6 — Der Engpass wandert
 
 Land wächst nicht von selbst, soll aber auch nicht ewig die Frage bleiben. Auf jeden
@@ -815,6 +820,15 @@ welche Parzelle wer nutzt. Der Verlust an gutem Boden ist damit unterschätzt. A
 sobald Ackerland und Bauland getrennte Typen mit eigenen Güten sind; das braucht keine
 Buchführung über einzelne Parzellen, nur einen zweiten Typ.
 
+**Das nächste Revier wird vom verlassenen aus gerechnet, nie aus einer Zählung.** Es ist
+im Mittel eine Stufe schlechter als das Revier, das man verlässt, mit der Streuung des
+Angebots obendrauf — ein gut abgepasster Bericht kann es übertreffen, und das Abpassen ist
+Spielerkunst. Der Umzug vollzieht sich zu dem Bericht, auf den die Entscheidung fiel: Das
+Angebot würfelt jeden Tick neu, aber man zieht in das Revier, das man besichtigt hat. Die
+frühere Leiter (Güte fällt mit der Zahl der Landnahmen) ist für das Wandern dieser Epoche
+verworfen: Die Besiedlung der Erde führte oft in reicheres Land; die stetig fallende
+Grenzgüte gehört zur Landnahme mit Feldern, nicht zum Wandern der Jäger.
+
 ### E14 — Startaufstellung
 
 **Eine Gemeinschaft von etwa fünfundzwanzig auf einem Revier, das sie gerade trägt.**
@@ -985,6 +999,11 @@ mit einer anderen Antwort.
 
 *Wackelkandidat:* **Ziegel** bringt einen vierten Branche sehr früh. Bleibt vorerst
 drin, aber als Erstes wieder heraus, falls der Anfang zäh wirkt.
+
+**Die Ankunft:** Der Lauf beginnt wie kurz nach einem Umzug. Die langsamen Bestände (Wild,
+Fisch) öffnen um den Umzugsanteil über ihrer Ruhe und dünnen von dort aus — was in der Ruhe
+öffnet, kann nicht ausdünnen, und der Anfang jedes Laufs zeigte sonst nichts vom Preis des
+Bleibens. Die schnellen Bestände öffnen im Gleichgewicht ihrer eigenen Entnahme.
 
 ### E15 — Keine Benotung
 
@@ -1625,6 +1644,13 @@ Verteilungsmaschine wird nicht vorab gebaut — sie müsste sich für einen Bewe
 entscheiden und wäre für die anderen falsch.
 
 Der Umstieg ist eine Schemamigration nach T7.
+
+**Betreuung und Behaglichkeit wirken auf das Überleben der Kinder, nicht auf die
+Geburten.** Vernachlässigung hart (unbeaufsichtigte Kinder verunglücken), Kälte mild (die
+Wintersterblichkeit trifft die Kleinsten; was Erwachsene tötet, bleibt das erloschene
+Feuer). Die Geburten tragen keinen Deckungsfaktor mehr: ihr Tempo ist die Grundrate, ihr
+Niveau die Traglast. Der Wohlstand entscheidet, wie viele Kinder durchkommen — nicht, wie
+viele empfangen werden.
 
 ### E21 — Wie die Zuteilung rechnet
 
@@ -2604,6 +2630,25 @@ stand also immer bei null, und seine Zahlen waren gegen nichts ausbalanciert. Ei
 nie feuert, lässt sich nicht beurteilen. Er kommt mit der Epoche zurück, in der es Wohnraum
 wirklich gibt, und dann mit etwas, wogegen er sich einstellen lässt.
 
+**Das Tor der Sesshaftigkeit ist physisch: Man siedelt am Ufer.** Grube und Boot sind
+Bauwerke in Scheiben — eine Grube hält eine Grubenmenge, ein Boot erschließt seine eigene
+Wasserscheibe samt dem, was darin lebt; mehrere von beiden sind nötig (Speicher je Kopf und
+eigene Wasserfläche als Bedingungen), und beide bleiben beim Revierwechsel am Ort, wie der
+Brandbonus am Boden. Gebautes bindet — die Falle der Epoche als Mechanik, nicht als Text.
+Nicht mehr gilt die frühere Begründung, die Welt werde stetig dünner und man siedle mangels
+guter Reviere: Gesiedelt wird am guten Platz, aus Kapital im Boden und am Ufer (Testart;
+die sesshaften Wildbeuterplätze sind Uferplätze).
+
+**Dazugekommen sind der Angelhaken** (vertieft das Fischen über die Schnur, hängt am
+Zwirnen) **und das Feuerlegen** (der Brand hebt die Pflanzendichte des Reviers; der Bonus
+verblasst, weil das Unterholz nachwächst, Brennstoff ist stehendes Totholz, und beim Umzug
+bleibt das Gebrannte am Boden — Boserup ohne Sonderregel: dichteres Land kostet laufend
+Hände). **Das Fällen samt Baum-Bestand und Stämmen als Gut wandert in die
+Siedlungs-Epoche**; die Steinaxt verbessert statt dessen die Totholz-Arbeit und ist Tor zu
+Grube und Boot. Die Kleidungs-Projekte (Gerben, Zwirnen, Knochennadel) werden sichtbar,
+wenn das Wild — die Rohquelle der Kleidung — teuer wird, gestaffelt nach Tiefe der Not.
+Die Muschel ist als Reserve bepreist: im Alltag unangetastet, in Hungerticks trägt sie.
+
 #### Wie sich die Gemeinschaft einregelt
 
 **Die Bremse der Geburten ist die Traglast.** Wer wandert, trägt die Kleinen — auf jedem
@@ -3363,6 +3408,12 @@ Von der Technik her zu denken führt dazu, dass man Bogen, Hund und Einbaum samm
 sie bekannt sind. Von der Deckung her gedacht fragt man „wie kommt eine Gruppe an mehr
 Nahrung, wenn das Land voll ist" — und der Bogen fällt als *eine* Antwort ab, neben
 anderen.
+
+**Ausführbarkeit hängt nur an Monotonem** — Übung, fertige Projekte, gebaute Kapazitäten:
+Größen, die nur vorwärts laufen, damit die Oberfläche Fortschrittsbalken zeigen kann.
+Sichtbarkeit darf an Schwankendem hängen (Suchkosten, Anstrengung) und wird nie
+zurückgenommen. Urteilsvermögen — ob sich etwas *gerade* lohnt — gehört in den Spieler
+bzw. die Strategie, nie in die Ausführbarkeit.
 
 ### T1 — Functional Core, Imperative Shell
 
