@@ -140,6 +140,8 @@ interface Trace {
   readonly seen: ReadonlySet<string>;
   /** Labour into each process, summed over the run — for the roads that must stay open. */
   readonly labour: Readonly<Record<string, number>>;
+  /** The same, over hungry ticks only — where a reserve has to show itself. */
+  readonly crisisLabour: Readonly<Record<string, number>>;
   /** Completions per project when the run ended. */
   readonly built: Readonly<Record<string, number>>;
   /** Renewable stands something actually took from, over the whole run. */
@@ -161,6 +163,7 @@ function play(seed: number, policy: Policy, settle = true, forbid?: string): Tra
   let settleHungerNeed = 0;
   const seen = new Set<string>();
   const labour: Record<string, number> = {};
+  const crisisLabour: Record<string, number> = {};
   const drawn = new Set<string>();
   const doneAt: Record<string, number> = {};
 
@@ -189,9 +192,11 @@ function play(seed: number, policy: Policy, settle = true, forbid?: string): Tra
     if (pitAt === null && (state.completedProjects["storage_pit"] ?? 0) > 0) pitAt = state.tick;
 
     const after = derive(state, index);
+    const inCrisis = (after.coverage["food_survival"] ?? 1) < 0.999;
     for (const project of after.projects) if (project.visible) seen.add(project.id);
     for (const run of after.runs) {
       labour[run.process] = (labour[run.process] ?? 0) + run.labor;
+      if (inCrisis) crisisLabour[run.process] = (crisisLabour[run.process] ?? 0) + run.labor;
       if (run.output <= 0) continue;
       const def = index.process.get(run.process);
       if (def === undefined) continue;
@@ -232,6 +237,7 @@ function play(seed: number, policy: Policy, settle = true, forbid?: string): Tra
     headsAtSedentism,
     seen,
     labour,
+    crisisLabour,
     built: { ...state.completedProjects },
     drawn,
     settleFoodStore,
@@ -564,6 +570,10 @@ console.log("\n== The whole tree before settling — the thorough play ==");
   for (const t of thorough) {
     for (const id of t.seen) seenSomewhere.add(id);
     for (const [id, n] of Object.entries(t.built)) if (n > 0) builtSomewhere.add(id);
+  }
+  // A craft or a stand may live in any reference play: a reserve shows itself
+  // in the crises of the still and moving worlds, not in a well-found run.
+  for (const t of [...still, ...moving, ...growing, ...building, ...thorough]) {
     for (const [id, l] of Object.entries(t.labour)) if (l > 0) ranSomewhere.add(id);
     for (const id of t.drawn) drawnSomewhere.add(id);
   }
@@ -650,6 +660,9 @@ console.log("\n== The whole tree before settling — the thorough play ==");
     { good: "wood", road: "deadwood", processes: drawing(byBranch("wood"), "deadwood") },
     { good: "wood", road: "trees", processes: drawing(byBranch("wood"), "trees"), opener: "stone_axe" },
   ];
+  // The shellfish are the reserve: they are not held to an everyday share but
+  // to showing themselves in the crises of the still and moving worlds.
+  const RESERVES = new Set(["shellfish"]);
   let allCarry = true;
   const parts: string[] = [];
   for (const { good, road, processes, opener } of roads) {
@@ -662,11 +675,23 @@ console.log("\n== The whole tree before settling — the thorough play ==");
     const share =
       open.reduce((s, t) => s + labourInto(t, processes), 0) /
       Math.max(1e-9, open.reduce((s, t) => s + labourInto(t, goodIds), 0));
-    if (share < 0.05) allCarry = false;
-    parts.push(`${road} ${pct(share)}`);
+    if (share < 0.05 && !RESERVES.has(road)) allCarry = false;
+    parts.push(`${road} ${pct(share)}${RESERVES.has(road) ? " (reserve)" : ""}`);
   }
   console.log(`Road shares of their goods       ${parts.join(" · ")}`);
-  console.log(`— ${judge("every open supply road carries at least a twentieth", allCarry)}`);
+  console.log(`— ${judge("every everyday supply road carries at least a twentieth", allCarry)}`);
+
+  const crisisRuns = [...still, ...moving];
+  const crisisFood = crisisRuns.reduce(
+    (s, t) => s + byBranch("food").reduce((x, id) => x + (t.crisisLabour[id] ?? 0), 0),
+    0,
+  );
+  const crisisShell = crisisRuns.reduce((s, t) => s + (t.crisisLabour["shellfish_gathering"] ?? 0), 0);
+  const shellShare = crisisFood > 0 ? crisisShell / crisisFood : 0;
+  console.log(
+    `Reserve in the hungry ticks      shellfish ${pct(shellShare)} of the food labour — ` +
+      `${judge("the reserve steps in when hunger bites", shellShare >= 0.05)}`,
+  );
 }
 
 // ------------------------------------------------------------ 7: the tripwires
