@@ -3820,9 +3820,14 @@ bei der Umsetzung ändern, wenn es gute Gründe gibt. Sechs Kacheln, eine domina
   bestimmende Faktor des Bevölkerungsniveaus, ohne sie ist nicht nachvollziehbar, wie
   die Geburtenzahlen entstehen. Aufgeklappt die Überlebensfaktoren je Kohorte als
   Verlauf.
-- **Revier**: je Naturbestand Stand gegen Decke, entnommen, nachgewachsen, Suchkosten,
-  gepflegter Zuschlag; aufklappbar die Verfahren, die entnehmen. Daneben das
-  Wander-Paar: Güte des eigenen Landes gegen das Angebot.
+- **Revier**: je Naturbestand Stand gegen Decke, „+nachgewachsen / −entnommen" des
+  Ticks, die Suchkosten als Zahl mit Verlauf (die Preisanzeige der Epoche), der
+  gepflegte Zuschlag samt Verblassen; aufklappbar die Verfahren, die entnehmen, mit
+  Arbeit und Ertrag, und die Verlaufskurve des Bestands. Unten das Wander-Paar — Güte
+  des eigenen Landes gegen das Angebot, jeden Tick frisch — und daneben der Griff
+  „Weiterziehen" **mit Preisschild**: generisch aus den Projektwirkungen gelistet, was
+  der Umzug auf null setzt (Gruben samt Speicher, Boote samt Wasser, die Vorräte). Die
+  Falle der Epoche steht damit als Preis am Knopf, nicht als Erklärtext.
 - **Vorräte**: Füllstand gegen Speicherkapazität; die zugehörige Vorgabe-Zeile steht
   in der Leiter — Anspruch und Inhalt sind zwei Dinge und stehen an zwei Orten.
 - **Projekte**: der Katalog — sichtbar, ausführbar, dazu noch einmal die laufenden.
