@@ -2955,18 +2955,11 @@ Feuerlegen, das Fällen ist in die Siedlungs-Epoche gewandert):
 
 Drei Entscheidungen daran sind begründungsbedürftig:
 
-- **Die Steinaxt ist der einzige Verfahrenswechsel** statt einer Verbesserung — von
-  „auflesen, was liegt" zu „nehmen, was steht". Totholz ist eine Restgröße, ein
-  stehender Wald ein Vorrat, und im Modell sind es zwei Bestände (E19). Derselbe Satz
-  wie beim Boot: **Technik schafft die Ressource nicht, sie erschließt sie.**
-
-  Und sie kostet je Einheit **mehr** Arbeit, nicht weniger — anderthalbmal so viel. Ein
-  Steinbeil fällt schnell (die Draved-Versuche), aber danach kommt spalten, tragen und
-  **trocknen**, was ein trockener Ast am Boden alles nicht braucht. Jede
-  Brennholzstudie an subsistenzwirtschaftenden Gruppen findet dieselbe Reihenfolge:
-  aufgelesen wird zuerst, gefällt wird, wenn das Tote knapp ist. Damit ist die Axt
-  **Boserup mit beiden Hälften** — mehr aus demselben Land, mehr Hände je Einheit —, was
-  kein anderes Projekt der Epoche leistet.
+- **Die Steinaxt verbessert die Totholzarbeit und ist das Tor zu Grube und Boot.** Der
+  Baum als Bestand und das Fällen sind in die Siedlungs-Epoche gewandert; was die Axt
+  hier tut, ist dieselbe Arbeit billiger machen — Äste werden an Ort und Stelle zerlegt
+  statt ganz geschleift. Ihr Gewicht in dieser Epoche liegt darum nicht in ihrer Achse,
+  sondern darin, dass ohne sie zwei andere Projekte verschlossen bleiben.
 - **Die Knochennadel wirkt auf beide Kleidungswege**, sonst macht sie die Alternative
   kaputt. Das Gerben stärkt den Fellweg — das ist gewollt und gibt der Wahl Gewicht.
   Bevorzugte aber *jedes* Kleidungsprojekt einen Weg, wäre der andere nach zwei
