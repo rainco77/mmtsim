@@ -65,13 +65,13 @@ export const STAGE1: Config = {
         // lives, which is exactly the mistake a player is meant to be able to
         // make and to learn from.
         rank: PROJECTS_LAST,
-        // A pit dug by people who move on. It has to keep distinctly worse
-        // than a store in a place someone lives in and guards (0.12), and
-        // distinctly better than nothing (0.9) — but at 0.4 it kept so badly
-        // that no store was physically possible: two fifths of it spoiled every
-        // tick, so a stock could never reach more than about two and a half
-        // times what came in, and the lesson the epoch is built around could
-        // not happen before the epoch was over.
+        // A pit dug by people who move on: distinctly worse than the store of
+        // a place someone lives in and guards, distinctly better than nothing.
+        // The room between those two is narrow, and the lower end of it is a
+        // wall, not a slope — a rate that spoils a large share every tick caps
+        // what a stock can ever reach at a small multiple of what comes in, so
+        // the lesson the epoch is built around cannot happen before the epoch
+        // is over.
         decayPerTick: 0.2,
         decayWhenRule: [{ rule: "settled", decayPerTick: 0.12 }],
       },
