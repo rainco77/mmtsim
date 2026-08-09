@@ -928,23 +928,16 @@ siebenundzwanzig gegen eine Startgruppe von fünfundzwanzig.
 > die Gemeinschaft ohne einen einzigen Handgriff verdoppelt — und dann hat das Wachstum
 > nichts mehr mit dem Spielen zu tun.
 
-| Revier | Plateau ohne Entscheidungen | ungenutzte Arbeit |
-|---|---|---|
-| 300 | 179 | 32 % |
-| 200 | 139 | 29 % |
-| 150 | 119 | 21 % |
-| **100** | **99** | **3 %** |
-| 80 | 91 | 1 % |
-| 60 | 83 | fünf von acht Läufen aufgegeben |
+**Der Leerlauf ist dabei der eigentliche Befund, nicht die Kopfzahl.** Ein zu großes
+Revier lässt einen erheblichen Teil aller Hände brachliegen, weil das Land nie knapp wird;
+ein passendes lässt fast nichts liegen. Wie lange die Epoche dauert, ändert sich davon
+kaum — **die Fläche macht den Druck, nicht das Tempo.** Was das Tempo macht, sind die
+Projektkosten und -wirkungen.
 
-**Der Leerlauf ist der eigentliche Befund.** Bei 300 lag ein Drittel aller Hände brach,
-weil das Land nie knapp wurde; bei 100 sind es drei Prozent. Die Tickzahl bis zur
-Sesshaftigkeit bewegt sich dabei fast nicht (39 bis 46) — die Fläche macht den *Druck*,
-nicht das *Tempo*. Was das Tempo macht, sind die Projektkosten und -wirkungen.
-
-Ein Restbetrag bleibt: Auch bei 60 Wildnis liegt das Plateau bei 83, denn das **Wasser
-trägt unabhängig davon** rund fünfundvierzig Köpfe. Die Tragfähigkeit hängt an beiden
-Achsen, und die zweite ist mit dem Land allein nicht zu erreichen.
+Ein Restbetrag bleibt, und der ist grundsätzlich: Auch auf einem sehr kleinen Revier steht
+die Gemeinschaft nicht beliebig tief, weil das **Wasser unabhängig von der Landfläche
+trägt**. Die Tragfähigkeit hängt an beiden Achsen, und die zweite ist mit dem Land allein
+nicht zu erreichen.
 
 *Historisch war die alte Begründung übrigens richtig und nur an die falschen Zahlen
 gebunden: Bei 180 — passend für eine Gruppe von dreißig — lag eine Fünfzigergruppe unter
@@ -1346,9 +1339,18 @@ melden, ohne dass irgendetwas hergestellt wurde.
 **Was in der Nutzung nicht aufgebraucht wird, wird nur zum Fehlbetrag nachgefragt.**
 Nahrung fließt durch und muss jeden Tick ganz neu erzeugt werden; Kleidung wird getragen,
 nicht gegessen, und Erhalt ist Neubau dessen, was zerfallen ist. Ohne diese
-Unterscheidung nähte eine Gemeinschaft von dreißig jeden Tick acht neue Kleidungsstücke,
-während sie zweiundneunzig trug — und weil Bast 2,5 Bäume je Faser kostet, wanderte der
-ganze Wald in Kleider, die niemand brauchte, worauf die Gemeinschaft erfror.
+Unterscheidung nähte eine Gemeinschaft jeden Tick neue Kleidungsstücke, obwohl sie
+angezogen war — und weil jede Faser den Wald kostet, wanderte er in Kleider, die niemand
+brauchte, worauf die Gemeinschaft erfror.
+
+**Und darum beginnt die Gemeinschaft bekleidet.** Sie wird übernommen und nicht geboren:
+Ein Fell auf einem Rücken ist da, bevor der erste Tick läuft. Gerechnet wird der
+Anfangsbestand aus dem Bedarf selbst, damit er nicht von ihm abdriften kann, und nur dort,
+wo die Branche von Anfang an offen ist — ein wandernder Verband hat keine Häuser, was
+immer ein Wohnrang verlangen mag. Ohne das kleidete der erste Tick eine ganze Gemeinschaft
+auf einmal ein und kam nie wieder in die Nähe dieses Aufwands; jede Marke, die gegen
+diesen Tick gerechnet war, maß etwas, das genau einmal vorkommt, und die Kleidungsprojekte
+wurden nie angeboten.
 
 **Und was der Spieler daran ablesen kann, ist der Lagerstand vor und nach dem Tick.**
 Woher eine einzelne Einheit im Topf stammt, weiß sie selbst nicht; ob von der Substanz
@@ -3017,8 +3019,19 @@ anderes sachlich voraussetzt, steht diese Voraussetzung zusätzlich auf der
 Ausführbarkeit.
 
 Es steht also erst grau da mit dem, worauf es wartet — das ist der Reiz, weiterzumachen,
-statt einer unerreichbaren Liste. Am ersten Tick steht nichts auf dem Schirm; ab dem
-zweiten wächst die Karte herein.
+statt einer unerreichbaren Liste. Am ersten Tick steht nur der Revierwechsel auf dem
+Schirm; ab dem zweiten wächst die Karte herein.
+
+**Einmal sichtbar bleibt sichtbar**, auch wenn die Enge wieder nachlässt. Sonst
+verschwände ein Projekt wieder, das der Spieler schon ins Auge gefasst hat, und eine gute
+Zeit nähme ihm das Ziel weg, auf das er zuläuft. Und **ausführbar ist nur, was sichtbar
+ist**: Die zweite Stufe setzt die erste voraus, nie umgekehrt.
+
+**Wie viele gleichzeitig angeboten werden, ist keine Vorgabe.** Es gab einmal eine
+Obergrenze; sie versteckte den Weg aus der Epoche, weil ausgerechnet Grube, Boot, Nadel
+und Revierwechsel kein Verfahren einsparen und deshalb hinten anstanden. Die Ordnung der
+Liste bleibt, das Gatter fällt: Was seine Enge drückt, steht da, und wie viele das sind,
+sagt die Wirtschaft.
 
 **Ausgenommen sind Vorsorge und Fläche.** Vorratsgrube, Revierwechsel, Boot und
 Sesshaftigkeit verlangen keine Übung — eine Grube gräbt man, man erfindet sie nicht.
@@ -3087,16 +3100,16 @@ Unterschied zwischen einem Baum und einer Sperre.
 | **Boot** | **Steinaxt**, viel Holz | einen Stamm höhlt man nicht mit der Hand aus |
 | Sesshaftigkeit | gebaute Speicherkapazität, 2 je Kopf | siehe unten |
 
-**Warum das trotzdem ein Baum ist.** Auf dem Papier sind zehn der zwölf ab Tick 0
-freigeschaltet — in der Wirtschaft sind sie es nicht. Am Anfang geht **alles Holz in die
-Wärme**: Wärme steht auf Rang 200 und tötet, Projekte rangieren darunter (E18). Es gibt
-kein Holz übrig, also ist kein Holzprojekt machbar. Und **Faser gibt es nur, wenn jemand
-Bast sammelt** — das kostet Hände, die dann nicht sammeln oder jagen.
+**Warum das trotzdem ein Baum ist.** Materiell hängt fast keines am anderen — in der
+Wirtschaft hängen sie es doch. Am Anfang geht **alles Holz in die Wärme**: Wärme steht auf
+Rang 200 und tötet, Projekte rangieren darunter (E18). Es gibt kein Holz übrig, also ist
+kein Holzprojekt machbar. Und **Faser gibt es nur, wenn jemand Bast sammelt** — das kostet
+Hände, die dann nicht sammeln oder jagen.
 
-Tatsächlich anfangbar sind am ersten Tick genau **drei**: Mörser, Erdofen, Landnahme.
-Das ist der untere Rand der drei bis fünf aus E31, und es sind drei wirklich
-verschiedene Antworten auf dieselbe Enge — mehr aus der Fläche holen, weniger
-verschwenden, mehr Fläche nehmen.
+Dazu kommt das Sichtbarwerden: Was seine Enge noch nicht drückt, steht gar nicht erst da.
+Am ersten Tick ist deshalb nur der **Revierwechsel** anfangbar — das einzige Projekt ohne
+Marke, weil eine Gemeinschaft, die ihren Hausstand mit sich trägt, immer gehen kann. Alles
+andere kommt herein, wenn die Wirtschaft danach verlangt.
 
 > **Das Rückgrat der Epoche, in einem Satz:** Um zu bleiben, brauchst du Gruben. Für
 > Gruben brauchst du eine Axt — und Holz übrig, wofür entweder die Axt selbst sorgt oder
@@ -3391,7 +3404,7 @@ nicht in den Baum.
 
 | | |
 |---|---|
-| gleichzeitige Angebote | **drei bis fünf** — darunter keine Wahl, darüber eine Liste zum Überfliegen |
+| gleichzeitige Angebote | **drei bis fünf** — darunter keine Wahl, darüber eine Liste zum Überfliegen. Ein Maß, an dem man das Ergebnis misst, und keine Schranke im Modell (E18) |
 | Entscheidungen über die Epoche | **zwölf bis achtzehn** |
 | davon Rückgrat | etwa die Hälfte, als *Ergebnis* und nicht als Regel |
 
