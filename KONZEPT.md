@@ -3966,6 +3966,28 @@ sprechen **in Menschen und Ticks**, nicht in technischen Zahlen: „Die Sichel e
 zwei Köpfe mehr", „Die Grube hält Vorrat für vier Ticks Hunger". Prozent nur, wo das
 nicht geht; nackte Vorher/Nachher-Zahlenpaare gar nicht.
 
+**Die Lesbarkeits-Gesetze.** Gegen das Zufallsgefühl, das das Probespielen fand, gelten
+für jedes Element jeder Epoche drei Gesetze: **(1) Jede Zahl kann ihre Rechnung
+zeigen** — ein Tipp öffnet die Herkunft als ein Satz mit den Faktoren („Grundrate ×
+Bremse 0,46 × 24 Mütter und Väter"), alles aus Aufzeichnung und Inhalt, nichts
+geschätzt. **(2) Jede Handlung zeigt ihre erwartete Folge, bevor man sie tut** — der
+Projektstart seine Dauer je Rang, das Weiterziehen die Stände des frischen Reviers
+(halb erholt, aus den Projektwirkungen gerechnet) samt den Suchkosten dort; die
+Kostenzahl kommt aus der freigelegten Rechenfunktion des Kerns, damit die Vorschau
+nur verspricht, was dieselbe Regel dann berechnet. Nach der Handlung bestätigt der
+Moment die Vorschau. **(3) Ein Engpass spricht in Gütern und nennt Auswege** —
+nie „Fisch klemmt", sondern „Nahrung wird knapp — ein Netz würde helfen; frisches
+Revier auch", und als Auswege gelten nur echte Optionen des Moments. Dazu: **Beim
+ersten Erscheinen erklärt sich jedes Element mit einem Satz** — die begrenzte,
+kontextuelle Anleitung; keine Tour.
+
+**Der Didaktik-Steckplatz ist reserviert:** eine dritte Ereignisart **„Einsicht"** in
+derselben Momente/Log-Maschinerie — wenn der Spielstand ein ökonomisches Prinzip
+vorgeführt hat, erscheint sie und wird in einer nachlesbaren Erkenntnisse-Sammlung
+aufgehoben, die über die Epochen nur wächst. Wo sie erscheint (rechte Spalte oder
+eine von unten aufklappende Leiste), wird bei der Ausgestaltung entschieden; der
+Lösungsansatz steht.
+
 **Menschen erscheinen ganzzahlig — überall.** Das Modell bleibt bewusst kontinuierlich
 (daran hängt die glatte Dynamik); die Oberfläche **führt ihr eigenes Buch in ganzen
 Menschen**: Zwei Zähler sammeln die Bruchteile der aufgezeichneten Geburten und Tode

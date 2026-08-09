@@ -8,7 +8,7 @@ export type {
   ProcessRun,
   TierOutcome,
 } from "./allocation.ts";
-export { allocate } from "./allocation.ts";
+export { allocate, searchEffort } from "./allocation.ts";
 export type {
   CapacityDef,
   BranchDef,

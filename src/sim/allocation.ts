@@ -236,6 +236,30 @@ function plannedDraw(config: Config): Shocks {
  * bound as the taking approaches the whole stand. The cap keeps a spent range
  * from being infinitely dear, so there is always a way back (E20).
  */
+/**
+ * The searching cost of one stand at one level — the single-stock heart of the
+ * rule above, exported so a preview can promise only what this very rule will
+ * charge (an interface guessing its own figure has lied about fresh country
+ * before). Pure arithmetic on the passed figures; reads nothing.
+ */
+export function searchEffort(
+  held: number,
+  ceiling: number,
+  maxEffort: number,
+  take = 0,
+): number {
+  if (ceiling <= 0) return 1;
+  const standing = Math.max(1e-9, held);
+  // Never quite all of it: the last unit is unfindable, which is what the cap
+  // stands for.
+  const taken = Math.min(Math.max(0, take), standing * 0.999);
+  const factor =
+    taken > 1e-9
+      ? (ceiling / taken) * Math.log(standing / (standing - taken))
+      : ceiling / standing;
+  return Math.max(1, Math.min(maxEffort, factor));
+}
+
 function effortFactor(
   process: ProcessDef,
   index: ConfigIndex,
@@ -248,15 +272,10 @@ function effortFactor(
     if (rule === undefined) continue;
     const renewal = standing[id];
     if (renewal === undefined || renewal.ceiling <= 0) continue;
-    const held = Math.max(1e-9, renewal.held);
-    // Never quite all of it: the last unit is unfindable, which is what the cap
-    // stands for.
-    const take = Math.min(Math.max(0, taking[id] ?? 0), held * 0.999);
-    const factor =
-      take > 1e-9
-        ? (renewal.ceiling / take) * Math.log(held / (held - take))
-        : renewal.ceiling / held;
-    worst = Math.max(worst, Math.min(rule.maxEffort, factor));
+    worst = Math.max(
+      worst,
+      searchEffort(renewal.held, renewal.ceiling, rule.maxEffort, taking[id] ?? 0),
+    );
   }
   return worst;
 }
