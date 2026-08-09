@@ -180,6 +180,33 @@ export interface GameState {
     readonly unused: number;
   };
 
+  /**
+   * The processes the tick actually ran, with the labour that went in and the
+   * output that came out — recorded for the same reason as `lastBorn` above.
+   *
+   * There is deliberately no labour per rank anywhere: the allocation serves
+   * every rank from one pot, and a unit in the pot does not know its taker
+   * (E21). What a view can honestly show below a need is the supply of the
+   * good behind it — these runs — shared by all ranks of that good.
+   */
+  readonly lastRuns: readonly { process: ProcessId; labor: number; output: number }[];
+
+  /**
+   * What stopped each rank from getting more, as the tick's allocation found
+   * it: a capacity, a stock, or nothing.
+   */
+  readonly lastBinding: Readonly<
+    Record<string, { kind: "capacity" | "stock" | "none"; what?: string }>
+  >;
+
+  /**
+   * What lay in store when the tick began and when it ended, per good. The
+   * pair is the honest substitute for "rank X got Y out of the pit", which
+   * does not exist (E21): it says whether the community lived off its
+   * substance, and by how much.
+   */
+  readonly lastStore: Readonly<Record<StockId, { before: number; after: number }>>;
+
   /** Which process led per branch last tick — shown, not used to decide (E5). */
   readonly leadProcess: Readonly<Record<BranchId, ProcessId>>;
 

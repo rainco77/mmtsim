@@ -1201,4 +1201,24 @@ describe("the tick's record says what the tick did", () => {
       expect(labor.toProduction + labor.toProjects + labor.unused).toBeCloseTo(labor.available, 8);
     }
   });
+
+  it("records runs, bindings and store movement from its own allocation", () => {
+    const index = indexConfig(STAGE1);
+    let state = createState(STAGE1, { seed: 11 });
+    for (let i = 0; i < 25; i += 1) {
+      state = tick(state, index);
+      // The recorded runs are the production side of the recorded split.
+      const ranLabor = state.lastRuns.reduce((sum, run) => sum + run.labor, 0);
+      expect(ranLabor).toBeCloseTo(state.lastLabor.toProduction, 8);
+      // Every rank that has a recorded coverage has a recorded binding.
+      for (const tier of Object.keys(state.lastCoverage)) {
+        expect(state.lastBinding[tier]).toBeDefined();
+      }
+      // The recorded store movement ends where the state's stocks stand.
+      const stocks = state.sectors["households"]?.stocks ?? {};
+      for (const [id, pair] of Object.entries(state.lastStore)) {
+        expect(stocks[id] ?? 0).toBeCloseTo(pair.after, 8);
+      }
+    }
+  });
 });

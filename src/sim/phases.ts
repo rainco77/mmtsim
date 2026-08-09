@@ -504,6 +504,18 @@ export class ProductionPhase implements Phase {
         toProjects: result.laborToProjects,
         unused: result.laborUnused,
       },
+      lastRuns: result.runs.map((run) => ({
+        process: run.process,
+        labor: run.labor,
+        output: run.output,
+      })),
+      lastBinding: Object.fromEntries(result.tiers.map((t) => [t.tier, t.binding])),
+      lastStore: Object.fromEntries(
+        Object.keys(result.storeBefore).map((id) => [
+          id,
+          { before: result.storeBefore[id] ?? 0, after: result.storeAfter[id] ?? 0 },
+        ]),
+      ),
       lastLabourPerHead: labourPerHead(result, index, totalHeads(sector.cohorts)),
       lastUtilisation: utilisationOf(result),
       experience,
