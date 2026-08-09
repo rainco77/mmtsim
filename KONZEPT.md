@@ -3876,6 +3876,18 @@ Kopfleiste** mit der Ticknummer und den Zeit-Griffen: einen Tick weiter, Lauf bi
 nächsten Haltepunkt, freier Lauf, Pause. Jeder Zeit-Griff ist nur erreichbar, wenn er
 gerade Sinn ergibt — die Pause nur, während es läuft; Schritt und Lauf nur im Stand.
 
+**Die Haltepunkte des automatischen Laufs.** „Lauf bis zum Haltepunkt" hält bei: einem
+Projekt, das sichtbar wird · einem, das ausführbar wird · einem, das fertig wird (der
+Umzug ist eines davon) · **Not-Toten** · Aufgabe oder Epochenende. „Ausführbar
+geworden" zählt nur beim echten Übergang — nicht, wenn ein Wiederholbares nach seinem
+eigenen Abschluss bloß in die Liste zurückkehrt. **Not-Tote** heißt: Der aufgezeichnete
+Überlebensfaktor einer Kohorte liegt unter ihrer Grundrate — nur dann hat ein
+Überlebensrang gefehlt. Alltagssterblichkeit und das Schrumpfen unter der
+Traglastbremse sind kein Ereignis und halten nie: Es stirbt in jedem Tick jemand, und
+eine Gemeinschaft, deren Geburten unter die Alltagssterblichkeit gebremst sind,
+schrumpft, ohne dass etwas schiefgeht. Der **freie Lauf** ignoriert die weichen
+Haltepunkte (Projekte), hält aber bei Not-Toten und am Ende; Pause geht jederzeit.
+
 **Kein Speichern und Laden in der ersten Stufe.** Statt dessen kennt die Oberfläche
 **den ganzen Verlauf des Laufs**, nicht nur den letzten Tick: Für Testzwecke lässt sich
 damit einfach zurückrollen. Ob der Spieler später auch zurückrollen kann, ist offen.
