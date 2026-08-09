@@ -23,6 +23,15 @@ const RESERVE_RANK = 450;
 export class BuildingPolicy implements Policy {
   readonly id = "building";
   private readonly moving = new MovingPolicy();
+  /** Whether settling is taken the moment it is offered. The thorough play
+   * turns this off and adds its own, later settling — filtering the eager
+   * one's actions instead deadlocked it: once settling was on offer, the eager
+   * play proposed nothing else, and the filter left nothing at all. */
+  private readonly settlesEagerly: boolean;
+
+  constructor(settlesEagerly = true) {
+    this.settlesEagerly = settlesEagerly;
+  }
 
   decide(state: GameState, derived: Derived, index: ConfigIndex): readonly Action[] {
     const actions: Action[] = [];
@@ -34,10 +43,12 @@ export class BuildingPolicy implements Policy {
     }
 
     const offered = derived.projects.filter((project) => project.available && !project.running);
-    const settle = offered.find((project) => project.id === "sedentism");
-    if (settle !== undefined) {
-      actions.push({ type: "startProject", id: settle.id });
-      return actions;
+    if (this.settlesEagerly) {
+      const settle = offered.find((project) => project.id === "sedentism");
+      if (settle !== undefined) {
+        actions.push({ type: "startProject", id: settle.id });
+        return actions;
+      }
     }
 
     // Moving answers a range gone thin and does not wait for a free hand; the
@@ -55,10 +66,23 @@ export class BuildingPolicy implements Policy {
     const worthBurning = (id: string): boolean =>
       id !== "fire_setting" || (state.rangeCarries["plants"] ?? 0) < 2;
 
-    const pit = offered.find((project) => project.id === "storage_pit");
+    // Nobody sensible digs the seventh hole: another pit is worth starting
+    // only while the store held is thin against the mouths it is for. Without
+    // this the pit — repeatable and always high in the sorted offers — is
+    // taken every time, and the rest of the tree is never reached.
+    const storagePerHead =
+      (derived.ownedCapacity["storage"]?.amount ?? 0) / Math.max(1, derived.heads);
+    const worthDigging = (id: string): boolean => id !== "storage_pit" || storagePerHead < 4;
+
+    const pit = offered.find(
+      (project) => project.id === "storage_pit" && worthDigging(project.id),
+    );
     const next =
       pit ??
-      offered.find((project) => project.id !== "range_change" && worthBurning(project.id));
+      offered.find(
+        (project) =>
+          project.id !== "range_change" && worthBurning(project.id) && worthDigging(project.id),
+      );
     if (next !== undefined) actions.push({ type: "startProject", id: next.id });
     return actions;
   }

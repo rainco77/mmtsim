@@ -12,14 +12,13 @@ import { BuildingPolicy } from "./building.ts";
  */
 export class ThoroughPolicy implements Policy {
   readonly id = "thorough";
-  private readonly eager = new BuildingPolicy();
+  private readonly eager = new BuildingPolicy(false);
 
   decide(state: GameState, derived: Derived, index: ConfigIndex): readonly Action[] {
-    const eager = this.eager
-      .decide(state, derived, index)
-      .filter((a) => !(a.type === "startProject" && a.id === "sedentism"));
+    const eager = this.eager.decide(state, derived, index);
 
-    // Something was started or is running: not yet.
+    // Something was started or is running: not yet. Sedentism itself the
+    // eager play leaves alone here (it is built without eager settling).
     if (eager.some((a) => a.type === "startProject")) return eager;
     if (state.activeProjects.length > 0) return eager;
 

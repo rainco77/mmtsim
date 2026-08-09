@@ -581,7 +581,8 @@ console.log("\n== The whole tree before settling — the thorough play ==");
   // Every process of the epoch: on from the start, or opened by an epoch project.
   const openedBy = new Set<string>();
   for (const project of STAGE1.projects) {
-    if (afterSettling(project.id)) continue;
+    // What sedentism itself opens belongs to the settled stage, not to this one.
+    if (afterSettling(project.id) || project.id === "sedentism") continue;
     for (const effect of project.effects) if (effect.type === "process") openedBy.add(effect.id);
   }
   const epochProcesses = STAGE1.processes
