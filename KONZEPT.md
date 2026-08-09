@@ -3230,10 +3230,12 @@ Intuition, die er später für Arbeitslosigkeit und Unterauslastung braucht.
 
 *Grundsätzlich abgenickt, aber als unwichtig eingestuft. Kann fallen.*
 
-### V2 — Zeit läuft von selbst
+### V2 — Wie die Zeit läuft, ist nicht entschieden
 
-Kein „Runde beenden"-Knopf; Pause ist erlaubt. Der Takt in Echtzeit bleibt konstant
-(grob ein Tick pro Sekunde).
+**Ob die Zeit von selbst läuft, ist offen.** Denkbar ist, dass sie von selbst läuft
+(mit Pause), dass der Spieler Tick für Tick durchgeht, oder dass er zwischen mehreren
+Geschwindigkeiten wählt — auch Mischungen davon. Entschieden wird das bei der
+Gestaltung der Oberfläche.
 
 **Was ein Tick bedeutet, wird nicht gesagt** — hier so wenig wie sonst irgendwo (E17).
 Hier stand einmal, er dehne sich mit der Epoche und sei anfangs ein Jahrzehnt, später ein
@@ -3244,10 +3246,8 @@ Verhältnisse ändern sich mit der Epoche: In einer frühen Gemeinschaft dauert 
 Ticks, bis eine Entscheidung wirkt, in einer entwickelten wenige. Das steckt in den
 Mindestdauern der Projekte und in den Trägheiten der Branchen, nicht in einer Uhr.
 
-Direkte Folge, die eingehalten werden muss: **In jeder laufenden Wartezeit muss es
-etwas zu entscheiden geben.** Sonst wird Zuschauen zum Spiel.
-
-*Grundgerüst unstrittig, Details offen (siehe Beschleunigung).*
+Für den Fall, dass die Zeit von selbst läuft, gilt als Bedingung: **In jeder laufenden
+Wartezeit muss es etwas zu entscheiden geben.** Sonst wird Zuschauen zum Spiel.
 
 ---
 
@@ -3640,8 +3640,10 @@ test("forest + farmland = total area", ...)
 ist allein `KONZEPT.md`.
 
 **Die Oberfläche bekommt keine Sprache vorgeschrieben.** Sie wird von Anfang an übersetzbar
-gebaut, mit einer Übersetzungsschicht statt fest eingebauter Texte; welche Sprachen sie
-anbietet, ist nicht entschieden und wird hier nicht entschieden. Der Kern gibt ihr davon
+gebaut, mit einer Übersetzungsschicht statt fest eingebauter Texte; welche Sprachen sie am
+Ende anbietet, ist nicht entschieden. Die erste Ausbaustufe führt aber **Deutsch und
+Englisch von Anfang an beide** (T9): Erst mit zwei Sprachen zeigen sich die Probleme der
+Übersetzungsschicht sofort, und spät entdeckte sind teils schwer zu beheben. Der Kern gibt ihr davon
 nichts vor: Er erzeugt keinen Text und trifft keine Annahme darüber, wie eine Anzeige
 später formuliert oder formatiert wird.
 
@@ -3751,6 +3753,19 @@ weil sie am Code nicht ablesbar sind.
 
 Falls die Importregeln später zahlreicher werden, wäre `dependency-cruiser` der
 nächste Schritt. Für eine einzige Regel lohnt er nicht.
+
+### T9 — Die erste Ausbaustufe der Oberfläche
+
+**Die Oberfläche wird webbasiert gebaut** (Stack: T5). Die erste Ausbaustufe ist **nur
+für den Auftraggeber**: eine spielbare Oberfläche, an der sich das Spielgefühl der
+Epoche prüfen lässt. Sie ist aber **kein Wegwerf-Werkzeug**, sondern der Anfang des
+Spiels: so angelegt, dass Didaktik und Erzählung später hineinpassen, ohne dass alles
+überarbeitet werden muss. Übersetzungsschicht von Anfang an, mit Deutsch und Englisch
+(T6).
+
+**Kein Speichern und Laden in der ersten Stufe.** Statt dessen kennt die Oberfläche
+**den ganzen Verlauf des Laufs**, nicht nur den letzten Tick: Für Testzwecke lässt sich
+damit einfach zurückrollen. Ob der Spieler später auch zurückrollen kann, ist offen.
 
 ---
 
