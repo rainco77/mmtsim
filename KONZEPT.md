@@ -3860,8 +3860,15 @@ bei der Umsetzung ändern, wenn es gute Gründe gibt. Sechs Kacheln, eine domina
   noch nicht ausführbare stehen nie in der Leiter: Sie beanspruchen nichts. Keine
   Baum-Ansicht in der ersten Stufe — die Abhängigkeiten nennt das Verriegelte selbst;
   ein gezeichneter Baum ist Didaktik späterer Stufen.
-- **Ereignis-Log**: rollend, die letzten Nachrichten immer sichtbar; der Wetterwurf
-  klein daneben.
+- **Ereignis-Log**: rollend, Neuestes oben, jede Zeile mit Ticknummer; der Wetterwurf
+  klein daneben. Sechs Ereignisarten in der ersten Stufe, alle aus dem Verlauf
+  abgeleitet, den die Oberfläche führt: Menschen gestorben (mit Betrag und Ursache aus
+  der Aufzeichnung, dem verursachenden Tick zugeordnet) · Projekt sichtbar geworden ·
+  Projekt ausführbar geworden · Projekt fertig (auch die Ein-Tick-Projekte) · Umzug
+  vollzogen (mit dem, was zurückblieb) · Gemeinschaft aufgegeben bzw. Epoche beendet.
+  Die Texte sind Übersetzungsschlüssel plus Zahlen (T6); der Kern bleibt textfrei.
+  Die Liste ist zugleich die Kandidatenliste für die Haltepunkte des automatischen
+  Laufs, und ihre Ticknummern sind die Anker fürs Zurückrollen beim Testen.
 
 **Kein Speichern und Laden in der ersten Stufe.** Statt dessen kennt die Oberfläche
 **den ganzen Verlauf des Laufs**, nicht nur den letzten Tick: Für Testzwecke lässt sich
