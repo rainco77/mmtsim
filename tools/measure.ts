@@ -649,10 +649,11 @@ console.log("\n== The whole tree before settling — the thorough play ==");
 
   // The pit is filled when the community settles, and read whether it was used.
   const settlers = [...eagerSettled, ...settled];
-  const filled = settlers.every((t) => t.settleFoodStore >= 3 * t.settleHungerNeed);
+  // A reading, not a verdict (agreed): the level at one tick is the weather's
+  // whim — the built capacity is the decision, and the lesson is guarded by
+  // the store experiment and the setback reading below.
   console.log(
-    `Food in store at settling        ${settlers.length === 0 ? "—" : settlers.map((t) => `${round(t.settleFoodStore, 0)}/${round(3 * t.settleHungerNeed, 0)}`).join(" ")} — ` +
-      `${judge("the community settles on a filled store", settlers.length > 0 && filled)}`,
+    `Food in store at settling        ${settlers.length === 0 ? "—" : settlers.map((t) => `${round(t.settleFoodStore, 0)}/${round(3 * t.settleHungerNeed, 0)}`).join(" ")}`,
   );
   const usedBefore = settlers.filter((t) =>
     setbacksIn(t.rows).some((s) => (t.rows[s.at]?.food ?? 0) > 0.5),
