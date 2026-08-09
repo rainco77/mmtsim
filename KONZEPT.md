@@ -3828,8 +3828,16 @@ bei der Umsetzung ändern, wenn es gute Gründe gibt. Sechs Kacheln, eine domina
   „Weiterziehen" **mit Preisschild**: generisch aus den Projektwirkungen gelistet, was
   der Umzug auf null setzt (Gruben samt Speicher, Boote samt Wasser, die Vorräte). Die
   Falle der Epoche steht damit als Preis am Knopf, nicht als Erklärtext.
-- **Vorräte**: Füllstand gegen Speicherkapazität; die zugehörige Vorgabe-Zeile steht
-  in der Leiter — Anspruch und Inhalt sind zwei Dinge und stehen an zwei Orten.
+- **Vorräte**, getrennt nach den zwei Mechaniken, generisch aus dem Inhalt: Ein Gut
+  **mit Speicherschutz** (heute Nahrung) zeigt den Stand gegen die Speicherkapazität,
+  die Kapazität als dünne Linie mit Verlauf — jede Grube ein Sprung, der leise Verfall
+  sichtbar; die Zielmenge ist die Kapazität selbst („wie groß der Vorrat sein soll,
+  entschied, wer grub"), einstellbar ist der Rang. Ein Gut, **das sich hält** (heute
+  Holz), zeigt den Stand gegen die Vorgabe des Spielers; einstellbar sind Menge und
+  Rang. **Die Griffe sitzen an beiden Orten:** an der Vorratszeile hier und an der
+  Zeile in der Rangleiter — es sind dieselben Einstellwerte, zwei Fenster auf eine
+  Einstellung. Der Rang-Griff zeigt die Position („zwischen Kleidung und Sättigung"),
+  und ein Tipp auf die Vorratszeile hebt ihre Zeile in der Leiter hervor.
 - **Projekte**: der Katalog — sichtbar, ausführbar, dazu noch einmal die laufenden.
   Sichtbare, noch nicht ausführbare stehen nie in der Leiter: Sie beanspruchen nichts.
 - **Ereignis-Log**: rollend, die letzten Nachrichten immer sichtbar; der Wetterwurf
