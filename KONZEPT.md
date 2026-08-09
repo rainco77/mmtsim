@@ -3793,6 +3793,11 @@ in jeder Sprache hölzern und müssten trotzdem übersetzt werden; ein Satz je P
 billig, und die mechanische Hälfte daneben zeigt immer die aktuelle Wahrheit aus den
 Daten.
 
+**Die Revier-Anzeige zeigt je Bestand auch den gepflegten Zuschlag** — was Brand (in
+späteren Epochen Dung und Zucht) dem Land gerade hinzufügt, samt seinem Verblassen.
+Damit ist ohne neue Größe und ohne Erklärtext ablesbar, ob sich erneutes Pflegen schon
+wieder lohnt: Zuschlag groß → warten, fast weg → wieder dran.
+
 **Kein Speichern und Laden in der ersten Stufe.** Statt dessen kennt die Oberfläche
 **den ganzen Verlauf des Laufs**, nicht nur den letzten Tick: Für Testzwecke lässt sich
 damit einfach zurückrollen. Ob der Spieler später auch zurückrollen kann, ist offen.
