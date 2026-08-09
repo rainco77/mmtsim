@@ -187,14 +187,14 @@ const scope = {
         (id) => round(d.stocks[id] ?? 0),
       ),
       running: Object.fromEntries(
-        d.runs.filter((r) => r.output > 0).map((r) => [r.process, round(r.output)]),
+        state.lastRuns.filter((r) => r.output > 0).map((r) => [r.process, round(r.output)]),
       ),
       // Where a renewable stock stands, and whether what is being taken can
       // last (E29). Config-driven like the rest: nothing is named here.
       nature: Object.fromEntries(
         Object.entries(d.renewable).map(([id, r]) => {
           let taken = 0;
-          for (const run of d.runs) {
+          for (const run of state.lastRuns) {
             taken += run.output * (session.idx.process.get(run.process)?.intermediatesPerOutput[id] ?? 0);
           }
           // `tended`: what husbandry has added per unit of ground (a burn, in

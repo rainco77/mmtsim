@@ -1919,9 +1919,13 @@ mitgeführt und am Ende des Ticks aus der frisch berechneten Deckung fortgeschri
 werden. Sie sind damit auch der Ort, an dem später Gesundheit und Bildung einzahlen.
 
 **Der Zustand hält außerdem fest, was der letzte Tick wirklich getan hat:** Deckung je
-Rang, Suchkosten, Geburten, Überlebensfaktor je Kohorte und die Aufteilung der Arbeit
-(in Herstellung, in Projekte, ungenutzt) — so, wie die Zuteilung sie in diesem Tick
-angewandt hat. Der Grund ist ein Befund aus dem Probespielen: Eine Anzeige, die die
+Rang, Suchkosten, Geburten, Überlebensfaktor je Kohorte, die Aufteilung der Arbeit
+(in Herstellung, in Projekte, ungenutzt), die gelaufenen Verfahren mit Arbeit und
+Ertrag, was jeden Rang gebremst hat, und den Stand je Gut vor und nach dem Tick — so,
+wie die Zuteilung sie in diesem Tick angewandt hat. Arbeit **je Rang** gibt es dagegen
+bewusst nicht: Die Zuteilung bedient alle Ränge aus einem Topf, und eine Einheit im
+Topf kennt ihren Empfänger nicht (E21); was sich unter einem Bedarf ehrlich zeigen
+lässt, ist die Versorgung des Guts dahinter, gemeinsam für alle seine Ränge. Der Grund ist ein Befund aus dem Probespielen: Eine Anzeige, die die
 Zuteilung am Tickende neu rechnet, rechnet mit inzwischen geleerten oder nachgewachsenen
 Beständen und der schon geschrumpften Bevölkerung — sie zeigte den Einbruch einen Tick
 zu früh und die Erholung einen Tick zu spät, und am schlimmsten Tick stand „alles
