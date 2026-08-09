@@ -3855,6 +3855,13 @@ bei der Umsetzung ändern, wenn es gute Gründe gibt. Sechs Kacheln, eine domina
   noch nicht ausführbare stehen nie in der Leiter: Sie beanspruchen nichts. Keine
   Baum-Ansicht in der ersten Stufe — die Abhängigkeiten nennt das Verriegelte selbst;
   ein gezeichneter Baum ist Didaktik späterer Stufen.
+  **Projekte starten nie automatisch**, und der Start ist ein Abwägungs-Dialog: ein
+  Rang-Regler, daneben live die geschätzte Dauer bei diesem Rang und was dafür leidet
+  (die Ränge dahinter). Vorn ist schnell und kostet Deckung, hinten ist gratis und
+  langsam — diese Abwägung ist die Entscheidung, die ein Projektstart sein soll; ein
+  Autostart löschte sie. Befund dazu: Ohne die Dauer-Vorschau war die Abwägung
+  unsichtbar, und „alles starten, hinten liegen lassen" fühlte sich nicht nach Spielen
+  an.
 - **Ereignis-Log**: rollend, Neuestes oben, jede Zeile mit Ticknummer; der Wetterwurf
   klein daneben. Sechs Ereignisarten in der ersten Stufe, alle aus dem Verlauf
   abgeleitet, den die Oberfläche führt: Menschen gestorben (mit Betrag und Ursache aus
