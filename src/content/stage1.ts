@@ -1339,7 +1339,7 @@ export const STAGE1: Config = {
       id: "bone_needle",
       // What all three clothing projects answer is the same strain: keeping
       // people clothed eats more and more of everybody's work.
-      visibleWhen: [{ kind: "strain", measure: { labourPerHead: "clothmaking" }, factor: 1.3 }],
+      visibleWhen: [{ kind: "strain", measure: { searchCost: "game" }, factor: 1.4 }],
       availableWhen: [{ kind: "experience", activities: ["clothmaking"], min: 30 }],
       defaultRank: PROJECTS_LAST,
       laborCost: 48,
@@ -1376,7 +1376,10 @@ export const STAGE1: Config = {
       // whoever plaits is shown tanning and invited to hides, whoever dresses
       // skins is shown twining and invited to fibre.
       id: "twining",
-      visibleWhen: [{ kind: "strain", measure: { labourPerHead: "clothmaking" }, factor: 1.1 }],
+      // The want these answer is the hide grown dear: game is the clothing's
+      // raw source, and its searching price is the first thing a player sees
+      // rise. Read against the opening price, not an absolute.
+      visibleWhen: [{ kind: "strain", measure: { searchCost: "game" }, factor: 1.25 }],
       availableWhen: [{ kind: "experience", activities: ["clothmaking"], min: 15 }],
       defaultRank: PROJECTS_LAST,
       laborCost: 48,
@@ -1388,7 +1391,10 @@ export const STAGE1: Config = {
     },
     {
       id: "tanning",
-      visibleWhen: [{ kind: "strain", measure: { labourPerHead: "clothmaking" }, factor: 1.1 }],
+      // The want these answer is the hide grown dear: game is the clothing's
+      // raw source, and its searching price is the first thing a player sees
+      // rise. Read against the opening price, not an absolute.
+      visibleWhen: [{ kind: "strain", measure: { searchCost: "game" }, factor: 1.25 }],
       availableWhen: [{ kind: "experience", activities: ["clothmaking"], min: 15 }],
       defaultRank: PROJECTS_LAST,
       laborCost: 48,

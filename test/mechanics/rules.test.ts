@@ -20,6 +20,7 @@ import {
   type Unlocks,
 } from "../../src/sim/index.ts";
 import { counterOf, draw, uniformAt } from "../../src/sim/random.ts";
+import { startReadings } from "../../src/sim/outset.ts";
 
 /** A head count split over the cohorts the way the content starts them (E20). */
 const asCohorts = (heads: number): Record<string, number> =>
@@ -835,6 +836,25 @@ describe("the next range (E13, E29)", () => {
       nextRangeQuality({ ...state, landOffer: offer }, STAGE1, "wilderness");
     expect(offered(1)).toBeCloseTo(1 - step, 9);
     expect(offered(1 + STAGE1.land.qualitySpread)).toBeGreaterThan(1);
+  });
+});
+
+describe("strain conditions (E28)", () => {
+  it("every strain condition has a living reference at the outset", () => {
+    // A strain is read against the opening position. An activity that does not
+    // run at the opening leaves no reading, and the engine then falls back to
+    // an absolute mark of one — meaningful for a searching price (one is fresh
+    // country), meaningless for labour per head. Content must not step into
+    // that fall-back: three projects hung on it and could never be seen.
+    const readings = startReadings(index);
+    for (const project of STAGE1.projects) {
+      for (const condition of [...project.visibleWhen, ...project.availableWhen]) {
+        if (condition.kind !== "strain") continue;
+        if (!("labourPerHead" in condition.measure)) continue;
+        const key = `labour:${condition.measure.labourPerHead}`;
+        expect(readings[key], `${project.id} reads ${key}`).toBeGreaterThan(0);
+      }
+    }
   });
 });
 
