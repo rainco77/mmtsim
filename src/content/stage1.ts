@@ -215,13 +215,12 @@ export const STAGE1: Config = {
       regrowth: {
         ratePerTick: 0.2,
         capacity: "wilderness",
-        // Provisional, and known to be so. Reckoned, three would leave the
-        // comfort at about half at twenty-five heads — the pinch the epoch was
-        // to open on. Played, it kills: every seed was given up between tick 28
-        // and 88, because a stock whose steady yield lies under what a life-and-
-        // death rank demands is not rationed but stripped, and the fire goes out
-        // with it. Ten is the lowest value at which no seed died over eight
-        // seeds and two hundred ticks. The figure belongs to the balancing.
+        // Set against what the fire asks, not read off the share of dead wood
+        // in a living forest. A stock whose steady yield lies under what a
+        // life-and-death rank demands is not rationed but stripped, and the
+        // fire goes out with it — so this one has to carry the warmth of a
+        // community that is not shrinking, and the archaeological share would
+        // leave it far short of that.
         densityPerArea: 80.0,
         refuge: 16,
         maxEffort: 30,
