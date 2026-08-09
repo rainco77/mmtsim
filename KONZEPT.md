@@ -3230,12 +3230,18 @@ Intuition, die er später für Arbeitslosigkeit und Unterauslastung braucht.
 
 *Grundsätzlich abgenickt, aber als unwichtig eingestuft. Kann fallen.*
 
-### V2 — Wie die Zeit läuft, ist nicht entschieden
+### V2 — Tick für Tick, mit automatischem Lauf
 
-**Ob die Zeit von selbst läuft, ist offen.** Denkbar ist, dass sie von selbst läuft
-(mit Pause), dass der Spieler Tick für Tick durchgeht, oder dass er zwischen mehreren
-Geschwindigkeiten wählt — auch Mischungen davon. Entschieden wird das bei der
-Gestaltung der Oberfläche.
+**Vorgabe ist Tick für Tick: Der Spieler schaltet selbst weiter.** Gibt es keine
+Entscheidungsmöglichkeit, kann er automatisch laufen lassen, **bis die nächste Aktion
+möglich wird**. Zusätzlich kann er automatisch laufen lassen, auch wenn Aktionen
+möglich sind.
+
+**Was den automatischen Lauf anhält, ist noch festzulegen.** „Eine Aktion ist möglich"
+taugt nicht wörtlich als Haltebedingung, denn die meisten Handlungen (Vorratsziel
+setzen, Ränge verschieben, pausieren, abbrechen) sind in jedem Tick erlaubt. Anhalten
+muss der Lauf an **neuen** Möglichkeiten und an Ereignissen, die der Spieler sehen
+muss; die Liste dieser Haltepunkte wird bei der Gestaltung der Oberfläche festgelegt.
 
 **Was ein Tick bedeutet, wird nicht gesagt** — hier so wenig wie sonst irgendwo (E17).
 Hier stand einmal, er dehne sich mit der Epoche und sei anfangs ein Jahrzehnt, später ein
@@ -3246,8 +3252,8 @@ Verhältnisse ändern sich mit der Epoche: In einer frühen Gemeinschaft dauert 
 Ticks, bis eine Entscheidung wirkt, in einer entwickelten wenige. Das steckt in den
 Mindestdauern der Projekte und in den Trägheiten der Branchen, nicht in einer Uhr.
 
-Für den Fall, dass die Zeit von selbst läuft, gilt als Bedingung: **In jeder laufenden
-Wartezeit muss es etwas zu entscheiden geben.** Sonst wird Zuschauen zum Spiel.
+Die frühere Bedingung „in jeder laufenden Wartezeit muss es etwas zu entscheiden
+geben" entfällt mit diesem Modell: Wartezeit wird übersprungen statt gefüllt.
 
 ---
 
