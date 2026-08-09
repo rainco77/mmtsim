@@ -1202,6 +1202,27 @@ describe("the tick's record says what the tick did", () => {
     }
   });
 
+  it("records the factors the births were computed with", () => {
+    const index = indexConfig(STAGE1);
+    const population = STAGE1.population;
+    let state = createState(STAGE1, { seed: 11 });
+    for (let i = 0; i < 25; i += 1) {
+      const before = state.sectors["households"]?.cohorts ?? {};
+      const next = tick(state, index);
+      const bearers = Object.entries(before).reduce(
+        (sum, [id, heads]) => sum + heads * (population.birthWeight[id] ?? 0),
+        0,
+      );
+      const expected =
+        population.baseBirthRate *
+        next.lastBirthFactors.coverage *
+        next.lastBirthFactors.carrying *
+        bearers;
+      expect(next.lastBorn).toBeCloseTo(Math.max(0, expected), 8);
+      state = next;
+    }
+  });
+
   it("records runs, bindings and store movement from its own allocation", () => {
     const index = indexConfig(STAGE1);
     let state = createState(STAGE1, { seed: 11 });

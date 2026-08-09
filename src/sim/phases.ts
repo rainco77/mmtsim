@@ -611,11 +611,9 @@ export class PopulationPhase implements Phase {
       }
     }
 
+    const carrying = backloadFactor(before, allocation, ctx.unlocks, index);
     const born =
-      population.baseBirthRate *
-      birthFactor *
-      backloadFactor(before, allocation, ctx.unlocks, index) *
-      weighedHeads(before, population.birthWeight);
+      population.baseBirthRate * birthFactor * carrying * weighedHeads(before, population.birthWeight);
 
     const after: Record<string, number> = {};
     for (const cohort of population.cohorts) {
@@ -633,6 +631,7 @@ export class PopulationPhase implements Phase {
       sectors: { ...state.sectors, [HOUSEHOLDS]: { ...sector, cohorts: after } },
       lastBorn: Math.max(0, born),
       lastSurvival: survival,
+      lastBirthFactors: { coverage: birthFactor, carrying },
     };
 
     // Below the minimum viable size the community is given up (E20), and that

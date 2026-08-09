@@ -181,6 +181,15 @@ export interface GameState {
   };
 
   /**
+   * The two factors the tick's births actually carried (E20): the coverage
+   * factor (mechanically present; one in today's content) and the carrying
+   * brake. Outside the crises the brake is what sets the population's level,
+   * so whatever shows births must show how they came about — base rate times
+   * these factors times the weighed heads.
+   */
+  readonly lastBirthFactors: { readonly coverage: number; readonly carrying: number };
+
+  /**
    * The processes the tick actually ran, with the labour that went in and the
    * output that came out — recorded for the same reason as `lastBorn` above.
    *

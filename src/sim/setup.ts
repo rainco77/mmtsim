@@ -123,6 +123,7 @@ export function createState(config: Config, options: StartOptions): GameState {
     lastBorn: 0,
     lastSurvival: {},
     lastLabor: { available: 0, toProduction: 0, toProjects: 0, unused: 0 },
+    lastBirthFactors: { coverage: 1, carrying: 1 },
     lastRuns: [],
     lastBinding: {},
     lastStore: {},

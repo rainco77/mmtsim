@@ -1919,7 +1919,8 @@ mitgeführt und am Ende des Ticks aus der frisch berechneten Deckung fortgeschri
 werden. Sie sind damit auch der Ort, an dem später Gesundheit und Bildung einzahlen.
 
 **Der Zustand hält außerdem fest, was der letzte Tick wirklich getan hat:** Deckung je
-Rang, Suchkosten, Geburten, Überlebensfaktor je Kohorte, die Aufteilung der Arbeit
+Rang, Suchkosten, Geburten samt ihren beiden Faktoren (Deckung und Traglast),
+Überlebensfaktor je Kohorte, die Aufteilung der Arbeit
 (in Herstellung, in Projekte, ungenutzt), die gelaufenen Verfahren mit Arbeit und
 Ertrag, was jeden Rang gebremst hat, und den Stand je Gut vor und nach dem Tick — so,
 wie die Zuteilung sie in diesem Tick angewandt hat. Arbeit **je Rang** gibt es dagegen
@@ -3814,7 +3815,11 @@ bei der Umsetzung ändern, wenn es gute Gründe gibt. Sechs Kacheln, eine domina
   Vorrat" gibt es bewusst nicht: Eine Einheit im Topf weiß nicht, wann sie hineinkam
   (E21). Fußzeile der Leiter: die freie Arbeit.
 - **Menschen**: Kopfzahl mit Verlauf, Geburten und Tode aus der Aufzeichnung,
-  Zusammensetzung nach Kohorten.
+  Zusammensetzung nach Kohorten. Dazu **die Geburtenbremse als eigene Kurve** mit der
+  Zerlegung „Grundrate × Bremse = Geburten": Außerhalb der Krisen ist sie der
+  bestimmende Faktor des Bevölkerungsniveaus, ohne sie ist nicht nachvollziehbar, wie
+  die Geburtenzahlen entstehen. Aufgeklappt die Überlebensfaktoren je Kohorte als
+  Verlauf.
 - **Revier**: je Naturbestand Stand gegen Decke, entnommen, nachgewachsen, Suchkosten,
   gepflegter Zuschlag; aufklappbar die Verfahren, die entnehmen. Daneben das
   Wander-Paar: Güte des eigenen Landes gegen das Angebot.
