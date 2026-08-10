@@ -4096,6 +4096,25 @@ dieselbe Rolle.
 Kachel innen. Alle Bedienziele sind fingergroß; entworfen wird für Berührung, die Maus
 ist der Sonderfall.
 
+**Weitere Anzeige-Gesetze aus der Vorlagen-Iteration.** **Vorzeichen folgen dem Wohl
+des Volkes:** plus/grün ist gut, minus/rot ist schlecht, ausnahmslos — Suchkosten
+erscheinen darum als Ausbeute („die Suche bringt nur noch 42 % dessen, was sie bei
+Ankunft brachte, −58 %"), nie als gestiegene Kosten mit Pluszeichen. **Ticks sind der
+Einheits-Anker aller Kosten** („Arbeit 24 ≈ 6 Ticks · Brennholz 10 ≈ 2 Ticks
+Nachschub"); deckt der Bestand die Kosten, steht stattdessen „liegt bereit".
+**Bedingungszeilen nennen das Ereignis**, nicht die Messgröße — und
+Ausführbarkeits-Balken können nach der Monotonie-Regel nur an Größen hängen, die nie
+zurückgehen; Schwellen aufs Schlechterwerden gibt es allein beim Sichtbarwerden, das
+als Ereignis geschieht und nie als wartender Balken. **Vorratsziele werden in Ticks
+bedient, aber als Menge eingefroren** („Ziel 14 — ~6 Ticks Feuer"): kein
+automatisches Mitwachsen, denn die Pflege der veraltenden Vorgabe ist Spielinhalt und
+ihr Wegfall der Fortschritt späterer Epochen. **Erklärkarten schweben am Element**
+und verschieben kein Layout; nur die Bedarfs-Karte klappt in der Leiter auf.
+**„Reicht ~N Ticks" rechnet netto** (Bestand gegen Entnahme minus Nachwuchs), und der
+Tipp sagt es. Die ungenutzte Arbeit heißt am Spieler **„Arbeit liegt brach"**; ein
+abgenutztes Revier heißt **ausgezehrt**, das nächste **unverbraucht** — nie müde oder
+ausgeruht. In den Momenten zählt alles in **Menschen**, nie in Köpfen.
+
 **Kein Speichern und Laden in der ersten Stufe.** Statt dessen kennt die Oberfläche
 **den ganzen Verlauf des Laufs**, nicht nur den letzten Tick: Für Testzwecke lässt sich
 damit einfach zurückrollen. Ob der Spieler später auch zurückrollen kann, ist offen.
