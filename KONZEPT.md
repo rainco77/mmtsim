@@ -4253,6 +4253,17 @@ ersten Mal erscheint. Auf der Karte bleibt die mechanische Zeile („Ziel = was 
 fassen"), deren Antippen die Rechnung zeigt; sie gehört zur Karte der Nahrung und zu
 keiner anderen.
 
+**Die Vorhaben-Karte beginnt mit dem Nutzen-Satz des Projekts** — demselben
+handgeschriebenen Übersetzungsschlüssel, den der Katalog zeigt; einen eigenen
+Zustands-Satz gibt es nicht (je Projekt existiert genau ein handgeschriebener Satz,
+alles Übrige der Karte ist generisch). **Jede Karten-Kurve liest sich gleich:** je
+Tick der Anteil dessen, was ankam, an dem, was der Posten in diesem Tick wollte —
+gestrichelte Linie = voll. Bei Bedarfen ist das die Deckung, bei Vorhaben der
+Zufluss-Anteil (eine Zahl, weil alle Ressourcen im Gleichschritt fließen); gerechnet
+wird er aus dem Verlauf der Oberfläche, Fortschritts-Differenz je Tick durch den
+vollen Tick-Schritt. Die einzelnen Ressourcen stehen als Fakten in der Kostenzeile,
+nie als eigene Kurven.
+
 **Die Erklärkarte eines Bedarfsfelds ist abgenommen** — Name mit Deckung, ein Satz zur
 Breite, der Verlauf der Deckung mit gestrichelter Voll-Linie, darunter der
 Engpass-Satz mit seinen Auswegen. Der Breiten-Satz spricht dabei **den Spieler an,
