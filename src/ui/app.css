@@ -164,7 +164,18 @@ b {
   cursor: pointer;
 }
 
-/* All three grips look alike: the clock offers, it does not recommend. */
+/*
+ * A grip that carries a written figure instead of a sign: same shape, same
+ * size, a shade smaller so the two characters sit as calmly in the button as
+ * one sign does, and tabular so the figure keeps the width of the others.
+ */
+.timegrips button.word {
+  font-size: 17px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* All grips look alike: the clock offers, it does not recommend. */
 .timegrips button:disabled {
   opacity: 0.35;
   cursor: default;

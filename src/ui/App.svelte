@@ -37,12 +37,16 @@
    * dead while it stands. No grip ever changes what it does under the finger:
    * a run that halts by itself must not turn the button the hand is already
    * reaching for into a different one.
+   *
+   * The single step carries a written "+1" rather than a sign: every step sign
+   * belongs to the same family as the run signs beside it, reads as the
+   * fastest of them, and says nothing about how far it goes.
    */
   const GRIPS = [
-    { key: "time.step", icon: "⏭", pauses: false, press: step },
-    { key: "time.runToStop", icon: "⏯", pauses: false, press: runToStop },
-    { key: "time.runFree", icon: "▶", pauses: false, press: runFree },
-    { key: "time.pause", icon: "⏸", pauses: true, press: pause },
+    { key: "time.step", icon: "+1", word: true, pauses: false, press: step },
+    { key: "time.runToStop", icon: "⏯", word: false, pauses: false, press: runToStop },
+    { key: "time.runFree", icon: "▶", word: false, pauses: false, press: runFree },
+    { key: "time.pause", icon: "⏸", word: false, pauses: true, press: pause },
   ] as const;
 </script>
 
@@ -54,6 +58,7 @@
     <nav class="timegrips">
       {#each GRIPS as grip (grip.key)}
         <button
+          class:word={grip.word}
           title={$t(grip.key)}
           on:click={grip.press}
           disabled={grip.pauses ? !running : running || ended}

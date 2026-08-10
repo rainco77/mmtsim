@@ -3939,6 +3939,12 @@ abgeschalteter Knopf tut nichts; ein verwandelter tut das Falsche. **Alle Griffe
 gleich aus** — kein hervorgehobener, denn eine Betonung liest sich als Empfehlung, und
 das Spiel benotet nicht.
 
+**Der einzelne Schritt trägt eine Beschriftung, die drei Läufe ein Zeichen:** „+1" ·
+Lauf bis zum Haltepunkt · freier Lauf · Pause. Jedes Schritt-Zeichen gehört derselben
+Zeichenfamilie an wie die Lauf-Zeichen daneben, liest sich als das schnellste von ihnen
+und sagt nichts darüber, wie weit es geht; „+1" sagt genau das. Knopfform und -größe
+bleiben dieselben.
+
 **Die Haltepunkte des automatischen Laufs.** „Lauf bis zum Haltepunkt" hält bei: einem
 Projekt, das sichtbar wird · einem, das ausführbar wird · einem, das fertig wird (der
 Umzug ist eines davon) · **Not-Toten** · Aufgabe oder Epochenende. „Ausführbar
