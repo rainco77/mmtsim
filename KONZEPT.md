@@ -4214,8 +4214,17 @@ Projekt eines); die Mindestbreite gilt unabhängig davon — sie sichert auch di
 greifbare Lippe. **Bedarfsfelder tragen bei ausreichender Breite zusätzlich ihren
 Namen**; wird das Feld zu schmal, fällt der Name weg und das Zeichen bleibt.
 
-**Aus der zweiten Sichtung entschieden:** Die **Zahl eines Feldes liegt nie auf der
-Kante der Füllung** — sie steht lesbar auf freiem Grund. **Auch die Anspruchskarten
+**Aus der zweiten Sichtung entschieden:** Die **Zahl eines Feldes liegt nie unlesbar
+auf der Kante der Füllung** (die genaue Regel dafür ist noch offen). Das Feld **„Arbeit
+liegt brach"** verliert bei Platznot seinen Text — die Schraffur allein trägt dann die
+Bedeutung; sie wird einmal getauft, und Antippen erklärt sie jederzeit. **Die
+Namenszeile wird beim Ziehen ausgeblendet** — die Schwebe-Fahne trägt den Namen des
+gegriffenen Segments. **Die Sätze der Anspruchskarten sind mengenfrei:** Der Satz je
+Ding wird von Hand geschrieben und lebt als Schlüssel in der Übersetzungsschicht (wie
+der Nutzen-Satz der Projekte), die Zahlen darin kommen generisch aus der Aufzeichnung
+des Kerns. Eine Logik, die Zahlen in Mengenwörter übersetzt („halb", „fast ein
+Drittel"), wird nicht gebaut — ein Mengenwort darf nur stehen, wo es unabhängig vom
+Stand stimmt; die Menge trägt die Zahl daneben. **Auch die Anspruchskarten
 sprechen den Spieler an** und reden von der Sache in der Welt — vom halb geknüpften
 Netz, vom Lager, das so viele Ticks Feuer trägt —, nicht von der Anzeige; die
 Anzeigegesetze (Prozent nur für Verhältnisse, Ticks als Kosten-Anker, keine nackte Zahl
