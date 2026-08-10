@@ -3819,6 +3819,29 @@ auch nicht verbaut. Die Anzeige ist **grafisch, nicht nur Zahlen**: Balken für
 Fortschritt, Deckung und Auslastung, Verlaufskurven für die Entwicklung; die Oberfläche
 soll ansprechend aussehen.
 
+**Die Spielgefühl-Messlatte.** Acht Muster, als Messlatte angenommen: Jede Konzeptrunde
+und jeder Entwurf muss sagen, auf welches Muster er einzahlt.
+
+1. **Die Kernschleife**: Entscheidung → sichtbare Folge → Belohnung → nächstes Ziel,
+   alle ein bis zwei Minuten.
+2. **Spürbare Folgen („Juice")**: jede Wirkung zeigt sich sofort und körperlich — ein
+   Balken springt, eine Zahl blitzt, eine Kurve knickt.
+3. **Variable Belohnung**: Unvorhersehbares hält wach — Wetterwürfe, auftauchende
+   Projekte, das Landangebot sind fertige Zufallsmomente und werden als Momente
+   inszeniert, nicht als stille Zustandsänderung versteckt.
+4. **Immer genau ein nächstes Ziel**: nie zehn Ziele, sondern das eine, fast
+   erreichbare — die Anzeige macht das nächste erreichbare Ding groß, statt alles
+   gleichwertig zu listen.
+5. **Fortschritt durch Enthüllung**: die Oberfläche selbst wächst mit — Neues erscheint
+   als Belohnung, Automatisiertes verschwindet. Der Epochen-Rahmen trägt dieses Muster.
+6. **Vorhersagbarkeit ist Einflussgefühl**: der Spieler muss vorher schätzen können,
+   was eine Handlung tut, und hinterher sehen, dass er recht hatte. Die
+   Lesbarkeits-Gesetze tragen dieses Muster.
+7. **Kein toter Takt**: Wartezeit wird übersprungen oder sichtbar gerafft, nie leer
+   ausgesessen. Die Raffung des Laufs trägt es; die Schluss-Ticks bespielt der Epilog.
+8. **Die ersten zwei Minuten sind heilig**: der Einstieg führt mit einer Handvoll
+   Elementen zur ersten Entscheidung und ihrer sichtbaren Folge. Die Eröffnung trägt es.
+
 **Die Projektauskunft hat zwei Hälften.** Die mechanischen Fakten — Kosten, Dauer, bei
 verriegelten Projekten das Hat/Braucht je Bedingung — erzeugt die Oberfläche
 **generisch aus den Daten**, als Schablone, die für jedes Projekt und jede spätere
