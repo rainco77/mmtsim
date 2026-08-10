@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <title>mmtsim — Probe: was bremste diesen Tick?</title>
+    <link rel="stylesheet" href="./mmt.css" />
+    <style>
+      /* ---------- Probe sheet only ----------
+         Nothing here belongs to the running screen. The sheet exists to put four
+         readings of ONE chart side by side, each at the real size it will have on
+         a claim card (368 x 70 inside a 396px card with 14px padding) and each
+         again at exactly twice that, so a judgement about legibility can be made
+         on the small one and checked on the large one. Both drawings share one
+         viewBox, so the large one is a true magnifier: every stroke, every gap and
+         every glyph scales with it. */
+      :root {
+        /* The two braking resources. mmt.css carries no resource colours, so these
+           two are new and derived from tokens that exist: --brake-work deepens
+           --store, --brake-wood lightens --p-gather. Both are cool on purpose.
+           The palette holds exactly one warm identity and the project ochre
+           --accent already owns it: any warm step near it is indistinguishable
+           from it, so a warm resource colour is not available. Hue alone would
+           not carry the pair either - the separation comes from hue AND
+           lightness together, and every variant backs the colour with a second
+           encoding (words, texture, or both). */
+        --brake-work: #2c626e;
+        --brake-wood: #7fa26a;
+      }
+      body.probe {
+        padding: 9px 14px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .probe h1 {
+        font-family: var(--serif);
+        font-size: 17px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      .probe .lead {
+        font-size: 11.5px;
+        color: var(--muted);
+      }
+      .probe .headline {
+        display: flex;
+        align-items: baseline;
+        gap: 14px;
+      }
+      /* One variant: a title line, a line of objection, then the pair of
+         drawings - the small one in the room a card really gives it, the large
+         one twice that. */
+      .var {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .var > h3 {
+        font-size: 10.5px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 600;
+      }
+      .var > h3 b {
+        color: var(--ink);
+        letter-spacing: 0.02em;
+        text-transform: none;
+        font-size: 12.5px;
+      }
+      .var > .note {
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.3;
+      }
+      .var > .note b {
+        color: var(--crit);
+        font-weight: 600;
+      }
+      .row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      /* The card stub: surface, border and the card's own padding, so the drawing
+         sits in the room it will really have. */
+      .stub {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 5px 14px;
+        flex: none;
+        position: relative;
+      }
+      .stub.two {
+        padding: 4px 14px;
+        border-radius: 14px;
+      }
+      .stub svg {
+        display: block;
+      }
+    </style>
+  </head>
+  <body class="probe">
+    <div class="headline">
+      <h1>Was bremste diesen Tick?</h1>
+      <p class="lead">
+        Vier Lesarten derselben Kurve — dieselben 20 Ticks, links in Kartengröße,
+        rechts doppelt. Jede muss ohne Antippen sagen: welcher Tick, wieviel fehlte,
+        welche Ressource bremste.
+      </p>
+    </div>
+
+    <div id="sheet"></div>
+
+    <script>
+      // ---------------------------------------------------------------------
+      // The frozen series. Every variant draws THIS and nothing else, so the
+      // comparison is a comparison of readings, not of data.
+      //   got   share of what the project could have taken that actually arrived
+      //   b     which resource limited the step: [] none, w labour, h firewood,
+      //         both entries at once on a tie
+      // It carries, in order: five full ticks, a five-tick stretch braked by
+      // labour, a stretch alternating tick by tick, a tie, a tick that got
+      // nothing, and a return to full.
+      // ---------------------------------------------------------------------
+      const T0 = 77;
+      const D = [
+        { got: 1.0, b: [] },
+        { got: 1.0, b: [] },
+        { got: 1.0, b: [] },
+        { got: 1.0, b: [] },
+        { got: 1.0, b: [] },
+        { got: 0.62, b: ["w"] },
+        { got: 0.48, b: ["w"] },
+        { got: 0.55, b: ["w"] },
+        { got: 0.41, b: ["w"] },
+        { got: 0.5, b: ["w"] },
+        { got: 0.34, b: ["h"] },
+        { got: 0.72, b: ["w"] },
+        { got: 0.28, b: ["h"] },
+        { got: 0.66, b: ["w"] },
+        { got: 0.31, b: ["h"] },
+        { got: 0.19, b: ["w", "h"] },
+        { got: 0.0, b: ["w"] },
+        { got: 0.44, b: ["w"] },
+        { got: 0.85, b: ["h"] },
+        { got: 1.0, b: [] },
+      ];
+      const N = D.length;
+
+      // Chart geometry. One tick is 18 wide; the plot spans 4..364 inside a
+      // 368 x 70 area - the room a 396px card leaves after its padding.
+      const W = 368,
+        H = 70,
+        X0 = 4,
+        TW = 18;
+      const COL = { w: "var(--brake-work)", h: "var(--brake-wood)" };
+      const NAME = { w: "Arbeit", h: "Brennholz" };
+
+      const cx = (i) => X0 + i * TW + TW / 2;
+      const yOf = (v, top, base) => top + (1 - v) * (base - top);
+
+      // The curve runs through the tick centres and reaches both edges flat, so
+      // the first and last tick are as wide as any other.
+      function curve(top, base) {
+        let p = `M${X0} ${yOf(D[0].got, top, base)}`;
+        for (let i = 0; i < N; i++) p += ` L${cx(i)} ${yOf(D[i].got, top, base)}`;
+        return p + ` L${X0 + N * TW} ${yOf(D[N - 1].got, top, base)}`;
+      }
+      // The shortfall: everything between the full line and the curve. This is
+      // the area the brake colour lives in - where nothing was missing there is
+      // nothing to colour, which is the point.
+      function missArea(top, base) {
+        return `M${X0} ${top} L${X0} ${yOf(D[0].got, top, base)}` +
+          D.map((d, i) => ` L${cx(i)} ${yOf(d.got, top, base)}`).join("") +
+          ` L${X0 + N * TW} ${yOf(D[N - 1].got, top, base)} L${X0 + N * TW} ${top} Z`;
+      }
+      function gotArea(top, base) {
+        return `M${X0} ${base} L${X0} ${yOf(D[0].got, top, base)}` +
+          D.map((d, i) => ` L${cx(i)} ${yOf(d.got, top, base)}`).join("") +
+          ` L${X0 + N * TW} ${yOf(D[N - 1].got, top, base)} L${X0 + N * TW} ${base} Z`;
+      }
+
+      const fullLine = (top) =>
+        `<line x1="${X0}" y1="${top}" x2="${X0 + N * TW}" y2="${top}" stroke="var(--line)" stroke-width="1" stroke-dasharray="3 4"/>`;
+      const baseLine = (base) =>
+        `<line x1="${X0}" y1="${base}" x2="${X0 + N * TW}" y2="${base}" stroke="var(--line)" stroke-width="1"/>`;
+      const curveLine = (top, base) =>
+        `<path d="${curve(top, base)}" fill="none" stroke="var(--ink)" stroke-width="1.4" stroke-linejoin="round"/>`;
+
+      // Per-tick blocks inside the shortfall, one colour per braking resource.
+      // A tie gets the tick split down the middle, left the first resource,
+      // right the second, with a hairline of surface between them so the split
+      // is a split and not a shade. Where the colour changes from one tick to
+      // the next a hairline separates them too; equal neighbours stay one mass,
+      // because a stretch of one brake should read as a stretch.
+      function brakeBlocks(uid, top, base) {
+        let s = `<g clip-path="url(#m${uid})">`;
+        for (let i = 0; i < N; i++) {
+          const b = D[i].b;
+          if (!b.length) continue;
+          const x = X0 + i * TW;
+          if (b.length === 1) {
+            s += `<rect x="${x}" y="${top}" width="${TW}" height="${base - top}" fill="${COL[b[0]]}"/>`;
+          } else {
+            s += `<rect x="${x}" y="${top}" width="${TW / 2 - 0.5}" height="${base - top}" fill="${COL[b[0]]}"/>`;
+            s += `<rect x="${x + TW / 2 + 0.5}" y="${top}" width="${TW / 2 - 0.5}" height="${base - top}" fill="${COL[b[1]]}"/>`;
+          }
+        }
+        for (let i = 1; i < N; i++) {
+          const a = D[i - 1].b.join(),
+            c = D[i].b.join();
+          if (a && c && a !== c)
+            s += `<rect x="${X0 + i * TW - 0.5}" y="${top}" width="1" height="${base - top}" fill="var(--surface)"/>`;
+        }
+        return s + `</g>`;
+      }
+
+      // The legend. Two named resources plus the tie, and at the right end the
+      // tick range and what the dashed line means - the card has no room for a
+      // second line under the drawing, so both live in this row.
+      function legend(y, items, tail) {
+        let x = X0,
+          s = "";
+        for (const it of items) {
+          if (it.k === "tie") {
+            s += `<rect x="${x}" y="${y}" width="4.5" height="9" rx="1" fill="${COL.w}"/>`;
+            s += `<rect x="${x + 4.5}" y="${y}" width="4.5" height="9" rx="1" fill="${COL.h}"/>`;
+          } else if (it.k === "pat") {
+            s += `<rect x="${x}" y="${y}" width="9" height="9" rx="1" fill="var(--sunk)"/>`;
+            s += `<rect x="${x}" y="${y}" width="9" height="9" rx="1" fill="url(#${it.p})"/>`;
+          } else {
+            s += `<rect x="${x}" y="${y}" width="9" height="9" rx="1" fill="${it.c}"/>`;
+          }
+          x += 12;
+          s += `<text x="${x}" y="${y + 7.4}" font-size="9" fill="var(--ink)">${it.t}</text>`;
+          x += it.t.length * 4.9 + 11;
+        }
+        s += `<text x="${X0 + N * TW}" y="${y + 7.4}" font-size="8.5" fill="var(--muted)" text-anchor="end">${tail}</text>`;
+        return s;
+      }
+      const TAIL = "Tick 77–96 · ┄ voll";
+
+      // ---------------------------------------------------------------------
+      // A — Bremsteppich: the shortfall itself carries the colour
+      // ---------------------------------------------------------------------
+      function varA(uid) {
+        const top = 7,
+          base = 45;
+        return (
+          `<defs><clipPath id="m${uid}"><path d="${missArea(top, base)}"/></clipPath></defs>` +
+          `<path d="${gotArea(top, base)}" fill="var(--sunk)"/>` +
+          brakeBlocks(uid, top, base) +
+          fullLine(top) +
+          baseLine(base) +
+          curveLine(top, base) +
+          legend(50, [
+            { c: COL.w, t: "Arbeit" },
+            { c: COL.h, t: "Brennholz" },
+            { k: "tie", t: "beide" },
+          ], TAIL)
+        );
+      }
+
+      // ---------------------------------------------------------------------
+      // B — Bremsband: the curve stays plain, a strip under it carries the brake
+      // ---------------------------------------------------------------------
+      function varB(uid) {
+        const top = 5,
+          base = 38,
+          ry = 42,
+          rh = 10;
+        let s =
+          `<path d="${gotArea(top, base)}" fill="var(--sunk)"/>` +
+          fullLine(top) +
+          curveLine(top, base) +
+          `<rect x="${X0}" y="${ry}" width="${N * TW}" height="${rh}" rx="2" fill="var(--surface)" stroke="var(--line)" stroke-width="1"/>`;
+        for (let i = 0; i < N; i++) {
+          const b = D[i].b,
+            x = X0 + i * TW + 0.75,
+            w = TW - 1.5;
+          if (!b.length) continue;
+          if (b.length === 1) {
+            s += `<rect x="${x}" y="${ry + 1}" width="${w}" height="${rh - 2}" rx="1" fill="${COL[b[0]]}"/>`;
+          } else {
+            s += `<rect x="${x}" y="${ry + 1}" width="${w}" height="${rh / 2 - 1.5}" rx="1" fill="${COL[b[0]]}"/>`;
+            s += `<rect x="${x}" y="${ry + rh / 2 + 0.5}" width="${w}" height="${rh / 2 - 1.5}" rx="1" fill="${COL[b[1]]}"/>`;
+          }
+        }
+        return (
+          s +
+          legend(55, [
+            { c: COL.w, t: "Arbeit" },
+            { c: COL.h, t: "Brennholz" },
+            { k: "tie", t: "beide" },
+          ], TAIL)
+        );
+      }
+
+      // ---------------------------------------------------------------------
+      // C — Schraffur: the same shortfall, but told by the angle of the hatching
+      // and not by colour at all. Immune to colour blindness and to printing,
+      // and the tie needs no invention: both hatchings at once.
+      // ---------------------------------------------------------------------
+      function hatchDefs(uid) {
+        const st = `stroke="var(--ink)" stroke-opacity="0.5" stroke-width="1.4"`;
+        const up = `M0 6 L6 0 M-1.5 1.5 L1.5 -1.5 M4.5 7.5 L7.5 4.5`;
+        const dn = `M0 0 L6 6 M-1.5 4.5 L1.5 7.5 M4.5 -1.5 L7.5 1.5`;
+        const p = (id, d) =>
+          `<pattern id="${id}" width="6" height="6" patternUnits="userSpaceOnUse"><path d="${d}" ${st} fill="none"/></pattern>`;
+        return p(`hw${uid}`, up) + p(`hh${uid}`, dn) + p(`hx${uid}`, up + " " + dn);
+      }
+      function varC(uid) {
+        const top = 7,
+          base = 45;
+        let s =
+          `<defs>${hatchDefs(uid)}<clipPath id="m${uid}"><path d="${missArea(top, base)}"/></clipPath></defs>` +
+          `<path d="${gotArea(top, base)}" fill="var(--sunk)"/>` +
+          `<path d="${missArea(top, base)}" fill="var(--surface)"/>` +
+          `<g clip-path="url(#m${uid})">`;
+        for (let i = 0; i < N; i++) {
+          const b = D[i].b;
+          if (!b.length) continue;
+          const id = b.length === 2 ? `hx${uid}` : b[0] === "w" ? `hw${uid}` : `hh${uid}`;
+          s += `<rect x="${X0 + i * TW}" y="${top}" width="${TW}" height="${base - top}" fill="url(#${id})"/>`;
+          if (i && D[i - 1].b.length)
+            s += `<rect x="${X0 + i * TW - 0.5}" y="${top}" width="1" height="${base - top}" fill="var(--surface)"/>`;
+        }
+        s += `</g>`;
+        return (
+          s +
+          fullLine(top) +
+          baseLine(base) +
+          curveLine(top, base) +
+          legend(50, [
+            { k: "pat", p: `hw${uid}`, t: "Arbeit" },
+            { k: "pat", p: `hh${uid}`, t: "Brennholz" },
+            { k: "pat", p: `hx${uid}`, t: "beide" },
+          ], TAIL)
+        );
+      }
+
+      // ---------------------------------------------------------------------
+      // D — Worte über den Strecken: the colour blocks of A, and under them a
+      // spoken row. A stretch braked by ONE resource gets its name written out;
+      // a stretch that changes from tick to tick gets both names and the word
+      // for it. The colour blocks above keep the tick-by-tick truth, so the
+      // words add a reading and take none away.
+      // ---------------------------------------------------------------------
+      // Stretches for the spoken row. A run of the SAME brake three ticks or
+      // longer keeps its own name - that is the case words are good at. Shorter
+      // braked runs next to each other are the busy zone; they collapse into one
+      // changing stretch, because a name per tick has no room. A stretch that
+      // nothing braked stands on its own.
+      const LONG = 3;
+      function runs() {
+        const raw = [];
+        let i = 0;
+        while (i < N) {
+          const k = D[i].b.join();
+          let j = i;
+          while (j + 1 < N && D[j + 1].b.join() === k) j++;
+          raw.push({ a: i, b: j, k });
+          i = j + 1;
+        }
+        const out = [];
+        for (const r of raw) {
+          const solid = !r.k || r.b - r.a + 1 >= LONG;
+          const last = out[out.length - 1];
+          if (!solid && last && last.mix) last.b = r.b;
+          else if (solid) out.push({ ...r });
+          else out.push({ ...r, mix: true });
+        }
+        return out;
+      }
+      function varD(uid) {
+        const top = 6,
+          base = 36;
+        let s =
+          `<defs><clipPath id="m${uid}"><path d="${missArea(top, base)}"/></clipPath></defs>` +
+          `<path d="${gotArea(top, base)}" fill="var(--sunk)"/>` +
+          brakeBlocks(uid, top, base) +
+          fullLine(top) +
+          baseLine(base) +
+          curveLine(top, base);
+        for (const r of runs()) {
+          const x1 = X0 + r.a * TW + 1,
+            x2 = X0 + (r.b + 1) * TW - 1,
+            mid = (x1 + x2) / 2;
+          const wide = x2 - x1;
+          if (wide < 34) continue;
+          s += `<path d="M${x1} 44 L${x1} 40 M${x1} 40 L${x2} 40 M${x2} 40 L${x2} 44" fill="none" stroke="var(--line)" stroke-width="1"/>`;
+          let label, sw = null;
+          if (!r.k) label = "voll";
+          else if (r.mix) {
+            label = "wechselnd";
+            sw = "tie";
+          } else if (r.k === "w,h") {
+            label = "beide";
+            sw = "tie";
+          } else {
+            label = NAME[r.k];
+            sw = r.k;
+          }
+          const tw = label.length * 4.9;
+          const total = sw ? tw + 12 : tw;
+          let lx = mid - total / 2;
+          if (sw === "tie") {
+            s += `<rect x="${lx}" y="46" width="4.5" height="9" rx="1" fill="${COL.w}"/><rect x="${lx + 4.5}" y="46" width="4.5" height="9" rx="1" fill="${COL.h}"/>`;
+            lx += 12;
+          } else if (sw) {
+            s += `<rect x="${lx}" y="46" width="9" height="9" rx="1" fill="${COL[sw]}"/>`;
+            lx += 12;
+          }
+          s += `<text x="${lx}" y="${53.4}" font-size="9" fill="${r.k ? "var(--ink)" : "var(--muted)"}">${label}</text>`;
+        }
+        s += `<text x="${X0 + N * TW}" y="65" font-size="8.5" fill="var(--muted)" text-anchor="end">${TAIL}</text>`;
+        s += `<text x="${X0}" y="65" font-size="8.5" fill="var(--muted)">Farbe je Tick, Wort je Strecke</text>`;
+        return s;
+      }
+
+      // ---------------------------------------------------------------------
+      const VARS = [
+        {
+          n: "A",
+          t: "Bremsteppich",
+          d: "Die Fehlfläche zwischen Kurve und Voll-Linie wird je Tick eingefärbt — Farbe nur dort, wo etwas fehlte, und so hoch wie das Fehlende.",
+          f: varA,
+          note:
+            "<b>Angriff:</b> Wo wenig fehlt, ist der Farbstreifen 2 px hoch — Tick 95 verliert seine Ressource fast. Der Gleichstand 92 sind zwei 8,5 px schmale Hälften, die Wechselstrecke wird zum Streifenmuster.",
+        },
+        {
+          n: "B",
+          t: "Bremsband",
+          d: "Die Kurve bleibt unbunt, darunter ein 10 px hoher Streifen mit einer Zelle je Tick — leer, wenn nichts bremste.",
+          f: varB,
+          note:
+            "<b>Angriff:</b> Zwei Ablesungen statt einer, und der Streifen kennt kein Maß — wem 2 % fehlten, schreit so laut wie der Null-Tick 93. Dafür überlebt jede Ressource, auch die winzige.",
+        },
+        {
+          n: "C",
+          t: "Schraffur",
+          d: "Dieselbe Fehlfläche, aber die Ressource steckt im Winkel der Schraffur statt in der Farbe.",
+          f: varC,
+          note:
+            "<b>Angriff:</b> Unter etwa 6 px Höhe sieht man einen Strich, keinen Winkel. Ein Muster wird entziffert, eine Farbe erkannt — dafür kostet es keine Farbe, und der Gleichstand ist beides zugleich.",
+        },
+        {
+          n: "D",
+          t: "Worte über den Strecken",
+          d: "Die Farbflächen aus A, darunter eine sprechende Zeile: Wer eine Strecke allein bremst, wird benannt; wo es Tick für Tick wechselt, steht „wechselnd“.",
+          f: varD,
+          note:
+            "<b>Angriff:</b> Die Wortzeile frisst 20 px, der Kurve bleiben 30. „wechselnd“ ist eine Zusammenfassung, und das Erkennen der Strecken ist Logik, die der Kern nicht liefert.",
+        },
+      ];
+
+      const sheet = document.getElementById("sheet");
+      sheet.style.display = "flex";
+      sheet.style.flexDirection = "column";
+      sheet.style.gap = "8px";
+      VARS.forEach((v, k) => {
+        const small = v.f("s" + k),
+          big = v.f("b" + k);
+        const el = document.createElement("div");
+        el.className = "var";
+        el.innerHTML =
+          `<h3>Variante ${v.n} — <b>${v.t}</b> · ${v.d}</h3>` +
+          `<p class="note">${v.note}</p>` +
+          `<div class="row">` +
+          `<div class="stub"><svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${small}</svg></div>` +
+          `<div class="stub two"><svg width="${W * 2}" height="${H * 2}" viewBox="0 0 ${W} ${H}">${big}</svg></div>` +
+          `</div>`;
+        sheet.appendChild(el);
+      });
+    </script>
+  </body>
+</html>
