@@ -4000,6 +4000,40 @@ Modellwahrheit ist durch die Restbruchteile begrenzt und wächst nie an. Raten �
 Deckung, Überlebensfaktoren, Suchkosten — bleiben kontinuierlich: Das sind keine
 Menschen.
 
+**Das Vokabular: ein Ding, ein Wort — ein Wort, ein Ding.** Das Glossar lebt in der
+Übersetzungsschicht und ist die einzige Quelle der Benennungen. Festgelegt:
+**Weiterziehen** (die Handlung; nie Revierwechsel/Umzug) · **das Revier** / **das
+nächste Revier** (nie „frisches") · Suchreferenz **unberührtes Land** ·
+**Feuerlegen** (Projekt wie Wirkung: „das Feuerlegen wirkt noch") · **Fischgründe**
+(die Boots-Kapazität) · **Arbeit** (nie „Hände") · **Vorhaben** (Läuft · Ausführbar ·
+In Sicht) · verschiebbare Zeilen heißen **Ansprüche** · **Vorrat** (was liegt) gegen
+**Ziel** (was gehalten werden soll). **Bedarfe heißen nach dem Guten, das gesichert
+wird; der Mangel gehört der Krise:** Essen (Hunger) · Feuer (Kälte) · Kinderhut ·
+Kleidung · Sattessen · Behaglichkeit. Kohorten am Spieler: **Kinder** und
+**Erwachsene**. Güter: **Beeren** (statt Pflanzen; die Ersterklärung nennt Wurzeln
+und Samen mit), **Brennholz** am Lager gegen **Totholz** im Revier.
+
+**Das eine Erklärmuster: Antippen öffnet die Erklärkarte am Element.** Kein Hover,
+keine Fragezeichen-Knöpfe; antippbare Zahlen sehen antippbar aus. Die Karte trägt die
+Rechnung der Zahl, beim Bestand die Abnehmerkette („Beeren → Sammeln → Nahrung →
+Essen und Sattessen"), bei zusammengesetzten Größen die Faktoren. Erste Ebene
+sparsam: Das Revier zeigt je Bestand nur den **Saldo mit Richtung** („wird dünner:
+−3,7/Tick"); Nachwuchs und Entnahme sind seine Rechnung dahinter. **Die
+Geburtenbremse erscheint nie als Zahl:** Bei Relevanz steht der Satz „Das Suchen ist
+mühsam geworden — deshalb kommen kaum Kinder zur Welt", die Rechnung liegt hinter dem
+Tipp.
+
+**Eröffnung und Begleiter.** Der Bildschirm startet fast leer. Ein Guide von
+**höchstens vier Schritten** führt durch die Startelemente — jedes wird hervorgehoben
+und in einem Satz erklärt, das nächste erscheint beim Weiterklicken — und endet nicht
+in einer Erklärung, sondern in der **ersten Handlung**. Alles Spätere erscheint per
+**Relevanz-Enthüllung** mit seinem einen Ersterklärungssatz. Gesprochen wird beides
+von **dem Begleiter**: einer Figur unten rechts, der einzigen Erzählstimme des
+Spiels — sie trägt Guide, Ersterklärungen und später die Einsichten der
+Didaktik-Schicht, erscheint nur, wenn sie etwas zu sagen hat, und blockiert nie das
+Spiel. In Epoche 1 ist sie **die Älteste**; je Epoche verkörpert eine andere Gestalt
+dieselbe Rolle.
+
 **Layout-Gesetze:** Die Seite scrollt nie als Ganzes — wo nötig, scrollt eine einzelne
 Kachel innen. Alle Bedienziele sind fingergroß; entworfen wird für Berührung, die Maus
 ist der Sonderfall.
