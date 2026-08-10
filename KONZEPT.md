@@ -4158,6 +4158,17 @@ vorbehaltlich des Haltbar-Fixes: Güter, die getragen statt verbraucht werden, r
 Verfall plus Lücke, nie den Bestand. Bei fehlendem Tick-Ertrag gilt der zuletzt
 bekannte Stückaufwand als Teil der Regel.
 
+**Die Anspruchs-Segmente im Band (aus der Korrekturrunde entschieden):** Laufende
+Vorhaben und Vorratsziele stehen als **ziehbare Segmente** direkt im Band, zwischen den
+Bedarfen, an ihrem Rangplatz. Die Konvention: **Was ocker umrandet ist, hat der Spieler
+in der Hand.** Der Umriss samt **Lippe** — dem Überstand mit den drei Greifpunkten — ist
+**immer voll ocker**; die Füllung des Segments **erreicht die Lippe nie** und trägt die
+Farbe ihrer Art (Bau ocker, Vorrat blaugrün). **Jedes Feld im Band hat dieselbe
+Mindestbreite**, Bedarfe wie Ansprüche — sonst wäre das Icon nicht darstellbar; die
+dadurch verzerrte Breite erklärt die Erklärkarte. Die Icons stehen **linksbündig** im
+Feld. Eine dauerhafte Erklärzeile im Bandkopf gibt es nicht — die Konvention führt die
+Älteste einmal ein, danach gilt sie als verstanden.
+
 **Kein Speichern und Laden in der ersten Stufe.** Statt dessen kennt die Oberfläche
 **den ganzen Verlauf des Laufs**, nicht nur den letzten Tick: Für Testzwecke lässt sich
 damit einfach zurückrollen. Ob der Spieler später auch zurückrollen kann, ist offen.
