@@ -4229,7 +4229,7 @@ der Anspruchszahlen entfällt — „deins" sagt schon der Rahmen. Eine Zahl fä
 weg, wo Zeichen und Zahl nicht nebeneinander ins Feld passen. **Im Band tragen auch
 voll gedeckte Felder ihre Zahl** — ein volles Feld ohne Zahl wirkt leer oder wie ein
 Fehler, und das Band wird uneinheitlich (Entscheid nach Sichtung; außerhalb des Bands
-bleibt volle Deckung zahlfrei, etwa im Karten-Schluss „— und alle wurden satt"). Das Feld **„Arbeit
+bleibt volle Deckung zahlfrei; auf den Karten heißt sie „angekommen: alle"). Das Feld **„Arbeit
 liegt brach"** verliert bei Platznot seinen Text — die Schraffur allein trägt dann die
 Bedeutung; sie wird einmal getauft, und Antippen erklärt sie jederzeit. **Die
 Namenszeile wird beim Ziehen ausgeblendet** — die Schwebe-Fahne trägt den Namen des
@@ -4314,16 +4314,17 @@ Sattessen trägt die Arbeitskraft: „Wer satt ist, schafft mehr." Behaglichkeit
 die Geburten: „Wo es behaglich ist, kommen Kinder zur Welt." Wer die Sätze schreibt,
 schlägt die Achse im Inhalt nach.
 
-**Die Erklärkarte eines Bedarfsfelds ist abgenommen** — Name mit Deckung, ein Satz zur
-Breite, der Verlauf der Deckung mit gestrichelter Voll-Linie, darunter der
-Engpass-Satz mit seinen Auswegen. Der Breiten-Satz spricht dabei **den Spieler an,
-statt technisch zu beschreiben, was er sieht, und vermeidet absolute Zahlen**
-weitestgehend. Seine Form: „Alle satt zu bekommen kostet diesen Tick 16 % der Arbeit —
-angekommen sind davon 10." **Beide Zahlen teilen dieselbe Basis** (Anteil der Arbeit des
-Ticks), und das „davon" bindet die zweite an die erste, sodass weder eine Einheit noch
-Kopfrechnen nötig ist; jeder Bedarf bekommt in der
-Übersetzungsschicht seine eigene Wendung, und bei voller Deckung endet der Satz ohne
-Zahl („— und alle wurden satt").
+**Die Bedarfskarte baut sich wie die Vorhaben-Karte** (aus der Satz-für-Satz-Prüfung
+entschieden): der Wirkungs-Satz · Name mit Deckung · die Kurve der Deckung je Tick mit
+gestrichelter Voll-Linie und **Bremsteppich** aus der Rang-Aufzeichnung (der Kern hält
+je Rang und Tick den größten Fehl-Input namentlich fest — Bestand oder Kapazität) ·
+eine **Faktenzeile statt des früheren Breiten-Satzes**: „Voll zu decken: 16 % der
+Arbeit dieses Ticks · angekommen: 10" (bei voller Deckung: „angekommen: alle") · der
+Ursachen-Satz · die Auswege. Die Faktenzeile erklärt die Feldbreite mit beiden Zahlen
+auf derselben Basis, braucht **kein Bedarfs-Verb und keine Zeitform** — damit entfällt
+die frühere Satzform („Alle satt zu bekommen kostet …") samt der Wendungsliste je
+Bedarf und dem zahllosen Voll-Schluss. Sätze sprechen weiterhin den Spieler an und
+vermeiden absolute Zahlen; das gilt unverändert.
 
 **Kein Speichern und Laden in der ersten Stufe.** Statt dessen kennt die Oberfläche
 **den ganzen Verlauf des Laufs**, nicht nur den letzten Tick: Für Testzwecke lässt sich
