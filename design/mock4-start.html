@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <title>mmtsim — Mock 4, die Eröffnung</title>
+    <style>
+      :root {
+        --ground: #eceee9; --surface: #f8f9f6; --sunk: #dde1da; --ink: #262a28;
+        --muted: #67706a; --line: #cbd1cb; --accent: #b0722a; --ok: #4f7d4f;
+        --store: #33707c;
+        --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
+      }
+      * { box-sizing: border-box; margin: 0; }
+      html, body { width: 100%; height: 100%; overflow: hidden; }
+      body { font-family: system-ui, sans-serif; font-size: 14px; color: var(--ink); background: var(--ground); }
+      .num { font-variant-numeric: tabular-nums; }
+      .sub { font-size: 12.5px; color: var(--muted); }
+      b { font-weight: 600; }
+
+      .page {
+        display: grid; width: 100%; height: 100%; gap: 10px; padding: 10px;
+        grid-template-columns: minmax(230px, 18vw) 1.55fr 0.95fr minmax(262px, 21vw);
+        grid-template-rows: 56px 1fr;
+        grid-template-areas: "top top top top" "cat ladder side frame";
+      }
+      .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; min-height: 0; }
+      .tile > h2 { font-family: var(--serif); font-size: 17px; font-weight: 600; padding: 10px 14px 6px; }
+      .dim { opacity: 0.25; }
+
+      .top { grid-area: top; background: var(--ink); color: var(--ground); border-radius: 8px; display: flex; align-items: center; gap: 18px; padding: 0 16px; }
+      .top .brand { font-family: var(--serif); font-size: 18px; }
+      .timegrips { margin-left: auto; display: flex; gap: 8px; }
+      .timegrips button { font: inherit; width: 46px; height: 42px; font-size: 19px; border-radius: 8px; border: 1px solid #4a524d; background: #343b37; color: var(--ground); }
+
+      .cat { grid-area: cat; }
+      .ladder { grid-area: ladder; }
+      .row { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 12px; }
+      .row .label { width: 92px; font-weight: 600; }
+      .meter { flex: 1; height: 12px; border-radius: 6px; background: var(--sunk); overflow: hidden; }
+      .meter i { display: block; height: 100%; border-radius: 6px; background: var(--ok); }
+      .glow { box-shadow: 0 0 0 3px var(--accent); border-radius: 8px; }
+
+      .side { grid-area: side; }
+      .frame { grid-area: frame; display: flex; flex-direction: column; gap: 10px; }
+      .people .count { font-family: var(--serif); font-size: 40px; padding: 0 14px; line-height: 1; }
+
+      .elder {
+        position: fixed; right: 26px; bottom: 24px; display: flex; gap: 14px;
+        align-items: flex-end; max-width: 520px;
+      }
+      .elder .bubble {
+        background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+        padding: 16px 18px; box-shadow: 0 10px 34px rgba(0, 0, 0, 0.18);
+      }
+      .elder .bubble p { margin-bottom: 10px; }
+      .elder .face {
+        width: 74px; height: 74px; border-radius: 50%; background: #8a6a4a; flex: none;
+        display: flex; align-items: center; justify-content: center;
+        color: #f4ead8; font-family: var(--serif); font-size: 34px;
+        box-shadow: 0 10px 34px rgba(0, 0, 0, 0.18);
+      }
+      .elder button {
+        font: inherit; min-height: 44px; padding: 0 20px; border-radius: 8px;
+        border: none; background: var(--accent); color: #fff; cursor: pointer;
+      }
+      .elder .step { float: right; margin-top: 14px; }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="top">
+        <span class="brand">mmtsim</span>
+        <span class="num" style="font-size: 16px">Tick 0</span>
+        <span class="num" style="color: #b8c2ba">25 Menschen</span>
+        <nav class="timegrips dim"><button>⏯</button><button>⏩</button><button>▶</button></nav>
+      </header>
+
+      <section class="tile cat dim"></section>
+
+      <section class="tile ladder glow">
+        <h2>Bedarfe und Ansprüche</h2>
+        <div class="row">
+          <span class="label">Essen</span>
+          <div class="meter"><i style="width: 100%"></i></div>
+        </div>
+      </section>
+
+      <section class="tile side dim"></section>
+
+      <div class="frame">
+        <section class="tile people">
+          <h2>Menschen</h2>
+          <div class="count num">25</div>
+          <p class="sub" style="padding: 2px 14px 10px">dein Volk</p>
+        </section>
+        <section class="tile dim" style="flex: 1"></section>
+      </div>
+    </div>
+
+    <div class="elder">
+      <div class="bubble">
+        <p><b>Dein Volk hat Hunger, jeden Tag.</b> Es arbeitet von selbst dafür — sammelt, fischt, jagt. Du bestimmst, was ihm wichtig ist: Was oben steht, bekommt Arbeit zuerst.</p>
+        <span class="sub num">2 von 4</span>
+        <button class="step">Weiter</button>
+      </div>
+      <div class="face">Ä</div>
+    </div>
+  </body>
+</html>
