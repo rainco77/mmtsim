@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <title>mmtsim — Leiter-Variante 5 A1: Kopfband mit Arbeitsbreiten und Raster</title>
+    <style>
+      :root {
+        --ground: #eceee9;
+        --surface: #f8f9f6;
+        --sunk: #dde1da;
+        --ink: #262a28;
+        --muted: #67706a;
+        --line: #cbd1cb;
+        --accent: #b0722a;
+        --accent-ink: #7d4f1a;
+        --ok: #4f7d4f;
+        --ok-soft: #cddac9;
+        --crit: #97352c;
+        --crit-soft: #ecd7d1;
+        --store: #33707c;
+        --store-soft: #c6d8db;
+        --p-gather: #6b8e5a;
+        --p-fish: #4d7f8c;
+        --p-hunt: #a3703c;
+        --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
+      }
+      /* Drei Textstile + Zahlenstil: h2 (Serif) · Grundtext 14 · .sub 12,5 grau · .num */
+      * { box-sizing: border-box; margin: 0; }
+      html, body { width: 100%; height: 100%; overflow: hidden; }
+      body { font-family: system-ui, sans-serif; font-size: 14px; color: var(--ink); background: var(--ground); }
+      .num { font-variant-numeric: tabular-nums; }
+      .sub { font-size: 12.5px; color: var(--muted); }
+      b { font-weight: 600; }
+      .tap { text-decoration: underline dotted var(--muted); text-underline-offset: 3px; cursor: pointer; }
+
+      .page {
+        display: grid; width: 100%; height: 100%; gap: 10px; padding: 10px;
+        grid-template-columns: minmax(230px, 17vw) minmax(0, 1.05fr) minmax(0, 1fr) minmax(262px, 21vw);
+        grid-template-rows: 56px auto minmax(0, 1fr);
+        grid-template-areas:
+          "top   top   top   top"
+          "band  band  band  band"
+          "cat   range store frame";
+      }
+      .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; min-height: 0; display: flex; flex-direction: column; }
+      .tile > h2 { font-family: var(--serif); font-size: 17px; font-weight: 600; padding: 10px 14px 6px; }
+
+      .top { grid-area: top; background: var(--ink); color: var(--ground); border-radius: 8px; display: flex; align-items: center; gap: 18px; padding: 0 16px; }
+      .top .brand { font-family: var(--serif); font-size: 18px; }
+      .timegrips { margin-left: auto; display: flex; gap: 8px; }
+      .timegrips button { font: inherit; width: 46px; height: 42px; font-size: 19px; border-radius: 8px; border: 1px solid #4a524d; background: #343b37; color: var(--ground); cursor: pointer; }
+      .timegrips button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+      .lang { display: flex; gap: 4px; margin-left: 10px; }
+      .lang button { height: 42px; padding: 0 12px; border-radius: 8px; border: 1px solid #4a524d; background: none; color: #b8c2ba; font: inherit; }
+      .lang button.on { background: var(--ground); color: var(--ink); }
+
+      .cat { grid-area: cat; overflow: hidden; }
+      .cat .scroll { overflow-y: auto; padding: 0 10px 10px; display: flex; flex-direction: column; gap: 8px; }
+      .cat h3 { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 10px 4px 2px; font-weight: 600; }
+      .card { background: var(--ground); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+      .card .head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+      .card .name { font-weight: 600; }
+      .startbtn { width: 44px; height: 44px; border-radius: 50%; border: none; background: var(--accent); color: #fff; font-size: 17px; cursor: pointer; flex: none; }
+      .chip { display: inline-block; font-size: 11.5px; padding: 3px 8px; border-radius: 99px; background: var(--sunk); color: var(--muted); }
+      .chip.crit { background: var(--crit-soft); color: var(--crit); }
+      .progress { height: 8px; border-radius: 4px; background: var(--sunk); overflow: hidden; margin-top: 8px; }
+      .progress i { display: block; height: 100%; background: var(--accent); }
+      .needsbar { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; margin-top: 6px; }
+      .needsbar .sub { white-space: nowrap; text-align: right; }
+      .needsbar .progress { margin-top: 0; }
+
+      .meter { height: 12px; border-radius: 6px; background: var(--sunk); overflow: hidden; }
+      .meter i { display: block; height: 100%; border-radius: 6px; background: var(--ok); }
+      .meter.short i { background: var(--crit); }
+      .meter.build i { background: var(--accent); }
+      .meter.store i { background: var(--store); }
+
+      /* ---- Das Band ----
+         Die Breite eines Feldes ist der Anteil der Arbeit dieses Ticks, der in den Rang
+         geflossen ist; die Fuellung ist seine Deckung. Alle Felder zusammen — Bedarfsraenge,
+         die Scheiben der Ansprueche und die brache Arbeit am Ende — sind die ganze Arbeit.
+         Felder haben eine Mindestbreite fuer den Griff; wer darunter faellt, traegt seine
+         Beschriftung auf der Schiene darunter, an einer Fuehrungslinie. */
+      .band { grid-area: band; overflow: visible; position: relative; z-index: 5; }
+      .bandhead { display: flex; align-items: baseline; gap: 10px; padding: 10px 14px 2px; flex-wrap: wrap; }
+      .bandhead h2 { font-family: var(--serif); font-size: 17px; font-weight: 600; }
+      .bandbody { padding: 0 14px 10px; }
+
+      .bandwrap { position: relative; padding-top: 88px; }
+      .bar { display: flex; gap: 3px; }
+      .bar > * { flex-grow: var(--w); flex-shrink: 1; flex-basis: 0; min-width: 44px; position: relative; }
+      .bar > .slice { min-width: 3px; }
+
+      .row1 { height: 58px; }
+      .seg { background: var(--sunk); border-radius: 5px; cursor: pointer; display: flex; align-items: center; }
+      .seg > i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--ok-soft); border-right: 2px solid var(--ok); border-radius: 5px 0 0 5px; }
+      .seg.full > i { border-radius: 5px; }
+      .seg.part > i { background: var(--crit-soft); border-right-color: var(--crit); }
+      .seg .cap { position: relative; padding: 0 10px; line-height: 1.25; }
+      .seg .cap b { display: block; }
+      .seg.part .cap .v { color: var(--crit); }
+      .seg.open { outline: 2px solid var(--accent); outline-offset: 1px; }
+      .seg.idle { background: repeating-linear-gradient(135deg, var(--sunk) 0 5px, var(--ground) 5px 10px); cursor: default; }
+
+      /* Beschriftung ausserhalb: Fuehrungslinie und Namen auf der Schiene unter dem Band */
+      .seg.narrow .cap { position: absolute; top: calc(100% + 11px); left: 50%; transform: translateX(-50%); white-space: nowrap; padding: 0; }
+      .seg.narrow .cap b { display: inline; }
+      .seg.narrow::after { content: ""; position: absolute; left: 50%; top: 100%; width: 1px; height: 11px; background: var(--muted); opacity: 0.5; }
+
+      /* Ansprueche: eine Scheibe im Band traegt ihren Arbeitsanteil, der Griff sitzt darueber */
+      .slice { background: var(--sunk); border-radius: 2px; }
+      .slice > i { position: absolute; left: 0; right: 0; bottom: 0; background: var(--accent); border-radius: 2px; }
+      .slice.store > i { background: var(--store); }
+      .grip { position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%); width: 156px; min-height: 46px;
+              display: flex; align-items: center; gap: 7px; background: #eef1ea; border: 1px solid var(--line);
+              border-radius: 8px; padding: 5px 9px 5px 6px; cursor: grab; z-index: 3; }
+      .grip .bars { color: var(--muted); font-size: 15px; flex: none; }
+      .grip .nm { font-weight: 600; }
+      .grip .pct { color: var(--accent-ink); }
+      .grip.store .pct { color: var(--store); }
+
+      .railfoot { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 34px; }
+      .railfoot .swatch { width: 22px; height: 11px; border-radius: 3px; background: repeating-linear-gradient(135deg, var(--sunk) 0 5px, var(--ground) 5px 10px); border: 1px solid var(--line); }
+
+      .rasterhead { display: flex; align-items: baseline; gap: 12px; margin: 8px 0 4px; }
+      .rastercols { display: flex; gap: 3px; height: 72px; }
+      .rastercols > * { flex-grow: var(--w); flex-shrink: 1; flex-basis: 0; min-width: 44px; border-radius: 3px; }
+      .rastercols > .slice { min-width: 3px; background: none; }
+      .legend { display: flex; gap: 14px; }
+      .legend .dot { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; }
+
+      /* Die Bedarfs-Karte schwebt unter dem angetippten Feld und verschiebt kein Layout */
+      .needcard { position: absolute; top: calc(100% + 8px); left: 39%; width: 580px; background: var(--ground); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px 12px; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16); display: none; }
+      .needcard .notch { position: absolute; top: -7px; width: 12px; height: 12px; background: var(--ground); border-left: 1px solid var(--line); border-top: 1px solid var(--line); transform: rotate(45deg); }
+      .needcard .trend { display: flex; align-items: center; gap: 10px; margin: 6px 0 10px; }
+      .stacks { display: grid; grid-template-columns: 52px 1fr; gap: 5px 10px; align-items: center; }
+      .stacks .sub { text-align: right; }
+      .stack { display: flex; height: 16px; border-radius: 5px; overflow: hidden; }
+      .stack i { display: block; height: 100%; position: relative; }
+      .stack .warn { position: absolute; right: 3px; top: -1px; color: #fff; font-size: 10px; }
+      .segtip { margin-top: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; max-width: 520px; }
+      .ways { display: flex; gap: 8px; margin-top: 10px; }
+      .way { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; }
+      .way button { width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--accent); color: #fff; cursor: pointer; }
+
+      /* ---- Revier / Vorräte ---- */
+      .range { grid-area: range; overflow: hidden; }
+      .range .rows { overflow-y: auto; overflow-x: hidden; }
+      .stand { display: grid; grid-template-columns: minmax(0, 1fr) 100px; grid-template-rows: auto auto; align-items: center; column-gap: 10px; padding: 8px 14px 9px; border-top: 1px solid var(--line); }
+      .stand:first-child { border-top: none; }
+      .stand .topline { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+      .stand .label { font-weight: 600; }
+      .stand .meter { height: 9px; margin-top: 5px; width: 100%; }
+      .stand .effort { grid-row: span 2; text-align: right; }
+      .stand .effort .word { display: block; font-size: 13px; }
+      .stand .effort .word.hot { color: var(--crit); }
+      .stand svg { display: block; margin-left: auto; }
+      .standtip { grid-column: 1 / 3; margin-top: 7px; background: var(--ground); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+      .movebox { margin-top: auto; border-top: 2px solid var(--line); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+      .movebox button { font: inherit; min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--accent); background: none; color: var(--accent-ink); cursor: pointer; }
+
+      .stores { grid-area: store; overflow: hidden; }
+      .storeline { padding: 8px 14px 10px; border-top: 1px solid var(--line); }
+      .storeline:first-of-type { border-top: none; }
+      .storeline .head { display: flex; justify-content: space-between; gap: 8px; }
+      .storeline .meter { height: 9px; margin-top: 6px; width: 100%; }
+      .storeline .subrow { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; gap: 10px; }
+      .slider { height: 12px; border-radius: 6px; background: var(--sunk); position: relative; }
+      .slider .knob { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 28px; height: 28px; border-radius: 50%; background: #fff; border: 2px solid var(--accent); }
+
+      /* ---- Menschen / Log ---- */
+      .frame { grid-area: frame; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+      .people { flex: 0 0 auto; padding-bottom: 8px; }
+      .people .count { font-family: var(--serif); font-size: 40px; padding: 0 14px; line-height: 1; }
+      .people .chart { padding: 0 14px; margin-top: 4px; }
+      .people .legendrow { display: flex; gap: 12px; padding: 4px 14px 0; }
+      .dot { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 4px; }
+      .brakeline { padding: 8px 14px 10px; }
+      .log { flex: 1; overflow: hidden; }
+      .log ul { list-style: none; padding: 0 14px 10px; overflow-y: auto; }
+      .log li { display: flex; gap: 10px; padding: 6px 0; border-top: 1px solid var(--line); }
+      .log li:first-child { border-top: none; }
+      .log .t { color: var(--muted); min-width: 24px; text-align: right; }
+      .log .crisis { color: var(--crit); font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="top">
+        <span class="brand">mmtsim</span>
+        <span class="num" style="font-size: 16px">Tick 96</span>
+        <span class="num" style="color: #b8c2ba">27 Menschen</span>
+        <nav class="timegrips">
+          <button title="Ein Tick">⏯</button>
+          <button class="primary" title="Bis zum Haltepunkt">⏩</button>
+          <button title="Laufen lassen">▶</button>
+        </nav>
+        <nav class="lang"><button class="on">DE</button><button>EN</button></nav>
+      </header>
+
+      <section class="tile band">
+        <div class="bandhead">
+          <h2>Gesamtübersicht</h2>
+          <span class="sub">von links nach rechts bedient · Breite = Anteil an der Arbeit dieses Ticks · Füllung = Deckung</span>
+        </div>
+        <div class="bandbody">
+          <div class="bandwrap">
+            <div class="bar row1">
+              <div class="seg full" style="--w: 46"><i style="width: 100%"></i><span class="cap"><b>Essen</b></span></div>
+
+              <div class="slice" style="--w: 0" title="Fischernetz">
+                <i style="height: 50%"></i>
+                <div class="grip">
+                  <span class="bars">≡</span>
+                  <span class="txt"><span class="nm">Fischernetz</span> <span class="pct num">50 %</span><br /><span class="sub num">fertig in ~9 Ticks · bekommt keine Arbeit</span></span>
+                </div>
+              </div>
+
+              <div class="seg full narrow" style="--w: 5"><i style="width: 100%"></i><span class="cap"><b>Feuer</b></span></div>
+              <div class="seg full narrow" style="--w: 3"><i style="width: 100%"></i><span class="cap"><b>Kinderhut</b></span></div>
+
+              <div class="slice store" style="--w: 9" title="Brennholz">
+                <i style="height: 100%"></i>
+                <div class="grip store">
+                  <span class="bars">≡</span>
+                  <span class="txt"><span class="nm">Brennholz</span> <span class="pct num">100 %</span><br /><span class="sub num">Ziel 14 · hält ~6 Ticks Feuer</span></span>
+                </div>
+              </div>
+
+              <div class="seg full narrow" style="--w: 6"><i style="width: 100%"></i><span class="cap"><b>Kleidung</b></span></div>
+              <div class="seg part open" style="--w: 27"><i style="width: 62%"></i><span class="cap"><b>Sattessen</b><span class="v num tap">62 %</span></span></div>
+
+              <div class="slice store" style="--w: 0" title="Nahrung">
+                <i style="height: 37%"></i>
+                <div class="grip store">
+                  <span class="bars">≡</span>
+                  <span class="txt"><span class="nm">Nahrung</span> <span class="pct num">37 %</span><br /><span class="sub">Vorrat — füllt aus dem Übrigen</span></span>
+                </div>
+              </div>
+
+              <div class="seg none narrow" style="--w: 0"><span class="cap"><b style="color: var(--muted)">Behaglichkeit</b> <span class="v num tap">0 %</span></span></div>
+              <div class="seg idle" style="--w: 4" title="brach"></div>
+            </div>
+
+            <div class="railfoot">
+              <span class="swatch"></span>
+              <span class="sub">Arbeit liegt brach</span>
+              <span class="sub num">4 %</span>
+            </div>
+
+            <div class="needcard">
+              <span class="notch" style="left: 72%"></span>
+              <p><b>Nahrung wird knapp</b> — der Fischfang brach ein.</p>
+            </div>
+          </div>
+
+          <div class="rasterhead">
+            <span class="sub">Verlauf — die letzten 20 Ticks, neuester oben; die Spalten stehen unter ihrem Feld</span>
+            <span class="legend sub" style="margin-left: auto">
+              <span><i class="dot" style="background: #cddac9"></i>voll</span>
+              <span><i class="dot" style="background: #ecd7d1"></i>teils</span>
+              <span><i class="dot" style="background: #e2e5df"></i>nichts</span>
+            </span>
+          </div>
+          <div class="rastercols">
+            <div style="--w: 46; background-image: repeating-linear-gradient(to bottom, transparent 0 4.1%, #f8f9f6 4.1% 5%), linear-gradient(to bottom, #cddac9 0.0% 5.0%, #cddac9 5.0% 10.0%, #cddac9 10.0% 15.0%, #cddac9 15.0% 20.0%, #cddac9 20.0% 25.0%, #cddac9 25.0% 30.0%, #cddac9 30.0% 35.0%, #cddac9 35.0% 40.0%, #cddac9 40.0% 45.0%, #cddac9 45.0% 50.0%, #cddac9 50.0% 55.0%, #cddac9 55.0% 60.0%, #cddac9 60.0% 65.0%, #cddac9 65.0% 70.0%, #cddac9 70.0% 75.0%, #cddac9 75.0% 80.0%, #cddac9 80.0% 85.0%, #cddac9 85.0% 90.0%, #cddac9 90.0% 95.0%, #cddac9 95.0% 100.0%)"></div>
+            <div class="slice" style="--w: 0"></div>
+            <div style="--w: 5; background-image: repeating-linear-gradient(to bottom, transparent 0 4.1%, #f8f9f6 4.1% 5%), linear-gradient(to bottom, #cddac9 0.0% 5.0%, #cddac9 5.0% 10.0%, #cddac9 10.0% 15.0%, #cddac9 15.0% 20.0%, #cddac9 20.0% 25.0%, #cddac9 25.0% 30.0%, #cddac9 30.0% 35.0%, #cddac9 35.0% 40.0%, #cddac9 40.0% 45.0%, #cddac9 45.0% 50.0%, #cddac9 50.0% 55.0%, #cddac9 55.0% 60.0%, #cddac9 60.0% 65.0%, #cddac9 65.0% 70.0%, #cddac9 70.0% 75.0%, #cddac9 75.0% 80.0%, #cddac9 80.0% 85.0%, #cddac9 85.0% 90.0%, #cddac9 90.0% 95.0%, #cddac9 95.0% 100.0%)"></div>
+            <div style="--w: 3; background-image: repeating-linear-gradient(to bottom, transparent 0 4.1%, #f8f9f6 4.1% 5%), linear-gradient(to bottom, #cddac9 0.0% 5.0%, #cddac9 5.0% 10.0%, #cddac9 10.0% 15.0%, #cddac9 15.0% 20.0%, #cddac9 20.0% 25.0%, #cddac9 25.0% 30.0%, #cddac9 30.0% 35.0%, #cddac9 35.0% 40.0%, #cddac9 40.0% 45.0%, #cddac9 45.0% 50.0%, #cddac9 50.0% 55.0%, #cddac9 55.0% 60.0%, #cddac9 60.0% 65.0%, #cddac9 65.0% 70.0%, #cddac9 70.0% 75.0%, #cddac9 75.0% 80.0%, #cddac9 80.0% 85.0%, #cddac9 85.0% 90.0%, #cddac9 90.0% 95.0%, #cddac9 95.0% 100.0%)"></div>
+            <div class="slice" style="--w: 9"></div>
+            <div style="--w: 6; background-image: repeating-linear-gradient(to bottom, transparent 0 4.1%, #f8f9f6 4.1% 5%), linear-gradient(to bottom, #cddac9 0.0% 5.0%, #cddac9 5.0% 10.0%, #cddac9 10.0% 15.0%, #cddac9 15.0% 20.0%, #cddac9 20.0% 25.0%, #cddac9 25.0% 30.0%, #cddac9 30.0% 35.0%, #cddac9 35.0% 40.0%, #cddac9 40.0% 45.0%, #cddac9 45.0% 50.0%, #cddac9 50.0% 55.0%, #cddac9 55.0% 60.0%, #ecd7d1 60.0% 65.0%, #cddac9 65.0% 70.0%, #cddac9 70.0% 75.0%, #cddac9 75.0% 80.0%, #cddac9 80.0% 85.0%, #cddac9 85.0% 90.0%, #cddac9 90.0% 95.0%, #cddac9 95.0% 100.0%)"></div>
+            <div style="--w: 27; background-image: repeating-linear-gradient(to bottom, transparent 0 4.1%, #f8f9f6 4.1% 5%), linear-gradient(to bottom, #ecd7d1 0.0% 5.0%, #ecd7d1 5.0% 10.0%, #ecd7d1 10.0% 15.0%, #ecd7d1 15.0% 20.0%, #ecd7d1 20.0% 25.0%, #ecd7d1 25.0% 30.0%, #ecd7d1 30.0% 35.0%, #ecd7d1 35.0% 40.0%, #ecd7d1 40.0% 45.0%, #ecd7d1 45.0% 50.0%, #ecd7d1 50.0% 55.0%, #ecd7d1 55.0% 60.0%, #ecd7d1 60.0% 65.0%, #ecd7d1 65.0% 70.0%, #ecd7d1 70.0% 75.0%, #ecd7d1 75.0% 80.0%, #ecd7d1 80.0% 85.0%, #cddac9 85.0% 90.0%, #cddac9 90.0% 95.0%, #cddac9 95.0% 100.0%)"></div>
+            <div class="slice" style="--w: 0"></div>
+            <div style="--w: 0; background-image: repeating-linear-gradient(to bottom, transparent 0 4.1%, #f8f9f6 4.1% 5%), linear-gradient(to bottom, #e2e5df 0.0% 5.0%, #e2e5df 5.0% 10.0%, #e2e5df 10.0% 15.0%, #e2e5df 15.0% 20.0%, #e2e5df 20.0% 25.0%, #e2e5df 25.0% 30.0%, #e2e5df 30.0% 35.0%, #e2e5df 35.0% 40.0%, #e2e5df 40.0% 45.0%, #e2e5df 45.0% 50.0%, #e2e5df 50.0% 55.0%, #e2e5df 55.0% 60.0%, #e2e5df 60.0% 65.0%, #e2e5df 65.0% 70.0%, #e2e5df 70.0% 75.0%, #e2e5df 75.0% 80.0%, #ecd7d1 80.0% 85.0%, #ecd7d1 85.0% 90.0%, #ecd7d1 90.0% 95.0%, #ecd7d1 95.0% 100.0%)"></div>
+            <div class="slice" style="--w: 4"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tile cat">
+        <h2>Vorhaben</h2>
+        <div class="scroll">
+          <h3>Läuft</h3>
+          <div class="card">
+            <div class="head"><span class="name">Fischernetz</span><span class="chip crit">bekommt keine Arbeit</span></div>
+            <div class="progress"><i style="width: 50%"></i></div>
+          </div>
+          <h3>Ausführbar</h3>
+          <div class="card">
+            <div class="head"><span class="name">Feuerlegen</span><button class="startbtn" title="Starten">▶</button></div>
+            <p class="sub">Ein Brand macht das Land eine Weile üppiger.</p>
+            <p class="sub num">Arbeit 4 · ≈ 1 Tick · Totholz 30 — liegt bereit</p>
+          </div>
+          <div class="card">
+            <div class="head"><span class="name">Vorratsgrube <span class="chip num">×3</span></span><button class="startbtn" title="Starten">▶</button></div>
+            <p class="sub">Eine Grube speichert Nahrung für Krisen.</p>
+            <p class="sub num">Arbeit 24 · ≈ 6 Ticks · Brennholz 10 ≈ 2 Ticks Nachschub</p>
+          </div>
+          <h3>In Sicht</h3>
+          <div class="card">
+            <div class="head"><span class="name" style="color: var(--muted)">Sesshaftigkeit</span></div>
+            <p class="sub">Bleiben: dein Volk bindet sich an diesen Ort.</p>
+            <div class="needsbar"><div class="progress"><i style="width: 70%"></i></div><span class="sub num">Speicher je Kopf 70 %</span></div>
+            <div class="needsbar"><div class="progress"><i style="width: 52%"></i></div><span class="sub num">Fischgründe 52 %</span></div>
+          </div>
+          <div class="card">
+            <div class="head"><span class="name" style="color: var(--muted)">Knochennadel</span></div>
+            <div class="needsbar"><div class="progress"><i style="width: 62%"></i></div><span class="sub num">Übung im Gerben 62 %</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tile range">
+        <h2>Revier</h2>
+        <div class="rows">
+          <div class="stand">
+            <div>
+              <div class="topline"><span class="label">Beeren</span><span class="sub num tap">reicht&nbsp;~19&nbsp;Ticks</span></div>
+              <div class="meter"><i style="width: 51%"></i></div>
+              <p class="sub">das Feuerlegen wirkt noch</p>
+            </div>
+            <span class="effort"><span class="word hot tap">sehr mühsam</span><svg width="64" height="16" viewBox="0 0 64 16"><path d="M0 12 L16 11 L32 8 L48 5 L64 3" fill="none" stroke="#97352c" stroke-width="1.5"/><circle cx="64" cy="3" r="2" fill="#97352c"/></svg></span>
+            <div class="standtip">
+              <span class="num">Ausbeute der Beeren-Suche: <b style="color: var(--crit)">−58 %</b> seit Ankunft · Stand 70 von 138</span>
+            </div>
+          </div>
+          <div class="stand">
+            <div>
+              <div class="topline"><span class="label">Wild</span><span class="sub num tap">reicht&nbsp;~46&nbsp;Ticks</span></div>
+              <div class="meter"><i style="width: 62%"></i></div>
+            </div>
+            <span class="effort"><span class="word tap">mühsam</span><svg width="64" height="16" viewBox="0 0 64 16"><path d="M0 12 L16 10 L32 9 L48 8 L64 7" fill="none" stroke="#67706a" stroke-width="1.5"/><circle cx="64" cy="7" r="2" fill="#67706a"/></svg></span>
+          </div>
+          <div class="stand">
+            <div>
+              <div class="topline"><span class="label">Fisch</span><span class="sub num tap">reicht&nbsp;~9&nbsp;Ticks</span></div>
+              <div class="meter"><i style="width: 54%"></i></div>
+            </div>
+            <span class="effort"><span class="word hot tap">sehr mühsam</span><svg width="64" height="16" viewBox="0 0 64 16"><path d="M0 13 L16 12 L32 10 L48 6 L64 4" fill="none" stroke="#97352c" stroke-width="1.5"/><circle cx="64" cy="4" r="2" fill="#97352c"/></svg></span>
+          </div>
+          <div class="stand">
+            <div>
+              <div class="topline"><span class="label">Totholz</span><span class="sub num tap">reicht&nbsp;~56&nbsp;Ticks</span></div>
+              <div class="meter"><i style="width: 95%"></i></div>
+            </div>
+            <span class="effort"><span class="word tap">leicht</span><svg width="64" height="16" viewBox="0 0 64 16"><path d="M0 9 L64 8" fill="none" stroke="#67706a" stroke-width="1.5"/><circle cx="64" cy="8" r="2" fill="#67706a"/></svg></span>
+          </div>
+          <div class="stand">
+            <div>
+              <div class="topline"><span class="label">Muscheln</span><span class="sub">unberührt — die Reserve</span></div>
+              <div class="meter"><i style="width: 100%"></i></div>
+            </div>
+            <span class="effort"><span class="word tap">leicht</span><svg width="64" height="16" viewBox="0 0 64 16"><path d="M0 9 L64 9" fill="none" stroke="#67706a" stroke-width="1.5"/></svg></span>
+          </div>
+        </div>
+        <div class="movebox">
+          <span class="num" style="line-height: 1.5"><b>Nebenan:</b> Land&nbsp;−7&nbsp;% · Suche leichter</span>
+          <button>Weiterziehen …</button>
+        </div>
+      </section>
+
+      <section class="tile stores">
+        <h2>Vorräte</h2>
+        <div class="storeline">
+          <div class="head"><span><b>Nahrung</b> <span class="chip">Ziel = was die Gruben fassen</span></span><span class="num">37&nbsp;%</span></div>
+          <div class="meter store"><i style="width: 37%"></i></div>
+          <div class="subrow"><span class="sub">3 Gruben — sie verfallen langsam · hält noch ~4 Ticks Hunger</span><svg width="80" height="16" viewBox="0 0 80 16"><path d="M0 14 L20 14 L20 9 L42 9 L42 5 L66 5 L66 4 L80 4" fill="none" stroke="#33707c" stroke-width="1.5"/></svg></div>
+        </div>
+        <div class="storeline">
+          <div class="head"><span><b>Brennholz</b></span><span class="num">100&nbsp;%</span></div>
+          <div class="meter store"><i style="width: 100%"></i></div>
+          <div class="subrow"><span class="sub num">Ziel 14 — ~6 Ticks Feuer</span><div class="slider" style="width: 120px"><span class="knob" style="left: 46%"></span></div></div>
+        </div>
+        <div class="storeline">
+          <p class="sub">Beide Zeilen haben denselben Griff wie im Band oben — zwei Fenster auf eine Einstellung.</p>
+        </div>
+      </section>
+
+      <div class="frame">
+        <section class="tile people">
+          <h2>Menschen</h2>
+          <div class="count num">27</div>
+          <p class="sub num" style="padding: 2px 14px 0">diesen Tick: 1 gestorben · niemand geboren</p>
+          <div class="chart">
+            <svg width="100%" height="70" viewBox="0 0 270 70">
+              <path d="M0 19 L40 16 L80 13 L110 25 L150 28 L190 25 L230 23 L270 25 L270 70 L0 70 Z" fill="#b0722a" opacity="0.5"/>
+              <path d="M0 44 L40 41 L80 37 L110 47 L150 51 L190 48 L230 46 L270 48 L270 70 L0 70 Z" fill="#33707c" opacity="0.55"/>
+              <line x1="110" y1="5" x2="110" y2="70" stroke="#97352c" stroke-width="1" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="legendrow sub"><span><i class="dot" style="background: #b0722a; opacity: 0.6"></i>Erwachsene 18</span><span><i class="dot" style="background: #33707c; opacity: 0.6"></i>Kinder 9</span></div>
+          <p class="brakeline"><span class="tap">Das Suchen ist mühsam geworden — nur 46 % der möglichen Kinder kommen zur Welt.</span></p>
+        </section>
+
+        <section class="tile log">
+          <h2>Ereignisse</h2>
+          <p class="sub num" style="padding: 0 14px 6px">Wetterwurf 1,31</p>
+          <ul>
+            <li><span class="t num">96</span><span class="crisis">Der harte Winter: 1 Mensch stirbt an Hunger</span></li>
+            <li><span class="t num">94</span><span>Feuerlegen ist wieder ausführbar</span></li>
+            <li><span class="t num">90</span><span>Zwirnen fertiggestellt</span></li>
+            <li><span class="t num">88</span><span>Fischernetz ist jetzt ausführbar</span></li>
+            <li><span class="t num">84</span><span class="crisis">Der harte Winter: 2 Menschen sterben an Hunger</span></li>
+            <li><span class="t num">76</span><span>Vorratsgrube fertiggestellt <span class="num">(×3)</span></span></li>
+            <li><span class="t num">60</span><span>Steinaxt fertiggestellt</span></li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </body>
+</html>
