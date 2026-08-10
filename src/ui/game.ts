@@ -33,12 +33,26 @@ const LONGEST_RUN = 1000;
 /** Real time between ticks of the free run; provisional until played with. */
 const FREE_RUN_MILLIS = 150;
 
+/**
+ * The fast beat of the replay — the order of ten ticks a second. The run to
+ * the stop point is computed at once but shown tick by tick, because a jump to
+ * the end tears the chain of cause and effect (V2).
+ */
+const REPLAY_MILLIS = 100;
+
 export const game = writable<Game>({
   history: [createState(STAGE1, { seed: 42 })],
   mode: "paused",
 });
 
 let timer: ReturnType<typeof setInterval> | undefined;
+
+/**
+ * Ticks already computed but not yet shown. They are not part of the history
+ * until the beat reveals them, so a pause simply drops what is left here and
+ * the run ends on the tick the player is looking at.
+ */
+let unshown: GameState[] = [];
 
 export function currentState(value: Game): GameState {
   const last = value.history[value.history.length - 1];
@@ -52,6 +66,9 @@ function over(value: Game): boolean {
 
 /** One player action on the newest state; a refusal is thrown, not swallowed. */
 export function act(action: Action): void {
+  // A hand on the game ends a replay: the ticks still waiting were computed
+  // from a course the player has just left.
+  if (unshown.length > 0) pause();
   game.update((value) => {
     const result = apply(currentState(value), action, index);
     if (result.rejected !== undefined) throw new Error(result.rejected);
@@ -67,7 +84,11 @@ export function step(): void {
   );
 }
 
-/** Walk until a stop point (V2): distress, something new, something done. */
+/**
+ * Walk until a stop point (V2): distress, something new, something done. The
+ * whole stretch is computed at once and then played out at the fast beat, so
+ * the curves grow and the head bar counts on the way there.
+ */
 export function runToStop(): void {
   const value = get(game);
   if (over(value) || value.mode !== "paused") return;
@@ -82,7 +103,21 @@ export function runToStop(): void {
     previous = next;
     before = after;
   }
-  game.update((current) => ({ ...current, history: [...current.history, ...grown] }));
+  if (grown.length === 0) return;
+  unshown = grown;
+  game.update((current) => ({ ...current, mode: "toStop" }));
+  timer = setInterval(showNext, REPLAY_MILLIS);
+}
+
+/** One beat of the replay: hand the next computed tick to the history. */
+function showNext(): void {
+  const next = unshown.shift();
+  if (next === undefined) {
+    pause();
+    return;
+  }
+  game.update((current) => ({ ...current, history: [...current.history, next] }));
+  if (unshown.length === 0) pause();
 }
 
 /** Let it run in real time; only distress and the end halt it (V2). */
@@ -97,9 +132,11 @@ export function runFree(): void {
   }, FREE_RUN_MILLIS);
 }
 
+/** Halt on the tick now on screen; computed ticks not yet shown are dropped. */
 export function pause(): void {
   if (timer !== undefined) clearInterval(timer);
   timer = undefined;
+  unshown = [];
   game.update((current) => ({ ...current, mode: "paused" }));
 }
 
