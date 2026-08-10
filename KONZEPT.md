@@ -4272,6 +4272,16 @@ aufzeichnungstreu sagen kann, hält der Kern **je Projekt und Tick fest, welche
 Ressource den Schritt begrenzt hat** — das Gegenstück zum Bremsen-Feld der Ränge.
 Gesamtkosten und Mindestdauer gehören dem Katalog und dem Start-Dialog.
 
+**Die Brems-Anzeige der Vorhaben-Kurve (per Skizzen-Probe entschieden — der
+„Bremsteppich"):** Die **Fehlfläche** zwischen Kurve und Voll-Linie wird je Tick in
+der Farbe der Ressource gefüllt, die den Schritt begrenzt hat — Farbe erscheint nur,
+wo etwas fehlte, und ist so hoch wie das Fehlende; im Gleichstand teilen sich zwei
+Farben den Tick. Die Farben sind **kalt** (die eine warme Identität der Palette
+gehört dem Vorhaben-Ocker) und **karten-lokal**: Jede Karte trägt ihre eigene kleine
+Legende, denn je Projekt bremsen andere Ressourcen — einen globalen Farbkanon merkt
+sich niemand. Bewusst ohne Sonderregeln: keine Schwelle für kleine Fehlmengen, keine
+eigene Marke für den Null-Tick.
+
 **Die Erklärkarte eines Bedarfsfelds ist abgenommen** — Name mit Deckung, ein Satz zur
 Breite, der Verlauf der Deckung mit gestrichelter Voll-Linie, darunter der
 Engpass-Satz mit seinen Auswegen. Der Breiten-Satz spricht dabei **den Spieler an,
