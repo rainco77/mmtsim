@@ -4326,6 +4326,14 @@ die frühere Satzform („Alle satt zu bekommen kostet …") samt der Wendungsli
 Bedarf und dem zahllosen Voll-Schluss. Sätze sprechen weiterhin den Spieler an und
 vermeiden absolute Zahlen; das gilt unverändert.
 
+**Der Ursachen-Satz der Bedarfskarte zählt über das Kurvenfenster:** „Unterdeckt in 4
+der letzten 20 Ticks — es fehlte an Fisch und Beeren." Bedarfe haben keine eigene
+Spieler-Handlung, die ein Fenster zurücksetzen könnte (ziehbar sind nur Ansprüche),
+also gilt das Fenster der Kurve; wo die Fehl-Ticks liegen, zeigt der Bremsteppich.
+Die Quellen stehen namentlich, nach Häufigkeit, aus der Rang-Aufzeichnung; keine
+Schwelle. Das Alarm-Präfix („Nahrung wird knapp") gehört nicht auf die Karte —
+es bleibt der ungefragten Engpass-Meldung der ersten Male vorbehalten.
+
 **Kein Speichern und Laden in der ersten Stufe.** Statt dessen kennt die Oberfläche
 **den ganzen Verlauf des Laufs**, nicht nur den letzten Tick: Für Testzwecke lässt sich
 damit einfach zurückrollen. Ob der Spieler später auch zurückrollen kann, ist offen.
