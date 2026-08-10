@@ -4209,9 +4209,12 @@ Arbeit hineinfloss, zeigt die wachsende Füllung.
 
 **Aus der Sichtung der Spezifikation entschieden:** Die Anspruchskarte eines laufenden
 Vorhabens trägt auch die Griffe **Pause und Abbruch** — sie ist die Nachfolgerin der
-alten Leiter-Zeile. **Auch Anspruchs-Segmente tragen ein Zeichen** (damit braucht jedes
-Projekt eines); die Mindestbreite gilt unabhängig davon — sie sichert auch die
-greifbare Lippe. **Bedarfsfelder tragen bei ausreichender Breite zusätzlich ihren
+alten Leiter-Zeile. **Vorratsziele tragen ein Zeichen** — sie sind wenige,
+dauerhaft und kehren in jedem Lauf wieder, dort zahlt sich Wiedererkennung aus.
+**Laufende Vorhaben tragen keines:** Ockerrahmen, Baufarbe und ihr Name in der
+Namenszeile machen sie kenntlich, und einmalige Projekte brauchen keine
+Wiedererkennung. Der Katalog bleibt bei Namen ohne Zeichen. Die Mindestbreite gilt
+unabhängig davon — sie sichert auch die greifbare Lippe. **Bedarfsfelder tragen bei ausreichender Breite zusätzlich ihren
 Namen**; wird das Feld zu schmal, fällt der Name weg und das Zeichen bleibt.
 
 **Aus der zweiten Sichtung entschieden:** Die **Zahl eines Feldes liegt nie unlesbar
