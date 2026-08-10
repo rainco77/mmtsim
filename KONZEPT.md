@@ -3239,6 +3239,15 @@ unberührt** und fällt mit jedem Zug genau wie zuvor; was ein guter Bescheid ä
 dieses eine Angebot und nie die Reihe. Auf ein besseres zu warten ist damit eine
 Entscheidung mit Preis, denn das Revier, in dem man steht, dünnt derweil weiter aus.
 
+**Abpassen allein hebt die Welt nicht.** Streuung und Abschlag je Zug stehen zueinander
+so, dass der beste Bescheid, den die Welt überhaupt hergeben kann, um nicht mehr über
+dem verlassenen Revier liegt, als ein Geduldiger bei einem Zug an Güte hinzunehmen
+bereit ist. Wer die schlechten Bescheide aussitzt, kommt damit im Mittel auf das Revier
+heraus, das er verlässt, und nicht darüber. Ein Zug ist weiterhin die Erleichterung beim
+Suchen wert — aber nicht als Aufstieg der Güte: Ohne diese Fessel wird jedes Revier
+besser als das vorige, und damit stünde das Gegenteil dessen im Modell, was „das Beste
+zuerst" heißt.
+
 **Woran gemessen wird, ob die Erzählung eintritt** — die Zahlen daneben gehören in die
 Messung, nicht hierher, weil sie sich mit jeder Änderung bewegen:
 

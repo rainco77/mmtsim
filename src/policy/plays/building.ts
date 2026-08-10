@@ -13,22 +13,12 @@ const RESERVE_TICKS = 6;
 const RESERVE_RANK = 450;
 
 /**
- * How good the ground has to be before anything is sunk into it: as good as
- * fresh country, no worse. A pit and a hull cannot be carried, so whoever digs
- * has chosen this range for good and lives on whatever he dug into — below the
- * mark the play walks on and digs later, which costs it a few ticks and buys
- * it the range it spends the rest of the epoch on.
- */
-const WORTH_ANCHORING = 1.0;
-
-/**
  * Moves on, keeps a woodpile, and builds whatever is on offer.
  *
  * Written out rather than clever, because a measuring stand has to say what it
  * did (T4). It is one strategy among many possible ones and makes no claim to
- * be the best: one thing built at a time, walking ahead of all of it while
- * nothing is dug in, the pit before anything else once the ground is worth
- * keeping, and settling the moment it is offered.
+ * be the best: one project at a time, the pit before anything else once it can
+ * be had, and settling the moment it is offered.
  */
 export class BuildingPolicy implements Policy {
   readonly id = "building";
@@ -73,26 +63,14 @@ export class BuildingPolicy implements Policy {
     // his pits standing or a hull at the shore does not walk away from them —
     // the trap the epoch is about, chosen here as the play's own judgement.
     //
-    // **The first pit already binds.** Read against a store per head, the play
-    // dug and walked away from the same hole over and over: a move sets what is
-    // in the ground to nothing, so the mark was never reached and the digging
-    // began again on the next range.
+    // **The first pit binds, and no count of them.** A move sets what is in the
+    // ground back to nothing, so a community that means to keep a pit has
+    // chosen its range with the first one it digs.
     const anchored =
       (derived.ownedCapacity["storage"]?.amount ?? 0) > 0 ||
       (derived.ownedCapacity["water"]?.amount ?? 0) > 0;
-    // The pit and the hull are what tie the community to a range, so they wait
-    // until the range is worth being tied to. Everything else may be built
-    // anywhere — a mortar and an axe travel.
-    const groundWorthKeeping =
-      anchored || this.moving.landQuality(derived, index) >= WORTH_ANCHORING;
-
-    // As long as nothing is dug in, walking outranks the workshop: a spent
-    // range is no less spent for something being built on it, and a technique
-    // is carried along in the head. Waiting for a free hand instead left the
-    // play standing on a range it was eating out — there is always something
-    // being built — until the community had outgrown what the range carries.
     if (!anchored) {
-      const move = this.moving.walk(derived, index);
+      const move = this.moving.decide(state, derived, index);
       if (move.length > 0) return [...actions, ...move];
     }
 
@@ -113,11 +91,10 @@ export class BuildingPolicy implements Policy {
     const storagePerHead =
       (derived.ownedCapacity["storage"]?.amount ?? 0) / Math.max(1, derived.heads);
     const worthDigging = (id: string): boolean =>
-      id !== "storage_pit" || (groundWorthKeeping && storagePerHead < 3);
+      id !== "storage_pit" || storagePerHead < 3;
     // As with the pits: no fifth hull while the water already reaches.
     const ownedWater = derived.ownedCapacity["water"]?.amount ?? 0;
-    const worthLaunching = (id: string): boolean =>
-      id !== "boat" || (groundWorthKeeping && ownedWater < 26);
+    const worthLaunching = (id: string): boolean => id !== "boat" || ownedWater < 26;
 
     const pit = offered.find(
       (project) => project.id === "storage_pit" && worthDigging(project.id),

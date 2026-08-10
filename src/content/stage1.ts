@@ -1799,14 +1799,24 @@ export const STAGE1: Config = {
   land: {
     perHeadAtStart: { wilderness: 0.144, water: 0.0576 },
     baseQuality: 1.0,
-    // Against the spread below, a report worth more than the range left comes
-    // about every sixth tick: moving stays a choice worth timing, and the
-    // patient cannot ratchet the world upward move by move.
+    // What a move costs of the range's quality before the report is read. A
+    // report worth more than the range left comes about every eighth tick, so
+    // moving stays a choice worth timing.
     qualityDecayPerTaking: 0.09,
-    // What a report on the next range strays from that mean, either way. At a
-    // seventh a lucky one is worth waiting a tick or two for and a poor one is
-    // worth sitting out, without the move turning into a game of chance.
-    qualitySpread: 0.15,
+    // What a report on the next range strays from that mean, either way. A
+    // lucky one is worth waiting a tick or two for and a poor one is worth
+    // sitting out, without the move turning into a game of chance.
+    //
+    // **The two figures together decide whether patience pays**, and that is
+    // what fixes this one. The best country the world can hold is
+    // `(1 - decay) × (1 + spread)`; whoever sits out the poor reports lands, on
+    // average, halfway between that best and the poorest move he will still
+    // take. At three hundredths above the range left, that middle is no gain
+    // for anyone willing to lose the same three hundredths — so waiting alone
+    // no longer walks the world upward, and what a move is worth has to be the
+    // searching it relieves. Wider, and every range is better than the last
+    // one, which is the opposite of what taking the good country first means.
+    qualitySpread: 0.13,
     // How long a move keeps the searching cheaper before the country is worn
     // as it was — the stretch a move buys, against a technique that pays for
     // the rest of the epoch.
