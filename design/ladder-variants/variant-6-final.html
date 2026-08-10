@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <title>mmtsim — Variante 6: das Kopfband, Endstand</title>
+    <style>
+      :root {
+        --ground: #eceee9;
+        --surface: #f8f9f6;
+        --sunk: #dde1da;
+        --ink: #262a28;
+        --muted: #67706a;
+        --line: #cbd1cb;
+        --accent: #b0722a;
+        --accent-ink: #7d4f1a;
+        --ok: #4f7d4f;
+        --ok-soft: #cddac9;
+        --crit: #97352c;
+        --crit-soft: #ecd7d1;
+        --store: #33707c;
+        --store-soft: #c6d8db;
+        --p-gather: #6b8e5a;
+        --p-fish: #4d7f8c;
+        --p-hunt: #a3703c;
+        --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
+      }
+      /* Drei Textstile + Zahlenstil: h2 (Serif) · Grundtext 14 · .sub 12,5 grau · .num */
+      * { box-sizing: border-box; margin: 0; }
+      html, body { width: 100%; height: 100%; overflow: hidden; }
+      body { font-family: system-ui, sans-serif; font-size: 14px; color: var(--ink); background: var(--ground); }
+      .num { font-variant-numeric: tabular-nums; }
+      .sub { font-size: 12.5px; color: var(--muted); }
+      b { font-weight: 600; }
+      .tap { text-decoration: underline dotted var(--muted); text-underline-offset: 3px; cursor: pointer; }
+
+      .page {
+        display: grid; width: 100%; height: 100%; gap: 10px; padding: 10px;
+        grid-template-columns: minmax(230px, 17vw) minmax(0, 1.05fr) minmax(0, 1fr) minmax(262px, 21vw);
+        grid-template-rows: 56px auto minmax(0, 1fr);
+        grid-template-areas:
+          "top   top   top   top"
+          "band  band  band  band"
+          "cat   range store frame";
+      }
+      .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; min-height: 0; display: flex; flex-direction: column; }
+      .tile > h2 { font-family: var(--serif); font-size: 17px; font-weight: 600; padding: 10px 14px 6px; }
+
+      .top { grid-area: top; background: var(--ink); color: var(--ground); border-radius: 8px; display: flex; align-items: center; gap: 18px; padding: 0 16px; }
+      .top .brand { font-family: var(--serif); font-size: 18px; }
+      .timegrips { margin-left: auto; display: flex; gap: 8px; }
+      .timegrips button { font: inherit; width: 46px; height: 42px; font-size: 19px; border-radius: 8px; border: 1px solid #4a524d; background: #343b37; color: var(--ground); cursor: pointer; }
+      .timegrips button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+      .lang { display: flex; gap: 4px; margin-left: 10px; }
+      .lang button { height: 42px; padding: 0 12px; border-radius: 8px; border: 1px solid #4a524d; background: none; color: #b8c2ba; font: inherit; }
+      .lang button.on { background: var(--ground); color: var(--ink); }
+
+      .cat { grid-area: cat; overflow: hidden; }
+      .cat .scroll { overflow-y: auto; padding: 0 10px 10px; display: flex; flex-direction: column; gap: 8px; }
+      .cat h3 { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 10px 4px 2px; font-weight: 600; }
+      .card { background: var(--ground); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+      .card .head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+      .card .name { font-weight: 600; }
+      .startbtn { width: 44px; height: 44px; border-radius: 50%; border: none; background: var(--accent); color: #fff; font-size: 17px; cursor: pointer; flex: none; }
+      .chip { display: inline-block; font-size: 11.5px; padding: 3px 8px; border-radius: 99px; background: var(--sunk); color: var(--muted); }
+      .chip.crit { background: var(--crit-soft); color: var(--crit); }
+      .progress { height: 8px; border-radius: 4px; background: var(--sunk); overflow: hidden; margin-top: 8px; }
+      .progress i { display: block; height: 100%; background: var(--accent); }
+      .needsbar { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; margin-top: 6px; }
+      .needsbar .sub { white-space: nowrap; text-align: right; }
+      .needsbar .progress { margin-top: 0; }
+
+      .meter { height: 12px; border-radius: 6px; background: var(--sunk); overflow: hidden; }
+      .meter i { display: block; height: 100%; border-radius: 6px; background: var(--ok); }
+      .meter.short i { background: var(--crit); }
+      .meter.build i { background: var(--accent); }
+      .meter.store i { background: var(--store); }
+
+      /* ---- Das Band ----
+         Die Breite eines Feldes ist der Anteil der Arbeit dieses Ticks, der in den Rang
+         geflossen ist; die Fuellung ist seine Deckung. Alle Felder zusammen — Bedarfsraenge,
+         die Scheiben der Ansprueche und die brache Arbeit am Ende — sind die ganze Arbeit.
+         Felder haben eine Mindestbreite fuer den Griff; wer darunter faellt, traegt seine
+         Beschriftung auf der Schiene darunter, an einer Fuehrungslinie. */
+      .band { grid-area: band; overflow: visible; position: relative; z-index: 5; }
+      .bandhead { display: flex; align-items: baseline; gap: 10px; padding: 10px 14px 2px; flex-wrap: wrap; }
+      .bandhead h2 { font-family: var(--serif); font-size: 17px; font-weight: 600; }
+      .bandbody { padding: 0 14px 10px; }
+
+      .bandwrap { position: relative; padding-top: 88px; }
+      .bar { display: flex; gap: 3px; }
+      .bar > * { flex-grow: var(--w); flex-shrink: 1; flex-basis: 0; min-width: 44px; position: relative; }
+      .bar > .slice { min-width: 3px; }
+
+      .row1 { height: 58px; }
+      .seg { background: var(--sunk); border-radius: 5px; cursor: pointer; display: flex; align-items: center; }
+      .seg > i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--ok-soft); border-right: 2px solid var(--ok); border-radius: 5px 0 0 5px; }
+      .seg.full > i { border-radius: 5px; }
+      .seg.part > i { background: var(--crit-soft); border-right-color: var(--crit); }
+      .seg .cap { position: relative; padding: 0 10px; line-height: 1.25; }
+      .seg .cap b { display: block; }
+      .seg.part .cap .v { color: var(--crit); }
+      .seg.open { outline: 2px solid var(--accent); outline-offset: 1px; }
+      .seg.idle { background: repeating-linear-gradient(135deg, var(--sunk) 0 5px, var(--ground) 5px 10px); cursor: default; }
+
+      /* Beschriftung ausserhalb: Fuehrungslinie und Namen auf der Schiene unter dem Band */
+      .seg.narrow .cap { position: absolute; top: calc(100% + 11px); left: 50%; transform: translateX(-50%); white-space: nowrap; padding: 0; }
+      .seg.narrow .cap b { display: inline; }
+      .seg.narrow::after { content: ""; position: absolute; left: 50%; top: 100%; width: 1px; height: 11px; background: var(--muted); opacity: 0.5; }
+
+      /* Ansprueche: eine Scheibe im Band traegt ihren Arbeitsanteil, der Griff sitzt darueber */
+      .slice { background: var(--sunk); border-radius: 2px; }
+      .slice > i { position: absolute; left: 0; right: 0; bottom: 0; background: var(--accent); border-radius: 2px; }
+      .slice.store > i { background: var(--store); }
+      .grip { position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%); width: 156px; min-height: 46px;
+              display: flex; align-items: center; gap: 7px; background: #eef1ea; border: 1px solid var(--line);
+              border-radius: 8px; padding: 5px 9px 5px 6px; cursor: grab; z-index: 3; }
+      .grip .bars { color: var(--muted); font-size: 15px; flex: none; }
+      .grip .nm { font-weight: 600; }
+      .grip .pct { color: var(--accent-ink); }
+      .grip.store .pct { color: var(--store); }
+
+      .railfoot { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 34px; }
+      .railfoot .swatch { width: 22px; height: 11px; border-radius: 3px; background: repeating-linear-gradient(135deg, var(--sunk) 0 5px, var(--ground) 5px 10px); border: 1px solid var(--line); }
+
+      .rasterhead { display: flex; align-items: baseline; gap: 12px; margin: 8px 0 4px; }
+      .rastercols { display: flex; gap: 3px; height: 72px; }
+      .rastercols > * { flex-grow: var(--w); flex-shrink: 1; flex-basis: 0; min-width: 44px; border-radius: 3px; }
+      .rastercols > .slice { min-width: 3px; background: none; }
+      .legend { display: flex; gap: 14px; }
+      .legend .dot { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; }
+
+      /* Die Bedarfs-Karte schwebt unter dem angetippten Feld und verschiebt kein Layout */
+      .needcard { position: absolute; top: calc(100% + 8px); left: 39%; width: 580px; background: var(--ground); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px 12px; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16); display: none; }
+      .needcard .notch { position: absolute; top: -7px; width: 12px; height: 12px; background: var(--ground); border-left: 1px solid var(--line); border-top: 1px solid var(--line); transform: rotate(45deg); }
+      .needcard .trend { display: flex; align-items: center; gap: 10px; margin: 6px 0 10px; }
+      .stacks { display: grid; grid-template-columns: 52px 1fr; gap: 5px 10px; align-items: center; }
+      .stacks .sub { text-align: right; }
+      .stack { display: flex; height: 16px; border-radius: 5px; overflow: hidden; }
+      .stack i { display: block; height: 100%; position: relative; }
+      .stack .warn { position: absolute; right: 3px; top: -1px; color: #fff; font-size: 10px; }
+      .segtip { margin-top: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; max-width: 520px; }
+      .ways { display: flex; gap: 8px; margin-top: 10px; }
+      .way { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; }
+      .way button { width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--accent); color: #fff; cursor: pointer; }
+
+      /* ---- Revier / Vorräte ---- */
+      .range { grid-area: range; overflow: hidden; }
+      .range .rows { overflow-y: auto; overflow-x: hidden; }
+      .stand { display: grid; grid-template-columns: minmax(0, 1fr) 100px; grid-template-rows: auto auto; align-items: center; column-gap: 10px; padding: 8px 14px 9px; border-top: 1px solid var(--line); }
+      .stand:first-child { border-top: none; }
+      .stand .topline { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+      .stand .label { font-weight: 600; }
+      .stand .meter { height: 9px; margin-top: 5px; width: 100%; }
+      .stand .effort { grid-row: span 2; text-align: right; }
+      .stand .effort .word { display: block; font-size: 13px; }
+      .stand .effort .word.hot { color: var(--crit); }
+      .stand svg { display: block; margin-left: auto; }
+      .standtip { grid-column: 1 / 3; margin-top: 7px; background: var(--ground); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+      .movebox { margin-top: auto; border-top: 2px solid var(--line); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+      .movebox button { font: inherit; min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--accent); background: none; color: var(--accent-ink); cursor: pointer; }
+
+      .stores { grid-area: store; overflow: hidden; }
+      .storeline { padding: 8px 14px 10px; border-top: 1px solid var(--line); }
+      .storeline:first-of-type { border-top: none; }
+      .storeline .head { display: flex; justify-content: space-between; gap: 8px; }
+      .storeline .meter { height: 9px; margin-top: 6px; width: 100%; }
+      .storeline .subrow { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; gap: 10px; }
+      .slider { height: 12px; border-radius: 6px; background: var(--sunk); position: relative; }
+      .slider .knob { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 28px; height: 28px; border-radius: 50%; background: #fff; border: 2px solid var(--accent); }
+
+      /* ---- Menschen / Log ---- */
+      .frame { grid-area: frame; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+      .people { flex: 0 0 auto; padding-bottom: 8px; }
+      .people .count { font-family: var(--serif); font-size: 40px; padding: 0 14px; line-height: 1; }
+      .people .chart { padding: 0 14px; margin-top: 4px; }
+      .people .legendrow { display: flex; gap: 12px; padding: 4px 14px 0; }
+      .dot { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 4px; }
+      .brakeline { padding: 8px 14px 10px; }
+      .log { flex: 1; overflow: hidden; }
+      .log ul { list-style: none; padding: 0 14px 10px; overflow-y: auto; }
+      .log li { display: flex; gap: 10px; padding: 6px 0; border-top: 1px solid var(--line); }
+      .log li:first-child { border-top: none; }
+      .log .t { color: var(--muted); min-width: 24px; text-align: right; }
+      .log .crisis { color: var(--crit); font-weight: 600; }
+
+      /* ---- Variante 6: Zeichen im Feld, Ansprüche als herausstehende Reiter ----
+         Die Breite eines Feldes ist, was volle Deckung dieses Ranges an Arbeit
+         kostet: Bedarfsmenge mal Aufwand je Einheit. Ein getragenes Gut verlangt
+         nur den Verfall und die Lücke, ein volles Vorratsziel ist ein Haarstrich.
+         Flache Felder sind fest; was heraussteht, lässt sich greifen. */
+      .bandwrap { padding-top: 58px; }
+      .bar > *, .bar > .seg { min-width: 7px; }
+      .seg .cap { display: flex; align-items: center; justify-content: center; width: 100%; padding: 0; color: var(--ink); opacity: 0.82; }
+      .seg.part .cap { color: var(--crit); opacity: 1; }
+      .slice > i { top: auto; }
+      .slice.build > i { background: var(--accent); }
+      .tab { position: absolute; bottom: 100%; left: 0; min-width: 168px; height: 52px;
+             display: flex; align-items: center; gap: 7px; background: var(--ground);
+             border: 1px solid var(--line); border-bottom: none; border-radius: 8px 8px 0 0;
+             padding: 0 11px 0 7px; cursor: grab; z-index: 3; white-space: nowrap; }
+      .tab .bars { color: var(--muted); font-size: 15px; flex: none; }
+      .tab .nm { font-weight: 600; }
+      .tab.store { border-color: var(--store); color: var(--store); background: #eef3f3; }
+      .tab.build { border-color: var(--accent); color: var(--accent-ink); background: #f6efe6; }
+
+      .needcard { display: block; left: 29%; width: 660px; top: calc(100% + 8px); }
+      .needcard .cardhead { display: flex; align-items: center; gap: 9px; }
+      .needcard .cardhead .ic { display: flex; color: var(--ink); opacity: 0.8; }
+      .needcard .cardhead .nm { font-family: var(--serif); font-size: 17px; }
+      .needcard .cardhead .cov { margin-left: auto; }
+      .needcard .curverow { display: flex; align-items: center; gap: 10px; margin: 6px 0; }
+      .needcard .calc { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+      .railfoot { margin-top: 12px; }
+      .rastercols { height: 54px; }
+      .rastercols > .slice, .rastercols > .blank { min-width: 7px; background: none; }
+      .rasterhead { margin: 6px 0 3px; }
+      .row1 { height: 52px; }
+      .band .bandhead { padding-bottom: 0; }
+      .stand .effort .word { font-size: 13px; }
+      .band .bandbody { padding-bottom: 14px; }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="top">
+        <span class="brand">mmtsim</span>
+        <span class="num" style="font-size: 16px">Tick 96</span>
+        <span class="num" style="color: #b8c2ba">23 Menschen</span>
+        <nav class="timegrips">
+          <button title="Ein Tick">⏯</button>
+          <button class="primary" title="Bis zum Haltepunkt">⏩</button>
+          <button title="Laufen lassen">▶</button>
+        </nav>
+        <nav class="lang"><button class="on">DE</button><button>EN</button></nav>
+      </header>
+
+      <section class="tile band">
+        <div class="bandhead">
+          <h2>Bedarfe und Ansprüche</h2>
+          <span class="sub">von links nach rechts bedient · Breite = was volle Deckung kostet · Füllung = Deckung</span>
+          <span class="sub" style="margin-left: auto">Reiter stehen heraus und lassen sich greifen · flache Felder sind fest</span>
+        </div>
+        <div class="bandbody">
+          <div class="bandwrap">
+            <div class="bar row1">
+              <div class="seg full" style="--w: 256.7" title="Essen"><i style="width: 100%"></i><span class="cap"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="8" cy="16" r="4.2"/><circle cx="16" cy="16" r="4.2"/><circle cx="12" cy="9" r="4.2"/><path d="M12 5V2" stroke="currentColor" stroke-width="1.6" fill="none"/></svg></span></div><div class="seg full" style="--w: 29.5" title="Feuer"><i style="width: 100%"></i><span class="cap"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c2.5 4 6 5.5 6 9.5a6 6 0 0 1-12 0C6 8.5 8 7 9.5 4.5c.4 2 1.4 3 2.5 3.5C12.6 6 11.4 4 12 2z"/></svg></span></div><div class="seg full" style="--w: 121.7" title="Kinderhut"><i style="width: 100%"></i><span class="cap"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="6" r="2.7"/><path d="M12 9.4c-2.9 0-4.6 1.8-4.6 4.3V21h3v-3.4h3.2V21h3V13.7c0-2.5-1.7-4.3-4.6-4.3z"/></svg></span></div><div class="seg full" style="--w: 0.0" title="Kleidung"><i style="width: 100%"></i><span class="cap"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.2 3 4.6 6.2l2.2 3.4 1.4-1V21h7.6V8.6l1.4 1 2.2-3.4L14.8 3c-.9 1.7-4.7 1.7-5.6 0z"/></svg></span></div><div class="slice store" style="--w: 0.0" title="Brennholz"><i style="height: 100%"></i><div class="tab store"><span class="bars">≡</span><span class="txt"><span class="nm">Brennholz</span><br /><span class="sub num">Ziel 3,5 · Stand 5,6 — voll</span></span></div></div><div class="seg full" style="--w: 128.3" title="Sattessen"><i style="width: 100%"></i><span class="cap"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 12h18a9 9 0 0 1-18 0z"/><path d="M9 8.6c0-2 1.8-2 1.8-4M14 8.6c0-2 1.8-2 1.8-4" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></span></div><div class="seg full open" style="--w: 68.8" title="Behaglichkeit"><i style="width: 100%"></i><span class="cap"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="17.5" r="2.4"/><path d="M5.5 13.5a6.5 6.5 0 0 1 13 0M2 9.5a10 10 0 0 1 20 0" stroke="currentColor" stroke-width="1.9" fill="none" stroke-linecap="round"/><path d="M8.5 21.5h7" stroke="currentColor" stroke-width="1.9" fill="none" stroke-linecap="round"/></svg></span></div><div class="slice build" style="--w: 102.8" title="Steinaxt"><i style="height: 82%"></i><div class="tab build"><span class="bars">≡</span><span class="txt"><span class="nm">Steinaxt</span><br /><span class="sub num">fertig zu 82 % · 4 Arbeit je Tick</span></span></div></div><div class="seg idle" style="--w: 292.2" title="brach"></div>
+            </div>
+            <div class="railfoot">
+              <span class="swatch"></span>
+              <span class="sub">Arbeit liegt brach</span>
+              <span class="sub num">29,2 %</span>
+            </div>
+          </div>
+
+          <div class="rasterhead">
+            <span class="sub">Verlauf — die letzten 20 Ticks, neuester oben; die Spalten stehen unter ihrem Feld</span>
+            <span class="legend sub" style="margin-left: auto">
+              <span><i class="dot" style="background: #cddac9"></i>voll</span>
+              <span><i class="dot" style="background: #ecd7d1"></i>teils</span>
+              <span><i class="dot" style="background: #e2e5df"></i>nichts</span>
+            </span>
+          </div>
+          <div class="rastercols">
+            <div style="--w: 256.7; background-image: repeating-linear-gradient(to bottom, transparent 0 4.1%, #f8f9f6 4.1% 5%), linear-gradient(to bottom, #cddac9 0% 5%, #cddac9 5% 10%, #cddac9 10% 15%, #cddac9 15% 20%, #cddac9 20% 25%, #cddac9 25% 30%, #cddac9 30% 35%, #cddac9 35% 40%, #cddac9 40% 45%, #cddac9 45% 50%, #cddac9 50% 55%, #cddac9 55% 60%, #cddac9 60% 65%, #cddac9 65% 70%, #cddac9 70% 75%, #cddac9 75% 80%, #cddac9 80% 85%, #cddac9 85% 90%, #cddac9 90% 95%, #cddac9 95% 100%)"></div><div style="--w: 29.5; background-image: repeating-linear-gradient(to bottom, transparent 0 4.1%, #f8f9f6 4.1% 5%), linear-gradient(to bottom, #cddac9 0% 5%, #cddac9 5% 10%, #cddac9 10% 15%, #cddac9 15% 20%, #cddac9 20% 25%, #cddac9 25% 30%, #cddac9 30% 35%, #cddac9 35% 40%, #cddac9 40% 45%, #cddac9 45% 50%, #cddac9 50% 55%, #cddac9 55% 60%, #cddac9 60% 65%, #cddac9 65% 70%, #cddac9 70% 75%, #cddac9 75% 80%, #cddac9 80% 85%, #cddac9 85% 90%, #cddac9 90% 95%, #cddac9 95% 100%)"></div><div style="--w: 121.7; background-image: repeating-linear-gradient(to bottom, transparent 0 4.1%, #f8f9f6 4.1% 5%), linear-gradient(to bottom, #cddac9 0% 5%, #cddac9 5% 10%, #cddac9 10% 15%, #cddac9 15% 20%, #cddac9 20% 25%, #cddac9 25% 30%, #cddac9 30% 35%, #cddac9 35% 40%, #cddac9 40% 45%, #cddac9 45% 50%, #cddac9 50% 55%, #cddac9 55% 60%, #cddac9 60% 65%, #cddac9 65% 70%, #cddac9 70% 75%, #ecd7d1 75% 80%, #cddac9 80% 85%, #cddac9 85% 90%, #cddac9 90% 95%, #cddac9 95% 100%)"></div><div style="--w: 0.0; background-image: repeating-linear-gradient(to bottom, transparent 0 4.1%, #f8f9f6 4.1% 5%), linear-gradient(to bottom, #cddac9 0% 5%, #cddac9 5% 10%, #cddac9 10% 15%, #cddac9 15% 20%, #cddac9 20% 25%, #cddac9 25% 30%, #cddac9 30% 35%, #cddac9 35% 40%, #cddac9 40% 45%, #cddac9 45% 50%, #cddac9 50% 55%, #cddac9 55% 60%, #cddac9 60% 65%, #ecd7d1 65% 70%, #cddac9 70% 75%, #ecd7d1 75% 80%, #cddac9 80% 85%, #cddac9 85% 90%, #cddac9 90% 95%, #cddac9 95% 100%)"></div><div class="slice" style="--w: 0.0"></div><div style="--w: 128.3; background-image: repeating-linear-gradient(to bottom, transparent 0 4.1%, #f8f9f6 4.1% 5%), linear-gradient(to bottom, #cddac9 0% 5%, #ecd7d1 5% 10%, #ecd7d1 10% 15%, #ecd7d1 15% 20%, #cddac9 20% 25%, #cddac9 25% 30%, #cddac9 30% 35%, #cddac9 35% 40%, #cddac9 40% 45%, #cddac9 45% 50%, #cddac9 50% 55%, #cddac9 55% 60%, #cddac9 60% 65%, #e2e5df 65% 70%, #cddac9 70% 75%, #e2e5df 75% 80%, #cddac9 80% 85%, #cddac9 85% 90%, #cddac9 90% 95%, #cddac9 95% 100%)"></div><div style="--w: 68.8; background-image: repeating-linear-gradient(to bottom, transparent 0 4.1%, #f8f9f6 4.1% 5%), linear-gradient(to bottom, #cddac9 0% 5%, #e2e5df 5% 10%, #e2e5df 10% 15%, #e2e5df 15% 20%, #cddac9 20% 25%, #cddac9 25% 30%, #cddac9 30% 35%, #cddac9 35% 40%, #cddac9 40% 45%, #cddac9 45% 50%, #cddac9 50% 55%, #cddac9 55% 60%, #cddac9 60% 65%, #e2e5df 65% 70%, #cddac9 70% 75%, #e2e5df 75% 80%, #cddac9 80% 85%, #cddac9 85% 90%, #cddac9 90% 95%, #cddac9 95% 100%)"></div><div class="slice" style="--w: 102.8"></div><div class="blank" style="--w: 292.2"></div>
+          </div>
+
+          <div class="needcard">
+            <span class="notch" style="left: 53%"></span>
+            <div class="cardhead">
+              <span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="17.5" r="2.4"/><path d="M5.5 13.5a6.5 6.5 0 0 1 13 0M2 9.5a10 10 0 0 1 20 0" stroke="currentColor" stroke-width="1.9" fill="none" stroke-linecap="round"/><path d="M8.5 21.5h7" stroke="currentColor" stroke-width="1.9" fill="none" stroke-linecap="round"/></svg></span>
+              <span class="nm">Behaglichkeit</span>
+              <span class="cov num">Deckung 100 %</span>
+            </div>
+            <p class="sub">Drei Ticks lang bekam sie nichts — die Würfe waren schlecht, und die Wärme reichte nur fürs Feuer.</p>
+            <div class="curverow">
+              <svg width="300" height="40" viewBox="0 0 300 40">
+                <line x1="0" y1="4" x2="300" y2="4" stroke="#cbd1cb" stroke-width="1" />
+                <path d="M0.0 4.0 L15.8 4.0 L31.6 4.0 L47.4 4.0 L63.2 36.0 L78.9 4.0 L94.7 36.0 L110.5 4.0 L126.3 4.0 L142.1 4.0 L157.9 4.0 L173.7 4.0 L189.5 4.0 L205.3 4.0 L221.1 4.0 L236.8 4.0 L252.6 36.0 L268.4 36.0 L284.2 36.0 L300.0 4.0" fill="none" stroke="#4f7d4f" stroke-width="1.8" />
+              </svg>
+              <span class="sub">Deckung, die letzten 20 Ticks</span>
+            </div>
+            <div class="calc num">Bedarf 1,35 Wärme × Aufwand je Einheit 1,99 = 2,68 Arbeit — 6,9 % des Ticks</div>
+            <p class="sub num" style="margin-top: 7px">Das Feuer will dieselbe Wärme und kostet 1,15 Arbeit — es steht vor ihr und wird zuerst bedient.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="tile cat">
+        <h2>Vorhaben</h2>
+        <div class="scroll">
+          <h3>Läuft</h3>
+          <div class="card">
+            <div class="head"><span class="name">Steinaxt</span><span class="chip">Rang hinter allen Bedarfen</span></div>
+            <div class="progress"><i style="width: 82%"></i></div>
+            <p class="sub num">Arbeit 48 · Brennholz 20 · ≈ 12 Ticks · fertig zu 82 %</p>
+          </div>
+          <h3>Ausführbar</h3>
+          <div class="card">
+            <div class="head"><span class="name">Weiterziehen</span><button class="startbtn" title="Starten">▶</button></div>
+            <p class="sub num">Arbeit 8 · ≈ 1 Tick</p>
+          </div>          <div class="card">
+            <div class="head"><span class="name">Mörser</span><button class="startbtn" title="Starten">▶</button></div>
+            <p class="sub num">Arbeit 32 · ≈ 8 Ticks</p>
+          </div>          <div class="card">
+            <div class="head"><span class="name">Feuerlegen</span><button class="startbtn" title="Starten">▶</button></div>
+            <p class="sub num">Arbeit 6 · Totholz 30 · ≈ 1 Tick</p>
+          </div>          <div class="card">
+            <div class="head"><span class="name">Knochennadel</span><button class="startbtn" title="Starten">▶</button></div>
+            <p class="sub num">Arbeit 48 · Fasern 20 · ≈ 12 Ticks</p>
+          </div>          <div class="card">
+            <div class="head"><span class="name">Zwirnen</span><button class="startbtn" title="Starten">▶</button></div>
+            <p class="sub num">Arbeit 48 · Fasern 20 · ≈ 12 Ticks</p>
+          </div>
+          <h3>In Sicht</h3>
+          <div class="card">
+            <div class="head"><span class="name" style="color: var(--muted)">Fischernetz</span></div>
+            <p class="sub num">Arbeit 48 · Fasern 30 · ≈ 12 Ticks — noch nicht ausführbar</p>
+          </div>          <div class="card">
+            <div class="head"><span class="name" style="color: var(--muted)">Angelhaken</span></div>
+            <p class="sub num">Arbeit 12 · Fasern 8 · ≈ 4 Ticks — noch nicht ausführbar</p>
+          </div>          <div class="card">
+            <div class="head"><span class="name" style="color: var(--muted)">Boot</span></div>
+            <p class="sub num">Arbeit 40 · Brennholz 12 · ≈ 7 Ticks — noch nicht ausführbar</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="tile range">
+        <h2>Revier</h2>
+        <div class="rows">
+          <div class="stand">
+            <div>
+              <div class="topline"><span class="label">Beeren</span><span class="sub num">Stand 62,2 von 136,7 · +23,5</span></div>
+              <div class="meter"><i style="width: 45%"></i></div>
+            </div>
+            <span class="effort num"><span class="word hot">Suche 2,54×</span></span>
+          </div>          <div class="stand">
+            <div>
+              <div class="topline"><span class="label">Wild</span><span class="sub num">Stand 28,2 von 51,3 · +6,0</span></div>
+              <div class="meter"><i style="width: 55%"></i></div>
+            </div>
+            <span class="effort num"><span class="word hot">Suche 1,99×</span></span>
+          </div>          <div class="stand">
+            <div>
+              <div class="topline"><span class="label">Fisch</span><span class="sub num">Stand 17,9 von 27,3 · +4,7</span></div>
+              <div class="meter"><i style="width: 66%"></i></div>
+            </div>
+            <span class="effort num"><span class="word">Suche 1,52×</span></span>
+          </div>          <div class="stand">
+            <div>
+              <div class="topline"><span class="label">Totholz</span><span class="sub num">Stand 266,1 von 284,8 · +3,7</span></div>
+              <div class="meter"><i style="width: 93%"></i></div>
+            </div>
+            <span class="effort num"><span class="word">Suche 1,08×</span></span>
+          </div>          <div class="stand">
+            <div>
+              <div class="topline"><span class="label">Muscheln</span><span class="sub num">Stand 68,4 von 68,4 · +0,0</span></div>
+              <div class="meter"><i style="width: 100%"></i></div>
+            </div>
+            <span class="effort num"><span class="word">Suche 1,00×</span></span>
+          </div>
+        </div>
+        <div class="movebox">
+          <span class="num" style="line-height: 1.5"><b>Nebenan:</b> Land -21,2 %</span>
+          <button>Weiterziehen …</button>
+        </div>
+      </section>
+
+      <section class="tile stores">
+        <h2>Vorräte</h2>
+        <div class="storeline">
+          <div class="head"><span><b>Nahrung</b> <span class="chip">Ziel = was die Gruben fassen</span></span><span class="num">—</span></div>
+          <div class="meter store"><i style="width: 0%"></i></div>
+          <div class="subrow"><span class="sub">Keine Grube — der Umzug hat sie zurückgelassen. Ohne Speicher hält Nahrung den Tick nicht.</span></div>
+        </div>
+        <div class="storeline">
+          <div class="head"><span><b>Brennholz</b></span><span class="num">100&nbsp;%</span></div>
+          <div class="meter store"><i style="width: 100%"></i></div>
+          <div class="subrow"><span class="sub num">Ziel 3,5 · Stand 5,7</span><div class="slider" style="width: 120px"><span class="knob" style="left: 46%"></span></div></div>
+        </div>
+      </section>
+
+      <div class="frame">
+        <section class="tile people">
+          <h2>Menschen</h2>
+          <div class="count num">23</div>
+          <div class="chart">
+            <svg width="100%" height="54" viewBox="0 0 270 70" preserveAspectRatio="none">
+              <path d="M0 19 L40 16 L80 13 L110 25 L150 28 L190 25 L230 23 L270 25 L270 70 L0 70 Z" fill="#b0722a" opacity="0.5"/>
+              <path d="M0 44 L40 41 L80 37 L110 47 L150 51 L190 48 L230 46 L270 48 L270 70 L0 70 Z" fill="#33707c" opacity="0.55"/>
+            </svg>
+          </div>
+          <div class="legendrow sub"><span><i class="dot" style="background: #b0722a; opacity: 0.6"></i>Erwachsene 14</span><span><i class="dot" style="background: #33707c; opacity: 0.6"></i>Kinder 9</span></div>
+          <p class="brakeline sub">Die Beeren-Suche kostet das Zweieinhalbfache — die Geburtenbremse zieht an.</p>
+        </section>
+
+        <section class="tile log">
+          <h2>Ereignisse</h2>
+          <p class="sub num" style="padding: 0 14px 6px">Wetterwurf 1,41</p>
+          <ul>
+            <li><span class="t num">78</span><span>Sichel fertiggestellt</span></li>
+            <li><span class="t num">62</span><span>Weiterziehen ist jetzt ausführbar</span></li>
+            <li><span class="t num">61</span><span>Weiterziehen fertiggestellt</span></li>
+            <li><span class="t num">60</span><span>Gerben fertiggestellt</span></li>
+            <li><span class="t num">49</span><span>Knochennadel ist jetzt ausführbar</span></li>
+            <li><span class="t num">37</span><span>Steinaxt ist jetzt ausführbar</span></li>
+            <li><span class="t num">34</span><span>Pfeil und Bogen fertiggestellt</span></li>
+            <li><span class="t num">31</span><span>Knochennadel wird sichtbar</span></li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </body>
+</html>
