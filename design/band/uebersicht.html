@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <title>mmtsim — Band, Gesamtbild (Tick 96)</title>
+    <link rel="stylesheet" href="./mmt.css" />
+  </head>
+  <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="i-berry" viewBox="0 0 18 18">
+        <path d="M9.3 5.4c.2-2 1.7-3.3 3.7-3.6-.2 2.1-1.5 3.3-3.3 3.6z" />
+        <circle cx="9" cy="7.9" r="3" />
+        <circle cx="5.5" cy="11.6" r="3.2" />
+        <circle cx="12.5" cy="11.6" r="3.2" />
+      </symbol>
+      <symbol id="i-flame" viewBox="0 0 18 18">
+        <path
+          d="M9 1.5c.4 2.3 1.7 3.5 2.7 4.7 1.2 1.4 1.9 2.7 1.9 4.4a4.6 4.6 0 0 1-9.2 0c0-1.8.8-3.1 1.9-4.2-.1 2 .5 3 1.4 3.3.7.2 1.3-.4 1.3-1.3 0-1.6-.9-2.7 0-6.9z"
+        />
+      </symbol>
+      <symbol id="i-child" viewBox="0 0 18 18">
+        <circle cx="9" cy="4.3" r="2.7" />
+        <path
+          d="M9 7.6c-2.3 0-3.8 1.3-3.8 3.3v2.3h1.4l.4 3.4h4l.4-3.4h1.4v-2.3c0-2-1.5-3.3-3.8-3.3z"
+        />
+      </symbol>
+      <symbol id="i-garment" viewBox="0 0 18 18">
+        <path
+          d="M7 2.3 3.3 4.6l1.6 3.7 1.5-.9v8.3h5.2V7.4l1.5.9 1.6-3.7L11 2.3a2.05 2.05 0 0 1-4 0z"
+        />
+      </symbol>
+      <symbol id="i-bowl" viewBox="0 0 18 18">
+        <path d="M4.2 8.2a4.8 3.3 0 0 1 9.6 0z" />
+        <path d="M1.7 9.2h14.6c0 3.7-3.3 6.4-7.3 6.4s-7.3-2.7-7.3-6.4z" />
+      </symbol>
+      <!-- Behaglichkeit: eine Gestalt, die mit angezogenen Knien am Boden liegt.
+           Bewusst keine Bogenwellen — die lesen sich als Funk, nicht als Wärme. -->
+      <symbol id="i-comfort" viewBox="0 0 18 18">
+        <circle cx="3.6" cy="10.6" r="2.4" />
+        <path
+          d="M5.6 13.6c.2-2.4 1.6-4 3.4-4 1.2 0 2.1.7 2.6 1.7.6-1 1.5-1.6 2.6-1.6 1.7 0 2.8 1.3 2.8 3.1 0 .3 0 .6-.1.8z"
+        />
+        <rect x="1.2" y="13.6" width="15.6" height="1.6" rx="0.8" />
+      </symbol>
+    </svg>
+
+    <div class="page">
+      <header class="top">
+        <span class="brand">mmtsim</span>
+        <span class="num" style="font-size: 16px">Tick 96</span>
+        <span class="num" style="color: #b8c2ba">27 Menschen</span>
+        <nav class="timegrips">
+          <button title="Ein Tick">⏯</button>
+          <button class="primary" title="Bis zum Haltepunkt">⏩</button>
+          <button title="Laufen lassen">▶</button>
+        </nav>
+        <nav class="lang"><button class="on">DE</button><button>EN</button></nav>
+      </header>
+
+      <section class="tile band">
+        <div class="bandhead">
+          <h2>Gesamtübersicht</h2>
+          <span class="sub"
+            >Wichtigstes links · Breite = was volle Deckung diesen Tick kostet · Füllung = was
+            ankam</span
+          >
+        </div>
+        <div class="bandrow">
+          <div class="fld" style="flex-grow: 30" title="Essen">
+            <span class="fill" style="width: 100%"></span>
+            <svg class="ico"><use href="#i-berry" /></svg>
+          </div>
+          <div class="fld" style="flex-grow: 3" title="Feuer">
+            <span class="fill" style="width: 100%"></span>
+            <svg class="ico"><use href="#i-flame" /></svg>
+          </div>
+          <div class="fld" style="flex-grow: 11" title="Kinderhut">
+            <span class="fill" style="width: 100%"></span>
+            <svg class="ico"><use href="#i-child" /></svg>
+          </div>
+          <div class="fld claim" style="flex-grow: 6" title="Fischernetz">
+            <span class="fill" style="width: 50%"></span>
+            <span class="lip"><i></i><i></i><i></i></span>
+            <span class="pct ocker num">50 %</span>
+          </div>
+          <div class="fld" style="flex-grow: 5" title="Kleidung">
+            <span class="fill" style="width: 100%"></span>
+            <svg class="ico"><use href="#i-garment" /></svg>
+          </div>
+          <div class="fld claim" style="flex-grow: 1" title="Ziel Brennholz">
+            <span class="fill" style="width: 100%"></span>
+            <span class="lip"><i></i><i></i><i></i></span>
+          </div>
+          <div class="fld short" style="flex-grow: 16" title="Sattessen">
+            <span class="fill" style="width: 62%"></span>
+            <svg class="ico"><use href="#i-bowl" /></svg>
+            <span class="pct crit num">62 %</span>
+          </div>
+          <div class="fld empty" style="flex-grow: 7" title="Behaglichkeit">
+            <span class="fill" style="width: 0%"></span>
+            <svg class="ico"><use href="#i-comfort" /></svg>
+            <span class="pct dark num">0 %</span>
+          </div>
+          <div class="fld claim" style="flex-grow: 11" title="Vorrat Nahrung">
+            <span class="fill" style="width: 37%"></span>
+            <span class="lip"><i></i><i></i><i></i></span>
+            <span class="pct ocker num">37 %</span>
+          </div>
+          <div class="fld idle" style="flex-grow: 10"><span>Arbeit liegt brach</span></div>
+        </div>
+        <div class="names">
+          <div style="flex-grow: 30"></div>
+          <div style="flex-grow: 3"></div>
+          <div style="flex-grow: 11"></div>
+          <div class="claim" style="flex-grow: 6"><span>Fischernetz</span></div>
+          <div style="flex-grow: 5"></div>
+          <div class="claim" style="flex-grow: 1"><span>Ziel Brennholz</span></div>
+          <div style="flex-grow: 16"></div>
+          <div style="flex-grow: 7"></div>
+          <div class="claim" style="flex-grow: 11"><span>Vorrat Nahrung</span></div>
+          <div style="flex-grow: 10"></div>
+        </div>
+      </section>
+
+      <section class="tile cat">
+        <h2>Vorhaben</h2>
+        <div class="scroll">
+          <h3>Läuft</h3>
+          <div class="card">
+            <div class="head">
+              <span class="name">Fischernetz</span
+              ><span class="chip crit">bekommt keine Arbeit</span>
+            </div>
+            <div class="progress"><i style="width: 50%"></i></div>
+          </div>
+          <h3>Ausführbar</h3>
+          <div class="card">
+            <div class="head">
+              <span class="name">Feuerlegen</span
+              ><button class="startbtn" title="Starten">▶</button>
+            </div>
+            <p class="sub">Ein Brand macht das Land eine Weile üppiger.</p>
+            <p class="sub num">Arbeit 4 · ≈ 1 Tick · Totholz 30 — liegt bereit</p>
+          </div>
+          <div class="card">
+            <div class="head">
+              <span class="name">Vorratsgrube <span class="chip num">×3</span></span
+              ><button class="startbtn" title="Starten">▶</button>
+            </div>
+            <p class="sub">Eine Grube speichert Nahrung für Krisen.</p>
+            <p class="sub num">Arbeit 24 · ≈ 6 Ticks · Brennholz 10 ≈ 2 Ticks Nachschub</p>
+          </div>
+          <h3>In Sicht</h3>
+          <div class="card">
+            <div class="head">
+              <span class="name" style="color: var(--muted)">Sesshaftigkeit</span>
+            </div>
+            <p class="sub">Bleiben: dein Volk bindet sich an diesen Ort.</p>
+            <div class="needsbar">
+              <div class="progress"><i style="width: 70%"></i></div>
+              <span class="sub num">Speicher je Kopf 70 %</span>
+            </div>
+            <div class="needsbar">
+              <div class="progress"><i style="width: 52%"></i></div>
+              <span class="sub num">Fischgründe 52 %</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="head">
+              <span class="name" style="color: var(--muted)">Knochennadel</span>
+            </div>
+            <div class="needsbar">
+              <div class="progress"><i style="width: 62%"></i></div>
+              <span class="sub num">Übung im Gerben 62 %</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="mid">
+        <section class="tile range">
+          <h2>Revier</h2>
+          <div class="rows">
+            <div class="stand">
+              <div>
+                <div class="topline">
+                  <span class="label">Beeren</span
+                  ><span class="sub num tap">reicht&nbsp;~19&nbsp;Ticks</span>
+                </div>
+                <div class="meter"><i style="width: 51%"></i></div>
+                <p class="sub">das Feuerlegen wirkt noch</p>
+              </div>
+              <span class="effort"
+                ><span class="word hot tap">sehr mühsam</span
+                ><svg width="96" height="18" viewBox="0 0 96 18">
+                  <path d="M0 14 L24 13 L48 9 L72 6 L96 3" fill="none" stroke="#97352c" stroke-width="1.5" />
+                  <circle cx="94" cy="3" r="2.2" fill="#97352c" /></svg
+              ></span>
+              <div class="standtip">
+                <span class="num"
+                  >Ausbeute der Beeren-Suche: <b style="color: var(--crit)">−58 %</b> seit
+                  Ankunft · Stand 70 von 138</span
+                >
+              </div>
+            </div>
+            <div class="stand">
+              <div>
+                <div class="topline">
+                  <span class="label">Wild</span
+                  ><span class="sub num tap">reicht&nbsp;~46&nbsp;Ticks</span>
+                </div>
+                <div class="meter"><i style="width: 62%"></i></div>
+              </div>
+              <span class="effort"
+                ><span class="word tap">mühsam</span
+                ><svg width="96" height="18" viewBox="0 0 96 18">
+                  <path d="M0 13 L24 11 L48 10 L72 9 L96 8" fill="none" stroke="#67706a" stroke-width="1.5" />
+                  <circle cx="94" cy="8" r="2.2" fill="#67706a" /></svg
+              ></span>
+            </div>
+            <div class="stand">
+              <div>
+                <div class="topline">
+                  <span class="label">Fisch</span
+                  ><span class="sub num tap">reicht&nbsp;~9&nbsp;Ticks</span>
+                </div>
+                <div class="meter"><i style="width: 54%"></i></div>
+              </div>
+              <span class="effort"
+                ><span class="word hot tap">sehr mühsam</span
+                ><svg width="96" height="18" viewBox="0 0 96 18">
+                  <path d="M0 15 L24 13 L48 11 L72 7 L96 4" fill="none" stroke="#97352c" stroke-width="1.5" />
+                  <circle cx="94" cy="4" r="2.2" fill="#97352c" /></svg
+              ></span>
+            </div>
+            <div class="stand">
+              <div>
+                <div class="topline">
+                  <span class="label">Totholz</span
+                  ><span class="sub num tap">reicht&nbsp;~56&nbsp;Ticks</span>
+                </div>
+                <div class="meter"><i style="width: 95%"></i></div>
+              </div>
+              <span class="effort"
+                ><span class="word tap">leicht</span
+                ><svg width="96" height="18" viewBox="0 0 96 18">
+                  <path d="M0 10 L96 9" fill="none" stroke="#67706a" stroke-width="1.5" />
+                  <circle cx="94" cy="9" r="2.2" fill="#67706a" /></svg
+              ></span>
+            </div>
+            <div class="stand">
+              <div>
+                <div class="topline">
+                  <span class="label">Muscheln</span
+                  ><span class="sub">unberührt — die Reserve</span>
+                </div>
+                <div class="meter"><i style="width: 100%"></i></div>
+              </div>
+              <span class="effort"
+                ><span class="word tap">leicht</span
+                ><svg width="96" height="18" viewBox="0 0 96 18">
+                  <path d="M0 10 L96 10" fill="none" stroke="#67706a" stroke-width="1.5" /></svg
+              ></span>
+            </div>
+          </div>
+          <div class="movebox">
+            <span class="num" style="line-height: 1.5"
+              ><b>Nebenan:</b> Land&nbsp;−7&nbsp;% · Suche leichter</span
+            >
+            <button>Weiterziehen …</button>
+          </div>
+        </section>
+
+        <section class="tile stores">
+          <h2>Vorräte</h2>
+          <div class="body">
+            <div class="storeline">
+              <div class="head">
+                <span
+                  ><b>Nahrung</b> <span class="chip">Ziel = was die Gruben fassen</span></span
+                ><span class="num">37&nbsp;%</span>
+              </div>
+              <div class="meter store"><i style="width: 37%"></i></div>
+              <div class="subrow">
+                <span class="sub">3 Gruben — sie verfallen langsam · hält noch ~4 Ticks Hunger</span>
+                <svg width="88" height="22" viewBox="0 0 88 22">
+                  <path
+                    d="M0 19 L22 19 L22 12 L46 12 L46 6 L72 6 L72 5 L88 5"
+                    fill="none"
+                    stroke="#33707c"
+                    stroke-width="1.5"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div class="storeline">
+              <div class="head">
+                <span><b>Brennholz</b></span><span class="num">100&nbsp;%</span>
+              </div>
+              <div class="meter store"><i style="width: 100%"></i></div>
+              <div class="subrow">
+                <span class="sub num">Ziel 14 — ~6 Ticks Feuer</span>
+                <div class="slider" style="width: 128px"><span class="knob" style="left: 46%"></span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="frame">
+        <section class="tile people">
+          <h2>Menschen</h2>
+          <div class="count num">27</div>
+          <p class="sub num" style="padding: 2px 14px 0">
+            diesen Tick: 1 gestorben · niemand geboren
+          </p>
+          <div class="chart">
+            <svg width="100%" height="76" viewBox="0 0 270 76" preserveAspectRatio="none">
+              <path
+                d="M0 20 L40 17 L80 14 L110 27 L150 30 L190 27 L230 25 L270 27 L270 76 L0 76 Z"
+                fill="#b0722a"
+                opacity="0.5"
+              />
+              <path
+                d="M0 47 L40 44 L80 40 L110 51 L150 55 L190 52 L230 50 L270 52 L270 76 L0 76 Z"
+                fill="#33707c"
+                opacity="0.55"
+              />
+              <line x1="110" y1="5" x2="110" y2="76" stroke="#97352c" stroke-width="1" opacity="0.5" />
+            </svg>
+          </div>
+          <div class="legendrow sub">
+            <span><i class="dot" style="background: #b0722a; opacity: 0.6"></i>Erwachsene 18</span
+            ><span><i class="dot" style="background: #33707c; opacity: 0.6"></i>Kinder 9</span>
+          </div>
+          <p class="brakeline">
+            <span class="tap"
+              >Das Suchen ist mühsam geworden — nur 46 % der möglichen Kinder kommen zur
+              Welt.</span
+            >
+          </p>
+        </section>
+
+        <section class="tile log">
+          <h2>Ereignisse</h2>
+          <p class="sub num" style="padding: 0 14px 6px">Wetterwurf 1,31</p>
+          <ul>
+            <li>
+              <span class="t num">96</span
+              ><span class="crisis">Der harte Winter: 1 Mensch stirbt an Hunger</span>
+            </li>
+            <li><span class="t num">94</span><span>Feuerlegen ist wieder ausführbar</span></li>
+            <li><span class="t num">90</span><span>Zwirnen fertiggestellt</span></li>
+            <li><span class="t num">88</span><span>Fischernetz ist jetzt ausführbar</span></li>
+            <li>
+              <span class="t num">84</span
+              ><span class="crisis">Der harte Winter: 2 Menschen sterben an Hunger</span>
+            </li>
+            <li>
+              <span class="t num">76</span
+              ><span>Vorratsgrube fertiggestellt <span class="num">(×3)</span></span>
+            </li>
+            <li><span class="t num">60</span><span>Steinaxt fertiggestellt</span></li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </body>
+</html>
