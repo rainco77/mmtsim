@@ -4300,7 +4300,11 @@ der Bremsteppich. Darunter die Auswege nach den vier Regeln, und **ein Ausweg-Gr
 nennt sein Ziel** („Vor Kleidung ziehen"). Das Vorziehen wirkt auf alle Ressourcen
 des Vorhabens, weil dessen Güter-Ansprüche mit seinem Rang in der Zuteilung stehen.
 Die Oberfläche führt dafür je Vorhaben den Tick der letzten eigenen Handlung —
-reine Oberflächen-Buchführung, kein Kern-Feld.
+reine Oberflächen-Buchführung, kein Kern-Feld. **Die Folge eines Ausweg-Griffs ist
+die Reihenfolge, nie die Dauer:** „Vor Kleidung ziehen — das Netz wird dann vor der
+Kleidung bedient." Das ist deterministisch wahr, benennt Gewinn und Preis in einem
+und verspricht nichts übers Wetter; ob es schneller fertig wird, zeigen danach
+Bremsteppich und Faktenzeile. Generische Wendung mit Namen-Slots.
 
 **Die Erklärkarte eines Bedarfsfelds ist abgenommen** — Name mit Deckung, ein Satz zur
 Breite, der Verlauf der Deckung mit gestrichelter Voll-Linie, darunter der
