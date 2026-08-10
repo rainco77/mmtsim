@@ -337,11 +337,7 @@ b {
 /* Labour that no process called for: hatched, and without an icon. */
 .fld.idle {
   background:
-    repeating-linear-gradient(
-      45deg,
-      transparent 0 5px,
-      rgba(103, 112, 106, 0.3) 5px 7px
-    ),
+    repeating-linear-gradient(45deg, transparent 0 5px, rgba(103, 112, 106, 0.3) 5px 7px),
     var(--sunk);
   justify-content: center;
   color: var(--muted);

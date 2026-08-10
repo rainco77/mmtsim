@@ -4,11 +4,42 @@
     <meta charset="utf-8" />
     <title>Entwurf A — Leiter dominiert die Mitte</title>
     <style>
-      * { box-sizing: border-box; margin: 0; }
-      body { font-family: system-ui, sans-serif; width: 1280px; height: 800px; overflow: hidden; background: #ddd; color: #333; }
-      .box { background: #c9c9c9; border: 2px solid #999; border-radius: 6px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 15px; color: #444; padding: 8px; }
-      .box small { display: block; font-size: 11px; color: #666; margin-top: 4px; }
-      .page { display: grid; width: 100%; height: 100%; gap: 8px; padding: 8px;
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      body {
+        font-family: system-ui, sans-serif;
+        width: 1280px;
+        height: 800px;
+        overflow: hidden;
+        background: #ddd;
+        color: #333;
+      }
+      .box {
+        background: #c9c9c9;
+        border: 2px solid #999;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 15px;
+        color: #444;
+        padding: 8px;
+      }
+      .box small {
+        display: block;
+        font-size: 11px;
+        color: #666;
+        margin-top: 4px;
+      }
+      .page {
+        display: grid;
+        width: 100%;
+        height: 100%;
+        gap: 8px;
+        padding: 8px;
         grid-template-columns: 250px 1fr 300px;
         grid-template-rows: 52px 1fr 1fr 220px;
         grid-template-areas:
@@ -17,25 +48,64 @@
           "cat    ladder log"
           "cat    lower  log";
       }
-      .top { grid-area: top; background: #b5b5b5; }
-      .cat { grid-area: cat; }
-      .ladder { grid-area: ladder; background: #bfc7b8; }
-      .lower { grid-area: lower; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: none; border: none; padding: 0; }
-      .people { grid-area: people; }
-      .log { grid-area: log; }
+      .top {
+        grid-area: top;
+        background: #b5b5b5;
+      }
+      .cat {
+        grid-area: cat;
+      }
+      .ladder {
+        grid-area: ladder;
+        background: #bfc7b8;
+      }
+      .lower {
+        grid-area: lower;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        background: none;
+        border: none;
+        padding: 0;
+      }
+      .people {
+        grid-area: people;
+      }
+      .log {
+        grid-area: log;
+      }
     </style>
   </head>
   <body>
     <div class="page">
-      <div class="box top">Kopfleiste — Tick · Zeit-Griffe · Laufstatus <small>(Rahmen)</small></div>
-      <div class="box cat">Vorhaben-Katalog<br /><small>laufend · ausführbar · in Sicht<br />(Rahmen-Ort, epochaler Inhalt)</small></div>
-      <div class="box ladder">DIE RANGLEITER<br /><small>Bedarfe · laufende Projekte · Vorgaben<br />aufklappbar · freie Arbeit als Fuß<br />(Mitte — größtes Element)</small></div>
+      <div class="box top">
+        Kopfleiste — Tick · Zeit-Griffe · Laufstatus <small>(Rahmen)</small>
+      </div>
+      <div class="box cat">
+        Vorhaben-Katalog<br /><small
+          >laufend · ausführbar · in Sicht<br />(Rahmen-Ort, epochaler Inhalt)</small
+        >
+      </div>
+      <div class="box ladder">
+        DIE RANGLEITER<br /><small
+          >Bedarfe · laufende Projekte · Vorgaben<br />aufklappbar · freie Arbeit als
+          Fuß<br />(Mitte — größtes Element)</small
+        >
+      </div>
       <div class="lower">
-        <div class="box">Revier<br /><small>Stände · Suchkosten · Wander-Paar</small></div>
+        <div class="box">
+          Revier<br /><small>Stände · Suchkosten · Wander-Paar</small>
+        </div>
         <div class="box">Vorräte<br /><small>Füllstand · Kapazität</small></div>
       </div>
-      <div class="box people">Menschen<br /><small>Kopfzahl · geboren/gestorben · Bremse<br />(Rahmen)</small></div>
-      <div class="box log">Ereignis-Log<br /><small>+ künftig Aufgestiegenes (BIP …)<br />(Rahmen, wächst)</small></div>
+      <div class="box people">
+        Menschen<br /><small>Kopfzahl · geboren/gestorben · Bremse<br />(Rahmen)</small>
+      </div>
+      <div class="box log">
+        Ereignis-Log<br /><small
+          >+ künftig Aufgestiegenes (BIP …)<br />(Rahmen, wächst)</small
+        >
+      </div>
     </div>
   </body>
 </html>
