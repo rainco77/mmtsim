@@ -3937,12 +3937,16 @@ schrumpft, ohne dass etwas schiefgeht. Der **freie Lauf** ignoriert die weichen
 Haltepunkte (Projekte), hält aber bei Not-Toten und am Ende; Pause geht jederzeit.
 
 **Der Lauf zeigt seine Ticks.** „Lauf bis Haltepunkt" rechnet sofort, spielt die
-gerechneten Ticks aber **sichtbar gerafft** ab — Größenordnung zehn je Sekunde, der
-genaue Takt wird am laufenden Spiel austariert —, bis er am Haltepunkt steht. Die
+gerechneten Ticks aber **sichtbar gerafft** ab, bis er am Haltepunkt steht. Die
 Kopfleiste zeigt dabei den laufenden Tick; Pause hält am gerade angezeigten, die
-restlichen schon gerechneten verfallen. Der freie Lauf bleibt das gemütlichere Tempo.
-Der Grund: Ein Sprung ans Ende zerreißt die Kausalität — man muss sehen können, wie
-sich die Lage zum Haltepunkt hin entwickelt hat.
+restlichen schon gerechneten verfallen. Der Grund: Ein Sprung ans Ende zerreißt die
+Kausalität — man muss sehen können, wie sich die Lage zum Haltepunkt hin entwickelt hat.
+
+**Beide Läufe haben denselben Takt** — Größenordnung zwei Ticks je Sekunde —, und der
+**erste Tick eines Laufs erscheint sofort**, der Takt beginnt erst danach. Zwei
+Geschwindigkeiten für dasselbe Bild lesen sich als zwei verschiedene Vorgänge, und ein
+Griff, der vor seiner Antwort wartet, liest sich als ein Griff, der nicht genommen hat.
+Der Takt ist eine feste Größe und keine Einstellung des Spielers.
 
 **Die Momente.** Zwei Stufen, klar getrennt. **Große Momente** sind Einblendungen, die
 den Lauf anhalten, selten und darum wertvoll: die Begrüßung am Start (ein Satz Lage,
