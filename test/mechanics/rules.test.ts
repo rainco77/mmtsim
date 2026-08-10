@@ -881,10 +881,32 @@ describe("the next range (E13, E29)", () => {
     );
   });
 
+  it("a started move completes on the next tick, however scarce the hands", () => {
+    // Walking is never put off for want of hands. The cost is set beyond
+    // anything a community could perform in a tick, and the move is over on
+    // the tick after it was started all the same — while a thing that is built
+    // under the same cost and the same minimum duration does not move at all.
+    const outOfReach = 400;
+    const config: Config = {
+      ...STAGE1,
+      projects: STAGE1.projects.map((p) =>
+        p.id === "range_change" || p.id === "fire_setting"
+          ? { ...p, laborCost: outOfReach }
+          : p,
+      ),
+    };
+    const local = indexConfig(config);
+    const start = createState(config, { seed: 7 });
+    const started = (id: string): GameState =>
+      tick(apply(start, { type: "startProject", id }, local).state, local);
+
+    expect(completedCount(started("range_change"), "range_change")).toBe(1);
+    expect(completedCount(started("fire_setting"), "fire_setting")).toBe(0);
+  });
+
   it("the move settles the range that was scouted, not the offer at arrival", () => {
-    // The offer is redrawn every tick, and the walking takes ticks. Whatever
-    // the draw does meanwhile, the range moved into is the one the decision
-    // was made on.
+    // The offer is redrawn every tick. Whatever the draw does, the range moved
+    // into is the one the decision was made on.
     const scoutedAt = 1 + STAGE1.land.qualitySpread;
     let state: GameState = { ...createState(STAGE1, { seed: 7 }), landOffer: scoutedAt };
     const before = state.unownedCapacity["wilderness"]!.quality;

@@ -1091,6 +1091,12 @@ als seine Mindestdauer, nie kürzer.
 > Arbeitseinheiten hergestellt und **weggeworfen**, während der Fortschrittsbalken
 > stehenblieb.
 
+**Ausgenommen ist, was die Gemeinschaft mit sich selbst tut.** Der Weiterzug ist kein
+Werk, in das Arbeit gesteckt wird, sondern die Gemeinschaft in Bewegung: Er nimmt von
+seinen Kosten, was da ist, und ist trotzdem nach seiner Mindestdauer fertig — einmal
+begonnen, im nächsten Tick, wie knapp die Arbeit auch sei. Alles Gebaute bleibt am
+knappsten seiner Mittel und kann länger dauern.
+
 **„Projekte werden zuerst finanziert" ist ein Rang, keine Phase.** Ein Projekt ist ein
 Verbraucher von Arbeit und Beständen wie jeder andere; es geht als Nachfrage in
 dieselbe Planung wie die Bedürfnisse (E9 — die Rangfolge der Bedürfnisse), nicht in
@@ -1099,9 +1105,10 @@ eine eigene Phase davor.
 **Und der Rang ist eine Zahl, die das Projekt trägt — vom Spieler gesetzt.** Jedes
 Projekt einzeln: Für einen Speicher geht man vielleicht hungern, für ein Denkmal nicht.
 Die Voreinstellung steht im Inhalt und liegt **hinter allen Bedürfnissen**: gebaut wird
-aus dem, was übrig ist, nie aus jemandes Abendessen. Im Kern ist es eine freie Zahl,
-damit jede Stellung ausdrückbar ist; was die Oberfläche davon anbietet — freie Wahl oder
-ein paar benannte Plätze —, entscheidet die Hülle (T1).
+aus dem, was übrig ist, nie aus jemandes Abendessen. Die eine Ausnahme ist der
+Weiterzug, dessen Voreinstellung **vor allen Bedürfnissen** steht (E29). Im Kern ist es
+eine freie Zahl, damit jede Stellung ausdrückbar ist; was die Oberfläche davon anbietet
+— freie Wahl oder ein paar benannte Plätze —, entscheidet die Hülle (T1).
 
 Der beste Platz ist mit ziemlicher Sicherheit **keines der beiden Enden**: über den
 Rängen, die nur Behaglichkeit und Kinder kosten, und unter denen, die Leben kosten.
@@ -3045,6 +3052,13 @@ zurück.
 Gemeinschaft, die ihren ganzen Hausstand mit sich trägt, ist am ersten Tick so frei zu
 gehen wie am hundertsten. Ausführbar ist er, solange nicht sesshaft — sonst steht nichts
 davor.
+
+**Und er wird nicht aufgeschoben.** Sein Anspruch auf Arbeit steht **vor jedem Bedarf**,
+nicht hinter allen: Am Tick des Aufbruchs wird gegangen statt gearbeitet. Kosten darf er
+Arbeit, aber begonnen ist er im nächsten Tick vollzogen, wie knapp die Arbeit auch sei —
+gerade dann, wenn das Revier erschöpft ist und nichts übrig bleibt, ist Weiterziehen die
+Antwort. Wovon der Zug ausgeht, bleibt unberührt: Er vollzieht sich auf dem Revier, auf
+das hin entschieden wurde, nicht auf dem, das der Wurf beim Ankommen gerade anbietet.
 
 **Was der Zustand des Reviers entscheidet, ist allein seine Stellung in der Reihenfolge
 der möglichen Projekte.** Je dünner die Bestände, desto weiter oben steht das Angebot. Das

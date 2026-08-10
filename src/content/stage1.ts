@@ -27,6 +27,14 @@ import type { Config } from "../sim/config.ts";
  */
 const PROJECTS_LAST = 1000;
 
+/**
+ * In front of every need — the ranks of the needs begin above this. Reserved
+ * for the one undertaking that is the community itself in motion rather than
+ * something being built: it is not paid for out of what is left over, because
+ * on the tick it happens there is nothing else being done.
+ */
+const MOVING_FIRST = 0;
+
 export const STAGE1: Config = {
   // The whole tick as one ranked program, solved (E21). Under trial against the
   // older way, which is still here and still a line away.
@@ -1152,7 +1160,14 @@ export const STAGE1: Config = {
       // nothing.
       visibleWhen: [{ kind: "rule", id: "settled", set: false }],
       availableWhen: [{ kind: "rule", id: "settled", set: false }],
-      defaultRank: PROJECTS_LAST,
+      // **Walking is what a band does, and it is never put off for want of
+      // hands.** So the claim stands in front of every need rather than behind
+      // them all: on the tick the community leaves, it walks instead of
+      // working, and the searching that would have fed it happens on the new
+      // range. A move that had to wait its turn behind the fire was a decision
+      // taken and then not carried out — precisely when the range is spent and
+      // nothing is left over is when walking away is the answer.
+      defaultRank: MOVING_FIRST,
       // Packing up and walking, not half a season: about a third of what the
       // community performs in a tick. Against what it frees — the ranks below
       // comfort cost some five points less of the work for a handful of ticks —
@@ -1160,6 +1175,10 @@ export const STAGE1: Config = {
       laborCost: 8,
       stockCost: {},
       minTicks: 1,
+      // And the walking gets done in that one tick whatever the hands are: the
+      // people who carry the camp are the people who walk, so there is no
+      // half-finished move to be paced by anything.
+      alwaysAtFullPace: true,
       effects: [
         // Left behind: what is in the ground and what is stacked.
         {
