@@ -42,22 +42,6 @@
         />
         <rect x="1.2" y="13.6" width="15.6" height="1.6" rx="0.8" />
       </symbol>
-      <!-- Fischernetz: a net bag hanging from its head rope, its mesh drawn as
-           crossing cord. Strokes, not fills - a net is holes held together. -->
-      <symbol id="i-net" viewBox="0 0 18 18">
-        <g
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.15"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M1.9 4.4h14.2" />
-          <path d="M2.9 4.4 9 15.6 15.1 4.4" />
-          <path d="M5.9 4.4 12 11.4M12.1 4.4 6 11.4" />
-          <path d="M4.2 8.1h9.6" />
-        </g>
-      </symbol>
       <!-- Ziel Brennholz: three split logs stacked at the camp, each with air
            around it so the pile does not read as one block. Deliberately no
            flame - the flame belongs to the need Feuer. -->
@@ -86,54 +70,117 @@
 
       <!-- The band in its normal state, with every kind of field: covered needs, one
            need short in crisis red, an empty rank at 0 %, a building project, two
-           store goals, and the hatched field for labour nobody called for. -->
+           store goals, and the hatched field for labour nobody called for.
+           Every field carries its writing twice: the dark copy for the pale
+           ground, the light copy clipped to the fill, so the tone switches
+           exactly at the fill edge. --f is the fill width and feeds both. -->
       <div class="panel big">
         <div class="bandrow">
-          <div class="fld" style="flex-grow: 30" title="Essen">
-            <span class="fill" style="width: 100%"></span>
-            <svg class="ico"><use href="#i-berry" /></svg><span class="nm">Essen</span>
+          <div class="fld" style="flex-grow: 30; --f: 100%" title="Essen">
+            <span class="fill"></span>
+            <span class="lay dark"
+              ><svg class="ico"><use href="#i-berry" /></svg
+              ><span class="nm">Essen</span></span
+            >
+            <span class="lay light"
+              ><svg class="ico"><use href="#i-berry" /></svg
+              ><span class="nm">Essen</span></span
+            >
           </div>
-          <div class="fld" style="flex-grow: 3" title="Feuer">
-            <span class="fill" style="width: 100%"></span>
-            <svg class="ico"><use href="#i-flame" /></svg><span class="nm">Feuer</span>
+          <div class="fld" style="flex-grow: 3; --f: 100%" title="Feuer">
+            <span class="fill"></span>
+            <span class="lay dark"
+              ><svg class="ico"><use href="#i-flame" /></svg
+              ><span class="nm">Feuer</span></span
+            >
+            <span class="lay light"
+              ><svg class="ico"><use href="#i-flame" /></svg
+              ><span class="nm">Feuer</span></span
+            >
           </div>
-          <div class="fld" style="flex-grow: 11" title="Kinderhut">
-            <span class="fill" style="width: 100%"></span>
-            <svg class="ico"><use href="#i-child" /></svg
-            ><span class="nm">Kinderhut</span>
+          <div class="fld" style="flex-grow: 11; --f: 100%" title="Kinderhut">
+            <span class="fill"></span>
+            <span class="lay dark"
+              ><svg class="ico"><use href="#i-child" /></svg
+              ><span class="nm">Kinderhut</span></span
+            >
+            <span class="lay light"
+              ><svg class="ico"><use href="#i-child" /></svg
+              ><span class="nm">Kinderhut</span></span
+            >
           </div>
-          <div class="fld claim build" style="flex-grow: 6" title="Fischernetz">
-            <span class="fill" style="width: 50%"></span>
-            <span class="lip"><i></i><i></i><i></i></span
-            ><svg class="ico"><use href="#i-net" /></svg>
-            <span class="pct ocker num">50 %</span>
+          <!-- A running project carries no sign: ochre frame, build colour and
+               its name below the band say what it is. -->
+          <div class="fld claim build" style="flex-grow: 6; --f: 50%" title="Fischernetz">
+            <span class="fill"></span>
+            <span class="lay dark"><span class="pct num">50 %</span></span>
+            <span class="lay light"><span class="pct num">50 %</span></span>
+            <span class="lip"><i></i><i></i><i></i></span>
           </div>
-          <div class="fld" style="flex-grow: 5" title="Kleidung">
-            <span class="fill" style="width: 100%"></span>
-            <svg class="ico"><use href="#i-garment" /></svg
-            ><span class="nm">Kleidung</span>
+          <div class="fld" style="flex-grow: 5; --f: 100%" title="Kleidung">
+            <span class="fill"></span>
+            <span class="lay dark"
+              ><svg class="ico"><use href="#i-garment" /></svg
+              ><span class="nm">Kleidung</span></span
+            >
+            <span class="lay light"
+              ><svg class="ico"><use href="#i-garment" /></svg
+              ><span class="nm">Kleidung</span></span
+            >
           </div>
-          <div class="fld claim store" style="flex-grow: 1" title="Ziel Brennholz">
-            <span class="fill" style="width: 100%"></span>
-            <span class="lip"><i></i><i></i><i></i></span
-            ><svg class="ico"><use href="#i-logs" /></svg>
+          <div
+            class="fld claim store"
+            style="flex-grow: 1; --f: 100%"
+            title="Ziel Brennholz"
+          >
+            <span class="fill"></span>
+            <span class="lay dark"
+              ><svg class="ico"><use href="#i-logs" /></svg
+            ></span>
+            <span class="lay light"
+              ><svg class="ico"><use href="#i-logs" /></svg
+            ></span>
+            <span class="lip"><i></i><i></i><i></i></span>
           </div>
-          <div class="fld short" style="flex-grow: 16" title="Sattessen">
-            <span class="fill" style="width: 62%"></span>
-            <svg class="ico"><use href="#i-bowl" /></svg><span class="nm">Sattessen</span>
-            <span class="pct crit num">62 %</span>
+          <div class="fld short" style="flex-grow: 16; --f: 62%" title="Sattessen">
+            <span class="fill"></span>
+            <span class="lay dark"
+              ><svg class="ico"><use href="#i-bowl" /></svg
+              ><span class="nm">Sattessen</span
+              ><span class="pct crit num">62 %</span></span
+            >
+            <span class="lay light"
+              ><svg class="ico"><use href="#i-bowl" /></svg
+              ><span class="nm">Sattessen</span
+              ><span class="pct crit num">62 %</span></span
+            >
           </div>
-          <div class="fld empty" style="flex-grow: 7" title="Behaglichkeit">
-            <span class="fill" style="width: 0%"></span>
-            <svg class="ico"><use href="#i-comfort" /></svg
-            ><span class="nm">Behaglichkeit</span>
-            <span class="pct dark num">0 %</span>
+          <div class="fld" style="flex-grow: 7; --f: 0%" title="Behaglichkeit">
+            <span class="fill"></span>
+            <span class="lay dark"
+              ><svg class="ico"><use href="#i-comfort" /></svg
+              ><span class="nm">Behaglichkeit</span><span class="pct num">0 %</span></span
+            >
+            <span class="lay light"
+              ><svg class="ico"><use href="#i-comfort" /></svg
+              ><span class="nm">Behaglichkeit</span><span class="pct num">0 %</span></span
+            >
           </div>
-          <div class="fld claim store" style="flex-grow: 11" title="Vorrat Nahrung">
-            <span class="fill" style="width: 37%"></span>
-            <span class="lip"><i></i><i></i><i></i></span
-            ><svg class="ico"><use href="#i-pit" /></svg>
-            <span class="pct ocker num">37 %</span>
+          <div
+            class="fld claim store"
+            style="flex-grow: 11; --f: 37%"
+            title="Vorrat Nahrung"
+          >
+            <span class="fill"></span>
+            <span class="lay dark"
+              ><svg class="ico"><use href="#i-pit" /></svg
+              ><span class="pct num">37 %</span></span
+            >
+            <span class="lay light"
+              ><svg class="ico"><use href="#i-pit" /></svg
+              ><span class="pct num">37 %</span></span
+            >
+            <span class="lip"><i></i><i></i><i></i></span>
           </div>
           <div class="fld idle" style="flex-grow: 10">
             <span>Arbeit liegt brach</span>
@@ -178,12 +225,24 @@
               </p>
               <span class="sw lbl"><i></i><i></i></span>
               <p>
-                Dieselbe <b>Mindestbreite</b> überall — fürs <b>Zeichen</b> und die
-                greifbare Lippe; auch Ansprüche tragen eines. Breitere Felder zeigen
-                <b>Namen</b> und Zahl.
+                <b>Mindestbreite</b> überall — für Lippe und <b>Zeichen</b>. Vorratsziele
+                tragen eines, laufende Vorhaben keines; breite Felder den <b>Namen</b>.
+              </p>
+              <span class="sw two"
+                ><i class="f"></i>
+                <span class="lay dark"><i class="d"></i><i class="w"></i></span>
+                <span class="lay light"><i class="d"></i><i class="w"></i></span
+              ></span>
+              <p>
+                Beschriftungen wechseln an der <b>Füllkante</b> den Ton: hell auf der
+                Füllung, dunkel daneben. Die <b>Zahl</b> fällt nur bei Platznot neben dem
+                Zeichen.
               </p>
               <span class="sw hat"></span>
-              <p><b>Schraffur</b> ist Arbeit, die kein Verfahren abgerufen hat.</p>
+              <p>
+                <b>Schraffur</b> ist Arbeit, die kein Verfahren abgerufen hat; zu schmal,
+                trägt sie allein.
+              </p>
             </div>
           </div>
 
@@ -213,26 +272,49 @@
             <h3>Sonderfall: die Namen stoßen zusammen</h3>
             <div class="panel">
               <div class="bandrow tight">
-                <div class="fld" style="flex: 0 0 120px">
-                  <span class="fill" style="width: 100%"></span>
-                  <svg class="ico"><use href="#i-berry" /></svg
-                  ><span class="nm">Essen</span>
+                <div class="fld" style="flex: 0 0 120px; --f: 100%">
+                  <span class="fill"></span>
+                  <span class="lay dark"
+                    ><svg class="ico"><use href="#i-berry" /></svg
+                    ><span class="nm">Essen</span></span
+                  >
+                  <span class="lay light"
+                    ><svg class="ico"><use href="#i-berry" /></svg
+                    ><span class="nm">Essen</span></span
+                  >
                 </div>
-                <div class="fld claim store" style="flex: 0 0 44px">
-                  <span class="fill" style="width: 100%"></span>
-                  <span class="lip"><i></i><i></i><i></i></span
-                  ><svg class="ico"><use href="#i-logs" /></svg>
+                <!-- No number on these two: at the minimum width sign and number
+                     cannot stand side by side, so the number falls away. -->
+                <div class="fld claim store" style="flex: 0 0 44px; --f: 100%">
+                  <span class="fill"></span>
+                  <span class="lay dark"
+                    ><svg class="ico"><use href="#i-logs" /></svg
+                  ></span>
+                  <span class="lay light"
+                    ><svg class="ico"><use href="#i-logs" /></svg
+                  ></span>
+                  <span class="lip"><i></i><i></i><i></i></span>
                 </div>
-                <div class="fld claim store" style="flex: 0 0 44px">
-                  <span class="fill" style="width: 37%"></span>
-                  <span class="lip"><i></i><i></i><i></i></span
-                  ><svg class="ico"><use href="#i-pit" /></svg>
+                <div class="fld claim store" style="flex: 0 0 44px; --f: 37%">
+                  <span class="fill"></span>
+                  <span class="lay dark"
+                    ><svg class="ico"><use href="#i-pit" /></svg
+                  ></span>
+                  <span class="lay light"
+                    ><svg class="ico"><use href="#i-pit" /></svg
+                  ></span>
+                  <span class="lip"><i></i><i></i><i></i></span>
                 </div>
-                <!-- No number here: this field is too narrow to hold one clear of
-                     its fill, so it falls away just as a name would. -->
-                <div class="fld short" style="flex: 0 0 92px">
-                  <span class="fill" style="width: 62%"></span>
-                  <svg class="ico"><use href="#i-bowl" /></svg>
+                <div class="fld short" style="flex: 0 0 92px; --f: 62%">
+                  <span class="fill"></span>
+                  <span class="lay dark"
+                    ><svg class="ico"><use href="#i-bowl" /></svg
+                    ><span class="pct crit num">62 %</span></span
+                  >
+                  <span class="lay light"
+                    ><svg class="ico"><use href="#i-bowl" /></svg
+                    ><span class="pct crit num">62 %</span></span
+                  >
                 </div>
               </div>
               <div class="collide" style="width: 320px">
@@ -254,8 +336,8 @@
                 <span class="leadname" style="left: 246px">Vorrat Nahrung</span>
               </div>
               <p class="cap">
-                Namen, die sich überlappen würden, rücken auseinander; eine dünne Linie
-                führt zurück. Die Zeile bleibt eine Zeile hoch.
+                Überlappende Namen rücken auseinander; eine dünne Linie führt zurück. Die
+                Zeile bleibt eine Zeile hoch.
               </p>
             </div>
           </div>
@@ -266,7 +348,8 @@
           <div class="explain">
             <h4>Fischernetz <span class="cov build num">gebaut 50 %</span></h4>
             <p class="means">
-              Halb geknüpft liegt das Netz da; kein Tick Arbeit daran geht verloren.
+              Das Netz liegt am Ufer, so weit geknüpft, wie du knüpfen ließest; kein Tick
+              Arbeit daran geht verloren.
             </p>
             <p class="cost sub num">
               Arbeit 20 · ≈ 5 Ticks · bei diesem Rang noch ~9 Ticks
@@ -296,8 +379,8 @@
           <div class="explain">
             <h4>Ziel Brennholz <span class="cov store num">gefüllt 100 %</span></h4>
             <p class="means">
-              Am Lager liegt so viel Brennholz, wie du halten wolltest — es bleibt liegen,
-              bis das Feuer es holt.
+              Das Brennholz am Lager rührt niemand an, bis das Feuer es holt — dafür
+              hältst du es zurück.
             </p>
             <p class="cost sub num">Ziel 14 · hält ~6 Ticks Feuer</p>
             <p class="width">
