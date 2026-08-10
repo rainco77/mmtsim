@@ -1,6 +1,6 @@
-/* Tokens, Textstile und Kachel-Innereien sind aus mock4 übernommen und gelten
-   unverändert. Neu ist allein das Band und der Grundriss, der ohne die
-   Leiter-Spalte auskommt. */
+/* Tokens, text styles and tile interiors are taken from mock4 and hold
+   unchanged. New here is only the band itself and a layout that works without
+   a ladder column. */
 :root {
   --ground: #eceee9;
   --surface: #f8f9f6;
@@ -20,8 +20,21 @@
   --p-fish: #4d7f8c;
   --p-hunt: #a3703c;
   --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
+
+  /* Band measurements — explained at the band itself, further down. */
+  --fld-h: 46px;
+  --claim-h: 58px;
+  --lip-h: 13px;
+  --lip-gap: 3px;
+  --fld-min: 44px;
+  --fld-gap: 3px;
+  --fld-r: 5px;
+  --band-pad: 14px;
+  --band-top: 13px;
+  --name-h: 16px;
+  --card-gap: 8px;
 }
-/* Drei Textstile + Zahlenstil: h2 (Serif) · Grundtext 14 · .sub 12,5 grau · .num */
+/* Three text styles plus a numeral style: h2 (serif) - body 14 - .sub 12.5 grey - .num */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -54,7 +67,7 @@ b {
   cursor: pointer;
 }
 
-/* ---------- Grundriss: die Leiter-Spalte fällt weg, das Band wird Kopfzeile ---------- */
+/* ---------- Layout: no ladder column; the band is the header element ---------- */
 .page {
   display: grid;
   width: 100%;
@@ -137,11 +150,35 @@ b {
   color: var(--ink);
 }
 
-/* ---------- Das Band ---------- */
+/* ---------- The band ----------
+   Every measurement of the band is a token here. Whoever builds the band reads
+   them off and invents none of their own.
+
+   --fld-h     46px  height of a need field
+   --claim-h   58px  height of a claim segment: field height + lip + air
+   --lip-h     13px  height of the lip, the overhang carrying the three grips
+   --lip-gap    3px  air between lip and fill. The fill never reaches the lip,
+                     not even at a standing of 100 %
+   --fld-min   44px  minimum width of EVERY field, need and claim alike - any
+                     narrower and the icon could not be drawn nor the field
+                     grasped. What one field gains this way the others lose in
+                     proportion; the explainer card explains the distortion
+   --fld-gap    3px  distance between two fields
+   --fld-r      5px  corner radius of a field
+   --band-pad  14px  inset of the band, left and right
+   --band-top  13px  air above the need fields, into which the lips reach:
+                     (--claim-h - --fld-h) + 1
+   --name-h    16px  height of the name row below the band
+   --card-gap   8px  distance from the explainer card to the band's lower edge
+
+   A field's width is flex-grow = its share of the full-coverage cost reckoning
+   of this tick (the shares sum to 100), with flex-basis 0. */
 .band {
   grid-area: band;
   padding-bottom: 4px;
 }
+/* The band head carries its title and nothing else. There is no permanent
+   explainer line: the elder introduces the convention once, and it holds. */
 .bandhead {
   display: flex;
   align-items: baseline;
@@ -153,29 +190,22 @@ b {
   font-size: 17px;
   font-weight: 600;
 }
-.bandhead .sub {
-  margin-left: auto;
-  text-align: right;
-}
 
-/* Ansprüche stehen höher als die Bedarfsfelder; die Lippe braucht Luft darüber. */
+/* Claims stand taller than need fields; the lip needs air above it. The lower
+   edge of the band stays flush - it is the reading line for the names. */
 .bandrow {
   display: flex;
   align-items: flex-end;
-  gap: 3px;
-  padding: 13px 14px 0;
-}
-.bandrow.lipdown {
-  align-items: flex-start;
-  padding: 4px 14px 14px;
+  gap: var(--fld-gap);
+  padding: var(--band-top) var(--band-pad) 0;
 }
 
 .fld {
   position: relative;
   flex: 0 1 0;
-  height: 46px;
-  min-width: 34px;
-  border-radius: 5px;
+  height: var(--fld-h);
+  min-width: var(--fld-min);
+  border-radius: var(--fld-r);
   background: var(--sunk);
   overflow: hidden;
   display: flex;
@@ -184,7 +214,7 @@ b {
   padding: 0 7px;
   cursor: pointer;
 }
-/* Die Füllung liegt hinter Zeichen und Zahl und wächst von links. */
+/* The fill lies behind icon and number and grows from the left. */
 .fld > .fill {
   position: absolute;
   left: 0;
@@ -210,8 +240,8 @@ b {
   color: rgba(248, 249, 246, 0.94);
   font-variant-numeric: tabular-nums;
 }
-/* Zeichen und Zahl stehen mal auf der Füllung, mal auf dem leeren Grund —
-   die Farbe folgt dem Grund, auf dem sie liegen. */
+/* Icon and number sit sometimes on the fill, sometimes on the empty ground -
+   their colour follows the ground they lie on. */
 .fld.empty > .ico {
   color: var(--muted);
 }
@@ -225,51 +255,50 @@ b {
   color: var(--accent-ink);
 }
 
-/* Anspruch: höher, ockerfarben, mit Lippe und Greifpunkten. Ocker heißt im
-   ganzen Spiel „deins, verschiebbar". */
+/* A claim: taller, outlined in ochre, with a lip and grips. Throughout the
+   game ochre means "yours, movable". Outline and lip together are the frame of
+   the segment. */
 .fld.claim {
-  height: 58px;
-  min-width: 44px;
+  height: var(--claim-h);
   border: 1.5px solid var(--accent-ink);
   align-items: flex-end;
   padding-bottom: 11px;
 }
+/* A claim's fill starts below the lip and never reaches it - the --lip-gap
+   strip stays visible at every standing. The fill carries the colour of its
+   kind: building project ochre, store goal teal. */
 .fld.claim > .fill {
+  top: calc(var(--lip-h) + var(--lip-gap));
+}
+.fld.claim.build > .fill {
   background: var(--accent);
 }
+.fld.claim.store > .fill {
+  background: var(--store);
+}
+/* The lip is always solid ochre - never translucent, never touched by the
+   fill. It is the grip: three dots, light on the ochre. */
 .lip {
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
-  height: 13px;
-  background: rgba(125, 79, 26, 0.22);
-  border-bottom: 1px solid rgba(125, 79, 26, 0.35);
+  height: var(--lip-h);
+  background: var(--accent-ink);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 3px;
+  cursor: grab;
 }
 .lip i {
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: var(--accent-ink);
-  opacity: 0.75;
-}
-.bandrow.lipdown .fld.claim {
-  align-items: flex-start;
-  padding-bottom: 0;
-  padding-top: 11px;
-}
-.bandrow.lipdown .lip {
-  top: auto;
-  bottom: 0;
-  border-bottom: none;
-  border-top: 1px solid rgba(125, 79, 26, 0.35);
+  background: rgba(248, 249, 246, 0.92);
 }
 
-/* Arbeit, die kein Verfahren abgerufen hat: schraffiert, ohne Zeichen. */
+/* Labour that no process called for: hatched, and without an icon. */
 .fld.idle {
   background:
     repeating-linear-gradient(
@@ -287,22 +316,20 @@ b {
   white-space: nowrap;
 }
 
-/* Namenszeile — nur Ansprüche tragen einen Namen. */
+/* Name row - only claims carry a name. It is one line high and stays one line
+   high even when names collide. */
 .names {
   display: flex;
-  gap: 3px;
-  padding: 4px 14px 0;
+  gap: var(--fld-gap);
+  padding: 4px var(--band-pad) 0;
 }
 .names > div {
   flex: 0 1 0;
-  min-width: 34px;
+  min-width: var(--fld-min);
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  height: 16px;
-}
-.names > div.claim {
-  min-width: 44px;
+  height: var(--name-h);
 }
 .names span {
   white-space: nowrap;
@@ -310,8 +337,22 @@ b {
   color: var(--accent-ink);
   font-weight: 600;
 }
+/* When two names would collide they move apart and a thin line leads back to
+   their field. The row does not grow. */
+.leader {
+  display: block;
+}
+.leadname {
+  position: absolute;
+  top: 14px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-ink);
+}
 
-/* ---------- Vorhaben (links) ---------- */
+/* ---------- Project catalogue (left) ---------- */
 .cat {
   grid-area: cat;
   overflow: hidden;
@@ -396,7 +437,7 @@ b {
   margin-top: 0;
 }
 
-/* ---------- Mitte: Revier über Vorräten ---------- */
+/* ---------- Middle column: range above stores ---------- */
 .mid {
   grid-area: mid;
   display: flex;
@@ -408,8 +449,8 @@ b {
   flex: 1 1 auto;
   overflow: hidden;
 }
-/* Die Bestände teilen sich die gewonnene Höhe, statt einen leeren Streifen
-   über dem Wander-Paar stehen zu lassen. */
+/* The stocks share the available height rather than leaving an empty strip
+   above the migration pair. */
 .range .rows {
   flex: 1 1 auto;
   min-height: 0;
@@ -508,7 +549,7 @@ b {
   cursor: pointer;
 }
 
-/* Vorräte liegen jetzt nebeneinander — die Breite war vorher nicht da. */
+/* The two stores stand side by side: the column is wide enough for it. */
 .stores {
   flex: 0 0 auto;
 }
@@ -557,7 +598,7 @@ b {
   border: 2px solid var(--accent);
 }
 
-/* ---------- Rahmen rechts ---------- */
+/* ---------- Frame column (right) ---------- */
 .frame {
   grid-area: frame;
   display: flex;
@@ -622,14 +663,21 @@ b {
   font-weight: 600;
 }
 
-/* ---------- Erklärkarte am Band ---------- */
+/* ---------- Explainer card at the band ----------
+   The card floats at its field and shifts no layout. It always opens DOWNWARD:
+   its top edge sits --card-gap below the flush lower edge of the band. The lips
+   of the claims reach upward, so neither the card nor its trend curve ever
+   covers a neighbour's grip.
+   The beak sits above the centre of the tapped field; if that centre comes
+   closer than 24px to a card edge, the card moves, not the beak.
+   Only ever one card open, and in it only ever one curve. */
 .explain {
   position: absolute;
   width: 396px;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 10px;
-  padding: 14px 16px 16px;
+  padding: 12px 14px 14px;
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.2);
   z-index: 5;
 }
@@ -652,11 +700,39 @@ b {
   justify-content: space-between;
   gap: 10px;
 }
+/* The number in the card head: for a need the coverage of this tick, for a
+   claim the overall standing reached. Its colour follows the kind. */
 .explain h4 .cov {
   font-family: system-ui, sans-serif;
   font-size: 15px;
   color: var(--crit);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.explain h4 .cov.build {
+  color: var(--accent-ink);
+}
+.explain h4 .cov.store {
+  color: var(--store);
+}
+/* The width sentence. Both numbers share the same base, the share of this
+   tick's labour, and the German "davon" binds the second to the first, so the
+   second number needs no unit of its own. */
+.explain .width {
+  margin-top: 5px;
+  line-height: 1.45;
+}
+/* What a claim's fill means: the overall standing, not one tick's coverage.
+   Stated on every claim card, because the reading changes here. */
+.explain .means {
+  margin-top: 5px;
+  line-height: 1.45;
+}
+/* The cost line in the notation of the project catalogue: every bare number
+   carries its anchor in ticks. */
+.explain .cost {
+  margin-top: 7px;
+  line-height: 1.5;
 }
 .explain .curve {
   margin: 10px 0 4px;
@@ -664,6 +740,17 @@ b {
 .explain .rule {
   border-top: 1px dashed var(--line);
   margin: 10px 0;
+}
+/* The amount grip of a store goal - the same setting as in the stores tile,
+   a second window onto it. */
+.explain .goalgrip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+.explain .goalgrip .slider {
+  flex: 1;
 }
 .ways {
   display: flex;
@@ -696,15 +783,15 @@ b {
   cursor: pointer;
 }
 
-/* ---------- Zieh-Moment ---------- */
-/* Die Lücke bleibt stehen, damit sichtbar ist, wohin der Anspruch fällt. */
+/* ---------- Drag moment ---------- */
+/* The gap stays open so it is visible where the claim will land. */
 .slot {
   position: relative;
   flex: 0 1 0;
-  min-width: 44px;
-  height: 46px;
+  min-width: var(--fld-min);
+  height: var(--fld-h);
   border: 1.5px dashed var(--accent-ink);
-  border-radius: 5px;
+  border-radius: var(--fld-r);
   background: rgba(176, 114, 42, 0.12);
 }
 .slot > .dragging {
@@ -722,8 +809,8 @@ b {
 .slot > .dragging > .lip {
   border-radius: 3px 3px 0 0;
 }
-/* Die Fahne schwebt über allem — auch über der dunklen Kopfleiste. Darum ist
-   sie hell und trägt einen Schatten, nicht umgekehrt. */
+/* The flag floats above everything, the dark top bar included. That is why it
+   is light and carries a shadow, not the other way round. */
 .droptag {
   position: absolute;
   left: 50%;
@@ -755,7 +842,15 @@ b {
   opacity: 0.55;
 }
 
-/* ---------- Studienseite (band-detail) ---------- */
+/* ---------- Specification sheet (band-detail) ----------
+   Three columns under one full-width band:
+   x 16..366   how the band reads, plus the width sentence per need
+   x 380..776  the explainer card of a claim segment, both kinds
+   x 790..1264 the explainer card of a need field, floating at its field,
+               and the collision case of two names
+   The middle column is exactly as wide as a card (396px); the right column
+   starts where the card must start so that its beak sits over the centre of
+   the "Sattessen" field. */
 .study .sheetpage {
   height: 100%;
   display: flex;
@@ -764,11 +859,11 @@ b {
 }
 .study h1 {
   font-family: var(--serif);
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 600;
 }
 .study .lead {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 .study h3 {
   font-size: 11px;
@@ -776,7 +871,7 @@ b {
   text-transform: uppercase;
   color: var(--muted);
   font-weight: 600;
-  margin: 0 0 6px;
+  margin: 0 0 5px;
 }
 .study .panel {
   background: var(--surface);
@@ -784,21 +879,22 @@ b {
   border-radius: 8px;
   position: relative;
 }
-.hero {
-  position: relative;
-  z-index: 2;
+/* The band at study size: same widths as on the screen, taller fields, so the
+   lip and the gap below it can be read off. */
+.study .big {
+  --fld-h: 54px;
+  --claim-h: 70px;
+  --lip-h: 16px;
+  --lip-gap: 4px;
+  --band-top: 17px;
+  padding-bottom: 8px;
 }
 .study .big .fld {
-  height: 62px;
   gap: 8px;
   padding: 0 10px;
 }
 .study .big .fld.claim {
-  height: 80px;
   padding-bottom: 15px;
-}
-.study .big .lip {
-  height: 17px;
 }
 .study .big .fld > .ico {
   width: 24px;
@@ -807,15 +903,25 @@ b {
 .study .big .fld > .pct {
   font-size: 14px;
 }
-.study .big .bandrow {
-  padding-top: 22px;
-}
-.study .trio {
-  margin-top: auto;
+.study .spec {
+  margin-top: var(--card-gap);
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  grid-template-columns: 350px 396px 1fr;
+  gap: 14px;
   align-items: start;
+  min-height: 0;
+}
+.study .col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+/* On this sheet the card sits in the flow of its column; in the running screen
+   it floats. Everything else about it is identical. */
+.study .explain {
+  position: relative;
+  width: 396px;
 }
 .study .cap {
   font-size: 12.5px;
@@ -826,24 +932,17 @@ b {
 .study .cap b {
   color: var(--ink);
 }
-.leader {
-  display: block;
-}
-.keys {
-  position: absolute;
-  left: 0;
-  top: 152px;
-  width: 566px;
-}
+
+/* The legend: one line per rule of reading. */
 .keygrid {
   display: grid;
   grid-template-columns: 46px 1fr;
-  gap: 12px 14px;
+  gap: 9px 14px;
   align-items: center;
 }
 .keygrid p {
   font-size: 13px;
-  line-height: 1.45;
+  line-height: 1.4;
   color: var(--muted);
 }
 .keygrid p b {
@@ -891,17 +990,51 @@ b {
   background: var(--accent);
   border: 1.5px solid var(--accent-ink);
 }
+.sw.ock i {
+  display: block;
+  height: 5px;
+  background: var(--accent-ink);
+  border-radius: 3px 3px 0 0;
+}
 .sw.hat {
   background:
     repeating-linear-gradient(45deg, transparent 0 5px, rgba(103, 112, 106, 0.3) 5px 7px),
     var(--sunk);
 }
-.leadname {
-  position: absolute;
-  top: 14px;
-  transform: translateX(-50%);
-  white-space: nowrap;
+/* The smallest a field may become, next to the widest one on the sheet. */
+.sw.narrow {
+  width: 22px;
+  background: var(--ok);
+}
+
+/* The width sentence carries one turn of phrase per need; they live in the
+   translation layer, one key each. */
+.phrases {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 10px;
   font-size: 12px;
+  line-height: 1.35;
+}
+.phrases dt {
   font-weight: 600;
-  color: var(--accent-ink);
+  color: var(--ink);
+  white-space: nowrap;
+}
+.phrases dd {
+  color: var(--muted);
+}
+.tail {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+/* The collision case: the two names would overlap, so they move apart and a
+   thin line leads back to the field. */
+.collide {
+  position: relative;
+  height: 30px;
+  margin: 3px var(--band-pad) 0;
 }
