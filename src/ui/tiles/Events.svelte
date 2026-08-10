@@ -4,6 +4,7 @@
   import { translate } from "../../i18n/t.ts";
   import { derive, type GameState } from "../../sim/index.ts";
   import { currentState, distress, game, index } from "../game.ts";
+  import { DISTRESS_KEY, newestTickFirst, type Entry } from "../log.ts";
   import { DISTRESS_TIERS } from "../presentation.ts";
 
   /**
@@ -17,12 +18,6 @@
     ($language) => (key: string, params?: Readonly<Record<string, string | number>>) =>
       translate($language, key, params),
   );
-
-  interface Entry {
-    readonly tick: number;
-    readonly key: string;
-    readonly params: Readonly<Record<string, string | number>>;
-  }
 
   const one = (value: number): string => (Math.round(value * 10) / 10).toFixed(1);
 
@@ -54,7 +49,7 @@
       // language would not turn with the switch.
       entries.push({
         tick,
-        key: "events.distress",
+        key: DISTRESS_KEY,
         params: {
           dead: one(distressDeaths(previous, state)),
           cause: causesOf(state).join("|"),
@@ -115,26 +110,6 @@
     return log;
   }
 
-  /**
-   * Newest tick on top, but the order inside a tick is left alone: the ticks
-   * are turned around, not the lines. A tick that brought distress and four
-   * projects would otherwise show the four first and the distress last — the
-   * one line the player must not miss, pushed to the bottom of its own tick
-   * and out of the tile.
-   */
-  function newestTickFirst(entries: readonly Entry[]): Entry[] {
-    const out: Entry[] = [];
-    let end = entries.length;
-    while (end > 0) {
-      const tick = entries[end - 1]?.tick;
-      let start = end;
-      while (start > 0 && entries[start - 1]?.tick === tick) start -= 1;
-      out.push(...entries.slice(start, end));
-      end = start;
-    }
-    return out;
-  }
-
   $: entries = newestTickFirst(grow($game.history).slice(-40));
   $: view = derive(currentState($game), index);
 
@@ -166,7 +141,7 @@
   {#each entries as entry, i (entry.tick + entry.key + i)}
     <li>
       <span class="tick">{entry.tick}</span>
-      <span>{line(entry)}</span>
+      <span class:crisis={entry.key === DISTRESS_KEY}>{line(entry)}</span>
     </li>
   {:else}
     <li class="empty">{$t("events.nothing")}</li>
@@ -202,5 +177,10 @@
   .empty {
     color: #8a8578;
     font-style: italic;
+  }
+  /* The one line the player must not miss reads as what it is. */
+  .crisis {
+    color: var(--crit);
+    font-weight: 600;
   }
 </style>
