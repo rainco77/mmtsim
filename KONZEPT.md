@@ -4180,7 +4180,11 @@ Arbeit hineinfloss, zeigt die wachsende Füllung.
 Breite, der Verlauf der Deckung mit gestrichelter Voll-Linie, darunter der
 Engpass-Satz mit seinen Auswegen. Der Breiten-Satz spricht dabei **den Spieler an,
 statt technisch zu beschreiben, was er sieht, und vermeidet absolute Zahlen**
-weitestgehend.
+weitestgehend. Seine Form: „Alle satt zu bekommen kostet diesen Tick 16 % der Arbeit —
+angekommen sind 10 %." **Beide Zahlen teilen dieselbe Basis** (Anteil der Arbeit des
+Ticks), damit der Spieler nichts rechnen muss; jeder Bedarf bekommt in der
+Übersetzungsschicht seine eigene Wendung, und bei voller Deckung endet der Satz ohne
+Zahl („— und alle wurden satt").
 
 **Kein Speichern und Laden in der ersten Stufe.** Statt dessen kennt die Oberfläche
 **den ganzen Verlauf des Laufs**, nicht nur den letzten Tick: Für Testzwecke lässt sich
