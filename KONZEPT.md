@@ -3280,7 +3280,7 @@ möglich wird**. Zusätzlich kann er automatisch laufen lassen, auch wenn Aktion
 möglich sind.
 
 **Die Haltepunkte des automatischen Laufs stehen bei der Oberfläche (T9)** — samt der
-Abgrenzung „Not-Tote, nicht Sterben schlechthin", die auch für das Log-Ereignis
+Abgrenzung „Krisentote, nicht Sterben schlechthin", die auch für das Log-Ereignis
 „Menschen gestorben" gilt.
 
 **Was ein Tick bedeutet, wird nicht gesagt** — hier so wenig wie sonst irgendwo (E17).
@@ -3906,9 +3906,10 @@ bei der Umsetzung ändern, wenn es gute Gründe gibt. Sechs Kacheln, eine domina
   unsichtbar, und „alles starten, hinten liegen lassen" fühlte sich nicht nach Spielen
   an.
 - **Ereignis-Log**: rollend, Neuestes oben, jede Zeile mit Ticknummer; der Wetterwurf
-  klein daneben. **Umgedreht werden die Ticks, nicht die Zeilen** — innerhalb eines
-  Ticks bleibt die Reihenfolge, in der die Ereignisse entstehen, und die Not-Meldung
-  steht darin vorn und **im Krisenrot**. Sonst schiebt ein Tick mit vier
+  klein daneben. **Umgedreht werden die Ticks**, und innerhalb eines Ticks darf die
+  Reihenfolge angepasst werden: **Das Ereignis, das einen Halt verursacht hat, steht in
+  seinem Block immer vorn** (so umgesetzt), die Krisen-Meldung dazu **im Krisenrot**.
+  Sonst schiebt ein Tick mit vier
   Projektmeldungen genau die Zeile ans Ende seines Blocks und aus der Kachel, die der
   Spieler nicht übersehen darf. Sechs Ereignisarten in der ersten Stufe, alle aus dem Verlauf
   abgeleitet, den die Oberfläche führt: Menschen gestorben (mit Betrag und Ursache aus
@@ -3947,15 +3948,17 @@ bleiben dieselben.
 
 **Die Haltepunkte des automatischen Laufs.** „Lauf bis zum Haltepunkt" hält bei: einem
 Projekt, das sichtbar wird · einem, das ausführbar wird · einem, das fertig wird (der
-Umzug ist eines davon) · **Not-Toten** · Aufgabe oder Epochenende. „Ausführbar
+Umzug ist eines davon) · **Krisentoten** · Aufgabe oder Epochenende. „Ausführbar
 geworden" zählt nur beim echten Übergang — nicht, wenn ein Wiederholbares nach seinem
-eigenen Abschluss bloß in die Liste zurückkehrt. **Not-Tote** heißt: Der aufgezeichnete
-Überlebensfaktor einer Kohorte liegt unter ihrer Grundrate — nur dann hat ein
-Überlebensrang gefehlt. Alltagssterblichkeit und das Schrumpfen unter der
+eigenen Abschluss bloß in die Liste zurückkehrt. **Krisentote** heißt: Ein als Notlage
+markierter Rang war unterdeckt, und im selben Tick fiel eine Kohorte unter ihre
+Grundrate — die Markierung beschreibt der Krisen-Halt weiter unten. (Gestorbene heißen
+am Spieler **Tote**, in der Krise höchstens **Krisentote**; das Wort „Not-Tote" gibt es
+nicht.) Alltagssterblichkeit und das Schrumpfen unter der
 Traglastbremse sind kein Ereignis und halten nie: Es stirbt in jedem Tick jemand, und
 eine Gemeinschaft, deren Geburten unter die Alltagssterblichkeit gebremst sind,
 schrumpft, ohne dass etwas schiefgeht. Der **freie Lauf** ignoriert die weichen
-Haltepunkte (Projekte), hält aber bei Not-Toten und am Ende; Pause geht jederzeit.
+Haltepunkte (Projekte), hält aber bei Krisentoten und am Ende; Pause geht jederzeit.
 
 **Der Lauf zeigt seine Ticks.** „Lauf bis Haltepunkt" rechnet sofort, spielt die
 gerechneten Ticks aber **sichtbar gerafft** ab, bis er am Haltepunkt steht. Die
@@ -4180,6 +4183,13 @@ Ziel. Die Lesart des Bands bleibt damit einheitlich — Breite = was der Posten 
 Tick an Arbeit beansprucht, Füllung = wie weit der Anspruch erfüllt ist; bei Bedarfen
 ist das eine Sache dieses Ticks, bei Ansprüchen eine Sache des erreichten Standes. Ob
 Arbeit hineinfloss, zeigt die wachsende Füllung.
+
+**Aus der Sichtung der Spezifikation entschieden:** Die Anspruchskarte eines laufenden
+Vorhabens trägt auch die Griffe **Pause und Abbruch** — sie ist die Nachfolgerin der
+alten Leiter-Zeile. **Auch Anspruchs-Segmente tragen ein Zeichen** (damit braucht jedes
+Projekt eines); die Mindestbreite gilt unabhängig davon — sie sichert auch die
+greifbare Lippe. **Bedarfsfelder tragen bei ausreichender Breite zusätzlich ihren
+Namen**; wird das Feld zu schmal, fällt der Name weg und das Zeichen bleibt.
 
 **Die Erklärkarte eines Bedarfsfelds ist abgenommen** — Name mit Deckung, ein Satz zur
 Breite, der Verlauf der Deckung mit gestrichelter Voll-Linie, darunter der
