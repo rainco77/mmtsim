@@ -4191,17 +4191,14 @@ Projekt eines); die Mindestbreite gilt unabhängig davon — sie sichert auch di
 greifbare Lippe. **Bedarfsfelder tragen bei ausreichender Breite zusätzlich ihren
 Namen**; wird das Feld zu schmal, fällt der Name weg und das Zeichen bleibt.
 
-**Aus der zweiten Sichtung entschieden:** Die **Zahl eines Feldes steht auf dem freien
-Grund** rechts und hält Abstand zur Füllung; reicht der Platz dafür nicht, fällt sie weg
-und bleibt der Erklärkarte — dieselbe Regel wie beim Namen. Eine Zahl, die halb auf der
-Füllung und halb daneben liegt, ist unlesbar. **Auch die Anspruchskarten sprechen den
-Spieler an** und reden von der Sache in der Welt — vom halb geknüpften Netz, vom Lager,
-das so viele Ticks Feuer trägt —, nicht von der Anzeige; die Anzeigegesetze (Prozent nur
-für Verhältnisse, Ticks als Kosten-Anker, keine nackte Zahl ohne Anker, „liegt bereit",
-wenn der Bestand die Kosten deckt) gelten dort wie überall. **Jede Anspruchsart hat ihre
-eigene Karte** — laufendes Vorhaben, Vorratsziel mit einstellbarer Menge, Vorrat, dessen
-Größe die Gruben fassen. Dass bei der Nahrung die Gruben das Ziel fassen und es dort
-keinen Mengen-Griff gibt, steht auf der Karte der Nahrung und auf keiner anderen.
+**Aus der zweiten Sichtung entschieden:** Die **Zahl eines Feldes liegt nie auf der
+Kante der Füllung** — sie steht lesbar auf freiem Grund. **Auch die Anspruchskarten
+sprechen den Spieler an** und reden von der Sache in der Welt — vom halb geknüpften
+Netz, vom Lager, das so viele Ticks Feuer trägt —, nicht von der Anzeige; die
+Anzeigegesetze (Prozent nur für Verhältnisse, Ticks als Kosten-Anker, keine nackte Zahl
+ohne Anker, „liegt bereit", wenn der Bestand die Kosten deckt) gelten dort wie überall.
+Dass bei der Nahrung die Gruben das Ziel fassen und es dort keinen Mengen-Griff gibt,
+steht — wenn überhaupt — auf der Karte der Nahrung und auf keiner anderen.
 
 **Die Erklärkarte eines Bedarfsfelds ist abgenommen** — Name mit Deckung, ein Satz zur
 Breite, der Verlauf der Deckung mit gestrichelter Voll-Linie, darunter der
