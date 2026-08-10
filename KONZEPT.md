@@ -4147,6 +4147,17 @@ verstanden. Der Bremse-Satz trägt seine Zahl: „Das Suchen ist mühsam geworde
 gilt: **im Zweifel mehr und kleinere Schritte** — Überfrachtung ist teurer als ein
 Schritt zu viel.
 
+**Die Gesamtübersicht (aus der Band-Iteration entschieden):** Die Bedarfs-Anzeige wird
+ein **horizontales Band als Rahmen-Kopfelement** („Gesamtübersicht" — Ort und Mechanik
+Rahmen, Inhalt Epoche). Verläufe leben **nur in der Erklärkarte** (eine Kurve
+zugleich). Die Feldbreiten werden **nicht geglättet** — Glättung verfälscht, was der
+Tick wirklich tat; das gemessene Zappeln der ehrlichen Anzeige ist als Übersicht
+gewollt. Als Breitenregel ist die **Voll-Deckungs-Kosten-Rechnung** vorgesehen
+(Breite = was volle Deckung des Rangs diesen Tick kosten würde, Füllung = Deckung),
+vorbehaltlich des Haltbar-Fixes: Güter, die getragen statt verbraucht werden, rechnen
+Verfall plus Lücke, nie den Bestand. Bei fehlendem Tick-Ertrag gilt der zuletzt
+bekannte Stückaufwand als Teil der Regel.
+
 **Kein Speichern und Laden in der ersten Stufe.** Statt dessen kennt die Oberfläche
 **den ganzen Verlauf des Laufs**, nicht nur den letzten Tick: Für Testzwecke lässt sich
 damit einfach zurückrollen. Ob der Spieler später auch zurückrollen kann, ist offen.
