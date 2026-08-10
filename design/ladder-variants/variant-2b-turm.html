@@ -25,139 +25,653 @@
         --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
       }
       /* Drei Textstile + Zahlenstil: h2 (Serif) · Grundtext 14 · .sub 12,5 grau · .num */
-      * { box-sizing: border-box; margin: 0; }
-      html, body { width: 100%; height: 100%; overflow: hidden; }
-      body { font-family: system-ui, sans-serif; font-size: 14px; color: var(--ink); background: var(--ground); }
-      .num { font-variant-numeric: tabular-nums; }
-      .sub { font-size: 12.5px; color: var(--muted); }
-      b { font-weight: 600; }
-      .tap { text-decoration: underline dotted var(--muted); text-underline-offset: 3px; cursor: pointer; }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      body {
+        font-family: system-ui, sans-serif;
+        font-size: 14px;
+        color: var(--ink);
+        background: var(--ground);
+      }
+      .num {
+        font-variant-numeric: tabular-nums;
+      }
+      .sub {
+        font-size: 12.5px;
+        color: var(--muted);
+      }
+      b {
+        font-weight: 600;
+      }
+      .tap {
+        text-decoration: underline dotted var(--muted);
+        text-underline-offset: 3px;
+        cursor: pointer;
+      }
 
       .page {
-        display: grid; width: 100%; height: 100%; gap: 10px; padding: 10px;
-        grid-template-columns: minmax(230px, 16vw) min-content minmax(0, 1fr) minmax(262px, 20vw);
+        display: grid;
+        width: 100%;
+        height: 100%;
+        gap: 10px;
+        padding: 10px;
+        grid-template-columns: minmax(230px, 16vw) min-content minmax(0, 1fr) minmax(
+            262px,
+            20vw
+          );
         grid-template-rows: 56px minmax(0, 1fr);
         grid-template-areas: "top top top top" "cat tower side frame";
       }
-      .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; min-height: 0; display: flex; flex-direction: column; }
-      .tile > h2 { font-family: var(--serif); font-size: 17px; font-weight: 600; padding: 10px 14px 6px; }
+      .tile {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .tile > h2 {
+        font-family: var(--serif);
+        font-size: 17px;
+        font-weight: 600;
+        padding: 10px 14px 6px;
+      }
 
-      .top { grid-area: top; background: var(--ink); color: var(--ground); border-radius: 8px; display: flex; align-items: center; gap: 18px; padding: 0 16px; }
-      .top .brand { font-family: var(--serif); font-size: 18px; }
-      .timegrips { margin-left: auto; display: flex; gap: 8px; }
-      .timegrips button { font: inherit; width: 46px; height: 42px; font-size: 19px; border-radius: 8px; border: 1px solid #4a524d; background: #343b37; color: var(--ground); cursor: pointer; }
-      .timegrips button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-      .lang { display: flex; gap: 4px; margin-left: 10px; }
-      .lang button { height: 42px; padding: 0 12px; border-radius: 8px; border: 1px solid #4a524d; background: none; color: #b8c2ba; font: inherit; }
-      .lang button.on { background: var(--ground); color: var(--ink); }
+      .top {
+        grid-area: top;
+        background: var(--ink);
+        color: var(--ground);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 0 16px;
+      }
+      .top .brand {
+        font-family: var(--serif);
+        font-size: 18px;
+      }
+      .timegrips {
+        margin-left: auto;
+        display: flex;
+        gap: 8px;
+      }
+      .timegrips button {
+        font: inherit;
+        width: 46px;
+        height: 42px;
+        font-size: 19px;
+        border-radius: 8px;
+        border: 1px solid #4a524d;
+        background: #343b37;
+        color: var(--ground);
+        cursor: pointer;
+      }
+      .timegrips button.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      .lang {
+        display: flex;
+        gap: 4px;
+        margin-left: 10px;
+      }
+      .lang button {
+        height: 42px;
+        padding: 0 12px;
+        border-radius: 8px;
+        border: 1px solid #4a524d;
+        background: none;
+        color: #b8c2ba;
+        font: inherit;
+      }
+      .lang button.on {
+        background: var(--ground);
+        color: var(--ink);
+      }
 
-      .cat { grid-area: cat; overflow: hidden; }
-      .cat .scroll { overflow-y: auto; padding: 0 10px 10px; display: flex; flex-direction: column; gap: 8px; }
-      .cat h3 { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 10px 4px 2px; font-weight: 600; }
-      .card { background: var(--ground); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
-      .card .head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-      .card .name { font-weight: 600; }
-      .startbtn { width: 44px; height: 44px; border-radius: 50%; border: none; background: var(--accent); color: #fff; font-size: 17px; cursor: pointer; flex: none; }
-      .chip { display: inline-block; font-size: 11.5px; padding: 3px 8px; border-radius: 99px; background: var(--sunk); color: var(--muted); }
-      .chip.crit { background: var(--crit-soft); color: var(--crit); }
-      .progress { height: 8px; border-radius: 4px; background: var(--sunk); overflow: hidden; margin-top: 8px; }
-      .progress i { display: block; height: 100%; background: var(--accent); }
-      .needsbar { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; margin-top: 6px; }
-      .needsbar .sub { white-space: nowrap; text-align: right; }
-      .needsbar .progress { margin-top: 0; }
+      .cat {
+        grid-area: cat;
+        overflow: hidden;
+      }
+      .cat .scroll {
+        overflow-y: auto;
+        padding: 0 10px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .cat h3 {
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin: 10px 4px 2px;
+        font-weight: 600;
+      }
+      .card {
+        background: var(--ground);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px 12px;
+      }
+      .card .head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .card .name {
+        font-weight: 600;
+      }
+      .startbtn {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: none;
+        background: var(--accent);
+        color: #fff;
+        font-size: 17px;
+        cursor: pointer;
+        flex: none;
+      }
+      .chip {
+        display: inline-block;
+        font-size: 11.5px;
+        padding: 3px 8px;
+        border-radius: 99px;
+        background: var(--sunk);
+        color: var(--muted);
+      }
+      .chip.crit {
+        background: var(--crit-soft);
+        color: var(--crit);
+      }
+      .progress {
+        height: 8px;
+        border-radius: 4px;
+        background: var(--sunk);
+        overflow: hidden;
+        margin-top: 8px;
+      }
+      .progress i {
+        display: block;
+        height: 100%;
+        background: var(--accent);
+      }
+      .needsbar {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 8px;
+        margin-top: 6px;
+      }
+      .needsbar .sub {
+        white-space: nowrap;
+        text-align: right;
+      }
+      .needsbar .progress {
+        margin-top: 0;
+      }
 
-      .meter { height: 12px; border-radius: 6px; background: var(--sunk); overflow: hidden; }
-      .meter i { display: block; height: 100%; border-radius: 6px; background: var(--ok); }
-      .meter.short i { background: var(--crit); }
-      .meter.build i { background: var(--accent); }
-      .meter.store i { background: var(--store); }
+      .meter {
+        height: 12px;
+        border-radius: 6px;
+        background: var(--sunk);
+        overflow: hidden;
+      }
+      .meter i {
+        display: block;
+        height: 100%;
+        border-radius: 6px;
+        background: var(--ok);
+      }
+      .meter.short i {
+        background: var(--crit);
+      }
+      .meter.build i {
+        background: var(--accent);
+      }
+      .meter.store i {
+        background: var(--store);
+      }
 
       /* ---- Der Turm ---- */
-      .tower { grid-area: tower; overflow: visible; position: relative; z-index: 5; }
-      .tower > h2, .tower > .sub { width: 0; min-width: 100%; }
-      .tower .body { flex: 1; min-height: 0; display: grid; grid-template-columns: max-content 46px 152px; gap: 8px; padding: 2px 14px 0; }
-      .names, .column { display: flex; flex-direction: column; }
-      .names { min-width: 0; }
-      .names .cell { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: flex-end; text-align: right; white-space: nowrap; }
-      .names .cell .nm { font-weight: 600; }
-      .names .cell .v { color: var(--crit); }
-      .names .cell.none .nm, .names .cell.none .v { color: var(--muted); }
+      .tower {
+        grid-area: tower;
+        overflow: visible;
+        position: relative;
+        z-index: 5;
+      }
+      .tower > h2,
+      .tower > .sub {
+        width: 0;
+        min-width: 100%;
+      }
+      .tower .body {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: max-content 46px 152px;
+        gap: 8px;
+        padding: 2px 14px 0;
+      }
+      .names,
+      .column {
+        display: flex;
+        flex-direction: column;
+      }
+      .names {
+        min-width: 0;
+      }
+      .names .cell {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        text-align: right;
+        white-space: nowrap;
+      }
+      .names .cell .nm {
+        font-weight: 600;
+      }
+      .names .cell .v {
+        color: var(--crit);
+      }
+      .names .cell.none .nm,
+      .names .cell.none .v {
+        color: var(--muted);
+      }
 
-      .column { border-radius: 6px; overflow: hidden; gap: 3px; }
-      .vseg { flex: 1; position: relative; background: var(--sunk); border-radius: 5px; cursor: pointer; overflow: hidden; }
-      .vseg i { position: absolute; left: 0; right: 0; bottom: 0; background: var(--ok-soft); border-top: 2px solid var(--ok); }
-      .vseg.part i { background: var(--crit-soft); border-top-color: var(--crit); }
-      .vseg.open { outline: 2px solid var(--accent); outline-offset: 1px; }
+      .column {
+        border-radius: 6px;
+        overflow: hidden;
+        gap: 3px;
+      }
+      .vseg {
+        flex: 1;
+        position: relative;
+        background: var(--sunk);
+        border-radius: 5px;
+        cursor: pointer;
+        overflow: hidden;
+      }
+      .vseg i {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--ok-soft);
+        border-top: 2px solid var(--ok);
+      }
+      .vseg.part i {
+        background: var(--crit-soft);
+        border-top-color: var(--crit);
+      }
+      .vseg.open {
+        outline: 2px solid var(--accent);
+        outline-offset: 1px;
+      }
 
-      .claims { position: relative; }
-      .cgrip { position: absolute; left: 0; right: 0; min-height: 52px; display: flex; align-items: center; gap: 7px;
-               background: #eef1ea; border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px 6px 6px; cursor: grab; }
-      .cgrip .bars { color: var(--muted); font-size: 16px; }
-      .cgrip .nm { font-weight: 600; display: block; }
-      .cgrip .meter { height: 7px; margin-top: 4px; }
-      .cgrip .txt { min-width: 0; flex: 1; }
-      .lead { position: absolute; height: 2px; background: var(--accent); opacity: 0.5; }
-      .claims .hint { position: absolute; top: 0; right: 0; }
+      .claims {
+        position: relative;
+      }
+      .cgrip {
+        position: absolute;
+        left: 0;
+        right: 0;
+        min-height: 52px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        background: #eef1ea;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 6px 9px 6px 6px;
+        cursor: grab;
+      }
+      .cgrip .bars {
+        color: var(--muted);
+        font-size: 16px;
+      }
+      .cgrip .nm {
+        font-weight: 600;
+        display: block;
+      }
+      .cgrip .meter {
+        height: 7px;
+        margin-top: 4px;
+      }
+      .cgrip .txt {
+        min-width: 0;
+        flex: 1;
+      }
+      .lead {
+        position: absolute;
+        height: 2px;
+        background: var(--accent);
+        opacity: 0.5;
+      }
+      .claims .hint {
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
 
-      .towerfoot { display: flex; align-items: center; gap: 10px; padding: 8px 14px 10px; border-top: 2px solid var(--line); margin-top: 8px; }
-      .towerfoot .meter { flex: 1; height: 8px; }
+      .towerfoot {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 14px 10px;
+        border-top: 2px solid var(--line);
+        margin-top: 8px;
+      }
+      .towerfoot .meter {
+        flex: 1;
+        height: 8px;
+      }
 
       /* Die Bedarfs-Karte schwebt am angetippten Feld und verschiebt kein Layout */
-      .needcard { position: absolute; left: calc(100% + 8px); top: 178px; width: 500px; background: var(--ground); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px 12px; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16); }
-      .needcard .notch { position: absolute; left: -7px; top: 26px; width: 12px; height: 12px; background: var(--ground); border-left: 1px solid var(--line); border-bottom: 1px solid var(--line); transform: rotate(45deg); }
-      .needcard .trend { display: flex; align-items: center; gap: 10px; margin: 6px 0 10px; }
-      .stacks { display: grid; grid-template-columns: 52px 1fr; gap: 5px 10px; align-items: center; }
-      .stacks .sub { text-align: right; }
-      .stack { display: flex; height: 16px; border-radius: 5px; overflow: hidden; }
-      .stack i { display: block; height: 100%; position: relative; }
-      .stack .warn { position: absolute; right: 3px; top: -1px; color: #fff; font-size: 10px; }
-      .legend { display: flex; gap: 14px; }
-      .legend .dot { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; }
-      .segtip { margin-top: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
-      .ways { display: flex; gap: 8px; margin-top: 10px; }
-      .way { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; }
-      .way button { width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--accent); color: #fff; cursor: pointer; }
+      .needcard {
+        position: absolute;
+        left: calc(100% + 8px);
+        top: 178px;
+        width: 500px;
+        background: var(--ground);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px 14px 12px;
+        box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16);
+      }
+      .needcard .notch {
+        position: absolute;
+        left: -7px;
+        top: 26px;
+        width: 12px;
+        height: 12px;
+        background: var(--ground);
+        border-left: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        transform: rotate(45deg);
+      }
+      .needcard .trend {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 6px 0 10px;
+      }
+      .stacks {
+        display: grid;
+        grid-template-columns: 52px 1fr;
+        gap: 5px 10px;
+        align-items: center;
+      }
+      .stacks .sub {
+        text-align: right;
+      }
+      .stack {
+        display: flex;
+        height: 16px;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+      .stack i {
+        display: block;
+        height: 100%;
+        position: relative;
+      }
+      .stack .warn {
+        position: absolute;
+        right: 3px;
+        top: -1px;
+        color: #fff;
+        font-size: 10px;
+      }
+      .legend {
+        display: flex;
+        gap: 14px;
+      }
+      .legend .dot {
+        display: inline-block;
+        width: 9px;
+        height: 9px;
+        border-radius: 2px;
+        margin-right: 5px;
+      }
+      .segtip {
+        margin-top: 8px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 8px 10px;
+      }
+      .ways {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .way {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 6px 10px;
+      }
+      .way button {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: none;
+        background: var(--accent);
+        color: #fff;
+        cursor: pointer;
+      }
 
       /* ---- Revier / Vorräte ---- */
-      .side { grid-area: side; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
-      .range { flex: 1.7; overflow: hidden; }
-      .range .rows { overflow-y: auto; overflow-x: hidden; }
-      .stand { display: grid; grid-template-columns: minmax(0, 1fr) 100px; grid-template-rows: auto auto; align-items: center; column-gap: 10px; padding: 8px 14px 9px; border-top: 1px solid var(--line); }
-      .stand:first-child { border-top: none; }
-      .stand .topline { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
-      .stand .label { font-weight: 600; }
-      .stand .meter { height: 9px; margin-top: 5px; width: 100%; }
-      .stand .effort { grid-row: span 2; text-align: right; }
-      .stand .effort .word { display: block; font-size: 13px; }
-      .stand .effort .word.hot { color: var(--crit); }
-      .stand svg { display: block; margin-left: auto; }
-      .standtip { grid-column: 1 / 3; margin-top: 7px; background: var(--ground); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
-      .movebox { margin-top: auto; border-top: 2px solid var(--line); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-      .movebox button { font: inherit; min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--accent); background: none; color: var(--accent-ink); cursor: pointer; }
+      .side {
+        grid-area: side;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        min-height: 0;
+      }
+      .range {
+        flex: 1.7;
+        overflow: hidden;
+      }
+      .range .rows {
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+      .stand {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 100px;
+        grid-template-rows: auto auto;
+        align-items: center;
+        column-gap: 10px;
+        padding: 8px 14px 9px;
+        border-top: 1px solid var(--line);
+      }
+      .stand:first-child {
+        border-top: none;
+      }
+      .stand .topline {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .stand .label {
+        font-weight: 600;
+      }
+      .stand .meter {
+        height: 9px;
+        margin-top: 5px;
+        width: 100%;
+      }
+      .stand .effort {
+        grid-row: span 2;
+        text-align: right;
+      }
+      .stand .effort .word {
+        display: block;
+        font-size: 13px;
+      }
+      .stand .effort .word.hot {
+        color: var(--crit);
+      }
+      .stand svg {
+        display: block;
+        margin-left: auto;
+      }
+      .standtip {
+        grid-column: 1 / 3;
+        margin-top: 7px;
+        background: var(--ground);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 8px 10px;
+      }
+      .movebox {
+        margin-top: auto;
+        border-top: 2px solid var(--line);
+        padding: 10px 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+      .movebox button {
+        font: inherit;
+        min-height: 44px;
+        padding: 0 16px;
+        border-radius: 8px;
+        border: 1px solid var(--accent);
+        background: none;
+        color: var(--accent-ink);
+        cursor: pointer;
+      }
 
-      .stores { flex: 1; }
-      .storeline { padding: 8px 14px 10px; border-top: 1px solid var(--line); }
-      .storeline:first-of-type { border-top: none; }
-      .storeline .head { display: flex; justify-content: space-between; gap: 8px; }
-      .storeline .meter { height: 9px; margin-top: 6px; width: 100%; }
-      .storeline .subrow { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; gap: 10px; }
-      .slider { height: 12px; border-radius: 6px; background: var(--sunk); position: relative; }
-      .slider .knob { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 28px; height: 28px; border-radius: 50%; background: #fff; border: 2px solid var(--accent); }
+      .stores {
+        flex: 1;
+      }
+      .storeline {
+        padding: 8px 14px 10px;
+        border-top: 1px solid var(--line);
+      }
+      .storeline:first-of-type {
+        border-top: none;
+      }
+      .storeline .head {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .storeline .meter {
+        height: 9px;
+        margin-top: 6px;
+        width: 100%;
+      }
+      .storeline .subrow {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 6px;
+        gap: 10px;
+      }
+      .slider {
+        height: 12px;
+        border-radius: 6px;
+        background: var(--sunk);
+        position: relative;
+      }
+      .slider .knob {
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #fff;
+        border: 2px solid var(--accent);
+      }
 
       /* ---- Menschen / Log ---- */
-      .frame { grid-area: frame; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
-      .people { flex: 0 0 auto; padding-bottom: 8px; }
-      .people .count { font-family: var(--serif); font-size: 40px; padding: 0 14px; line-height: 1; }
-      .people .chart { padding: 0 14px; margin-top: 4px; }
-      .people .legendrow { display: flex; gap: 12px; padding: 4px 14px 0; }
-      .dot { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 4px; }
-      .brakeline { padding: 8px 14px 10px; }
-      .log { flex: 1; overflow: hidden; }
-      .log ul { list-style: none; padding: 0 14px 10px; overflow-y: auto; }
-      .log li { display: flex; gap: 10px; padding: 6px 0; border-top: 1px solid var(--line); }
-      .log li:first-child { border-top: none; }
-      .log .t { color: var(--muted); min-width: 24px; text-align: right; }
-      .log .crisis { color: var(--crit); font-weight: 600; }
+      .frame {
+        grid-area: frame;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        min-height: 0;
+      }
+      .people {
+        flex: 0 0 auto;
+        padding-bottom: 8px;
+      }
+      .people .count {
+        font-family: var(--serif);
+        font-size: 40px;
+        padding: 0 14px;
+        line-height: 1;
+      }
+      .people .chart {
+        padding: 0 14px;
+        margin-top: 4px;
+      }
+      .people .legendrow {
+        display: flex;
+        gap: 12px;
+        padding: 4px 14px 0;
+      }
+      .dot {
+        display: inline-block;
+        width: 9px;
+        height: 9px;
+        border-radius: 2px;
+        margin-right: 4px;
+      }
+      .brakeline {
+        padding: 8px 14px 10px;
+      }
+      .log {
+        flex: 1;
+        overflow: hidden;
+      }
+      .log ul {
+        list-style: none;
+        padding: 0 14px 10px;
+        overflow-y: auto;
+      }
+      .log li {
+        display: flex;
+        gap: 10px;
+        padding: 6px 0;
+        border-top: 1px solid var(--line);
+      }
+      .log li:first-child {
+        border-top: none;
+      }
+      .log .t {
+        color: var(--muted);
+        min-width: 24px;
+        text-align: right;
+      }
+      .log .crisis {
+        color: var(--crit);
+        font-weight: 600;
+      }
     </style>
   </head>
   <body>
@@ -179,30 +693,54 @@
         <div class="scroll">
           <h3>Läuft</h3>
           <div class="card">
-            <div class="head"><span class="name">Fischernetz</span><span class="chip crit">bekommt keine Arbeit</span></div>
+            <div class="head">
+              <span class="name">Fischernetz</span
+              ><span class="chip crit">bekommt keine Arbeit</span>
+            </div>
             <div class="progress"><i style="width: 50%"></i></div>
           </div>
           <h3>Ausführbar</h3>
           <div class="card">
-            <div class="head"><span class="name">Feuerlegen</span><button class="startbtn" title="Starten">▶</button></div>
+            <div class="head">
+              <span class="name">Feuerlegen</span
+              ><button class="startbtn" title="Starten">▶</button>
+            </div>
             <p class="sub">Ein Brand macht das Land eine Weile üppiger.</p>
             <p class="sub num">Arbeit 4 · ≈ 1 Tick · Totholz 30 — liegt bereit</p>
           </div>
           <div class="card">
-            <div class="head"><span class="name">Vorratsgrube <span class="chip num">×3</span></span><button class="startbtn" title="Starten">▶</button></div>
+            <div class="head">
+              <span class="name">Vorratsgrube <span class="chip num">×3</span></span
+              ><button class="startbtn" title="Starten">▶</button>
+            </div>
             <p class="sub">Eine Grube speichert Nahrung für Krisen.</p>
-            <p class="sub num">Arbeit 24 · ≈ 6 Ticks · Brennholz 10 ≈ 2 Ticks Nachschub</p>
+            <p class="sub num">
+              Arbeit 24 · ≈ 6 Ticks · Brennholz 10 ≈ 2 Ticks Nachschub
+            </p>
           </div>
           <h3>In Sicht</h3>
           <div class="card">
-            <div class="head"><span class="name" style="color: var(--muted)">Sesshaftigkeit</span></div>
+            <div class="head">
+              <span class="name" style="color: var(--muted)">Sesshaftigkeit</span>
+            </div>
             <p class="sub">Bleiben: dein Volk bindet sich an diesen Ort.</p>
-            <div class="needsbar"><div class="progress"><i style="width: 70%"></i></div><span class="sub num">Speicher je Kopf 70 %</span></div>
-            <div class="needsbar"><div class="progress"><i style="width: 52%"></i></div><span class="sub num">Fischgründe 52 %</span></div>
+            <div class="needsbar">
+              <div class="progress"><i style="width: 70%"></i></div>
+              <span class="sub num">Speicher je Kopf 70 %</span>
+            </div>
+            <div class="needsbar">
+              <div class="progress"><i style="width: 52%"></i></div>
+              <span class="sub num">Fischgründe 52 %</span>
+            </div>
           </div>
           <div class="card">
-            <div class="head"><span class="name" style="color: var(--muted)">Knochennadel</span></div>
-            <div class="needsbar"><div class="progress"><i style="width: 62%"></i></div><span class="sub num">Übung im Gerben 62 %</span></div>
+            <div class="head">
+              <span class="name" style="color: var(--muted)">Knochennadel</span>
+            </div>
+            <div class="needsbar">
+              <div class="progress"><i style="width: 62%"></i></div>
+              <span class="sub num">Übung im Gerben 62 %</span>
+            </div>
           </div>
         </div>
       </section>
@@ -213,10 +751,16 @@
         <div class="body">
           <div class="names">
             <div class="cell none">
-              <span><span class="nm">Behaglichkeit</span> <span class="v num tap">0 %</span></span>
+              <span
+                ><span class="nm">Behaglichkeit</span>
+                <span class="v num tap">0 %</span></span
+              >
             </div>
             <div class="cell">
-              <span><span class="nm">Sattessen</span> <span class="v num tap">62 %</span></span>
+              <span
+                ><span class="nm">Sattessen</span>
+                <span class="v num tap">62 %</span></span
+              >
             </div>
             <div class="cell">
               <span class="nm">Kleidung</span>
@@ -234,7 +778,9 @@
 
           <div class="column">
             <div class="vseg none" title="Behaglichkeit"></div>
-            <div class="vseg part open" title="Sattessen"><i style="height: 62%"></i></div>
+            <div class="vseg part open" title="Sattessen">
+              <i style="height: 62%"></i>
+            </div>
             <div class="vseg" title="Kleidung"><i style="height: 100%"></i></div>
             <div class="vseg" title="Kinderhut"><i style="height: 100%"></i></div>
             <div class="vseg" title="Feuer"><i style="height: 100%"></i></div>
@@ -242,28 +788,45 @@
           </div>
 
           <div class="claims">
-            <div class="lead" style="bottom: calc(100% - 1px); left: -10px; width: 10px"></div>
+            <div
+              class="lead"
+              style="bottom: calc(100% - 1px); left: -10px; width: 10px"
+            ></div>
             <div class="cgrip" style="bottom: calc(100% - 26px)">
               <span class="bars">≡</span>
-              <span class="txt"><span class="nm">Nahrung <span class="num" style="color: var(--store)">37 %</span></span>
+              <span class="txt"
+                ><span class="nm"
+                  >Nahrung <span class="num" style="color: var(--store)">37 %</span></span
+                >
                 <span class="sub">Vorrat — füllt aus dem Übrigen</span>
-                <div class="meter store"><i style="width: 37%"></i></div></span>
+                <div class="meter store"><i style="width: 37%"></i></div
+              ></span>
             </div>
 
             <div class="lead" style="bottom: 66.66%; left: -10px; width: 10px"></div>
             <div class="cgrip" style="bottom: calc(66.66% - 26px)">
               <span class="bars">≡</span>
-              <span class="txt"><span class="nm">Brennholz <span class="num" style="color: var(--store)">100 %</span></span>
+              <span class="txt"
+                ><span class="nm"
+                  >Brennholz
+                  <span class="num" style="color: var(--store)">100 %</span></span
+                >
                 <span class="sub num">Ziel 14 · hält ~6 Ticks Feuer</span>
-                <div class="meter store"><i style="width: 100%"></i></div></span>
+                <div class="meter store"><i style="width: 100%"></i></div
+              ></span>
             </div>
 
             <div class="lead" style="bottom: 50%; left: -10px; width: 10px"></div>
             <div class="cgrip" style="bottom: calc(50% - 26px)">
               <span class="bars">≡</span>
-              <span class="txt"><span class="nm">Fischernetz <span class="num" style="color: var(--accent-ink)">50 %</span></span>
+              <span class="txt"
+                ><span class="nm"
+                  >Fischernetz
+                  <span class="num" style="color: var(--accent-ink)">50 %</span></span
+                >
                 <span class="sub num">fertig in ~9 Ticks</span>
-                <div class="meter build"><i style="width: 50%"></i></div></span>
+                <div class="meter build"><i style="width: 50%"></i></div
+              ></span>
             </div>
           </div>
         </div>
@@ -278,39 +841,78 @@
           <p><b>Nahrung wird knapp</b> — der Fischfang brach ein.</p>
           <div class="trend num">
             <span>bringt <b>23,9 Nahrung je Tick</b> — gebraucht: 26 · fallend</span>
-            <svg width="90" height="22" viewBox="0 0 90 22"><path d="M0 6 L20 5 L38 8 L56 13 L74 17 L90 15" fill="none" stroke="#97352c" stroke-width="1.5"/><circle cx="90" cy="15" r="2.5" fill="#97352c"/></svg>
+            <svg width="90" height="22" viewBox="0 0 90 22">
+              <path
+                d="M0 6 L20 5 L38 8 L56 13 L74 17 L90 15"
+                fill="none"
+                stroke="#97352c"
+                stroke-width="1.5"
+              />
+              <circle cx="90" cy="15" r="2.5" fill="#97352c" />
+            </svg>
           </div>
           <div class="stacks num">
             <span class="sub">Arbeit</span>
             <div class="stack">
               <i style="width: 52%; background: var(--p-gather)"></i>
-              <i style="width: 29%; background: var(--p-fish)"><span class="warn">▲</span></i>
+              <i style="width: 29%; background: var(--p-fish)"
+                ><span class="warn">▲</span></i
+              >
               <i style="width: 19%; background: var(--p-hunt)"></i>
             </div>
             <span class="sub">Ertrag</span>
             <div class="stack">
               <i style="width: 61%; background: var(--p-gather)"></i>
-              <i style="width: 22%; background: var(--p-fish)"><span class="warn">▲</span></i>
+              <i style="width: 22%; background: var(--p-fish)"
+                ><span class="warn">▲</span></i
+              >
               <i style="width: 17%; background: var(--p-hunt)"></i>
             </div>
           </div>
           <div class="legend sub" style="margin-top: 6px">
-            <span><i class="dot" style="background: var(--p-gather)"></i>Sammeln mit Sichel</span>
+            <span
+              ><i class="dot" style="background: var(--p-gather)"></i>Sammeln mit
+              Sichel</span
+            >
             <span><i class="dot" style="background: var(--p-fish)"></i>Fischfang ▲</span>
             <span><i class="dot" style="background: var(--p-hunt)"></i>Jagd</span>
           </div>
           <div class="segtip">
-            <b>Fischfang</b> — <span class="num">Arbeit 3,4 (29 % der Arbeit) · bringt 5,2 Nahrung (22 %)</span><br />
-            <span class="sub num">Die Fisch-Suche bringt nur noch 42 % dessen, was sie bei eurer Ankunft brachte (−58 %)</span>
+            <b>Fischfang</b> —
+            <span class="num"
+              >Arbeit 3,4 (29 % der Arbeit) · bringt 5,2 Nahrung (22 %)</span
+            ><br />
+            <span class="sub num"
+              >Die Fisch-Suche bringt nur noch 42 % dessen, was sie bei eurer Ankunft
+              brachte (−58 %)</span
+            >
           </div>
           <p class="sub num" style="margin-top: 8px">Die Grube gab her: Vorrat 32 → 20</p>
           <div class="trend num" style="margin: 8px 0 0">
             <span class="sub">Deckung von Sattessen, letzte 20 Ticks — nur hier</span>
-            <svg width="150" height="26" viewBox="0 0 150 26"><path d="M0 4 L34 4 L52 8 L66 20 L80 11 L104 13 L128 15 L150 16 L150 26 L0 26 Z" fill="#ecd7d1"/><path d="M0 4 L34 4 L52 8 L66 20 L80 11 L104 13 L128 15 L150 16" fill="none" stroke="#97352c" stroke-width="1.5"/><circle cx="150" cy="16" r="2.5" fill="#97352c"/></svg>
+            <svg width="150" height="26" viewBox="0 0 150 26">
+              <path
+                d="M0 4 L34 4 L52 8 L66 20 L80 11 L104 13 L128 15 L150 16 L150 26 L0 26 Z"
+                fill="#ecd7d1"
+              />
+              <path
+                d="M0 4 L34 4 L52 8 L66 20 L80 11 L104 13 L128 15 L150 16"
+                fill="none"
+                stroke="#97352c"
+                stroke-width="1.5"
+              />
+              <circle cx="150" cy="16" r="2.5" fill="#97352c" />
+            </svg>
           </div>
           <div class="ways">
-            <div class="way"><span>Das Netz ist halb fertig — Arbeit vorziehen?</span><button title="Rang anheben">↑</button></div>
-            <div class="way"><span>Im nächsten Revier ist die Suche leichter.</span><button title="Weiterziehen">→</button></div>
+            <div class="way">
+              <span>Das Netz ist halb fertig — Arbeit vorziehen?</span
+              ><button title="Rang anheben">↑</button>
+            </div>
+            <div class="way">
+              <span>Im nächsten Revier ist die Suche leichter.</span
+              ><button title="Weiterziehen">→</button>
+            </div>
           </div>
         </div>
       </section>
@@ -321,46 +923,110 @@
           <div class="rows">
             <div class="stand">
               <div>
-                <div class="topline"><span class="label">Beeren</span><span class="sub num tap">reicht&nbsp;~19&nbsp;Ticks</span></div>
+                <div class="topline">
+                  <span class="label">Beeren</span
+                  ><span class="sub num tap">reicht&nbsp;~19&nbsp;Ticks</span>
+                </div>
                 <div class="meter"><i style="width: 51%"></i></div>
                 <p class="sub">das Feuerlegen wirkt noch</p>
               </div>
-              <span class="effort"><span class="word hot tap">sehr mühsam</span><svg width="64" height="16" viewBox="0 0 64 16"><path d="M0 12 L16 11 L32 8 L48 5 L64 3" fill="none" stroke="#97352c" stroke-width="1.5"/><circle cx="64" cy="3" r="2" fill="#97352c"/></svg></span>
+              <span class="effort"
+                ><span class="word hot tap">sehr mühsam</span
+                ><svg width="64" height="16" viewBox="0 0 64 16">
+                  <path
+                    d="M0 12 L16 11 L32 8 L48 5 L64 3"
+                    fill="none"
+                    stroke="#97352c"
+                    stroke-width="1.5"
+                  />
+                  <circle cx="64" cy="3" r="2" fill="#97352c" /></svg
+              ></span>
               <div class="standtip">
-                <span class="num">Ausbeute der Beeren-Suche: <b style="color: var(--crit)">−58 %</b> seit Ankunft · Stand 70 von 138</span>
+                <span class="num"
+                  >Ausbeute der Beeren-Suche: <b style="color: var(--crit)">−58 %</b> seit
+                  Ankunft · Stand 70 von 138</span
+                >
               </div>
             </div>
             <div class="stand">
               <div>
-                <div class="topline"><span class="label">Wild</span><span class="sub num tap">reicht&nbsp;~46&nbsp;Ticks</span></div>
+                <div class="topline">
+                  <span class="label">Wild</span
+                  ><span class="sub num tap">reicht&nbsp;~46&nbsp;Ticks</span>
+                </div>
                 <div class="meter"><i style="width: 62%"></i></div>
               </div>
-              <span class="effort"><span class="word tap">mühsam</span><svg width="64" height="16" viewBox="0 0 64 16"><path d="M0 12 L16 10 L32 9 L48 8 L64 7" fill="none" stroke="#67706a" stroke-width="1.5"/><circle cx="64" cy="7" r="2" fill="#67706a"/></svg></span>
+              <span class="effort"
+                ><span class="word tap">mühsam</span
+                ><svg width="64" height="16" viewBox="0 0 64 16">
+                  <path
+                    d="M0 12 L16 10 L32 9 L48 8 L64 7"
+                    fill="none"
+                    stroke="#67706a"
+                    stroke-width="1.5"
+                  />
+                  <circle cx="64" cy="7" r="2" fill="#67706a" /></svg
+              ></span>
             </div>
             <div class="stand">
               <div>
-                <div class="topline"><span class="label">Fisch</span><span class="sub num tap">reicht&nbsp;~9&nbsp;Ticks</span></div>
+                <div class="topline">
+                  <span class="label">Fisch</span
+                  ><span class="sub num tap">reicht&nbsp;~9&nbsp;Ticks</span>
+                </div>
                 <div class="meter"><i style="width: 54%"></i></div>
               </div>
-              <span class="effort"><span class="word hot tap">sehr mühsam</span><svg width="64" height="16" viewBox="0 0 64 16"><path d="M0 13 L16 12 L32 10 L48 6 L64 4" fill="none" stroke="#97352c" stroke-width="1.5"/><circle cx="64" cy="4" r="2" fill="#97352c"/></svg></span>
+              <span class="effort"
+                ><span class="word hot tap">sehr mühsam</span
+                ><svg width="64" height="16" viewBox="0 0 64 16">
+                  <path
+                    d="M0 13 L16 12 L32 10 L48 6 L64 4"
+                    fill="none"
+                    stroke="#97352c"
+                    stroke-width="1.5"
+                  />
+                  <circle cx="64" cy="4" r="2" fill="#97352c" /></svg
+              ></span>
             </div>
             <div class="stand">
               <div>
-                <div class="topline"><span class="label">Totholz</span><span class="sub num tap">reicht&nbsp;~56&nbsp;Ticks</span></div>
+                <div class="topline">
+                  <span class="label">Totholz</span
+                  ><span class="sub num tap">reicht&nbsp;~56&nbsp;Ticks</span>
+                </div>
                 <div class="meter"><i style="width: 95%"></i></div>
               </div>
-              <span class="effort"><span class="word tap">leicht</span><svg width="64" height="16" viewBox="0 0 64 16"><path d="M0 9 L64 8" fill="none" stroke="#67706a" stroke-width="1.5"/><circle cx="64" cy="8" r="2" fill="#67706a"/></svg></span>
+              <span class="effort"
+                ><span class="word tap">leicht</span
+                ><svg width="64" height="16" viewBox="0 0 64 16">
+                  <path d="M0 9 L64 8" fill="none" stroke="#67706a" stroke-width="1.5" />
+                  <circle cx="64" cy="8" r="2" fill="#67706a" /></svg
+              ></span>
             </div>
             <div class="stand">
               <div>
-                <div class="topline"><span class="label">Muscheln</span><span class="sub">unberührt — die Reserve</span></div>
+                <div class="topline">
+                  <span class="label">Muscheln</span
+                  ><span class="sub">unberührt — die Reserve</span>
+                </div>
                 <div class="meter"><i style="width: 100%"></i></div>
               </div>
-              <span class="effort"><span class="word tap">leicht</span><svg width="64" height="16" viewBox="0 0 64 16"><path d="M0 9 L64 9" fill="none" stroke="#67706a" stroke-width="1.5"/></svg></span>
+              <span class="effort"
+                ><span class="word tap">leicht</span
+                ><svg width="64" height="16" viewBox="0 0 64 16">
+                  <path
+                    d="M0 9 L64 9"
+                    fill="none"
+                    stroke="#67706a"
+                    stroke-width="1.5"
+                  /></svg
+              ></span>
             </div>
           </div>
           <div class="movebox">
-            <span class="num" style="line-height: 1.5"><b>Nebenan:</b> Land&nbsp;−7&nbsp;% · Suche leichter</span>
+            <span class="num" style="line-height: 1.5"
+              ><b>Nebenan:</b> Land&nbsp;−7&nbsp;% · Suche leichter</span
+            >
             <button>Weiterziehen …</button>
           </div>
         </section>
@@ -368,14 +1034,38 @@
         <section class="tile stores">
           <h2>Vorräte</h2>
           <div class="storeline">
-            <div class="head"><span><b>Nahrung</b> <span class="chip">Ziel = was die Gruben fassen</span></span><span class="num">37&nbsp;%</span></div>
+            <div class="head">
+              <span
+                ><b>Nahrung</b>
+                <span class="chip">Ziel = was die Gruben fassen</span></span
+              ><span class="num">37&nbsp;%</span>
+            </div>
             <div class="meter store"><i style="width: 37%"></i></div>
-            <div class="subrow"><span class="sub">3 Gruben — sie verfallen langsam · hält noch ~4 Ticks Hunger</span><svg width="80" height="16" viewBox="0 0 80 16"><path d="M0 14 L20 14 L20 9 L42 9 L42 5 L66 5 L66 4 L80 4" fill="none" stroke="#33707c" stroke-width="1.5"/></svg></div>
+            <div class="subrow">
+              <span class="sub"
+                >3 Gruben — sie verfallen langsam · hält noch ~4 Ticks Hunger</span
+              ><svg width="80" height="16" viewBox="0 0 80 16">
+                <path
+                  d="M0 14 L20 14 L20 9 L42 9 L42 5 L66 5 L66 4 L80 4"
+                  fill="none"
+                  stroke="#33707c"
+                  stroke-width="1.5"
+                />
+              </svg>
+            </div>
           </div>
           <div class="storeline">
-            <div class="head"><span><b>Brennholz</b></span><span class="num">100&nbsp;%</span></div>
+            <div class="head">
+              <span><b>Brennholz</b></span
+              ><span class="num">100&nbsp;%</span>
+            </div>
             <div class="meter store"><i style="width: 100%"></i></div>
-            <div class="subrow"><span class="sub num">Ziel 14 — ~6 Ticks Feuer</span><div class="slider" style="width: 120px"><span class="knob" style="left: 46%"></span></div></div>
+            <div class="subrow">
+              <span class="sub num">Ziel 14 — ~6 Ticks Feuer</span>
+              <div class="slider" style="width: 120px">
+                <span class="knob" style="left: 46%"></span>
+              </div>
+            </div>
           </div>
         </section>
       </div>
@@ -384,28 +1074,71 @@
         <section class="tile people">
           <h2>Menschen</h2>
           <div class="count num">27</div>
-          <p class="sub num" style="padding: 2px 14px 0">diesen Tick: 1 gestorben · niemand geboren</p>
+          <p class="sub num" style="padding: 2px 14px 0">
+            diesen Tick: 1 gestorben · niemand geboren
+          </p>
           <div class="chart">
             <svg width="100%" height="70" viewBox="0 0 270 70">
-              <path d="M0 19 L40 16 L80 13 L110 25 L150 28 L190 25 L230 23 L270 25 L270 70 L0 70 Z" fill="#b0722a" opacity="0.5"/>
-              <path d="M0 44 L40 41 L80 37 L110 47 L150 51 L190 48 L230 46 L270 48 L270 70 L0 70 Z" fill="#33707c" opacity="0.55"/>
-              <line x1="110" y1="5" x2="110" y2="70" stroke="#97352c" stroke-width="1" opacity="0.5"/>
+              <path
+                d="M0 19 L40 16 L80 13 L110 25 L150 28 L190 25 L230 23 L270 25 L270 70 L0 70 Z"
+                fill="#b0722a"
+                opacity="0.5"
+              />
+              <path
+                d="M0 44 L40 41 L80 37 L110 47 L150 51 L190 48 L230 46 L270 48 L270 70 L0 70 Z"
+                fill="#33707c"
+                opacity="0.55"
+              />
+              <line
+                x1="110"
+                y1="5"
+                x2="110"
+                y2="70"
+                stroke="#97352c"
+                stroke-width="1"
+                opacity="0.5"
+              />
             </svg>
           </div>
-          <div class="legendrow sub"><span><i class="dot" style="background: #b0722a; opacity: 0.6"></i>Erwachsene 18</span><span><i class="dot" style="background: #33707c; opacity: 0.6"></i>Kinder 9</span></div>
-          <p class="brakeline"><span class="tap">Das Suchen ist mühsam geworden — nur 46 % der möglichen Kinder kommen zur Welt.</span></p>
+          <div class="legendrow sub">
+            <span
+              ><i class="dot" style="background: #b0722a; opacity: 0.6"></i>Erwachsene
+              18</span
+            ><span
+              ><i class="dot" style="background: #33707c; opacity: 0.6"></i>Kinder 9</span
+            >
+          </div>
+          <p class="brakeline">
+            <span class="tap"
+              >Das Suchen ist mühsam geworden — nur 46 % der möglichen Kinder kommen zur
+              Welt.</span
+            >
+          </p>
         </section>
 
         <section class="tile log">
           <h2>Ereignisse</h2>
           <p class="sub num" style="padding: 0 14px 6px">Wetterwurf 1,31</p>
           <ul>
-            <li><span class="t num">96</span><span class="crisis">Der harte Winter: 1 Mensch stirbt an Hunger</span></li>
-            <li><span class="t num">94</span><span>Feuerlegen ist wieder ausführbar</span></li>
+            <li>
+              <span class="t num">96</span
+              ><span class="crisis">Der harte Winter: 1 Mensch stirbt an Hunger</span>
+            </li>
+            <li>
+              <span class="t num">94</span><span>Feuerlegen ist wieder ausführbar</span>
+            </li>
             <li><span class="t num">90</span><span>Zwirnen fertiggestellt</span></li>
-            <li><span class="t num">88</span><span>Fischernetz ist jetzt ausführbar</span></li>
-            <li><span class="t num">84</span><span class="crisis">Der harte Winter: 2 Menschen sterben an Hunger</span></li>
-            <li><span class="t num">76</span><span>Vorratsgrube fertiggestellt <span class="num">(×3)</span></span></li>
+            <li>
+              <span class="t num">88</span><span>Fischernetz ist jetzt ausführbar</span>
+            </li>
+            <li>
+              <span class="t num">84</span
+              ><span class="crisis">Der harte Winter: 2 Menschen sterben an Hunger</span>
+            </li>
+            <li>
+              <span class="t num">76</span
+              ><span>Vorratsgrube fertiggestellt <span class="num">(×3)</span></span>
+            </li>
             <li><span class="t num">60</span><span>Steinaxt fertiggestellt</span></li>
           </ul>
         </section>

@@ -25,142 +25,676 @@
         --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
       }
       /* Drei Textstile + Zahlenstil: h2 (Serif) · Grundtext 14 · .sub 12,5 grau · .num */
-      * { box-sizing: border-box; margin: 0; }
-      html, body { width: 100%; height: 100%; overflow: hidden; }
-      body { font-family: system-ui, sans-serif; font-size: 14px; color: var(--ink); background: var(--ground); }
-      .num { font-variant-numeric: tabular-nums; }
-      .sub { font-size: 12.5px; color: var(--muted); }
-      b { font-weight: 600; }
-      .tap { text-decoration: underline dotted var(--muted); text-underline-offset: 3px; cursor: pointer; }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      body {
+        font-family: system-ui, sans-serif;
+        font-size: 14px;
+        color: var(--ink);
+        background: var(--ground);
+      }
+      .num {
+        font-variant-numeric: tabular-nums;
+      }
+      .sub {
+        font-size: 12.5px;
+        color: var(--muted);
+      }
+      b {
+        font-weight: 600;
+      }
+      .tap {
+        text-decoration: underline dotted var(--muted);
+        text-underline-offset: 3px;
+        cursor: pointer;
+      }
 
       .page {
-        display: grid; width: 100%; height: 100%; gap: 10px; padding: 10px;
-        grid-template-columns: minmax(230px, 18vw) minmax(0, 1.55fr) minmax(0, 0.95fr) minmax(262px, 21vw);
+        display: grid;
+        width: 100%;
+        height: 100%;
+        gap: 10px;
+        padding: 10px;
+        grid-template-columns: minmax(230px, 18vw) minmax(0, 1.55fr) minmax(
+            0,
+            0.95fr
+          ) minmax(262px, 21vw);
         grid-template-rows: 56px 1fr;
         grid-template-areas: "top top top top" "cat ladder side frame";
       }
-      .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; min-height: 0; display: flex; flex-direction: column; }
-      .tile > h2 { font-family: var(--serif); font-size: 17px; font-weight: 600; padding: 10px 14px 6px; }
+      .tile {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .tile > h2 {
+        font-family: var(--serif);
+        font-size: 17px;
+        font-weight: 600;
+        padding: 10px 14px 6px;
+      }
 
-      .top { grid-area: top; background: var(--ink); color: var(--ground); border-radius: 8px; display: flex; align-items: center; gap: 18px; padding: 0 16px; }
-      .top .brand { font-family: var(--serif); font-size: 18px; }
-      .timegrips { margin-left: auto; display: flex; gap: 8px; }
-      .timegrips button { font: inherit; width: 46px; height: 42px; font-size: 19px; border-radius: 8px; border: 1px solid #4a524d; background: #343b37; color: var(--ground); cursor: pointer; }
-      .timegrips button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-      .lang { display: flex; gap: 4px; margin-left: 10px; }
-      .lang button { height: 42px; padding: 0 12px; border-radius: 8px; border: 1px solid #4a524d; background: none; color: #b8c2ba; font: inherit; }
-      .lang button.on { background: var(--ground); color: var(--ink); }
+      .top {
+        grid-area: top;
+        background: var(--ink);
+        color: var(--ground);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 0 16px;
+      }
+      .top .brand {
+        font-family: var(--serif);
+        font-size: 18px;
+      }
+      .timegrips {
+        margin-left: auto;
+        display: flex;
+        gap: 8px;
+      }
+      .timegrips button {
+        font: inherit;
+        width: 46px;
+        height: 42px;
+        font-size: 19px;
+        border-radius: 8px;
+        border: 1px solid #4a524d;
+        background: #343b37;
+        color: var(--ground);
+        cursor: pointer;
+      }
+      .timegrips button.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      .lang {
+        display: flex;
+        gap: 4px;
+        margin-left: 10px;
+      }
+      .lang button {
+        height: 42px;
+        padding: 0 12px;
+        border-radius: 8px;
+        border: 1px solid #4a524d;
+        background: none;
+        color: #b8c2ba;
+        font: inherit;
+      }
+      .lang button.on {
+        background: var(--ground);
+        color: var(--ink);
+      }
 
-      .cat { grid-area: cat; overflow: hidden; }
-      .cat .scroll { overflow-y: auto; padding: 0 10px 10px; display: flex; flex-direction: column; gap: 8px; }
-      .cat h3 { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 10px 4px 2px; font-weight: 600; }
-      .card { background: var(--ground); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
-      .card .head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-      .card .name { font-weight: 600; }
-      .startbtn { width: 44px; height: 44px; border-radius: 50%; border: none; background: var(--accent); color: #fff; font-size: 17px; cursor: pointer; flex: none; }
-      .chip { display: inline-block; font-size: 11.5px; padding: 3px 8px; border-radius: 99px; background: var(--sunk); color: var(--muted); }
-      .chip.crit { background: var(--crit-soft); color: var(--crit); }
-      .progress { height: 8px; border-radius: 4px; background: var(--sunk); overflow: hidden; margin-top: 8px; }
-      .progress i { display: block; height: 100%; background: var(--accent); }
-      .needsbar { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; margin-top: 6px; }
-      .needsbar .sub { white-space: nowrap; }
-      .needsbar .progress { margin-top: 0; }
-      .needsbar .progress i { background: var(--ok); }
-      .needsbar .sub { text-align: right; }
+      .cat {
+        grid-area: cat;
+        overflow: hidden;
+      }
+      .cat .scroll {
+        overflow-y: auto;
+        padding: 0 10px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .cat h3 {
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin: 10px 4px 2px;
+        font-weight: 600;
+      }
+      .card {
+        background: var(--ground);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px 12px;
+      }
+      .card .head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .card .name {
+        font-weight: 600;
+      }
+      .startbtn {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: none;
+        background: var(--accent);
+        color: #fff;
+        font-size: 17px;
+        cursor: pointer;
+        flex: none;
+      }
+      .chip {
+        display: inline-block;
+        font-size: 11.5px;
+        padding: 3px 8px;
+        border-radius: 99px;
+        background: var(--sunk);
+        color: var(--muted);
+      }
+      .chip.crit {
+        background: var(--crit-soft);
+        color: var(--crit);
+      }
+      .progress {
+        height: 8px;
+        border-radius: 4px;
+        background: var(--sunk);
+        overflow: hidden;
+        margin-top: 8px;
+      }
+      .progress i {
+        display: block;
+        height: 100%;
+        background: var(--accent);
+      }
+      .needsbar {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 8px;
+        margin-top: 6px;
+      }
+      .needsbar .sub {
+        white-space: nowrap;
+      }
+      .needsbar .progress {
+        margin-top: 0;
+      }
+      .needsbar .progress i {
+        background: var(--ok);
+      }
+      .needsbar .sub {
+        text-align: right;
+      }
 
-      .ladder { grid-area: ladder; overflow: hidden; }
-      .ladder .rows { overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; }
-      .row { display: grid; grid-template-columns: 26px 92px 1fr 46px 78px; align-items: center; gap: 8px; min-height: 48px; padding: 0 12px; border-top: 1px solid var(--line); }
-      .row.claim { grid-template-columns: 26px 92px 1fr 46px; padding-top: 6px; padding-bottom: 8px; }
-      .row.claim .note { grid-column: 2 / -1; }
-      .row:first-child { border-top: none; }
-      .grab { text-align: center; color: var(--muted); font-size: 16px; cursor: grab; flex: none; }
-      .row .label { font-weight: 600; }
-      .row.claim { background: #eef1ea; }
-      .meter { height: 12px; border-radius: 6px; background: var(--sunk); overflow: hidden; }
-      .meter i { display: block; height: 100%; border-radius: 6px; background: var(--ok); }
-      .meter.short i { background: var(--crit); }
-      .meter.build i { background: var(--accent); }
-      .meter.store i { background: var(--store); }
-      .row .val { text-align: right; }
-      .row .note { min-width: 0; }
-      .row .spark { width: 78px; height: 26px; }
+      .ladder {
+        grid-area: ladder;
+        overflow: hidden;
+      }
+      .ladder .rows {
+        overflow-y: auto;
+        overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 26px 92px 1fr 46px 78px;
+        align-items: center;
+        gap: 8px;
+        min-height: 48px;
+        padding: 0 12px;
+        border-top: 1px solid var(--line);
+      }
+      .row.claim {
+        grid-template-columns: 26px 92px 1fr 46px;
+        padding-top: 6px;
+        padding-bottom: 8px;
+      }
+      .row.claim .note {
+        grid-column: 2 / -1;
+      }
+      .row:first-child {
+        border-top: none;
+      }
+      .grab {
+        text-align: center;
+        color: var(--muted);
+        font-size: 16px;
+        cursor: grab;
+        flex: none;
+      }
+      .row .label {
+        font-weight: 600;
+      }
+      .row.claim {
+        background: #eef1ea;
+      }
+      .meter {
+        height: 12px;
+        border-radius: 6px;
+        background: var(--sunk);
+        overflow: hidden;
+      }
+      .meter i {
+        display: block;
+        height: 100%;
+        border-radius: 6px;
+        background: var(--ok);
+      }
+      .meter.short i {
+        background: var(--crit);
+      }
+      .meter.build i {
+        background: var(--accent);
+      }
+      .meter.store i {
+        background: var(--store);
+      }
+      .row .val {
+        text-align: right;
+      }
+      .row .note {
+        min-width: 0;
+      }
+      .row .spark {
+        width: 78px;
+        height: 26px;
+      }
 
-      .needcard { background: var(--ground); border-top: 1px dashed var(--line); padding: 10px 14px 12px 46px; }
-      .needcard .trend { display: flex; align-items: center; gap: 10px; margin: 6px 0 10px; }
-      .bars { display: grid; grid-template-columns: 52px 1fr; gap: 5px 10px; align-items: center; }
-      .bars .sub { text-align: right; }
-      .stack { display: flex; height: 16px; border-radius: 5px; overflow: hidden; }
-      .stack i { display: block; height: 100%; position: relative; }
-      .stack .warn { position: absolute; right: 3px; top: -1px; color: #fff; font-size: 10px; }
-      .legend { display: flex; gap: 14px; margin: 6px 0 0; }
-      .legend .dot { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; }
-      .segtip { margin-top: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; max-width: 430px; }
-      .ways { display: flex; gap: 8px; margin-top: 10px; }
-      .way { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; }
-      .way button { width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--accent); color: #fff; cursor: pointer; }
-      .foot { margin-top: auto; border-top: 2px solid var(--line); background: var(--surface); }
+      .needcard {
+        background: var(--ground);
+        border-top: 1px dashed var(--line);
+        padding: 10px 14px 12px 46px;
+      }
+      .needcard .trend {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 6px 0 10px;
+      }
+      .bars {
+        display: grid;
+        grid-template-columns: 52px 1fr;
+        gap: 5px 10px;
+        align-items: center;
+      }
+      .bars .sub {
+        text-align: right;
+      }
+      .stack {
+        display: flex;
+        height: 16px;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+      .stack i {
+        display: block;
+        height: 100%;
+        position: relative;
+      }
+      .stack .warn {
+        position: absolute;
+        right: 3px;
+        top: -1px;
+        color: #fff;
+        font-size: 10px;
+      }
+      .legend {
+        display: flex;
+        gap: 14px;
+        margin: 6px 0 0;
+      }
+      .legend .dot {
+        display: inline-block;
+        width: 9px;
+        height: 9px;
+        border-radius: 2px;
+        margin-right: 5px;
+      }
+      .segtip {
+        margin-top: 8px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 8px 10px;
+        max-width: 430px;
+      }
+      .ways {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .way {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 6px 10px;
+      }
+      .way button {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: none;
+        background: var(--accent);
+        color: #fff;
+        cursor: pointer;
+      }
+      .foot {
+        margin-top: auto;
+        border-top: 2px solid var(--line);
+        background: var(--surface);
+      }
 
-      .side { grid-area: side; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
-      .range { flex: 1.7; overflow: hidden; }
-      .range .rows { overflow-y: auto; overflow-x: hidden; }
-      .stand { display: grid; grid-template-columns: minmax(0, 1fr) 100px; grid-template-rows: auto auto; align-items: center; column-gap: 10px; padding: 8px 14px 9px; border-top: 1px solid var(--line); }
-      .stand:first-child { border-top: none; }
-      .stand .topline { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
-      .stand .label { font-weight: 600; }
-      .stand .meter { height: 9px; margin-top: 5px; width: 100%; }
-      .stand .effort { grid-row: span 2; text-align: right; }
-      .stand .effort .word { display: block; font-size: 13px; }
-      .stand .effort .word.hot { color: var(--crit); }
-      .stand svg { display: block; margin-left: auto; }
-      .standtip { grid-column: 1 / 3; margin-top: 7px; background: var(--ground); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
-      .movebox { border-top: 2px solid var(--line); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-      .movebox button { font: inherit; min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--accent); background: none; color: var(--accent-ink); cursor: pointer; }
+      .side {
+        grid-area: side;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        min-height: 0;
+      }
+      .range {
+        flex: 1.7;
+        overflow: hidden;
+      }
+      .range .rows {
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+      .stand {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 100px;
+        grid-template-rows: auto auto;
+        align-items: center;
+        column-gap: 10px;
+        padding: 8px 14px 9px;
+        border-top: 1px solid var(--line);
+      }
+      .stand:first-child {
+        border-top: none;
+      }
+      .stand .topline {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .stand .label {
+        font-weight: 600;
+      }
+      .stand .meter {
+        height: 9px;
+        margin-top: 5px;
+        width: 100%;
+      }
+      .stand .effort {
+        grid-row: span 2;
+        text-align: right;
+      }
+      .stand .effort .word {
+        display: block;
+        font-size: 13px;
+      }
+      .stand .effort .word.hot {
+        color: var(--crit);
+      }
+      .stand svg {
+        display: block;
+        margin-left: auto;
+      }
+      .standtip {
+        grid-column: 1 / 3;
+        margin-top: 7px;
+        background: var(--ground);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 8px 10px;
+      }
+      .movebox {
+        border-top: 2px solid var(--line);
+        padding: 10px 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+      .movebox button {
+        font: inherit;
+        min-height: 44px;
+        padding: 0 16px;
+        border-radius: 8px;
+        border: 1px solid var(--accent);
+        background: none;
+        color: var(--accent-ink);
+        cursor: pointer;
+      }
 
-      .stores { flex: 1; }
-      .storeline { padding: 8px 14px; border-top: 1px solid var(--line); }
-      .storeline:first-of-type { border-top: none; }
-      .storeline .head { display: flex; justify-content: space-between; }
-      .storeline .meter { height: 9px; margin-top: 6px; width: 100%; }
-      .storeline .subrow { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
-      .slider { height: 12px; border-radius: 6px; background: var(--sunk); position: relative; }
-      .slider .knob { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 28px; height: 28px; border-radius: 50%; background: #fff; border: 2px solid var(--accent); }
+      .stores {
+        flex: 1;
+      }
+      .storeline {
+        padding: 8px 14px;
+        border-top: 1px solid var(--line);
+      }
+      .storeline:first-of-type {
+        border-top: none;
+      }
+      .storeline .head {
+        display: flex;
+        justify-content: space-between;
+      }
+      .storeline .meter {
+        height: 9px;
+        margin-top: 6px;
+        width: 100%;
+      }
+      .storeline .subrow {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 6px;
+      }
+      .slider {
+        height: 12px;
+        border-radius: 6px;
+        background: var(--sunk);
+        position: relative;
+      }
+      .slider .knob {
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #fff;
+        border: 2px solid var(--accent);
+      }
 
-      .frame { grid-area: frame; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
-      .people { flex: 0 0 auto; padding-bottom: 8px; }
-      .people .count { font-family: var(--serif); font-size: 40px; padding: 0 14px; line-height: 1; }
-      .people .chart { padding: 0 14px; margin-top: 4px; }
-      .people .legendrow { display: flex; gap: 12px; padding: 4px 14px 0; }
-      .dot { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 4px; }
-      .brakeline { padding: 8px 14px 10px; }
+      .frame {
+        grid-area: frame;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        min-height: 0;
+      }
+      .people {
+        flex: 0 0 auto;
+        padding-bottom: 8px;
+      }
+      .people .count {
+        font-family: var(--serif);
+        font-size: 40px;
+        padding: 0 14px;
+        line-height: 1;
+      }
+      .people .chart {
+        padding: 0 14px;
+        margin-top: 4px;
+      }
+      .people .legendrow {
+        display: flex;
+        gap: 12px;
+        padding: 4px 14px 0;
+      }
+      .dot {
+        display: inline-block;
+        width: 9px;
+        height: 9px;
+        border-radius: 2px;
+        margin-right: 4px;
+      }
+      .brakeline {
+        padding: 8px 14px 10px;
+      }
 
-      .log { flex: 1; overflow: hidden; }
-      .log ul { list-style: none; padding: 0 14px 10px; overflow-y: auto; }
-      .log li { display: flex; gap: 10px; padding: 6px 0; border-top: 1px solid var(--line); }
-      .log li:first-child { border-top: none; }
-      .log .t { color: var(--muted); min-width: 24px; text-align: right; }
-      .log .crisis { color: var(--crit); font-weight: 600; }
+      .log {
+        flex: 1;
+        overflow: hidden;
+      }
+      .log ul {
+        list-style: none;
+        padding: 0 14px 10px;
+        overflow-y: auto;
+      }
+      .log li {
+        display: flex;
+        gap: 10px;
+        padding: 6px 0;
+        border-top: 1px solid var(--line);
+      }
+      .log li:first-child {
+        border-top: none;
+      }
+      .log .t {
+        color: var(--muted);
+        min-width: 24px;
+        text-align: right;
+      }
+      .log .crisis {
+        color: var(--crit);
+        font-weight: 600;
+      }
 
       /* Overlays */
-      .overlay { position: fixed; inset: 0; background: rgba(38, 42, 40, 0.45); display: none; align-items: center; justify-content: center; }
-      body.dialog-open .overlay.move { display: flex; }
-      body.moment-open .overlay.moment { display: flex; }
-      .sheet { width: 500px; background: var(--surface); border-radius: 12px; padding: 18px 20px; box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25); }
-      .elder { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
-      .elder .face { width: 52px; height: 52px; border-radius: 50%; background: #8a6a4a; flex: none; display: flex; align-items: center; justify-content: center; color: #f4ead8; font-family: var(--serif); font-size: 24px; }
-      .elder .bubble { background: var(--ground); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
-      .compare { display: grid; grid-template-columns: 96px 1fr 1fr; gap: 7px 12px; align-items: baseline; }
-      .compare .colhead { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
-      .span2 { grid-column: 2 / 4; }
-      .sheet .buttons { display: flex; gap: 8px; margin-top: 16px; }
-      .sheet .buttons button { font: inherit; min-height: 46px; flex: 1; border-radius: 8px; cursor: pointer; }
-      .sheet .go { background: var(--accent); border: none; color: #fff; }
-      .sheet .stay { background: none; border: 1px solid var(--line); color: var(--ink); }
+      .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(38, 42, 40, 0.45);
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+      body.dialog-open .overlay.move {
+        display: flex;
+      }
+      body.moment-open .overlay.moment {
+        display: flex;
+      }
+      .sheet {
+        width: 500px;
+        background: var(--surface);
+        border-radius: 12px;
+        padding: 18px 20px;
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+      }
+      .elder {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        margin-bottom: 12px;
+      }
+      .elder .face {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: #8a6a4a;
+        flex: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #f4ead8;
+        font-family: var(--serif);
+        font-size: 24px;
+      }
+      .elder .bubble {
+        background: var(--ground);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 10px 12px;
+      }
+      .compare {
+        display: grid;
+        grid-template-columns: 96px 1fr 1fr;
+        gap: 7px 12px;
+        align-items: baseline;
+      }
+      .compare .colhead {
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 600;
+      }
+      .span2 {
+        grid-column: 2 / 4;
+      }
+      .sheet .buttons {
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+      }
+      .sheet .buttons button {
+        font: inherit;
+        min-height: 46px;
+        flex: 1;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .sheet .go {
+        background: var(--accent);
+        border: none;
+        color: #fff;
+      }
+      .sheet .stay {
+        background: none;
+        border: 1px solid var(--line);
+        color: var(--ink);
+      }
 
-      .momentcard { width: 460px; background: var(--surface); border-radius: 12px; padding: 26px 28px; box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25); text-align: center; }
-      .momentcard h4 { font-family: var(--serif); font-size: 26px; font-weight: 600; margin-bottom: 10px; }
-      .momentcard .sickle { font-size: 40px; margin-bottom: 6px; }
-      .momentcard button { font: inherit; min-height: 46px; padding: 0 26px; border-radius: 8px; border: none; background: var(--accent); color: #fff; margin-top: 16px; cursor: pointer; }
+      .momentcard {
+        width: 460px;
+        background: var(--surface);
+        border-radius: 12px;
+        padding: 26px 28px;
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+        text-align: center;
+      }
+      .momentcard h4 {
+        font-family: var(--serif);
+        font-size: 26px;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .momentcard .sickle {
+        font-size: 40px;
+        margin-bottom: 6px;
+      }
+      .momentcard button {
+        font: inherit;
+        min-height: 46px;
+        padding: 0 26px;
+        border-radius: 8px;
+        border: none;
+        background: var(--accent);
+        color: #fff;
+        margin-top: 16px;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
@@ -182,30 +716,54 @@
         <div class="scroll">
           <h3>Läuft</h3>
           <div class="card">
-            <div class="head"><span class="name">Fischernetz</span><span class="chip crit">bekommt keine Arbeit</span></div>
+            <div class="head">
+              <span class="name">Fischernetz</span
+              ><span class="chip crit">bekommt keine Arbeit</span>
+            </div>
             <div class="progress"><i style="width: 50%"></i></div>
           </div>
           <h3>Ausführbar</h3>
           <div class="card">
-            <div class="head"><span class="name">Feuerlegen</span><button class="startbtn" title="Starten">▶</button></div>
+            <div class="head">
+              <span class="name">Feuerlegen</span
+              ><button class="startbtn" title="Starten">▶</button>
+            </div>
             <p class="sub">Ein Brand macht das Land eine Weile üppiger.</p>
             <p class="sub num">Arbeit 4 · ≈ 1 Tick · Totholz 30 — liegt bereit</p>
           </div>
           <div class="card">
-            <div class="head"><span class="name">Vorratsgrube <span class="chip num">×3</span></span><button class="startbtn" title="Starten">▶</button></div>
+            <div class="head">
+              <span class="name">Vorratsgrube <span class="chip num">×3</span></span
+              ><button class="startbtn" title="Starten">▶</button>
+            </div>
             <p class="sub">Eine Grube speichert Nahrung für Krisen.</p>
-            <p class="sub num">Arbeit 24 · ≈ 6 Ticks · Brennholz 10 ≈ 2 Ticks Nachschub</p>
+            <p class="sub num">
+              Arbeit 24 · ≈ 6 Ticks · Brennholz 10 ≈ 2 Ticks Nachschub
+            </p>
           </div>
           <h3>In Sicht</h3>
           <div class="card">
-            <div class="head"><span class="name" style="color: var(--muted)">Sesshaftigkeit</span></div>
+            <div class="head">
+              <span class="name" style="color: var(--muted)">Sesshaftigkeit</span>
+            </div>
             <p class="sub">Bleiben: dein Volk bindet sich an diesen Ort.</p>
-            <div class="needsbar"><div class="progress"><i style="width: 70%"></i></div><span class="sub num">Speicher je Kopf 70 %</span></div>
-            <div class="needsbar"><div class="progress"><i style="width: 52%"></i></div><span class="sub num">Fischgründe 52 %</span></div>
+            <div class="needsbar">
+              <div class="progress"><i style="width: 70%"></i></div>
+              <span class="sub num">Speicher je Kopf 70 %</span>
+            </div>
+            <div class="needsbar">
+              <div class="progress"><i style="width: 52%"></i></div>
+              <span class="sub num">Fischgründe 52 %</span>
+            </div>
           </div>
           <div class="card">
-            <div class="head"><span class="name" style="color: var(--muted)">Knochennadel</span></div>
-            <div class="needsbar"><div class="progress"><i style="width: 62%"></i></div><span class="sub num">Übung im Gerben 62 %</span></div>
+            <div class="head">
+              <span class="name" style="color: var(--muted)">Knochennadel</span>
+            </div>
+            <div class="needsbar">
+              <div class="progress"><i style="width: 62%"></i></div>
+              <span class="sub num">Übung im Gerben 62 %</span>
+            </div>
           </div>
         </div>
       </section>
@@ -217,31 +775,67 @@
             <span class="grab"></span><span class="label">Essen</span>
             <div class="meter"><i style="width: 100%"></i></div>
             <span class="val"></span>
-            <svg class="spark" viewBox="0 0 78 26"><path d="M0 6 L20 5 L36 8 L48 14 L62 7 L78 5 L78 26 L0 26 Z" fill="#cddac9"/><path d="M0 6 L20 5 L36 8 L48 14 L62 7 L78 5" fill="none" stroke="#4f7d4f" stroke-width="1.5"/><circle cx="78" cy="5" r="2.5" fill="#4f7d4f"/></svg>
+            <svg class="spark" viewBox="0 0 78 26">
+              <path
+                d="M0 6 L20 5 L36 8 L48 14 L62 7 L78 5 L78 26 L0 26 Z"
+                fill="#cddac9"
+              />
+              <path
+                d="M0 6 L20 5 L36 8 L48 14 L62 7 L78 5"
+                fill="none"
+                stroke="#4f7d4f"
+                stroke-width="1.5"
+              />
+              <circle cx="78" cy="5" r="2.5" fill="#4f7d4f" />
+            </svg>
           </div>
           <div class="row">
             <span class="grab"></span><span class="label">Feuer</span>
             <div class="meter"><i style="width: 100%"></i></div>
             <span class="val"></span>
-            <svg class="spark" viewBox="0 0 78 26"><path d="M0 5 L30 5 L46 9 L60 5 L78 5 L78 26 L0 26 Z" fill="#cddac9"/><path d="M0 5 L30 5 L46 9 L60 5 L78 5" fill="none" stroke="#4f7d4f" stroke-width="1.5"/><circle cx="78" cy="5" r="2.5" fill="#4f7d4f"/></svg>
+            <svg class="spark" viewBox="0 0 78 26">
+              <path d="M0 5 L30 5 L46 9 L60 5 L78 5 L78 26 L0 26 Z" fill="#cddac9" />
+              <path
+                d="M0 5 L30 5 L46 9 L60 5 L78 5"
+                fill="none"
+                stroke="#4f7d4f"
+                stroke-width="1.5"
+              />
+              <circle cx="78" cy="5" r="2.5" fill="#4f7d4f" />
+            </svg>
           </div>
           <div class="row">
             <span class="grab"></span><span class="label">Kinderhut</span>
             <div class="meter"><i style="width: 100%"></i></div>
             <span class="val"></span>
-            <svg class="spark" viewBox="0 0 78 26"><path d="M0 5 L78 5 L78 26 L0 26 Z" fill="#cddac9"/><path d="M0 5 L78 5" fill="none" stroke="#4f7d4f" stroke-width="1.5"/><circle cx="78" cy="5" r="2.5" fill="#4f7d4f"/></svg>
+            <svg class="spark" viewBox="0 0 78 26">
+              <path d="M0 5 L78 5 L78 26 L0 26 Z" fill="#cddac9" />
+              <path d="M0 5 L78 5" fill="none" stroke="#4f7d4f" stroke-width="1.5" />
+              <circle cx="78" cy="5" r="2.5" fill="#4f7d4f" />
+            </svg>
           </div>
           <div class="row claim">
             <span class="grab">≡</span><span class="label">Fischernetz</span>
             <div class="meter build"><i style="width: 50%"></i></div>
             <span class="val num">50 %</span>
-            <span class="note sub num">fertig in ~9 Ticks · drängelt vor Kleidung und Sattessen</span>
+            <span class="note sub num"
+              >fertig in ~9 Ticks · drängelt vor Kleidung und Sattessen</span
+            >
           </div>
           <div class="row">
             <span class="grab"></span><span class="label">Kleidung</span>
             <div class="meter"><i style="width: 100%"></i></div>
             <span class="val"></span>
-            <svg class="spark" viewBox="0 0 78 26"><path d="M0 7 L24 6 L42 10 L58 6 L78 6 L78 26 L0 26 Z" fill="#cddac9"/><path d="M0 7 L24 6 L42 10 L58 6 L78 6" fill="none" stroke="#4f7d4f" stroke-width="1.5"/><circle cx="78" cy="6" r="2.5" fill="#4f7d4f"/></svg>
+            <svg class="spark" viewBox="0 0 78 26">
+              <path d="M0 7 L24 6 L42 10 L58 6 L78 6 L78 26 L0 26 Z" fill="#cddac9" />
+              <path
+                d="M0 7 L24 6 L42 10 L58 6 L78 6"
+                fill="none"
+                stroke="#4f7d4f"
+                stroke-width="1.5"
+              />
+              <circle cx="78" cy="6" r="2.5" fill="#4f7d4f" />
+            </svg>
           </div>
           <div class="row claim">
             <span class="grab">≡</span><span class="label">Brennholz</span>
@@ -253,48 +847,104 @@
             <span class="grab"></span><span class="label">Sattessen</span>
             <div class="meter short"><i style="width: 62%"></i></div>
             <span class="val num tap" style="color: var(--crit)">62 %</span>
-            <svg class="spark" viewBox="0 0 78 26"><path d="M0 6 L22 5 L38 9 L52 16 L64 19 L78 15 L78 26 L0 26 Z" fill="#ecd7d1"/><path d="M0 6 L22 5 L38 9 L52 16 L64 19 L78 15" fill="none" stroke="#97352c" stroke-width="1.5"/><circle cx="78" cy="15" r="2.5" fill="#97352c"/></svg>
+            <svg class="spark" viewBox="0 0 78 26">
+              <path
+                d="M0 6 L22 5 L38 9 L52 16 L64 19 L78 15 L78 26 L0 26 Z"
+                fill="#ecd7d1"
+              />
+              <path
+                d="M0 6 L22 5 L38 9 L52 16 L64 19 L78 15"
+                fill="none"
+                stroke="#97352c"
+                stroke-width="1.5"
+              />
+              <circle cx="78" cy="15" r="2.5" fill="#97352c" />
+            </svg>
           </div>
           <div class="needcard">
             <p><b>Nahrung wird knapp</b> — der Fischfang brach ein.</p>
             <div class="trend num">
               <span>bringt <b>23,9 Nahrung je Tick</b> — gebraucht: 26 · fallend</span>
-              <svg width="90" height="22" viewBox="0 0 90 22"><path d="M0 6 L20 5 L38 8 L56 13 L74 17 L90 15" fill="none" stroke="#97352c" stroke-width="1.5"/><circle cx="90" cy="15" r="2.5" fill="#97352c"/></svg>
+              <svg width="90" height="22" viewBox="0 0 90 22">
+                <path
+                  d="M0 6 L20 5 L38 8 L56 13 L74 17 L90 15"
+                  fill="none"
+                  stroke="#97352c"
+                  stroke-width="1.5"
+                />
+                <circle cx="90" cy="15" r="2.5" fill="#97352c" />
+              </svg>
             </div>
             <div class="bars num">
               <span class="sub">Arbeit</span>
               <div class="stack">
                 <i style="width: 52%; background: var(--p-gather)"></i>
-                <i style="width: 29%; background: var(--p-fish)"><span class="warn">▲</span></i>
+                <i style="width: 29%; background: var(--p-fish)"
+                  ><span class="warn">▲</span></i
+                >
                 <i style="width: 19%; background: var(--p-hunt)"></i>
               </div>
               <span class="sub">Ertrag</span>
               <div class="stack">
                 <i style="width: 61%; background: var(--p-gather)"></i>
-                <i style="width: 22%; background: var(--p-fish)"><span class="warn">▲</span></i>
+                <i style="width: 22%; background: var(--p-fish)"
+                  ><span class="warn">▲</span></i
+                >
                 <i style="width: 17%; background: var(--p-hunt)"></i>
               </div>
             </div>
             <div class="legend sub">
-              <span><i class="dot" style="background: var(--p-gather)"></i>Sammeln mit Sichel</span>
-              <span><i class="dot" style="background: var(--p-fish)"></i>Fischfang ▲</span>
+              <span
+                ><i class="dot" style="background: var(--p-gather)"></i>Sammeln mit
+                Sichel</span
+              >
+              <span
+                ><i class="dot" style="background: var(--p-fish)"></i>Fischfang ▲</span
+              >
               <span><i class="dot" style="background: var(--p-hunt)"></i>Jagd</span>
             </div>
             <div class="segtip">
-              <b>Fischfang</b> — <span class="num">Arbeit 3,4 (29 % der Arbeit) · bringt 5,2 Nahrung (22 %)</span><br />
-              <span class="sub num">Die Fisch-Suche bringt nur noch 42 % dessen, was sie bei eurer Ankunft brachte (−58 %)</span>
+              <b>Fischfang</b> —
+              <span class="num"
+                >Arbeit 3,4 (29 % der Arbeit) · bringt 5,2 Nahrung (22 %)</span
+              ><br />
+              <span class="sub num"
+                >Die Fisch-Suche bringt nur noch 42 % dessen, was sie bei eurer Ankunft
+                brachte (−58 %)</span
+              >
             </div>
-            <p class="sub num" style="margin-top: 8px">Die Grube gab her: Vorrat 32 → 20</p>
+            <p class="sub num" style="margin-top: 8px">
+              Die Grube gab her: Vorrat 32 → 20
+            </p>
             <div class="ways">
-              <div class="way"><span>Das Netz ist halb fertig — Arbeit vorziehen?</span><button title="Rang anheben">↑</button></div>
-              <div class="way"><span>Im nächsten Revier ist die Suche leichter.</span><button title="Weiterziehen" onclick="document.body.classList.add('dialog-open')">→</button></div>
+              <div class="way">
+                <span>Das Netz ist halb fertig — Arbeit vorziehen?</span
+                ><button title="Rang anheben">↑</button>
+              </div>
+              <div class="way">
+                <span>Im nächsten Revier ist die Suche leichter.</span
+                ><button
+                  title="Weiterziehen"
+                  onclick="document.body.classList.add('dialog-open')"
+                >
+                  →
+                </button>
+              </div>
             </div>
           </div>
           <div class="row">
             <span class="grab"></span><span class="label">Behaglichkeit</span>
             <div class="meter"><i style="width: 0%"></i></div>
             <span class="val num tap" style="color: var(--muted)">0 %</span>
-            <svg class="spark" viewBox="0 0 78 26"><path d="M0 18 L20 22 L42 24 L78 24 L78 26 L0 26 Z" fill="#dde1da"/><path d="M0 18 L20 22 L42 24 L78 24" fill="none" stroke="#67706a" stroke-width="1.5"/></svg>
+            <svg class="spark" viewBox="0 0 78 26">
+              <path d="M0 18 L20 22 L42 24 L78 24 L78 26 L0 26 Z" fill="#dde1da" />
+              <path
+                d="M0 18 L20 22 L42 24 L78 24"
+                fill="none"
+                stroke="#67706a"
+                stroke-width="1.5"
+              />
+            </svg>
           </div>
           <div class="row claim">
             <span class="grab">≡</span><span class="label">Nahrung</span>
@@ -303,10 +953,19 @@
             <span class="note sub">Vorrat — füllt aus dem Übrigen</span>
           </div>
           <div class="row foot">
-            <span class="grab"></span><span class="label" style="color: var(--muted)">Arbeit liegt brach</span>
+            <span class="grab"></span
+            ><span class="label" style="color: var(--muted)">Arbeit liegt brach</span>
             <div class="meter"><i style="width: 4%; background: var(--muted)"></i></div>
             <span class="val num">4 %</span>
-            <svg class="spark" viewBox="0 0 78 26"><path d="M0 8 L20 12 L42 18 L62 22 L78 23 L78 26 L0 26 Z" fill="#dde1da"/><path d="M0 8 L20 12 L42 18 L62 22 L78 23" fill="none" stroke="#67706a" stroke-width="1.5"/></svg>
+            <svg class="spark" viewBox="0 0 78 26">
+              <path d="M0 8 L20 12 L42 18 L62 22 L78 23 L78 26 L0 26 Z" fill="#dde1da" />
+              <path
+                d="M0 8 L20 12 L42 18 L62 22 L78 23"
+                fill="none"
+                stroke="#67706a"
+                stroke-width="1.5"
+              />
+            </svg>
           </div>
         </div>
       </section>
@@ -317,61 +976,151 @@
           <div class="rows">
             <div class="stand">
               <div>
-                <div class="topline"><span class="label">Beeren</span><span class="sub num tap">reicht&nbsp;~19&nbsp;Ticks</span></div>
+                <div class="topline">
+                  <span class="label">Beeren</span
+                  ><span class="sub num tap">reicht&nbsp;~19&nbsp;Ticks</span>
+                </div>
                 <div class="meter"><i style="width: 51%"></i></div>
                 <p class="sub">das Feuerlegen wirkt noch</p>
               </div>
-              <span class="effort"><span class="word hot tap">sehr mühsam</span><svg width="64" height="16" viewBox="0 0 64 16"><path d="M0 12 L16 11 L32 8 L48 5 L64 3" fill="none" stroke="#97352c" stroke-width="1.5"/><circle cx="64" cy="3" r="2" fill="#97352c"/></svg></span>
+              <span class="effort"
+                ><span class="word hot tap">sehr mühsam</span
+                ><svg width="64" height="16" viewBox="0 0 64 16">
+                  <path
+                    d="M0 12 L16 11 L32 8 L48 5 L64 3"
+                    fill="none"
+                    stroke="#97352c"
+                    stroke-width="1.5"
+                  />
+                  <circle cx="64" cy="3" r="2" fill="#97352c" /></svg
+              ></span>
               <div class="standtip">
-                <span class="num">Ausbeute der Beeren-Suche: <b style="color: var(--crit)">−58 %</b> seit Ankunft · Stand 70 von 138</span>
+                <span class="num"
+                  >Ausbeute der Beeren-Suche: <b style="color: var(--crit)">−58 %</b> seit
+                  Ankunft · Stand 70 von 138</span
+                >
               </div>
             </div>
             <div class="stand">
               <div>
-                <div class="topline"><span class="label">Wild</span><span class="sub num tap">reicht&nbsp;~46&nbsp;Ticks</span></div>
+                <div class="topline">
+                  <span class="label">Wild</span
+                  ><span class="sub num tap">reicht&nbsp;~46&nbsp;Ticks</span>
+                </div>
                 <div class="meter"><i style="width: 62%"></i></div>
               </div>
-              <span class="effort"><span class="word tap">mühsam</span><svg width="64" height="16" viewBox="0 0 64 16"><path d="M0 12 L16 10 L32 9 L48 8 L64 7" fill="none" stroke="#67706a" stroke-width="1.5"/><circle cx="64" cy="7" r="2" fill="#67706a"/></svg></span>
+              <span class="effort"
+                ><span class="word tap">mühsam</span
+                ><svg width="64" height="16" viewBox="0 0 64 16">
+                  <path
+                    d="M0 12 L16 10 L32 9 L48 8 L64 7"
+                    fill="none"
+                    stroke="#67706a"
+                    stroke-width="1.5"
+                  />
+                  <circle cx="64" cy="7" r="2" fill="#67706a" /></svg
+              ></span>
             </div>
             <div class="stand">
               <div>
-                <div class="topline"><span class="label">Fisch</span><span class="sub num tap">reicht&nbsp;~9&nbsp;Ticks</span></div>
+                <div class="topline">
+                  <span class="label">Fisch</span
+                  ><span class="sub num tap">reicht&nbsp;~9&nbsp;Ticks</span>
+                </div>
                 <div class="meter"><i style="width: 54%"></i></div>
               </div>
-              <span class="effort"><span class="word hot tap">sehr mühsam</span><svg width="64" height="16" viewBox="0 0 64 16"><path d="M0 13 L16 12 L32 10 L48 6 L64 4" fill="none" stroke="#97352c" stroke-width="1.5"/><circle cx="64" cy="4" r="2" fill="#97352c"/></svg></span>
+              <span class="effort"
+                ><span class="word hot tap">sehr mühsam</span
+                ><svg width="64" height="16" viewBox="0 0 64 16">
+                  <path
+                    d="M0 13 L16 12 L32 10 L48 6 L64 4"
+                    fill="none"
+                    stroke="#97352c"
+                    stroke-width="1.5"
+                  />
+                  <circle cx="64" cy="4" r="2" fill="#97352c" /></svg
+              ></span>
             </div>
             <div class="stand">
               <div>
-                <div class="topline"><span class="label">Totholz</span><span class="sub num tap">reicht&nbsp;~56&nbsp;Ticks</span></div>
+                <div class="topline">
+                  <span class="label">Totholz</span
+                  ><span class="sub num tap">reicht&nbsp;~56&nbsp;Ticks</span>
+                </div>
                 <div class="meter"><i style="width: 95%"></i></div>
               </div>
-              <span class="effort"><span class="word tap">leicht</span><svg width="64" height="16" viewBox="0 0 64 16"><path d="M0 9 L64 8" fill="none" stroke="#67706a" stroke-width="1.5"/><circle cx="64" cy="8" r="2" fill="#67706a"/></svg></span>
+              <span class="effort"
+                ><span class="word tap">leicht</span
+                ><svg width="64" height="16" viewBox="0 0 64 16">
+                  <path d="M0 9 L64 8" fill="none" stroke="#67706a" stroke-width="1.5" />
+                  <circle cx="64" cy="8" r="2" fill="#67706a" /></svg
+              ></span>
             </div>
             <div class="stand">
               <div>
-                <div class="topline"><span class="label">Muscheln</span><span class="sub">unberührt — die Reserve</span></div>
+                <div class="topline">
+                  <span class="label">Muscheln</span
+                  ><span class="sub">unberührt — die Reserve</span>
+                </div>
                 <div class="meter"><i style="width: 100%"></i></div>
               </div>
-              <span class="effort"><span class="word tap">leicht</span><svg width="64" height="16" viewBox="0 0 64 16"><path d="M0 9 L64 9" fill="none" stroke="#67706a" stroke-width="1.5"/></svg></span>
+              <span class="effort"
+                ><span class="word tap">leicht</span
+                ><svg width="64" height="16" viewBox="0 0 64 16">
+                  <path
+                    d="M0 9 L64 9"
+                    fill="none"
+                    stroke="#67706a"
+                    stroke-width="1.5"
+                  /></svg
+              ></span>
             </div>
           </div>
           <div class="movebox">
-            <span class="num" style="line-height: 1.5"><b>Nebenan:</b> Land&nbsp;−7&nbsp;% ·<br />Suche leichter</span>
-            <button onclick="document.body.classList.add('dialog-open')">Weiterziehen …</button>
+            <span class="num" style="line-height: 1.5"
+              ><b>Nebenan:</b> Land&nbsp;−7&nbsp;% ·<br />Suche leichter</span
+            >
+            <button onclick="document.body.classList.add('dialog-open')">
+              Weiterziehen …
+            </button>
           </div>
         </section>
 
         <section class="tile stores">
           <h2>Vorräte</h2>
           <div class="storeline">
-            <div class="head"><span><b>Nahrung</b> <span class="chip">Ziel = was die Gruben fassen</span></span><span class="num">37&nbsp;%</span></div>
+            <div class="head">
+              <span
+                ><b>Nahrung</b>
+                <span class="chip">Ziel = was die Gruben fassen</span></span
+              ><span class="num">37&nbsp;%</span>
+            </div>
             <div class="meter store"><i style="width: 37%"></i></div>
-            <div class="subrow"><span class="sub">3 Gruben — sie verfallen langsam · hält noch ~4 Ticks Hunger</span><svg width="80" height="16" viewBox="0 0 80 16"><path d="M0 14 L20 14 L20 9 L42 9 L42 5 L66 5 L66 4 L80 4" fill="none" stroke="#33707c" stroke-width="1.5"/></svg></div>
+            <div class="subrow">
+              <span class="sub"
+                >3 Gruben — sie verfallen langsam · hält noch ~4 Ticks Hunger</span
+              ><svg width="80" height="16" viewBox="0 0 80 16">
+                <path
+                  d="M0 14 L20 14 L20 9 L42 9 L42 5 L66 5 L66 4 L80 4"
+                  fill="none"
+                  stroke="#33707c"
+                  stroke-width="1.5"
+                />
+              </svg>
+            </div>
           </div>
           <div class="storeline">
-            <div class="head"><span><b>Brennholz</b></span><span class="num">100&nbsp;%</span></div>
+            <div class="head">
+              <span><b>Brennholz</b></span
+              ><span class="num">100&nbsp;%</span>
+            </div>
             <div class="meter store"><i style="width: 100%"></i></div>
-            <div class="subrow"><span class="sub num">Ziel 14 — ~6 Ticks Feuer</span><div class="slider" style="width: 120px"><span class="knob" style="left: 46%"></span></div></div>
+            <div class="subrow">
+              <span class="sub num">Ziel 14 — ~6 Ticks Feuer</span>
+              <div class="slider" style="width: 120px">
+                <span class="knob" style="left: 46%"></span>
+              </div>
+            </div>
           </div>
         </section>
       </div>
@@ -380,28 +1129,71 @@
         <section class="tile people">
           <h2>Menschen</h2>
           <div class="count num">27</div>
-          <p class="sub num" style="padding: 2px 14px 0">diesen Tick: 1 gestorben · niemand geboren</p>
+          <p class="sub num" style="padding: 2px 14px 0">
+            diesen Tick: 1 gestorben · niemand geboren
+          </p>
           <div class="chart">
             <svg width="100%" height="70" viewBox="0 0 270 70">
-              <path d="M0 19 L40 16 L80 13 L110 25 L150 28 L190 25 L230 23 L270 25 L270 70 L0 70 Z" fill="#b0722a" opacity="0.5"/>
-              <path d="M0 44 L40 41 L80 37 L110 47 L150 51 L190 48 L230 46 L270 48 L270 70 L0 70 Z" fill="#33707c" opacity="0.55"/>
-              <line x1="110" y1="5" x2="110" y2="70" stroke="#97352c" stroke-width="1" opacity="0.5"/>
+              <path
+                d="M0 19 L40 16 L80 13 L110 25 L150 28 L190 25 L230 23 L270 25 L270 70 L0 70 Z"
+                fill="#b0722a"
+                opacity="0.5"
+              />
+              <path
+                d="M0 44 L40 41 L80 37 L110 47 L150 51 L190 48 L230 46 L270 48 L270 70 L0 70 Z"
+                fill="#33707c"
+                opacity="0.55"
+              />
+              <line
+                x1="110"
+                y1="5"
+                x2="110"
+                y2="70"
+                stroke="#97352c"
+                stroke-width="1"
+                opacity="0.5"
+              />
             </svg>
           </div>
-          <div class="legendrow sub"><span><i class="dot" style="background: #b0722a; opacity: 0.6"></i>Erwachsene 18</span><span><i class="dot" style="background: #33707c; opacity: 0.6"></i>Kinder 9</span></div>
-          <p class="brakeline"><span class="tap">Das Suchen ist mühsam geworden — nur 46 % der möglichen Kinder kommen zur Welt.</span></p>
+          <div class="legendrow sub">
+            <span
+              ><i class="dot" style="background: #b0722a; opacity: 0.6"></i>Erwachsene
+              18</span
+            ><span
+              ><i class="dot" style="background: #33707c; opacity: 0.6"></i>Kinder 9</span
+            >
+          </div>
+          <p class="brakeline">
+            <span class="tap"
+              >Das Suchen ist mühsam geworden — nur 46 % der möglichen Kinder kommen zur
+              Welt.</span
+            >
+          </p>
         </section>
 
         <section class="tile log">
           <h2>Ereignisse</h2>
           <p class="sub num" style="padding: 0 14px 6px">Wetterwurf 1,31</p>
           <ul>
-            <li><span class="t num">96</span><span class="crisis">Der harte Winter: 1 Mensch stirbt an Hunger</span></li>
-            <li><span class="t num">94</span><span>Feuerlegen ist wieder ausführbar</span></li>
+            <li>
+              <span class="t num">96</span
+              ><span class="crisis">Der harte Winter: 1 Mensch stirbt an Hunger</span>
+            </li>
+            <li>
+              <span class="t num">94</span><span>Feuerlegen ist wieder ausführbar</span>
+            </li>
             <li><span class="t num">90</span><span>Zwirnen fertiggestellt</span></li>
-            <li><span class="t num">88</span><span>Fischernetz ist jetzt ausführbar</span></li>
-            <li><span class="t num">84</span><span class="crisis">Der harte Winter: 2 Menschen sterben an Hunger</span></li>
-            <li><span class="t num">76</span><span>Vorratsgrube fertiggestellt <span class="num">(×3)</span></span></li>
+            <li>
+              <span class="t num">88</span><span>Fischernetz ist jetzt ausführbar</span>
+            </li>
+            <li>
+              <span class="t num">84</span
+              ><span class="crisis">Der harte Winter: 2 Menschen sterben an Hunger</span>
+            </li>
+            <li>
+              <span class="t num">76</span
+              ><span>Vorratsgrube fertiggestellt <span class="num">(×3)</span></span>
+            </li>
             <li><span class="t num">60</span><span>Steinaxt fertiggestellt</span></li>
           </ul>
         </section>
@@ -412,10 +1204,13 @@
       <div class="sheet" onclick="event.stopPropagation()">
         <div class="elder">
           <div class="face">Ä</div>
-          <div class="bubble">Dieses Revier ist ausgezehrt. Nebenan ist das Land ärmer, aber unverbraucht.</div>
+          <div class="bubble">
+            Dieses Revier ist ausgezehrt. Nebenan ist das Land ärmer, aber unverbraucht.
+          </div>
         </div>
         <div class="compare num">
-          <span></span><span class="colhead">Hier</span><span class="colhead">Nebenan</span>
+          <span></span><span class="colhead">Hier</span
+          ><span class="colhead">Nebenan</span>
           <span class="sub">Land</span>
           <span>Güte 1,00</span>
           <span><b>−7 %</b> (Güte 0,93)</span>
@@ -425,10 +1220,14 @@
           <span class="sub">Aufbruch</span>
           <span class="span2">kostet ~30 % eurer Arbeit im nächsten Tick</span>
           <span class="sub">Es bliebe zurück</span>
-          <span class="span2">3 Gruben · Essen für ~4 Ticks · Brennholz für 6 Ticks Feuer</span>
+          <span class="span2"
+            >3 Gruben · Essen für ~4 Ticks · Brennholz für 6 Ticks Feuer</span
+          >
         </div>
         <div class="buttons">
-          <button class="stay" onclick="document.body.classList.remove('dialog-open')">Bleiben</button>
+          <button class="stay" onclick="document.body.classList.remove('dialog-open')">
+            Bleiben
+          </button>
           <button class="go">Weiterziehen</button>
         </div>
       </div>
@@ -438,8 +1237,13 @@
       <div class="momentcard">
         <div class="sickle">🌾</div>
         <h4>Die Sichel ist fertig</h4>
-        <p>Das Sammeln wird ergiebiger&nbsp;— <b class="num">es ernährt jetzt zwei&nbsp;Menschen&nbsp;mehr</b>.</p>
-        <p class="sub" style="margin-top: 6px">Euer erstes Werkzeug. Was ihr einmal könnt, verlernt ihr nicht.</p>
+        <p>
+          Das Sammeln wird ergiebiger&nbsp;—
+          <b class="num">es ernährt jetzt zwei&nbsp;Menschen&nbsp;mehr</b>.
+        </p>
+        <p class="sub" style="margin-top: 6px">
+          Euer erstes Werkzeug. Was ihr einmal könnt, verlernt ihr nicht.
+        </p>
         <button onclick="document.body.classList.remove('moment-open')">Weiter</button>
       </div>
     </div>

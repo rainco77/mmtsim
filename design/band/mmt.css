@@ -29,6 +29,8 @@
   --fld-min: 44px;
   --fld-gap: 3px;
   --fld-r: 5px;
+  --fld-name-min: 104px;
+  --pct-clear: 6px;
   --band-pad: 14px;
   --band-top: 13px;
   --name-h: 16px;
@@ -160,11 +162,19 @@ b {
    --lip-gap    3px  air between lip and fill. The fill never reaches the lip,
                      not even at a standing of 100 %
    --fld-min   44px  minimum width of EVERY field, need and claim alike - any
-                     narrower and the icon could not be drawn nor the field
+                     narrower and the icon could not be drawn nor the lip
                      grasped. What one field gains this way the others lose in
                      proportion; the explainer card explains the distortion
    --fld-gap    3px  distance between two fields
    --fld-r      5px  corner radius of a field
+   --fld-name-min
+              104px  from this width on a need field carries its name beside
+                     the icon; below it the name falls away and the icon stays.
+                     Measured on the room inside the field, not on the field:
+                     that is what a container query reports
+   --pct-clear  6px  the free ground a number needs between itself and the
+                     fill edge. Less than that and the number falls away, the
+                     same rule as for the name
    --band-pad  14px  inset of the band, left and right
    --band-top  13px  air above the need fields, into which the lips reach:
                      (--claim-h - --fld-h) + 1
@@ -200,8 +210,11 @@ b {
   padding: var(--band-top) var(--band-pad) 0;
 }
 
+/* Each field is its own query container: what it shows depends on how wide
+   this tick made it, not on the screen. */
 .fld {
   position: relative;
+  container-type: inline-size;
   flex: 0 1 0;
   height: var(--fld-h);
   min-width: var(--fld-min);
@@ -233,6 +246,26 @@ b {
   fill: currentColor;
   color: rgba(248, 249, 246, 0.94);
 }
+/* The name beside the icon. It appears from --fld-name-min on and falls away
+   below it; the icon stays either way. The container query has to repeat the
+   number, because a container condition cannot read a custom property. */
+.fld > .nm {
+  position: relative;
+  display: none;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 12px;
+  color: rgba(248, 249, 246, 0.94);
+}
+@container (min-width: 104px) {
+  .fld > .nm {
+    display: block;
+  }
+}
+/* The number stands at the right edge. It is drawn only where the free ground
+   right of the fill can hold it with --pct-clear to spare - a number that
+   straddles the fill edge is unreadable, and the card carries it anyway. */
 .fld > .pct {
   position: relative;
   margin-left: auto;
@@ -240,9 +273,10 @@ b {
   color: rgba(248, 249, 246, 0.94);
   font-variant-numeric: tabular-nums;
 }
-/* Icon and number sit sometimes on the fill, sometimes on the empty ground -
-   their colour follows the ground they lie on. */
-.fld.empty > .ico {
+/* Icon, name and number sit sometimes on the fill, sometimes on the empty
+   ground - their colour follows the ground they lie on. */
+.fld.empty > .ico,
+.fld.empty > .nm {
   color: var(--muted);
 }
 .fld > .pct.dark {
@@ -257,7 +291,9 @@ b {
 
 /* A claim: taller, outlined in ochre, with a lip and grips. Throughout the
    game ochre means "yours, movable". Outline and lip together are the frame of
-   the segment. */
+   the segment. A claim carries an icon of its own, left-aligned like a need's,
+   so every project needs a sign. A claim never carries a name inside: its name
+   stands in the name row below the band. */
 .fld.claim {
   height: var(--claim-h);
   border: 1.5px solid var(--accent-ink);
@@ -301,11 +337,7 @@ b {
 /* Labour that no process called for: hatched, and without an icon. */
 .fld.idle {
   background:
-    repeating-linear-gradient(
-      45deg,
-      transparent 0 5px,
-      rgba(103, 112, 106, 0.3) 5px 7px
-    ),
+    repeating-linear-gradient(45deg, transparent 0 5px, rgba(103, 112, 106, 0.3) 5px 7px),
     var(--sunk);
   justify-content: center;
   color: var(--muted);
@@ -344,7 +376,7 @@ b {
 }
 .leadname {
   position: absolute;
-  top: 14px;
+  top: 11px;
   transform: translateX(-50%);
   white-space: nowrap;
   font-size: 12px;
@@ -735,11 +767,35 @@ b {
   line-height: 1.5;
 }
 .explain .curve {
-  margin: 10px 0 4px;
+  margin: 8px 0 2px;
 }
 .explain .rule {
   border-top: 1px dashed var(--line);
   margin: 10px 0;
+}
+/* The grips of a running project: pause and abort. The claim card succeeds the
+   old ladder row, so they live here. Outlined, the second weight of the design
+   language after the filled circle of a start - these two hold work back or
+   destroy it, they never begin anything. Abort carries the crisis colour,
+   because what it throws away is built work. */
+.explain .grips {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.explain .grips button {
+  font: inherit;
+  flex: 1;
+  min-height: 44px;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  background: none;
+  color: var(--accent-ink);
+  cursor: pointer;
+}
+.explain .grips button.stop {
+  border-color: var(--line);
+  color: var(--crit);
 }
 /* The amount grip of a store goal - the same setting as in the stores tile,
    a second window onto it. */
@@ -863,7 +919,7 @@ b {
   font-weight: 600;
 }
 .study .lead {
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 .study h3 {
   font-size: 11px;
@@ -880,18 +936,21 @@ b {
   position: relative;
 }
 /* The band at study size: same widths as on the screen, taller fields, so the
-   lip and the gap below it can be read off. */
+   lip and the gap below it can be read off. The number keeps its screen size
+   and the field its narrow inset: a claim as narrow as the net's has only a
+   few pixels of free ground left of its right edge, and a number grown along
+   with the field would sit on the fill again. */
 .study .big {
-  --fld-h: 54px;
-  --claim-h: 70px;
-  --lip-h: 16px;
+  --fld-h: 50px;
+  --claim-h: 64px;
+  --lip-h: 15px;
   --lip-gap: 4px;
-  --band-top: 17px;
+  --band-top: 15px;
   padding-bottom: 8px;
 }
 .study .big .fld {
   gap: 8px;
-  padding: 0 10px;
+  padding: 0 8px;
 }
 .study .big .fld.claim {
   padding-bottom: 15px;
@@ -900,8 +959,8 @@ b {
   width: 24px;
   height: 24px;
 }
-.study .big .fld > .pct {
-  font-size: 14px;
+.study .big .fld > .nm {
+  font-size: 13px;
 }
 .study .spec {
   margin-top: var(--card-gap);
@@ -914,7 +973,7 @@ b {
 .study .col {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
 }
 /* On this sheet the card sits in the flow of its column; in the running screen
@@ -924,10 +983,10 @@ b {
   width: 396px;
 }
 .study .cap {
-  font-size: 12.5px;
+  font-size: 11.5px;
   color: var(--muted);
-  padding: 8px 12px 10px;
-  line-height: 1.45;
+  padding: 6px 12px 8px;
+  line-height: 1.4;
 }
 .study .cap b {
   color: var(--ink);
@@ -937,12 +996,12 @@ b {
 .keygrid {
   display: grid;
   grid-template-columns: 46px 1fr;
-  gap: 9px 14px;
+  gap: 5px 14px;
   align-items: center;
 }
 .keygrid p {
-  font-size: 13px;
-  line-height: 1.4;
+  font-size: 12.5px;
+  line-height: 1.35;
   color: var(--muted);
 }
 .keygrid p b {
@@ -1001,10 +1060,27 @@ b {
     repeating-linear-gradient(45deg, transparent 0 5px, rgba(103, 112, 106, 0.3) 5px 7px),
     var(--sunk);
 }
-/* The smallest a field may become, next to the widest one on the sheet. */
-.sw.narrow {
-  width: 22px;
+/* A field wide enough to carry writing: the sign, then the name. */
+.sw.lbl {
   background: var(--ok);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0 4px;
+}
+.sw.lbl i {
+  display: block;
+  background: rgba(248, 249, 246, 0.9);
+}
+.sw.lbl i:nth-child(1) {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+.sw.lbl i:nth-child(2) {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
 }
 
 /* The width sentence carries one turn of phrase per need; they live in the
@@ -1012,8 +1088,8 @@ b {
 .phrases {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 4px 10px;
-  font-size: 12px;
+  gap: 2px 10px;
+  font-size: 11.5px;
   line-height: 1.35;
 }
 .phrases dt {
@@ -1025,16 +1101,32 @@ b {
   color: var(--muted);
 }
 .tail {
-  margin-top: 6px;
-  font-size: 12px;
+  margin-top: 4px;
+  font-size: 11.5px;
   line-height: 1.35;
   color: var(--muted);
 }
 
+/* The collision case shows the name row, not the fields, so its band is drawn
+   low - the fields are only there to be pointed at. */
+.bandrow.tight {
+  --fld-h: 26px;
+  --claim-h: 34px;
+  --lip-h: 9px;
+  --lip-gap: 3px;
+  --band-top: 8px;
+}
+.bandrow.tight .fld.claim {
+  padding-bottom: 6px;
+}
+.bandrow.tight .fld > .ico {
+  width: 14px;
+  height: 14px;
+}
 /* The collision case: the two names would overlap, so they move apart and a
    thin line leads back to the field. */
 .collide {
   position: relative;
-  height: 30px;
+  height: 26px;
   margin: 3px var(--band-pad) 0;
 }
