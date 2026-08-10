@@ -62,8 +62,12 @@ export class BuildingPolicy implements Policy {
     // waiting is what makes it too late. But built things bind: whoever has
     // his pits standing or a hull at the shore does not walk away from them —
     // the trap the epoch is about, chosen here as the play's own judgement.
+    //
+    // **The first pit binds, and no count of them.** A move sets what is in the
+    // ground back to nothing, so a community that means to keep a pit has
+    // chosen its range with the first one it digs.
     const anchored =
-      (derived.ownedCapacity["storage"]?.amount ?? 0) / Math.max(1, derived.heads) >= 2 ||
+      (derived.ownedCapacity["storage"]?.amount ?? 0) > 0 ||
       (derived.ownedCapacity["water"]?.amount ?? 0) > 0;
     if (!anchored) {
       const move = this.moving.decide(state, derived, index);

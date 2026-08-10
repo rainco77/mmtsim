@@ -623,6 +623,20 @@ export interface ProjectDef {
   readonly minTicks: number;
 
   /**
+   * The scarcest resource does **not** set the pace: the undertaking takes
+   * whatever of its cost is there and advances the whole step regardless, so it
+   * is over after its minimum duration however little was to be had. Longer
+   * than the minimum duration is then impossible, which for everything else is
+   * the ordinary case (E18).
+   *
+   * For the kind of undertaking that is not work put into a thing but the
+   * community doing something with itself: walking away cannot be half done for
+   * want of hands, and the hands it costs are the same ones that are walking.
+   * Everything that is built stays paced by what it gets.
+   */
+  readonly alwaysAtFullPace?: boolean;
+
+  /**
    * How often it may be run at all. Omitted means without limit.
    *
    * One field rather than a flag plus a hidden condition: "once" and "as often

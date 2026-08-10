@@ -27,6 +27,14 @@ import type { Config } from "../sim/config.ts";
  */
 const PROJECTS_LAST = 1000;
 
+/**
+ * In front of every need — the ranks of the needs begin above this. Reserved
+ * for the one undertaking that is the community itself in motion rather than
+ * something being built: it is not paid for out of what is left over, because
+ * on the tick it happens there is nothing else being done.
+ */
+const MOVING_FIRST = 0;
+
 export const STAGE1: Config = {
   // The whole tick as one ranked program, solved (E21). Under trial against the
   // older way, which is still here and still a line away.
@@ -1152,7 +1160,14 @@ export const STAGE1: Config = {
       // nothing.
       visibleWhen: [{ kind: "rule", id: "settled", set: false }],
       availableWhen: [{ kind: "rule", id: "settled", set: false }],
-      defaultRank: PROJECTS_LAST,
+      // **Walking is what a band does, and it is never put off for want of
+      // hands.** So the claim stands in front of every need rather than behind
+      // them all: on the tick the community leaves, it walks instead of
+      // working, and the searching that would have fed it happens on the new
+      // range. A move that had to wait its turn behind the fire was a decision
+      // taken and then not carried out — precisely when the range is spent and
+      // nothing is left over is when walking away is the answer.
+      defaultRank: MOVING_FIRST,
       // Packing up and walking, not half a season: about a third of what the
       // community performs in a tick. Against what it frees — the ranks below
       // comfort cost some five points less of the work for a handful of ticks —
@@ -1160,6 +1175,10 @@ export const STAGE1: Config = {
       laborCost: 8,
       stockCost: {},
       minTicks: 1,
+      // And the walking gets done in that one tick whatever the hands are: the
+      // people who carry the camp are the people who walk, so there is no
+      // half-finished move to be paced by anything.
+      alwaysAtFullPace: true,
       effects: [
         // Left behind: what is in the ground and what is stacked.
         {
@@ -1780,14 +1799,24 @@ export const STAGE1: Config = {
   land: {
     perHeadAtStart: { wilderness: 0.144, water: 0.0576 },
     baseQuality: 1.0,
-    // Against the spread below, a report worth more than the range left comes
-    // about every sixth tick: moving stays a choice worth timing, and the
-    // patient cannot ratchet the world upward move by move.
+    // What a move costs of the range's quality before the report is read. A
+    // report worth more than the range left comes about every eighth tick, so
+    // moving stays a choice worth timing.
     qualityDecayPerTaking: 0.09,
-    // What a report on the next range strays from that mean, either way. At a
-    // seventh a lucky one is worth waiting a tick or two for and a poor one is
-    // worth sitting out, without the move turning into a game of chance.
-    qualitySpread: 0.15,
+    // What a report on the next range strays from that mean, either way. A
+    // lucky one is worth waiting a tick or two for and a poor one is worth
+    // sitting out, without the move turning into a game of chance.
+    //
+    // **The two figures together decide whether patience pays**, and that is
+    // what fixes this one. The best country the world can hold is
+    // `(1 - decay) × (1 + spread)`; whoever sits out the poor reports lands, on
+    // average, halfway between that best and the poorest move he will still
+    // take. At three hundredths above the range left, that middle is no gain
+    // for anyone willing to lose the same three hundredths — so waiting alone
+    // no longer walks the world upward, and what a move is worth has to be the
+    // searching it relieves. Wider, and every range is better than the last
+    // one, which is the opposite of what taking the good country first means.
+    qualitySpread: 0.13,
     // How long a move keeps the searching cheaper before the country is worn
     // as it was — the stretch a move buys, against a technique that pays for
     // the rest of the epoch.

@@ -1091,6 +1091,12 @@ als seine Mindestdauer, nie kürzer.
 > Arbeitseinheiten hergestellt und **weggeworfen**, während der Fortschrittsbalken
 > stehenblieb.
 
+**Ausgenommen ist, was die Gemeinschaft mit sich selbst tut.** Der Weiterzug ist kein
+Werk, in das Arbeit gesteckt wird, sondern die Gemeinschaft in Bewegung: Er nimmt von
+seinen Kosten, was da ist, und ist trotzdem nach seiner Mindestdauer fertig — einmal
+begonnen, im nächsten Tick, wie knapp die Arbeit auch sei. Alles Gebaute bleibt am
+knappsten seiner Mittel und kann länger dauern.
+
 **„Projekte werden zuerst finanziert" ist ein Rang, keine Phase.** Ein Projekt ist ein
 Verbraucher von Arbeit und Beständen wie jeder andere; es geht als Nachfrage in
 dieselbe Planung wie die Bedürfnisse (E9 — die Rangfolge der Bedürfnisse), nicht in
@@ -1099,9 +1105,10 @@ eine eigene Phase davor.
 **Und der Rang ist eine Zahl, die das Projekt trägt — vom Spieler gesetzt.** Jedes
 Projekt einzeln: Für einen Speicher geht man vielleicht hungern, für ein Denkmal nicht.
 Die Voreinstellung steht im Inhalt und liegt **hinter allen Bedürfnissen**: gebaut wird
-aus dem, was übrig ist, nie aus jemandes Abendessen. Im Kern ist es eine freie Zahl,
-damit jede Stellung ausdrückbar ist; was die Oberfläche davon anbietet — freie Wahl oder
-ein paar benannte Plätze —, entscheidet die Hülle (T1).
+aus dem, was übrig ist, nie aus jemandes Abendessen. Die eine Ausnahme ist der
+Weiterzug, dessen Voreinstellung **vor allen Bedürfnissen** steht (E29). Im Kern ist es
+eine freie Zahl, damit jede Stellung ausdrückbar ist; was die Oberfläche davon anbietet
+— freie Wahl oder ein paar benannte Plätze —, entscheidet die Hülle (T1).
 
 Der beste Platz ist mit ziemlicher Sicherheit **keines der beiden Enden**: über den
 Rängen, die nur Behaglichkeit und Kinder kosten, und unter denen, die Leben kosten.
@@ -3046,6 +3053,13 @@ Gemeinschaft, die ihren ganzen Hausstand mit sich trägt, ist am ersten Tick so 
 gehen wie am hundertsten. Ausführbar ist er, solange nicht sesshaft — sonst steht nichts
 davor.
 
+**Und er wird nicht aufgeschoben.** Sein Anspruch auf Arbeit steht **vor jedem Bedarf**,
+nicht hinter allen: Am Tick des Aufbruchs wird gegangen statt gearbeitet. Kosten darf er
+Arbeit, aber begonnen ist er im nächsten Tick vollzogen, wie knapp die Arbeit auch sei —
+gerade dann, wenn das Revier erschöpft ist und nichts übrig bleibt, ist Weiterziehen die
+Antwort. Wovon der Zug ausgeht, bleibt unberührt: Er vollzieht sich auf dem Revier, auf
+das hin entschieden wurde, nicht auf dem, das der Wurf beim Ankommen gerade anbietet.
+
 **Was der Zustand des Reviers entscheidet, ist allein seine Stellung in der Reihenfolge
 der möglichen Projekte.** Je dünner die Bestände, desto weiter oben steht das Angebot. Das
 ist die Warnung; ein Erscheinen und Verschwinden wäre sie nicht, denn ein Angebot, das mit
@@ -3224,6 +3238,15 @@ Der Wurf liegt gleichmäßig um den fallenden Mittelwert, **der Mittelwert selbs
 unberührt** und fällt mit jedem Zug genau wie zuvor; was ein guter Bescheid ändert, ist
 dieses eine Angebot und nie die Reihe. Auf ein besseres zu warten ist damit eine
 Entscheidung mit Preis, denn das Revier, in dem man steht, dünnt derweil weiter aus.
+
+**Abpassen allein hebt die Welt nicht.** Streuung und Abschlag je Zug stehen zueinander
+so, dass der beste Bescheid, den die Welt überhaupt hergeben kann, um nicht mehr über
+dem verlassenen Revier liegt, als ein Geduldiger bei einem Zug an Güte hinzunehmen
+bereit ist. Wer die schlechten Bescheide aussitzt, kommt damit im Mittel auf das Revier
+heraus, das er verlässt, und nicht darüber. Ein Zug ist weiterhin die Erleichterung beim
+Suchen wert — aber nicht als Aufstieg der Güte: Ohne diese Fessel wird jedes Revier
+besser als das vorige, und damit stünde das Gegenteil dessen im Modell, was „das Beste
+zuerst" heißt.
 
 **Woran gemessen wird, ob die Erzählung eintritt** — die Zahlen daneben gehören in die
 Messung, nicht hierher, weil sie sich mit jeder Änderung bewegen:

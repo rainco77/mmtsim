@@ -346,7 +346,9 @@ export class DecayPhase implements Phase {
 /**
  * Projects come first (E21), and each needs cost divided by minimum duration of
  * *every* resource per tick. If one is missing the project pauses and consumes
- * nothing (E18) — so a blocked project never eats what it cannot use.
+ * nothing (E18) — so a blocked project never eats what it cannot use. The one
+ * exception is the undertaking that carries itself: it takes what it can get
+ * and keeps its pace regardless.
  */
 export class ProjectPhase implements Phase {
   readonly id = "projects";
@@ -393,12 +395,17 @@ export class ProjectPhase implements Phase {
       }
       pace = Math.max(0, Math.min(1, pace));
 
-      if (pace <= 1e-12) {
+      // What the pace buys in progress. A project that carries itself is not
+      // paced by what it got: it takes what is there — the pace still says how
+      // much that is — and moves the whole step anyway, so it is over after its
+      // minimum duration whatever the hands were doing.
+      const step = def.alwaysAtFullPace === true ? full : full * pace;
+
+      if (step <= 1e-12) {
         remaining.push(active);
         continue;
       }
 
-      const step = full * pace;
       laborLeft -= laborWanted * pace;
       stocks["labor"] = laborLeft;
       for (const [id, total] of Object.entries(def.stockCost)) {
