@@ -10,6 +10,7 @@ import {
   type Derived,
   type GameState,
 } from "../sim/index.ts";
+import { DISTRESS_TIERS } from "./presentation.ts";
 
 /**
  * The running game: the whole history of the run, not only the last tick
@@ -30,15 +31,16 @@ export interface Game {
 /** A run never walks further than this in one command — a brake, not a rule. */
 const LONGEST_RUN = 1000;
 
-/** Real time between ticks of the free run; provisional until played with. */
-const FREE_RUN_MILLIS = 150;
-
 /**
- * The fast beat of the replay — the order of ten ticks a second. The run to
- * the stop point is computed at once but shown tick by tick, because a jump to
- * the end tears the chain of cause and effect (V2).
+ * The one beat of the clock, for both kinds of run. The run to the stop point
+ * is computed at once but shown tick by tick, because a jump to the end tears
+ * the chain of cause and effect (V2); the free run walks in the same rhythm,
+ * so the same picture always takes the same time to read.
+ *
+ * The first tick of a run is shown at once and the beat starts after it — a
+ * grip that waits before it answers reads as a grip that did not take.
  */
-const REPLAY_MILLIS = 100;
+const BEAT_MILLIS = 500;
 
 export const game = writable<Game>({
   history: [createState(STAGE1, { seed: 42 })],
@@ -106,7 +108,8 @@ export function runToStop(): void {
   if (grown.length === 0) return;
   unshown = grown;
   game.update((current) => ({ ...current, mode: "toStop" }));
-  timer = setInterval(showNext, REPLAY_MILLIS);
+  showNext();
+  if (unshown.length > 0) timer = setInterval(showNext, BEAT_MILLIS);
 }
 
 /** One beat of the replay: hand the next computed tick to the history. */
@@ -125,11 +128,16 @@ export function runFree(): void {
   const value = get(game);
   if (over(value) || timer !== undefined) return;
   game.update((current) => ({ ...current, mode: "free" }));
-  timer = setInterval(() => {
-    step();
-    const now = currentState(get(game));
-    if (distress(now) || now.abandonedAt !== undefined) pause();
-  }, FREE_RUN_MILLIS);
+  walkOn();
+  if (get(game).mode !== "free") return;
+  timer = setInterval(walkOn, BEAT_MILLIS);
+}
+
+/** One beat of the free run: a tick, then the two hard halts. */
+function walkOn(): void {
+  step();
+  const now = currentState(get(game));
+  if (distress(now) || now.abandonedAt !== undefined) pause();
 }
 
 /** Halt on the tick now on screen; computed ticks not yet shown are dropped. */
@@ -142,11 +150,17 @@ export function pause(): void {
 
 /**
  * Distress, not dying as such: people die every tick, and a community
- * shrinking under the carrying brake is no emergency. The signal is a
- * cohort's recorded survival factor below its base rate — which happens
- * exactly when a survival rank went short (V2).
+ * shrinking under the carrying brake is no emergency. Two things must meet in
+ * the same tick (T9): a rank the presentation marks as an emergency lay under
+ * full coverage, and people died beyond their base rate because of it.
  */
 export function distress(state: GameState): boolean {
+  if (!diedBeyondBase(state)) return false;
+  return DISTRESS_TIERS.some((tier) => (state.lastCoverage[tier] ?? 1) < 1 - 1e-9);
+}
+
+/** Did anyone die beyond what dies anyway? */
+function diedBeyondBase(state: GameState): boolean {
   for (const cohort of index.config.population.cohorts) {
     const base = index.config.population.baseSurvival[cohort.id] ?? 1;
     if ((state.lastSurvival[cohort.id] ?? 1) < base - 1e-9) return true;

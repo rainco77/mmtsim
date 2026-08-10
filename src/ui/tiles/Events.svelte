@@ -4,6 +4,7 @@
   import { translate } from "../../i18n/t.ts";
   import { derive, type GameState } from "../../sim/index.ts";
   import { currentState, distress, game, index } from "../game.ts";
+  import { DISTRESS_TIERS } from "../presentation.ts";
 
   /**
    * The rolling event log (T9): what the player must not miss, newest first,
@@ -25,14 +26,11 @@
 
   const one = (value: number): string => (Math.round(value * 10) / 10).toFixed(1);
 
-  /** The survival ranks that went short in a tick — the distress's cause. */
+  /** The marked ranks that went short in a tick — the distress's cause. */
   function causesOf(state: GameState): string[] {
-    const causes: string[] = [];
-    for (const tier of index.config.needTiers) {
-      if (tier.survival === undefined) continue;
-      if ((state.lastCoverage[tier.id] ?? 1) < 1 - 1e-9) causes.push(tier.id);
-    }
-    return causes;
+    return DISTRESS_TIERS.filter(
+      (tier) => (state.lastCoverage[tier] ?? 1) < 1 - 1e-9,
+    ) as string[];
   }
 
   /** Distress deaths of a tick: losses beyond every cohort's base rate. */
