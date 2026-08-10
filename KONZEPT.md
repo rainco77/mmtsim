@@ -4261,8 +4261,16 @@ Tick der Anteil dessen, was ankam, an dem, was der Posten in diesem Tick wollte 
 gestrichelte Linie = voll. Bei Bedarfen ist das die Deckung, bei Vorhaben der
 Zufluss-Anteil (eine Zahl, weil alle Ressourcen im Gleichschritt fließen); gerechnet
 wird er aus dem Verlauf der Oberfläche, Fortschritts-Differenz je Tick durch den
-vollen Tick-Schritt. Die einzelnen Ressourcen stehen als Fakten in der Kostenzeile,
-nie als eigene Kurven.
+vollen Tick-Schritt. **Statt einer Kostenzeile trägt die laufende Karte eine sichere Untergrenze und
+nennt nur, was bremst:** „Fertig frühestens in ~N Ticks" (Rest ÷ voller Tick-Schritt —
+deterministisch, keine Prognose; unzuverlässige Restdauern werden nicht angezeigt).
+**Auf Spieler-Karten erscheint keine absolute Ressourcenzahl** — Kosten sprechen in
+Anteilen der Tick-Arbeit, Zeit in Ticks, und ein Gut wird nur genannt, wenn es diesen
+Tick den Schritt begrenzt hat („Brennholz bremste diesen Tick"); Status-Zeilen ohne
+Aussage („liegt bereit" als Vorratsvergleich) gibt es nicht. Damit die Anzeige das
+aufzeichnungstreu sagen kann, hält der Kern **je Projekt und Tick fest, welche
+Ressource den Schritt begrenzt hat** — das Gegenstück zum Bremsen-Feld der Ränge.
+Gesamtkosten und Mindestdauer gehören dem Katalog und dem Start-Dialog.
 
 **Die Erklärkarte eines Bedarfsfelds ist abgenommen** — Name mit Deckung, ein Satz zur
 Breite, der Verlauf der Deckung mit gestrichelter Voll-Linie, darunter der
