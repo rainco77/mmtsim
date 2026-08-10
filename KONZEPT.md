@@ -4169,6 +4169,19 @@ dadurch verzerrte Breite erklärt die Erklärkarte. Die Icons stehen **linksbün
 Feld. Eine dauerhafte Erklärzeile im Bandkopf gibt es nicht — die Konvention führt die
 Älteste einmal ein, danach gilt sie als verstanden.
 
+**Die Füllung eines Anspruchs-Segments ist sein Gesamtstand**, nicht die Deckung eines
+Ticks: beim Vorhaben der Baufortschritt, beim Vorratsziel der Füllstand gemessen am
+Ziel. Die Lesart des Bands bleibt damit einheitlich — Breite = was der Posten diesen
+Tick an Arbeit beansprucht, Füllung = wie weit der Anspruch erfüllt ist; bei Bedarfen
+ist das eine Sache dieses Ticks, bei Ansprüchen eine Sache des erreichten Standes. Ob
+Arbeit hineinfloss, zeigt die wachsende Füllung.
+
+**Die Erklärkarte eines Bedarfsfelds ist abgenommen** — Name mit Deckung, ein Satz zur
+Breite, der Verlauf der Deckung mit gestrichelter Voll-Linie, darunter der
+Engpass-Satz mit seinen Auswegen. Der Breiten-Satz spricht dabei **den Spieler an,
+statt technisch zu beschreiben, was er sieht, und vermeidet absolute Zahlen**
+weitestgehend.
+
 **Kein Speichern und Laden in der ersten Stufe.** Statt dessen kennt die Oberfläche
 **den ganzen Verlauf des Laufs**, nicht nur den letzten Tick: Für Testzwecke lässt sich
 damit einfach zurückrollen. Ob der Spieler später auch zurückrollen kann, ist offen.
