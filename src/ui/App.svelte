@@ -11,6 +11,14 @@
   import Range from "./tiles/Range.svelte";
   import Stores from "./tiles/Stores.svelte";
 
+  /**
+   * The screen of the first stage (T9): a top bar that spans, the catalogue
+   * left, the ladder in the middle, range over stores beside it, and the frame
+   * column — people over events — at the right. Frame and middle are the same
+   * split the concept names; the shell knows the places, the tiles know their
+   * contents.
+   */
+
   // One translating function per language switch, not one per render — the
   // store changes only when the language does.
   const t = fromStore(
@@ -20,121 +28,69 @@
   );
   $: state = currentState($game);
   $: view = derive(state, index);
-  $: paused = $game.mode === "paused";
-
-  const TILES = [
-    "tile.ladder",
-    "tile.people",
-    "tile.range",
-    "tile.stores",
-    "tile.projects",
-    "tile.events",
-  ] as const;
+  // While the clock walks by itself the three grips give way to the pause;
+  // a grip is only there when it means something (T9).
+  $: running = $game.mode !== "paused";
+  $: ended = state.abandonedAt !== undefined;
 </script>
 
-<header>
-  <strong>{$t("app.title")}</strong>
-  <span class="tick">{$t("time.tick", { tick: state.tick })}</span>
-  <span class="people">{$t("people.count", { count: Math.round(view.heads) })}</span>
-  <nav class="time">
-    <button on:click={step} disabled={!paused}>{$t("time.step")}</button>
-    <button on:click={runToStop} disabled={!paused}>{$t("time.runToStop")}</button>
-    <button on:click={runFree} disabled={!paused}>{$t("time.runFree")}</button>
-    <button on:click={pause} disabled={paused}>{$t("time.pause")}</button>
-  </nav>
-  <nav class="languages">
-    {#each LANGUAGES as id (id)}
-      <button class:active={$language === id} on:click={() => language.set(id)}>
-        {id.toUpperCase()}
-      </button>
-    {/each}
-  </nav>
-</header>
-
-<main>
-  {#each TILES as tile (tile)}
-    <section class:wide={tile === "tile.ladder"}>
-      <h2>{$t(tile)}</h2>
-      {#if tile === "tile.ladder"}
-        <Ladder />
-      {:else if tile === "tile.people"}
-        <People />
-      {:else if tile === "tile.range"}
-        <Range />
-      {:else if tile === "tile.stores"}
-        <Stores />
-      {:else if tile === "tile.projects"}
-        <Projects />
-      {:else if tile === "tile.events"}
-        <Events />
+<div class="page">
+  <header class="top">
+    <span class="brand">{$t("app.title")}</span>
+    <span class="num tick">{$t("time.tick", { tick: state.tick })}</span>
+    <span class="num heads">{$t("people.count", { count: Math.round(view.heads) })}</span>
+    <nav class="timegrips">
+      {#if running}
+        <button title={$t("time.pause")} on:click={pause}>⏸</button>
       {:else}
-        <p class="pending">{$t("tile.pending")}</p>
+        <button title={$t("time.step")} on:click={step} disabled={ended}>⏯</button>
+        <button
+          class="primary"
+          title={$t("time.runToStop")}
+          on:click={runToStop}
+          disabled={ended}>⏩</button
+        >
+        <button title={$t("time.runFree")} on:click={runFree} disabled={ended}>▶</button>
       {/if}
-    </section>
-  {/each}
-</main>
+    </nav>
+    <nav class="lang">
+      {#each LANGUAGES as id (id)}
+        <button class:on={$language === id} on:click={() => language.set(id)}>
+          {id.toUpperCase()}
+        </button>
+      {/each}
+    </nav>
+  </header>
 
-<style>
-  :global(body) {
-    margin: 0;
-    font-family: system-ui, sans-serif;
-    background: #f4f1ea;
-    color: #2b2b2b;
-  }
-  header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.5rem 1rem;
-    background: #2b2b2b;
-    color: #f4f1ea;
-  }
-  header .time {
-    display: flex;
-    gap: 0.5rem;
-    margin-left: auto;
-  }
-  header .languages {
-    display: flex;
-    gap: 0.25rem;
-  }
-  button {
-    font: inherit;
-    padding: 0.25rem 0.75rem;
-    border: 1px solid #8a8578;
-    border-radius: 0.25rem;
-    background: #f4f1ea;
-    cursor: pointer;
-  }
-  button:disabled {
-    opacity: 0.4;
-    cursor: default;
-  }
-  .languages button.active {
-    background: #c8b98a;
-  }
-  main {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.75rem;
-    padding: 0.75rem;
-  }
-  section {
-    background: #fffdf8;
-    border: 1px solid #d9d2c0;
-    border-radius: 0.5rem;
-    padding: 0.75rem;
-    min-height: 10rem;
-  }
-  section.wide {
-    grid-column: span 2;
-    grid-row: span 2;
-  }
-  h2 {
-    margin: 0 0 0.5rem;
-    font-size: 1rem;
-  }
-  .pending {
-    color: #8a8578;
-  }
-</style>
+  <section class="tile cat">
+    <h2>{$t("tile.projects")}</h2>
+    <div class="tilebody"><Projects /></div>
+  </section>
+
+  <section class="tile ladder">
+    <h2>{$t("tile.ladder")}</h2>
+    <div class="tilebody"><Ladder /></div>
+  </section>
+
+  <div class="side">
+    <section class="tile range">
+      <h2>{$t("tile.range")}</h2>
+      <div class="tilebody"><Range /></div>
+    </section>
+    <section class="tile stores">
+      <h2>{$t("tile.stores")}</h2>
+      <div class="tilebody"><Stores /></div>
+    </section>
+  </div>
+
+  <div class="frame">
+    <section class="tile people">
+      <h2>{$t("tile.people")}</h2>
+      <div class="tilebody"><People /></div>
+    </section>
+    <section class="tile log">
+      <h2>{$t("tile.events")}</h2>
+      <div class="tilebody"><Events /></div>
+    </section>
+  </div>
+</div>
