@@ -4219,8 +4219,8 @@ Namen**; wird das Feld zu schmal, fällt der Name weg und das Zeichen bleibt.
 
 **Aus der zweiten Sichtung entschieden:** **Beschriftungen wechseln an der Füllkante
 den Ton (Zweiton, per Probe geprüft):** Zahl, Zeichen und Name werden hell gezeichnet,
-soweit sie auf der satten Füllung liegen, und in Tinte, soweit sie auf dem blassen
-Grund liegen — der Wechsel sitzt genau an der Kante, und beim Bau hängen Füllbreite und
+soweit sie auf der satten Füllung liegen, und dunkel, soweit sie auf dem blassen
+Grund liegen (der gedämpfte dunkle Ton der geprüften Probe) — der Wechsel sitzt genau an der Kante, und beim Bau hängen Füllbreite und
 Schnittkante an derselben Größe, sonst driften sie auseinander. Die Ocker-Einfärbung
 der Anspruchszahlen entfällt — „deins" sagt schon der Rahmen. Eine Zahl fällt nur noch
 weg, wo Zeichen und Zahl nicht nebeneinander ins Feld passen; volle Deckung bleibt ohne
