@@ -4240,8 +4240,15 @@ sprechen den Spieler an** und reden von der Sache in der Welt — vom halb gekn�
 Netz, vom Lager, das so viele Ticks Feuer trägt —, nicht von der Anzeige; die
 Anzeigegesetze (Prozent nur für Verhältnisse, Ticks als Kosten-Anker, keine nackte Zahl
 ohne Anker, „liegt bereit", wenn der Bestand die Kosten deckt) gelten dort wie überall.
-Dass bei der Nahrung die Gruben das Ziel fassen und es dort keinen Mengen-Griff gibt,
-steht — wenn überhaupt — auf der Karte der Nahrung und auf keiner anderen.
+**Die Vorratsziel-Segmente heißen nach dem, was sie halten: „Brennholzvorrat" und
+„Nahrungsvorrat"** — ein Muster für beide, keine technische Voranstellung „Ziel"; das
+Wort Ziel lebt weiter am Regler der Karte („Ziel 14 — hält ~6 Ticks Feuer").
+**Funktions-Erklärsätze stehen nicht dauerhaft auf einer Karte:** Ein Satz, der
+erklärt, wie ein Element funktioniert („Wie groß der Vorrat sein soll, entschied, wer
+grub"), gehört der Ersterklärung — die Älteste sagt ihn einmal, wenn das Element zum
+ersten Mal erscheint. Auf der Karte bleibt die mechanische Zeile („Ziel = was 3 Gruben
+fassen"), deren Antippen die Rechnung zeigt; sie gehört zur Karte der Nahrung und zu
+keiner anderen.
 
 **Die Erklärkarte eines Bedarfsfelds ist abgenommen** — Name mit Deckung, ein Satz zur
 Breite, der Verlauf der Deckung mit gestrichelter Voll-Linie, darunter der
