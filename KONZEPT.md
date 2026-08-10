@@ -4334,6 +4334,26 @@ Die Quellen stehen namentlich, nach Häufigkeit, aus der Rang-Aufzeichnung; kein
 Schwelle. Das Alarm-Präfix („Nahrung wird knapp") gehört nicht auf die Karte —
 es bleibt der ungefragten Engpass-Meldung der ersten Male vorbehalten.
 
+**Die Auswege der Bedarfskarte folgen dem Vorhaben-Muster:** Der Vorhaben-Ausweg
+nennt sein Ziel und verspricht die Reihenfolge („Das Netz ist angefangen — vor
+Sattessen ziehen?" · Folge: „… wird dann vor Sattessen bedient"). Der
+Weiterziehen-Ausweg trägt seine Vorschau-Aussage („Im nächsten Revier ist die Suche
+leichter" — aus der freigelegten Rechenfunktion, keine Prognose), und sein Griff
+**öffnet den Weiterziehen-Dialog**, zieht nie direkt: Die Handlung verlangt ihre
+festgelegte Abwägung, und der Griff zum Dialog ist die direkte Ausführbarkeit des
+Auswegs.
+
+**Die Vorratskarten bauen sich nach demselben Prinzip** wie Bedarfs- und
+Vorhaben-Karte: handgeschriebener Kopfsatz je Vorrat (der Nahrungs-Satz existiert,
+das Brennholz bekommt seinen) · „gefüllt N %" · dieselbe Kurve mit Bremsteppich
+(Vorratsvorgaben stehen als eigene Ränge in der Zuteilung, die Rang-Aufzeichnung
+trägt sie) · Faktenzeile „Voll zu halten: 1 % der Arbeit dieses Ticks · angekommen:
+alle" · die mechanische Ziel-Zeile samt Regler bleibt wie festgelegt („Ziel 14 ·
+hält ~6 Ticks Feuer" — die Zielmenge ist die eingefrorene Spieler-Einstellung mit
+Ticks-Anker, keine Kostenzahl; beim Nahrungsvorrat ohne Mengen-Griff) ·
+Ursachen-Satz im Handlungs-Fenster (Vorräte haben eigene Handlungen: Menge, Rang) ·
+Auswege nach den vier Regeln.
+
 **Kein Speichern und Laden in der ersten Stufe.** Statt dessen kennt die Oberfläche
 **den ganzen Verlauf des Laufs**, nicht nur den letzten Tick: Für Testzwecke lässt sich
 damit einfach zurückrollen. Ob der Spieler später auch zurückrollen kann, ist offen.
