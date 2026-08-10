@@ -4046,6 +4046,18 @@ bedient wird von oben nach unten, und dass das so ist, sagt die Älteste in der
 Eröffnung. Verschoben wird durch Ziehen zwischen die Nachbarn; die Zahl dahinter ist
 Modell-Interna.
 
+**Die Auswege-Regeln.** Eine Engpass-Anzeige nennt Auswege ausschließlich aus vier
+ableitbaren Quellen: ein laufendes Vorhaben, das dem knappen Gut dient · ein
+ausführbares Vorhaben, das ihm dient (sortiert nach der Dringlichkeits-Zahl des
+Kerns) · das Weiterziehen, wenn die Suche im nächsten Revier laut Vorschau leichter
+wäre · ein eigener Anspruch, der vor dem unterdeckten Rang drängelt. Höchstens zwei
+werden genannt; greift keine Regel, wird nichts erfunden — „das Revier gibt gerade
+nicht mehr her", und genau dieser Fall enthüllt erstmals das Weiterziehen.
+**Ungefragt nur anfangs, auf Antippen immer:** Von sich aus nennt die Oberfläche
+Auswege nur die ersten Male je Engpass-Art; die Erklärkarte zeigt sie auf Tipp
+jederzeit. **Jeder genannte Ausweg trägt seinen Griff** und ist direkt aus der Karte
+ausführbar — beschreiben ohne Handhabe ist Lärm.
+
 **Eröffnung und Begleiter.** Der Bildschirm startet fast leer. Ein Guide von
 **höchstens vier Schritten** führt durch die Startelemente — jedes wird hervorgehoben
 und in einem Satz erklärt, das nächste erscheint beim Weiterklicken — und endet nicht
