@@ -2,7 +2,7 @@
 <html lang="de">
   <head>
     <meta charset="utf-8" />
-    <title>mmtsim — Feinentwurf B (Tick 96, eingefroren)</title>
+    <title>mmtsim — Feinentwurf B, Runde 2 (Tick 96, eingefroren)</title>
     <style>
       :root {
         --ground: #e9edea;
@@ -21,7 +21,7 @@
         --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
       }
       * { box-sizing: border-box; margin: 0; }
-      html, body { width: 1280px; height: 800px; overflow: hidden; }
+      html, body { width: 100%; height: 100%; overflow: hidden; }
       body {
         font-family: system-ui, sans-serif;
         font-size: 14px;
@@ -36,7 +36,7 @@
         height: 100%;
         gap: 10px;
         padding: 10px;
-        grid-template-columns: 264px 1.25fr 1fr 300px;
+        grid-template-columns: minmax(240px, 19vw) 1.25fr 1fr minmax(270px, 22vw);
         grid-template-rows: 56px 1fr;
         grid-template-areas:
           "top top top top"
@@ -74,8 +74,9 @@
       .timegrips { margin-left: auto; display: flex; gap: 8px; }
       .timegrips button {
         font: inherit;
-        min-height: 40px;
-        padding: 0 18px;
+        width: 46px;
+        height: 42px;
+        font-size: 19px;
         border-radius: 8px;
         border: 1px solid #4a524d;
         background: #333b36;
@@ -84,7 +85,7 @@
       }
       .timegrips button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
       .lang { display: flex; gap: 4px; margin-left: 10px; }
-      .lang button { min-height: 40px; padding: 0 12px; border-radius: 8px; border: 1px solid #4a524d; background: none; color: #b8c2ba; }
+      .lang button { height: 42px; padding: 0 12px; border-radius: 8px; border: 1px solid #4a524d; background: none; color: #b8c2ba; font: inherit; }
       .lang button.on { background: var(--ground); color: var(--ink); }
 
       /* ------- Katalog ------- */
@@ -144,6 +145,10 @@
         border-top: 1px solid var(--line);
       }
       .row:first-child { border-top: none; }
+      .grab {
+        width: 26px; text-align: center; color: var(--muted); font-size: 16px;
+        cursor: grab; letter-spacing: 1px;
+      }
       .rank {
         width: 34px;
         text-align: right;
@@ -151,37 +156,38 @@
         color: var(--muted);
       }
       .row .label { width: 118px; font-weight: 600; }
+      .row.claim { background: #f1f4ee; }
       .row.claim .label { font-weight: 500; font-style: italic; }
+      .dotstat { width: 14px; height: 14px; border-radius: 50%; }
+      .dotstat.ok { background: var(--ok); }
+      .dotstat.short { background: var(--crit); }
+      .dotstat.off { background: var(--sunk); }
       .meter { flex: 1; height: 12px; border-radius: 6px; background: var(--sunk); overflow: hidden; }
       .meter i { display: block; height: 100%; border-radius: 6px; }
-      .meter.cover i { background: var(--ok); }
-      .meter.short i { background: var(--crit); }
       .meter.build i { background: var(--accent); }
       .meter.store i { background: var(--store); }
       .row .val { width: 46px; text-align: right; font-size: 13.5px; }
-      .row .note { font-size: 12px; color: var(--crit); width: 150px; }
-      .row .spark { width: 76px; height: 26px; }
+      .row .note { font-size: 12px; color: var(--muted); width: 168px; }
+      .row .note b { color: var(--accent-ink); }
+      .row .spark { width: 90px; height: 26px; margin-left: auto; }
       .rowdetail {
         background: var(--ground);
         border-top: 1px dashed var(--line);
-        padding: 10px 14px 12px 58px;
+        padding: 10px 14px 12px 50px;
         font-size: 12.5px;
         color: var(--muted);
       }
       .rowdetail .big { display: block; width: 100%; height: 46px; margin-bottom: 8px; }
       .rowdetail table { border-collapse: collapse; }
-      .rowdetail td { padding: 2px 14px 2px 0; }
+      .rowdetail th { text-align: left; font-weight: 600; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); padding: 0 16px 3px 0; }
+      .rowdetail td { padding: 2px 16px 2px 0; color: var(--ink); }
+      .rowdetail td.dim { color: var(--muted); }
       .rowdetail .why { color: var(--ink); margin-bottom: 6px; }
+      .rowdetail .substanz { margin-top: 6px; color: var(--store); }
       .foot {
         margin-top: auto;
         border-top: 2px solid var(--line);
         background: var(--surface);
-      }
-      .slider { flex: 1; height: 12px; border-radius: 6px; background: var(--sunk); position: relative; }
-      .slider .knob {
-        position: absolute; top: 50%; transform: translate(-50%, -50%);
-        width: 26px; height: 26px; border-radius: 50%;
-        background: #fff; border: 2px solid var(--accent);
       }
 
       /* ------- Revier + Vorräte ------- */
@@ -190,7 +196,7 @@
       .range .rows { overflow-y: auto; }
       .stand {
         display: grid;
-        grid-template-columns: 74px 1fr 92px;
+        grid-template-columns: 74px 1fr 96px;
         grid-template-rows: auto auto;
         align-items: center;
         column-gap: 10px;
@@ -200,7 +206,10 @@
       .stand:first-child { border-top: none; }
       .stand .label { font-weight: 600; grid-row: span 2; }
       .stand .meter { height: 9px; }
-      .stand .flow { font-size: 11.5px; color: var(--muted); }
+      .stand .flow { font-size: 11.5px; }
+      .stand .flow .down { color: var(--crit); }
+      .stand .flow .up { color: var(--ok); }
+      .stand .flow .tended { color: var(--accent-ink); }
       .stand .effort { grid-row: span 2; text-align: right; font-size: 12.5px; }
       .stand .effort b { font-size: 14px; }
       .stand .effort.hot b { color: var(--crit); }
@@ -208,16 +217,13 @@
       .movebox {
         border-top: 2px solid var(--line);
         padding: 10px 14px;
-        display: flex; flex-direction: column; gap: 6px;
+        display: flex; justify-content: space-between; align-items: center; gap: 10px;
         font-size: 12.5px;
       }
-      .movebox .pair { display: flex; justify-content: space-between; align-items: center; }
       .movebox button {
-        font: inherit; min-height: 40px; padding: 0 16px; border-radius: 8px;
+        font: inherit; min-height: 42px; padding: 0 18px; border-radius: 8px;
         border: 1px solid var(--accent); background: none; color: var(--accent-ink); cursor: pointer;
       }
-      .movebox .price { color: var(--crit); }
-      .movebox .gain { color: var(--muted); }
 
       .stores { flex: 1; }
       .storeline { padding: 7px 14px; border-top: 1px solid var(--line); }
@@ -225,6 +231,12 @@
       .storeline .head { display: flex; justify-content: space-between; font-size: 13px; }
       .storeline .meter { height: 9px; margin-top: 5px; }
       .storeline .sub { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; font-size: 11.5px; color: var(--muted); }
+      .slider { height: 12px; border-radius: 6px; background: var(--sunk); position: relative; }
+      .slider .knob {
+        position: absolute; top: 50%; transform: translate(-50%, -50%);
+        width: 26px; height: 26px; border-radius: 50%;
+        background: #fff; border: 2px solid var(--accent);
+      }
 
       /* ------- Rahmen rechts ------- */
       .frame { grid-area: frame; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
@@ -236,7 +248,7 @@
       .dot { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 4px; }
       .brake { display: flex; align-items: center; gap: 8px; padding: 8px 14px 10px; font-size: 12.5px; }
       .brake .q {
-        margin-left: auto; width: 26px; height: 26px; border-radius: 50%;
+        margin-left: auto; width: 28px; height: 28px; border-radius: 50%;
         border: 1px solid var(--line); background: var(--ground);
         display: flex; align-items: center; justify-content: center; color: var(--muted);
       }
@@ -247,6 +259,25 @@
       .log .t { color: var(--muted); min-width: 24px; text-align: right; }
       .log .crisis { color: var(--crit); font-weight: 600; }
       .log .weather { padding: 0 14px 6px; font-size: 11.5px; color: var(--muted); }
+
+      /* ------- Weiterziehen-Dialog (im zweiten Bild geöffnet) ------- */
+      .overlay {
+        position: fixed; inset: 0; background: rgba(35, 40, 43, 0.45);
+        display: none; align-items: center; justify-content: center;
+      }
+      body.dialog-open .overlay { display: flex; }
+      .dialog {
+        width: 460px; background: var(--surface); border-radius: 12px;
+        padding: 20px 22px; box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+      }
+      .dialog h4 { font-family: var(--serif); font-size: 20px; margin-bottom: 8px; }
+      .dialog p { font-size: 13.5px; margin: 6px 0; }
+      .dialog .gain { color: var(--ink); }
+      .dialog .price { color: var(--crit); }
+      .dialog .buttons { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+      .dialog button { font: inherit; min-height: 42px; padding: 0 18px; border-radius: 8px; cursor: pointer; }
+      .dialog .go { background: var(--accent); border: none; color: #fff; }
+      .dialog .stay { background: none; border: 1px solid var(--line); color: var(--ink); }
     </style>
   </head>
   <body>
@@ -257,9 +288,9 @@
         <span class="tick num">Tick 96</span>
         <span class="heads num">27 Menschen</span>
         <nav class="timegrips">
-          <button>Ein Tick</button>
-          <button class="primary">Bis zum Haltepunkt</button>
-          <button>Laufen lassen</button>
+          <button title="Ein Tick">⏯</button>
+          <button class="primary" title="Bis zum Haltepunkt">⏩</button>
+          <button title="Laufen lassen">▶</button>
         </nav>
         <nav class="lang"><button class="on">DE</button><button>EN</button></nav>
       </header>
@@ -303,74 +334,85 @@
         <h2>Bedarfe und Ansprüche</h2>
         <div class="rows">
           <div class="row">
+            <span class="grab"></span>
             <span class="rank num">100</span><span class="label">Hunger</span>
-            <div class="meter cover"><i style="width: 100%"></i></div>
+            <span class="dotstat ok"></span>
             <span class="val num">1,00</span>
-            <svg class="spark" viewBox="0 0 76 26"><path d="M0 6 L20 5 L36 8 L48 14 L60 7 L76 5 L76 26 L0 26 Z" fill="#c9d8c6"/><path d="M0 6 L20 5 L36 8 L48 14 L60 7 L76 5" fill="none" stroke="#4f7d4f" stroke-width="1.5"/><circle cx="76" cy="5" r="2.5" fill="#4f7d4f"/></svg>
+            <svg class="spark" viewBox="0 0 90 26"><path d="M0 6 L24 5 L42 8 L56 14 L70 7 L90 5 L90 26 L0 26 Z" fill="#c9d8c6"/><path d="M0 6 L24 5 L42 8 L56 14 L70 7 L90 5" fill="none" stroke="#4f7d4f" stroke-width="1.5"/><circle cx="90" cy="5" r="2.5" fill="#4f7d4f"/></svg>
           </div>
           <div class="row">
+            <span class="grab"></span>
             <span class="rank num">200</span><span class="label">Feuer</span>
-            <div class="meter cover"><i style="width: 100%"></i></div>
+            <span class="dotstat ok"></span>
             <span class="val num">1,00</span>
-            <svg class="spark" viewBox="0 0 76 26"><path d="M0 5 L30 5 L44 9 L58 5 L76 5 L76 26 L0 26 Z" fill="#c9d8c6"/><path d="M0 5 L30 5 L44 9 L58 5 L76 5" fill="none" stroke="#4f7d4f" stroke-width="1.5"/><circle cx="76" cy="5" r="2.5" fill="#4f7d4f"/></svg>
+            <svg class="spark" viewBox="0 0 90 26"><path d="M0 5 L36 5 L52 9 L68 5 L90 5 L90 26 L0 26 Z" fill="#c9d8c6"/><path d="M0 5 L36 5 L52 9 L68 5 L90 5" fill="none" stroke="#4f7d4f" stroke-width="1.5"/><circle cx="90" cy="5" r="2.5" fill="#4f7d4f"/></svg>
           </div>
           <div class="row">
+            <span class="grab"></span>
             <span class="rank num">300</span><span class="label">Betreuung</span>
-            <div class="meter cover"><i style="width: 100%"></i></div>
+            <span class="dotstat ok"></span>
             <span class="val num">1,00</span>
-            <svg class="spark" viewBox="0 0 76 26"><path d="M0 5 L76 5 L76 26 L0 26 Z" fill="#c9d8c6"/><path d="M0 5 L76 5" fill="none" stroke="#4f7d4f" stroke-width="1.5"/><circle cx="76" cy="5" r="2.5" fill="#4f7d4f"/></svg>
+            <svg class="spark" viewBox="0 0 90 26"><path d="M0 5 L90 5 L90 26 L0 26 Z" fill="#c9d8c6"/><path d="M0 5 L90 5" fill="none" stroke="#4f7d4f" stroke-width="1.5"/><circle cx="90" cy="5" r="2.5" fill="#4f7d4f"/></svg>
           </div>
           <div class="row claim">
+            <span class="grab">≡</span>
             <span class="rank num">350</span><span class="label">Fischernetz</span>
-            <div class="slider"><span class="knob" style="left: 32%"></span></div>
+            <div class="meter build" style="max-width: 130px"><i style="width: 50%"></i></div>
             <span class="val num">50 %</span>
-            <span class="note">~9 Ticks · kostet Sättigung</span>
+            <span class="note num">fertig in <b>~9 Ticks</b> · drängelt vor Kleidung und Sättigung</span>
           </div>
           <div class="row">
+            <span class="grab"></span>
             <span class="rank num">400</span><span class="label">Kleidung</span>
-            <div class="meter cover"><i style="width: 100%"></i></div>
+            <span class="dotstat ok"></span>
             <span class="val num">1,00</span>
-            <svg class="spark" viewBox="0 0 76 26"><path d="M0 7 L24 6 L40 10 L56 6 L76 6 L76 26 L0 26 Z" fill="#c9d8c6"/><path d="M0 7 L24 6 L40 10 L56 6 L76 6" fill="none" stroke="#4f7d4f" stroke-width="1.5"/><circle cx="76" cy="6" r="2.5" fill="#4f7d4f"/></svg>
+            <svg class="spark" viewBox="0 0 90 26"><path d="M0 7 L28 6 L48 10 L66 6 L90 6 L90 26 L0 26 Z" fill="#c9d8c6"/><path d="M0 7 L28 6 L48 10 L66 6 L90 6" fill="none" stroke="#4f7d4f" stroke-width="1.5"/><circle cx="90" cy="6" r="2.5" fill="#4f7d4f"/></svg>
           </div>
-          <div class="row">
-            <span class="rank num">450</span><span class="label" style="font-style: italic">Vorrat Holz</span>
-            <div class="meter store"><i style="width: 100%"></i></div>
+          <div class="row claim">
+            <span class="grab">≡</span>
+            <span class="rank num">450</span><span class="label">Vorrat Holz</span>
+            <div class="meter store" style="max-width: 130px"><i style="width: 100%"></i></div>
             <span class="val num">14/14</span>
-            <svg class="spark" viewBox="0 0 76 26"><path d="M0 20 L18 8 L40 6 L58 10 L76 5 L76 26 L0 26 Z" fill="#c3d6da"/><path d="M0 20 L18 8 L40 6 L58 10 L76 5" fill="none" stroke="#33707c" stroke-width="1.5"/><circle cx="76" cy="5" r="2.5" fill="#33707c"/></svg>
+            <span class="note">voll — hält 6 Ticks Feuer</span>
           </div>
           <div class="row" style="background: var(--ground)">
+            <span class="grab"></span>
             <span class="rank num">500</span><span class="label">Sättigung</span>
-            <div class="meter short"><i style="width: 62%"></i></div>
+            <span class="dotstat short"></span>
             <span class="val num" style="color: var(--crit)">0,62</span>
-            <svg class="spark" viewBox="0 0 76 26"><path d="M0 6 L22 5 L38 9 L52 16 L64 19 L76 15 L76 26 L0 26 Z" fill="#ead4d1"/><path d="M0 6 L22 5 L38 9 L52 16 L64 19 L76 15" fill="none" stroke="#93312b" stroke-width="1.5"/><circle cx="76" cy="15" r="2.5" fill="#93312b"/></svg>
+            <svg class="spark" viewBox="0 0 90 26"><path d="M0 6 L26 5 L44 9 L60 16 L74 19 L90 15 L90 26 L0 26 Z" fill="#ead4d1"/><path d="M0 6 L26 5 L44 9 L60 16 L74 19 L90 15" fill="none" stroke="#93312b" stroke-width="1.5"/><circle cx="90" cy="15" r="2.5" fill="#93312b"/></svg>
           </div>
           <div class="rowdetail">
-            <p class="why"><b>Nahrung wird knapp</b> — der Fang trägt nicht mehr. Das Netz läuft (50 %); frisches Revier würde auch helfen.</p>
+            <p class="why"><b>Nahrung wird knapp</b> — der Fischfang brach im Sturm ein. Das Netz ist halb fertig; frisches Revier würde auch helfen.</p>
             <svg class="big" viewBox="0 0 560 46"><path d="M0 10 L120 8 L220 14 L320 26 L420 34 L560 28 L560 46 L0 46 Z" fill="#ead4d1"/><path d="M0 10 L120 8 L220 14 L320 26 L420 34 L560 28" fill="none" stroke="#93312b" stroke-width="1.5"/><circle cx="560" cy="28" r="3" fill="#93312b"/></svg>
             <table class="num">
-              <tr><td>Sammeln mit Sichel</td><td>Arbeit 6,1</td><td>Ertrag 14,6</td><td>Pflanzen 2,38</td></tr>
-              <tr><td>Fischfang</td><td>Arbeit 3,4</td><td>Ertrag 5,2</td><td>Fisch 1,97</td></tr>
-              <tr><td>Jagd</td><td>Arbeit 2,2</td><td>Ertrag 4,1</td><td>Wild 1,81</td></tr>
-              <tr><td colspan="4">Vorrat Nahrung: 32 → 20 — der Tick lebte von der Substanz</td></tr>
+              <tr><th>Wer Nahrung holt</th><th>Hände</th><th>bringt</th><th>Suche (1 = frisches Land)</th></tr>
+              <tr><td>Sammeln mit Sichel</td><td>6,1</td><td>14,6</td><td class="dim">Pflanzen 2,4× so mühsam</td></tr>
+              <tr><td>Fischfang</td><td>3,4</td><td>5,2</td><td class="dim">Fisch 2,0× so mühsam</td></tr>
+              <tr><td>Jagd</td><td>2,2</td><td>4,1</td><td class="dim">Wild 1,8× so mühsam</td></tr>
             </table>
+            <p class="substanz num">Die Grube gab her: Vorrat 32 → 20</p>
           </div>
           <div class="row">
+            <span class="grab"></span>
             <span class="rank num">600</span><span class="label">Behaglichkeit</span>
-            <div class="meter short"><i style="width: 0%"></i></div>
+            <span class="dotstat off"></span>
             <span class="val num" style="color: var(--muted)">0,00</span>
-            <svg class="spark" viewBox="0 0 76 26"><path d="M0 18 L20 22 L40 24 L76 24 L76 26 L0 26 Z" fill="#dde3de"/><path d="M0 18 L20 22 L40 24 L76 24" fill="none" stroke="#5c6660" stroke-width="1.5"/></svg>
+            <svg class="spark" viewBox="0 0 90 26"><path d="M0 18 L24 22 L48 24 L90 24 L90 26 L0 26 Z" fill="#dde3de"/><path d="M0 18 L24 22 L48 24 L90 24" fill="none" stroke="#5c6660" stroke-width="1.5"/></svg>
           </div>
           <div class="row claim">
+            <span class="grab">≡</span>
             <span class="rank num">1000</span><span class="label">Vorrat Nahrung</span>
-            <div class="meter store"><i style="width: 37%"></i></div>
+            <div class="meter store" style="max-width: 130px"><i style="width: 37%"></i></div>
             <span class="val num">20/54</span>
-            <span class="note" style="color: var(--muted)">füllt aus dem Übrigen</span>
+            <span class="note">füllt aus dem Übrigen</span>
           </div>
           <div class="row foot">
+            <span class="grab"></span>
             <span class="rank"></span><span class="label" style="color: var(--muted)">Freie Arbeit</span>
-            <div class="meter"><i style="width: 4%; background: var(--muted)"></i></div>
+            <span class="dotstat off"></span>
             <span class="val num">1,6</span>
-            <svg class="spark" viewBox="0 0 76 26"><path d="M0 8 L20 12 L40 18 L60 22 L76 23 L76 26 L0 26 Z" fill="#dde3de"/><path d="M0 8 L20 12 L40 18 L60 22 L76 23" fill="none" stroke="#5c6660" stroke-width="1.5"/></svg>
+            <svg class="spark" viewBox="0 0 90 26"><path d="M0 8 L24 12 L48 18 L70 22 L90 23 L90 26 L0 26 Z" fill="#dde3de"/><path d="M0 8 L24 12 L48 18 L70 22 L90 23" fill="none" stroke="#5c6660" stroke-width="1.5"/></svg>
           </div>
         </div>
       </section>
@@ -382,42 +424,38 @@
           <div class="rows">
             <div class="stand">
               <span class="label">Pflanzen</span>
-              <div class="meter cover"><i style="width: 51%"></i></div>
-              <span class="effort hot num"><b>2,38</b><svg width="64" height="18" viewBox="0 0 64 18"><path d="M0 12 L16 11 L32 8 L48 5 L64 3" fill="none" stroke="#93312b" stroke-width="1.5"/><circle cx="64" cy="3" r="2" fill="#93312b"/></svg></span>
-              <span class="flow num">70 von 138 · +2,4 / −6,1 · <span style="color: var(--accent-ink)">gepflegt +1,2</span></span>
+              <div class="meter cover" style="background: var(--sunk)"><i style="width: 51%; background: var(--ok)"></i></div>
+              <span class="effort hot num"><b>2,4×</b><svg width="64" height="18" viewBox="0 0 64 18"><path d="M0 12 L16 11 L32 8 L48 5 L64 3" fill="none" stroke="#93312b" stroke-width="1.5"/><circle cx="64" cy="3" r="2" fill="#93312b"/></svg></span>
+              <span class="flow num"><span class="down">wird dünner: −3,7/Tick</span> · <span class="tended">Brand trägt noch +1,2</span></span>
             </div>
             <div class="stand">
               <span class="label">Wild</span>
-              <div class="meter cover"><i style="width: 62%"></i></div>
-              <span class="effort num"><b>1,81</b><svg width="64" height="18" viewBox="0 0 64 18"><path d="M0 12 L16 10 L32 9 L48 8 L64 7" fill="none" stroke="#5c6660" stroke-width="1.5"/><circle cx="64" cy="7" r="2" fill="#5c6660"/></svg></span>
-              <span class="flow num">32 von 52 · +0,9 / −1,6</span>
+              <div class="meter" style="background: var(--sunk)"><i style="width: 62%; background: var(--ok)"></i></div>
+              <span class="effort num"><b>1,8×</b><svg width="64" height="18" viewBox="0 0 64 18"><path d="M0 12 L16 10 L32 9 L48 8 L64 7" fill="none" stroke="#5c6660" stroke-width="1.5"/><circle cx="64" cy="7" r="2" fill="#5c6660"/></svg></span>
+              <span class="flow num"><span class="down">wird dünner: −0,7/Tick</span></span>
             </div>
             <div class="stand">
               <span class="label">Fisch</span>
-              <div class="meter cover"><i style="width: 54%"></i></div>
-              <span class="effort hot num"><b>1,97</b><svg width="64" height="18" viewBox="0 0 64 18"><path d="M0 13 L16 12 L32 10 L48 6 L64 4" fill="none" stroke="#93312b" stroke-width="1.5"/><circle cx="64" cy="4" r="2" fill="#93312b"/></svg></span>
-              <span class="flow num">15 von 28 · +1,7 / −3,3</span>
+              <div class="meter" style="background: var(--sunk)"><i style="width: 54%; background: var(--ok)"></i></div>
+              <span class="effort hot num"><b>2,0×</b><svg width="64" height="18" viewBox="0 0 64 18"><path d="M0 13 L16 12 L32 10 L48 6 L64 4" fill="none" stroke="#93312b" stroke-width="1.5"/><circle cx="64" cy="4" r="2" fill="#93312b"/></svg></span>
+              <span class="flow num"><span class="down">wird dünner: −1,6/Tick</span></span>
             </div>
             <div class="stand">
               <span class="label">Totholz</span>
-              <div class="meter cover"><i style="width: 95%"></i></div>
-              <span class="effort num"><b>1,05</b><svg width="64" height="18" viewBox="0 0 64 18"><path d="M0 9 L64 8" fill="none" stroke="#5c6660" stroke-width="1.5"/><circle cx="64" cy="8" r="2" fill="#5c6660"/></svg></span>
-              <span class="flow num">275 von 288 · +2,9 / −4,9</span>
+              <div class="meter" style="background: var(--sunk)"><i style="width: 95%; background: var(--ok)"></i></div>
+              <span class="effort num"><b>1,1×</b><svg width="64" height="18" viewBox="0 0 64 18"><path d="M0 9 L64 8" fill="none" stroke="#5c6660" stroke-width="1.5"/><circle cx="64" cy="8" r="2" fill="#5c6660"/></svg></span>
+              <span class="flow num"><span class="down">−2,0/Tick</span> · fast voll</span>
             </div>
             <div class="stand">
               <span class="label">Muscheln</span>
-              <div class="meter cover"><i style="width: 100%"></i></div>
-              <span class="effort num"><b>1,00</b><svg width="64" height="18" viewBox="0 0 64 18"><path d="M0 9 L64 9" fill="none" stroke="#5c6660" stroke-width="1.5"/></svg></span>
-              <span class="flow num">69 von 69 · unberührt — die Reserve</span>
+              <div class="meter" style="background: var(--sunk)"><i style="width: 100%; background: var(--ok)"></i></div>
+              <span class="effort num"><b>1,0×</b><svg width="64" height="18" viewBox="0 0 64 18"><path d="M0 9 L64 9" fill="none" stroke="#5c6660" stroke-width="1.5"/></svg></span>
+              <span class="flow num">unberührt — die Reserve</span>
             </div>
           </div>
           <div class="movebox">
-            <div class="pair">
-              <span><b>Weiterziehen?</b> <span class="num">eigenes Land 1,00 · Angebot 0,93</span></span>
-              <button>Weiterziehen</button>
-            </div>
-            <span class="gain num">Dort: Wild und Fisch halb erholt · Suchkosten ~2,0 statt 2,4</span>
-            <span class="price num">Zurück bleiben: 3 Gruben (54 Speicher) · 20 Nahrung · 14 Holz</span>
+            <span class="num"><b>Land nebenan:</b> Güte 0,93 gegen deine 1,00</span>
+            <button onclick="document.body.classList.add('dialog-open')">Weiterziehen …</button>
           </div>
         </section>
 
@@ -441,7 +479,7 @@
         <section class="tile people">
           <h2>Menschen</h2>
           <div class="count num">27</div>
-          <p class="kaiser num">diesen Tick: 1 gestorben · niemand geboren</p>
+          <p class="kaiser num">diesen Tick: 1 Mensch stirbt · niemand geboren</p>
           <div class="chart">
             <svg width="100%" height="84" viewBox="0 0 272 84">
               <path d="M0 24 L40 20 L80 16 L110 30 L150 34 L190 30 L230 28 L272 30 L272 84 L0 84 Z" fill="#b0722a" opacity="0.5"/>
@@ -457,15 +495,29 @@
           <h2>Ereignisse</h2>
           <p class="weather num">Wetterwurf 1,31</p>
           <ul>
-            <li><span class="t num">96</span><span class="crisis">Der harte Winter fordert 1 — der Fang blieb aus</span></li>
+            <li><span class="t num">96</span><span class="crisis">Der harte Winter: 1 Mensch stirbt an Hunger — der Fischfang brach ein</span></li>
             <li><span class="t num">94</span><span>Feuerlegen ist wieder ausführbar</span></li>
             <li><span class="t num">90</span><span>Zwirnen fertiggestellt</span></li>
             <li><span class="t num">88</span><span>Fischernetz ist jetzt ausführbar</span></li>
-            <li><span class="t num">84</span><span class="crisis">Der harte Winter fordert 2 — Sättigung fehlte</span></li>
+            <li><span class="t num">84</span><span class="crisis">Der harte Winter: 2 Menschen sterben an Hunger</span></li>
             <li><span class="t num">76</span><span>Vorratsgrube fertiggestellt <span class="num">(×3)</span></span></li>
             <li><span class="t num">60</span><span>Steinaxt fertiggestellt</span></li>
           </ul>
         </section>
+      </div>
+    </div>
+
+    <!-- Weiterziehen-Dialog -->
+    <div class="overlay" onclick="document.body.classList.remove('dialog-open')">
+      <div class="dialog" onclick="event.stopPropagation()">
+        <h4>Weiterziehen?</h4>
+        <p class="gain">Das Land nebenan hat Güte 0,93 — etwas ärmer als deins (1,00). Wild und Fisch dort sind halb erholt: Suchen kostet ~2,0× statt 2,4×.</p>
+        <p class="price">Zurück bleiben: 3 Gruben (54 Speicher) · 20 Nahrung · 14 Holz. Der Brand-Bonus verfällt.</p>
+        <p style="color: var(--muted)">Der Umzug dauert 1 Tick. Was du hier siehst, bekommst du — das Angebot gilt.</p>
+        <div class="buttons">
+          <button class="stay" onclick="document.body.classList.remove('dialog-open')">Bleiben</button>
+          <button class="go">Weiterziehen</button>
+        </div>
       </div>
     </div>
   </body>
