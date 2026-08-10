@@ -4217,8 +4217,14 @@ Wiedererkennung. Der Katalog bleibt bei Namen ohne Zeichen. Die Mindestbreite gi
 unabhängig davon — sie sichert auch die greifbare Lippe. **Bedarfsfelder tragen bei ausreichender Breite zusätzlich ihren
 Namen**; wird das Feld zu schmal, fällt der Name weg und das Zeichen bleibt.
 
-**Aus der zweiten Sichtung entschieden:** Die **Zahl eines Feldes liegt nie unlesbar
-auf der Kante der Füllung** (die genaue Regel dafür ist noch offen). Das Feld **„Arbeit
+**Aus der zweiten Sichtung entschieden:** **Beschriftungen wechseln an der Füllkante
+den Ton (Zweiton, per Probe geprüft):** Zahl, Zeichen und Name werden hell gezeichnet,
+soweit sie auf der satten Füllung liegen, und in Tinte, soweit sie auf dem blassen
+Grund liegen — der Wechsel sitzt genau an der Kante, und beim Bau hängen Füllbreite und
+Schnittkante an derselben Größe, sonst driften sie auseinander. Die Ocker-Einfärbung
+der Anspruchszahlen entfällt — „deins" sagt schon der Rahmen. Eine Zahl fällt nur noch
+weg, wo Zeichen und Zahl nicht nebeneinander ins Feld passen; volle Deckung bleibt ohne
+Zahl. Das Feld **„Arbeit
 liegt brach"** verliert bei Platznot seinen Text — die Schraffur allein trägt dann die
 Bedeutung; sie wird einmal getauft, und Antippen erklärt sie jederzeit. **Die
 Namenszeile wird beim Ziehen ausgeblendet** — die Schwebe-Fahne trägt den Namen des
