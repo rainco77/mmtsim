@@ -164,12 +164,7 @@ b {
   cursor: pointer;
 }
 
-.timegrips button.primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-}
-
+/* All three grips look alike: the clock offers, it does not recommend. */
 .timegrips button:disabled {
   opacity: 0.35;
   cursor: default;
