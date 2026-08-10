@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <title>mmtsim — Probe: Zweiton auf der Füllkante</title>
+    <link rel="stylesheet" href="./mmt.css" />
+    <style>
+      /* ---------- The two-tone candidate ----------
+         A field's labels are drawn TWICE, as two identical stacked copies over
+         the same fill. The lower copy carries the dark tone meant for the pale
+         ground; the upper copy carries the light tone and is clipped to the
+         width of the fill. So the tone switches exactly at the fill edge, and
+         a label that straddles it is half light, half dark.
+
+         Both copies are absolutely positioned over the field's padding box and
+         repeat the field's own flex geometry, so every glyph of the upper copy
+         sits on the very pixel of its twin below. --f carries the fill width;
+         the same custom property feeds the fill and the clip, so the two can
+         never drift apart. */
+      .fld.two > .lay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 0 7px;
+        color: var(--muted);
+      }
+      .fld.two.claim > .lay {
+        align-items: flex-end;
+        padding-bottom: 11px;
+      }
+      .fld.two > .lay.light {
+        color: rgba(248, 249, 246, 0.94);
+        clip-path: inset(0 calc(100% - var(--f)) 0 0);
+      }
+      /* The dark copy keeps the tone the field carries today on free ground. */
+      .fld.two > .lay.dark .pct.crit {
+        color: var(--crit);
+      }
+      .fld.two > .lay.dark .pct.ocker {
+        color: var(--accent-ink);
+      }
+      /* Geometry of the labels inside a copy — the same measurements mmt.css
+         gives them as direct children of the field. */
+      .fld.two .ico {
+        flex: none;
+        width: 18px;
+        height: 18px;
+        fill: currentColor;
+      }
+      .fld.two .nm {
+        min-width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        font-size: 12px;
+      }
+      .fld.two .pct {
+        margin-left: auto;
+        font-size: 12px;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* ---------- Sheet ---------- */
+      .study .sheetpage {
+        gap: 20px;
+      }
+      .study .lead {
+        max-width: 900px;
+      }
+      .study .panel h3 {
+        padding: 12px 14px 2px;
+        margin: 0;
+      }
+      .study .cap {
+        padding: 9px 14px 13px;
+      }
+      .pair {
+        display: flex;
+        gap: 14px;
+        align-items: start;
+      }
+      .pair > .panel {
+        flex: 1 1 0;
+      }
+      /* The two sweeps: one field repeated at a fixed, realistic band width,
+         with only the fill growing. */
+      .sweep {
+        display: flex;
+        justify-content: center;
+        gap: var(--fld-gap);
+        padding: var(--band-top) var(--band-pad) 0;
+      }
+      .sweep .fld {
+        flex: 0 0 88px;
+      }
+      .sweeplab {
+        display: flex;
+        justify-content: center;
+        gap: var(--fld-gap);
+        padding: 6px var(--band-pad) 0;
+      }
+      .sweeplab div {
+        flex: 0 0 88px;
+        text-align: center;
+        font-size: 11px;
+        line-height: 1.35;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="i-berry" viewBox="0 0 18 18">
+        <path d="M9.3 5.4c.2-2 1.7-3.3 3.7-3.6-.2 2.1-1.5 3.3-3.3 3.6z" />
+        <circle cx="9" cy="7.9" r="3" />
+        <circle cx="5.5" cy="11.6" r="3.2" />
+        <circle cx="12.5" cy="11.6" r="3.2" />
+      </symbol>
+      <symbol id="i-flame" viewBox="0 0 18 18">
+        <path
+          d="M9 1.5c.4 2.3 1.7 3.5 2.7 4.7 1.2 1.4 1.9 2.7 1.9 4.4a4.6 4.6 0 0 1-9.2 0c0-1.8.8-3.1 1.9-4.2-.1 2 .5 3 1.4 3.3.7.2 1.3-.4 1.3-1.3 0-1.6-.9-2.7 0-6.9z"
+        />
+      </symbol>
+      <symbol id="i-child" viewBox="0 0 18 18">
+        <circle cx="9" cy="4.3" r="2.7" />
+        <path
+          d="M9 7.6c-2.3 0-3.8 1.3-3.8 3.3v2.3h1.4l.4 3.4h4l.4-3.4h1.4v-2.3c0-2-1.5-3.3-3.8-3.3z"
+        />
+      </symbol>
+      <symbol id="i-garment" viewBox="0 0 18 18">
+        <path
+          d="M7 2.3 3.3 4.6l1.6 3.7 1.5-.9v8.3h5.2V7.4l1.5.9 1.6-3.7L11 2.3a2.05 2.05 0 0 1-4 0z"
+        />
+      </symbol>
+      <symbol id="i-bowl" viewBox="0 0 18 18">
+        <path d="M4.2 8.2a4.8 3.3 0 0 1 9.6 0z" />
+        <path d="M1.7 9.2h14.6c0 3.7-3.3 6.4-7.3 6.4s-7.3-2.7-7.3-6.4z" />
+      </symbol>
+      <symbol id="i-comfort" viewBox="0 0 18 18">
+        <circle cx="3.6" cy="10.6" r="2.4" />
+        <path
+          d="M5.6 13.6c.2-2.4 1.6-4 3.4-4 1.2 0 2.1.7 2.6 1.7.6-1 1.5-1.6 2.6-1.6 1.7 0 2.8 1.3 2.8 3.1 0 .3 0 .6-.1.8z"
+        />
+        <rect x="1.2" y="13.6" width="15.6" height="1.6" rx="0.8" />
+      </symbol>
+      <symbol id="i-net" viewBox="0 0 18 18">
+        <g
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.15"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M1.9 4.4h14.2" />
+          <path d="M2.9 4.4 9 15.6 15.1 4.4" />
+          <path d="M5.9 4.4 12 11.4M12.1 4.4 6 11.4" />
+          <path d="M4.2 8.1h9.6" />
+        </g>
+      </symbol>
+      <symbol id="i-logs" viewBox="0 0 18 18">
+        <g transform="rotate(-9 9 9)">
+          <rect x="1.5" y="3.7" width="14.4" height="2.3" rx="1.15" />
+          <rect x="1.1" y="7.8" width="15.4" height="2.3" rx="1.15" />
+          <rect x="2.1" y="11.9" width="13.6" height="2.3" rx="1.15" />
+        </g>
+      </symbol>
+      <symbol id="i-pit" viewBox="0 0 18 18">
+        <rect x="2.4" y="3.2" width="13.2" height="2.5" rx="1.25" />
+        <path d="M3.7 6.5h10.6l-1 8.1a1.4 1.4 0 0 1-1.4 1.2H6.1a1.4 1.4 0 0 1-1.4-1.2z" />
+      </symbol>
+    </svg>
+
+    <div class="study">
+      <div class="sheetpage">
+        <div>
+          <h1>Zweiton auf der Füllkante — ist das noch lesbar?</h1>
+          <p class="lead">
+            Der Vorschlag: Zahl, Zeichen und Name werden zweimal gezeichnet — hell, soweit
+            sie auf der satten Füllung liegen, dunkel, soweit sie auf dem blassen Grund
+            liegen. Umgeschaltet wird genau an der Kante der Füllung. Alle Felder hier
+            stehen in Bildschirmgröße: 46 Pixel hoch, Zeichen und Zahl in ihrer wirklichen
+            Größe.
+          </p>
+        </div>
+
+        <div class="panel">
+          <h3>Vorschlag — Zweiton</h3>
+          <div class="bandrow">
+            <div class="fld two" style="flex-grow: 26; --f: 100%" title="Essen">
+              <span class="fill" style="width: var(--f)"></span>
+              <span class="lay dark"
+                ><svg class="ico"><use href="#i-berry" /></svg
+                ><span class="nm">Essen</span><span class="pct num">100 %</span></span
+              >
+              <span class="lay light"
+                ><svg class="ico"><use href="#i-berry" /></svg
+                ><span class="nm">Essen</span><span class="pct num">100 %</span></span
+              >
+            </div>
+            <div class="fld two" style="flex-grow: 3; --f: 100%" title="Feuer">
+              <span class="fill" style="width: var(--f)"></span>
+              <span class="lay dark"
+                ><svg class="ico"><use href="#i-flame" /></svg
+              ></span>
+              <span class="lay light"
+                ><svg class="ico"><use href="#i-flame" /></svg
+              ></span>
+            </div>
+            <div class="fld two short" style="flex-grow: 11; --f: 45%" title="Kinderhut">
+              <span class="fill" style="width: var(--f)"></span>
+              <span class="lay dark"
+                ><svg class="ico"><use href="#i-child" /></svg
+                ><span class="nm">Kinderhut</span
+                ><span class="pct crit num">45 %</span></span
+              >
+              <span class="lay light"
+                ><svg class="ico"><use href="#i-child" /></svg
+                ><span class="nm">Kinderhut</span
+                ><span class="pct crit num">45 %</span></span
+              >
+            </div>
+            <div
+              class="fld two claim build"
+              style="flex-grow: 7; --f: 65%"
+              title="Fischernetz"
+            >
+              <span class="fill" style="width: var(--f)"></span>
+              <span class="lay dark"
+                ><svg class="ico"><use href="#i-net" /></svg
+                ><span class="pct ocker num">65 %</span></span
+              >
+              <span class="lay light"
+                ><svg class="ico"><use href="#i-net" /></svg
+                ><span class="pct ocker num">65 %</span></span
+              >
+              <span class="lip"><i></i><i></i><i></i></span>
+            </div>
+            <div class="fld two" style="flex-grow: 7; --f: 100%" title="Kleidung">
+              <span class="fill" style="width: var(--f)"></span>
+              <span class="lay dark"
+                ><svg class="ico"><use href="#i-garment" /></svg
+                ><span class="pct num">100 %</span></span
+              >
+              <span class="lay light"
+                ><svg class="ico"><use href="#i-garment" /></svg
+                ><span class="pct num">100 %</span></span
+              >
+            </div>
+            <div
+              class="fld two claim store"
+              style="flex-grow: 1; --f: 100%"
+              title="Ziel Brennholz"
+            >
+              <span class="fill" style="width: var(--f)"></span>
+              <span class="lay dark"
+                ><svg class="ico"><use href="#i-logs" /></svg
+              ></span>
+              <span class="lay light"
+                ><svg class="ico"><use href="#i-logs" /></svg
+              ></span>
+              <span class="lip"><i></i><i></i><i></i></span>
+            </div>
+            <div class="fld two short" style="flex-grow: 16; --f: 87%" title="Sattessen">
+              <span class="fill" style="width: var(--f)"></span>
+              <span class="lay dark"
+                ><svg class="ico"><use href="#i-bowl" /></svg
+                ><span class="nm">Sattessen</span
+                ><span class="pct crit num">87 %</span></span
+              >
+              <span class="lay light"
+                ><svg class="ico"><use href="#i-bowl" /></svg
+                ><span class="nm">Sattessen</span
+                ><span class="pct crit num">87 %</span></span
+              >
+            </div>
+            <div
+              class="fld two short"
+              style="flex-grow: 7; --f: 20%"
+              title="Behaglichkeit"
+            >
+              <span class="fill" style="width: var(--f)"></span>
+              <span class="lay dark"
+                ><svg class="ico"><use href="#i-comfort" /></svg
+                ><span class="pct crit num">20 %</span></span
+              >
+              <span class="lay light"
+                ><svg class="ico"><use href="#i-comfort" /></svg
+                ><span class="pct crit num">20 %</span></span
+              >
+            </div>
+            <div
+              class="fld two claim store"
+              style="flex-grow: 12; --f: 83%"
+              title="Vorrat Nahrung"
+            >
+              <span class="fill" style="width: var(--f)"></span>
+              <span class="lay dark"
+                ><svg class="ico"><use href="#i-pit" /></svg
+                ><span class="pct ocker num">83 %</span></span
+              >
+              <span class="lay light"
+                ><svg class="ico"><use href="#i-pit" /></svg
+                ><span class="pct ocker num">83 %</span></span
+              >
+              <span class="lip"><i></i><i></i><i></i></span>
+            </div>
+            <div class="fld idle" style="flex-grow: 10">
+              <span>Arbeit liegt brach</span>
+            </div>
+          </div>
+          <div class="names">
+            <div style="flex-grow: 26"></div>
+            <div style="flex-grow: 3"></div>
+            <div style="flex-grow: 11"></div>
+            <div style="flex-grow: 7"><span>Fischernetz</span></div>
+            <div style="flex-grow: 7"></div>
+            <div style="flex-grow: 1"><span>Ziel Brennholz</span></div>
+            <div style="flex-grow: 16"></div>
+            <div style="flex-grow: 7"></div>
+            <div style="flex-grow: 12"><span>Vorrat Nahrung</span></div>
+            <div style="flex-grow: 10"></div>
+          </div>
+          <p class="cap">
+            Auf der Kante liegen: bei <b>Kinderhut</b> der Name, bei
+            <b>Fischernetz</b> (Bauvorhaben, ocker) und <b>Sattessen</b> (Krise, rot) und
+            <b>Vorrat Nahrung</b> (Vorratsziel, blaugrün) die Zahl, bei
+            <b>Behaglichkeit</b> das Zeichen. Die übrigen Felder sind ganz gefüllt und
+            deshalb einfarbig beschriftet. Weil die Beschriftung nach dieser Regel auf
+            jedem Grund lesbar bliebe, steht die Zahl hier auf jedem Feld — auch dort, wo
+            sie heute wegfällt.
+          </p>
+        </div>
+
+        <div class="panel">
+          <h3>Heute — zum Vergleich</h3>
+          <div class="bandrow">
+            <div class="fld" style="flex-grow: 26" title="Essen">
+              <span class="fill" style="width: 100%"></span>
+              <svg class="ico"><use href="#i-berry" /></svg><span class="nm">Essen</span>
+            </div>
+            <div class="fld" style="flex-grow: 3" title="Feuer">
+              <span class="fill" style="width: 100%"></span>
+              <svg class="ico"><use href="#i-flame" /></svg>
+            </div>
+            <div class="fld short" style="flex-grow: 11" title="Kinderhut">
+              <span class="fill" style="width: 45%"></span>
+              <svg class="ico"><use href="#i-child" /></svg
+              ><span class="nm">Kinderhut</span>
+              <span class="pct crit num">45 %</span>
+            </div>
+            <div class="fld claim build" style="flex-grow: 7" title="Fischernetz">
+              <span class="fill" style="width: 65%"></span>
+              <span class="lip"><i></i><i></i><i></i></span
+              ><svg class="ico"><use href="#i-net" /></svg>
+            </div>
+            <div class="fld" style="flex-grow: 7" title="Kleidung">
+              <span class="fill" style="width: 100%"></span>
+              <svg class="ico"><use href="#i-garment" /></svg>
+            </div>
+            <div class="fld claim store" style="flex-grow: 1" title="Ziel Brennholz">
+              <span class="fill" style="width: 100%"></span>
+              <span class="lip"><i></i><i></i><i></i></span
+              ><svg class="ico"><use href="#i-logs" /></svg>
+            </div>
+            <div class="fld short" style="flex-grow: 16" title="Sattessen">
+              <span class="fill" style="width: 87%"></span>
+              <svg class="ico"><use href="#i-bowl" /></svg
+              ><span class="nm">Sattessen</span>
+            </div>
+            <div class="fld short" style="flex-grow: 7" title="Behaglichkeit">
+              <span class="fill" style="width: 20%"></span>
+              <svg class="ico"><use href="#i-comfort" /></svg>
+              <span class="pct crit num">20 %</span>
+            </div>
+            <div class="fld claim store" style="flex-grow: 12" title="Vorrat Nahrung">
+              <span class="fill" style="width: 83%"></span>
+              <span class="lip"><i></i><i></i><i></i></span
+              ><svg class="ico"><use href="#i-pit" /></svg>
+            </div>
+            <div class="fld idle" style="flex-grow: 10">
+              <span>Arbeit liegt brach</span>
+            </div>
+          </div>
+          <div class="names">
+            <div style="flex-grow: 26"></div>
+            <div style="flex-grow: 3"></div>
+            <div style="flex-grow: 11"></div>
+            <div style="flex-grow: 7"><span>Fischernetz</span></div>
+            <div style="flex-grow: 7"></div>
+            <div style="flex-grow: 1"><span>Ziel Brennholz</span></div>
+            <div style="flex-grow: 16"></div>
+            <div style="flex-grow: 7"></div>
+            <div style="flex-grow: 12"><span>Vorrat Nahrung</span></div>
+            <div style="flex-grow: 10"></div>
+          </div>
+          <p class="cap">
+            Dieselben Felder mit denselben Füllständen, nach der heutigen Regel. Die Zahl
+            steht nur dort, wo rechts der Füllung freier Grund für sie bleibt — bei
+            <b>Fischernetz</b>, <b>Sattessen</b> und <b>Vorrat Nahrung</b> fällt sie
+            deshalb ganz weg. Zeichen und Name sind durchgehend hell: bei
+            <b>Kinderhut</b> und <b>Behaglichkeit</b> liegen sie damit zur Hälfte hell auf
+            blassem Grund.
+          </p>
+        </div>
+
+        <div class="pair">
+          <div class="panel">
+            <h3>Die Kante wandert durch die Zahl</h3>
+            <div class="sweep">
+              <div class="fld two short" style="--f: 57%">
+                <span class="fill" style="width: var(--f)"></span>
+                <span class="lay dark"
+                  ><svg class="ico"><use href="#i-bowl" /></svg
+                  ><span class="pct crit num">57 %</span></span
+                >
+                <span class="lay light"
+                  ><svg class="ico"><use href="#i-bowl" /></svg
+                  ><span class="pct crit num">57 %</span></span
+                >
+              </div>
+              <div class="fld two short" style="--f: 65%">
+                <span class="fill" style="width: var(--f)"></span>
+                <span class="lay dark"
+                  ><svg class="ico"><use href="#i-bowl" /></svg
+                  ><span class="pct crit num">65 %</span></span
+                >
+                <span class="lay light"
+                  ><svg class="ico"><use href="#i-bowl" /></svg
+                  ><span class="pct crit num">65 %</span></span
+                >
+              </div>
+              <div class="fld two short" style="--f: 73%">
+                <span class="fill" style="width: var(--f)"></span>
+                <span class="lay dark"
+                  ><svg class="ico"><use href="#i-bowl" /></svg
+                  ><span class="pct crit num">73 %</span></span
+                >
+                <span class="lay light"
+                  ><svg class="ico"><use href="#i-bowl" /></svg
+                  ><span class="pct crit num">73 %</span></span
+                >
+              </div>
+              <div class="fld two short" style="--f: 78%">
+                <span class="fill" style="width: var(--f)"></span>
+                <span class="lay dark"
+                  ><svg class="ico"><use href="#i-bowl" /></svg
+                  ><span class="pct crit num">78 %</span></span
+                >
+                <span class="lay light"
+                  ><svg class="ico"><use href="#i-bowl" /></svg
+                  ><span class="pct crit num">78 %</span></span
+                >
+              </div>
+              <div class="fld two short" style="--f: 85%">
+                <span class="fill" style="width: var(--f)"></span>
+                <span class="lay dark"
+                  ><svg class="ico"><use href="#i-bowl" /></svg
+                  ><span class="pct crit num">85 %</span></span
+                >
+                <span class="lay light"
+                  ><svg class="ico"><use href="#i-bowl" /></svg
+                  ><span class="pct crit num">85 %</span></span
+                >
+              </div>
+              <div class="fld two short" style="--f: 95%">
+                <span class="fill" style="width: var(--f)"></span>
+                <span class="lay dark"
+                  ><svg class="ico"><use href="#i-bowl" /></svg
+                  ><span class="pct crit num">95 %</span></span
+                >
+                <span class="lay light"
+                  ><svg class="ico"><use href="#i-bowl" /></svg
+                  ><span class="pct crit num">95 %</span></span
+                >
+              </div>
+            </div>
+            <div class="sweeplab">
+              <div>vor der Zahl</div>
+              <div>in der ersten Ziffer</div>
+              <div>in der zweiten Ziffer</div>
+              <div>im Zwischenraum</div>
+              <div>im Prozentzeichen</div>
+              <div>hinter der Zahl</div>
+            </div>
+            <p class="cap">
+              Dasselbe schmale Bedarfsfeld, nur die Füllung wächst. Weil die Füllung
+              gerade die Zahl ist, die rechts steht, trifft die Kante die Zahl
+              ausschließlich bei hoher Deckung.
+            </p>
+          </div>
+
+          <div class="panel">
+            <h3>Die Kante wandert durch das Zeichen</h3>
+            <div class="sweep">
+              <div class="fld two short" style="--f: 6%">
+                <span class="fill" style="width: var(--f)"></span>
+                <span class="lay dark"
+                  ><svg class="ico"><use href="#i-comfort" /></svg
+                  ><span class="pct crit num">6 %</span></span
+                >
+                <span class="lay light"
+                  ><svg class="ico"><use href="#i-comfort" /></svg
+                  ><span class="pct crit num">6 %</span></span
+                >
+              </div>
+              <div class="fld two short" style="--f: 11%">
+                <span class="fill" style="width: var(--f)"></span>
+                <span class="lay dark"
+                  ><svg class="ico"><use href="#i-comfort" /></svg
+                  ><span class="pct crit num">11 %</span></span
+                >
+                <span class="lay light"
+                  ><svg class="ico"><use href="#i-comfort" /></svg
+                  ><span class="pct crit num">11 %</span></span
+                >
+              </div>
+              <div class="fld two short" style="--f: 15%">
+                <span class="fill" style="width: var(--f)"></span>
+                <span class="lay dark"
+                  ><svg class="ico"><use href="#i-comfort" /></svg
+                  ><span class="pct crit num">15 %</span></span
+                >
+                <span class="lay light"
+                  ><svg class="ico"><use href="#i-comfort" /></svg
+                  ><span class="pct crit num">15 %</span></span
+                >
+              </div>
+              <div class="fld two short" style="--f: 19%">
+                <span class="fill" style="width: var(--f)"></span>
+                <span class="lay dark"
+                  ><svg class="ico"><use href="#i-comfort" /></svg
+                  ><span class="pct crit num">19 %</span></span
+                >
+                <span class="lay light"
+                  ><svg class="ico"><use href="#i-comfort" /></svg
+                  ><span class="pct crit num">19 %</span></span
+                >
+              </div>
+              <div class="fld two short" style="--f: 23%">
+                <span class="fill" style="width: var(--f)"></span>
+                <span class="lay dark"
+                  ><svg class="ico"><use href="#i-comfort" /></svg
+                  ><span class="pct crit num">23 %</span></span
+                >
+                <span class="lay light"
+                  ><svg class="ico"><use href="#i-comfort" /></svg
+                  ><span class="pct crit num">23 %</span></span
+                >
+              </div>
+              <div class="fld two short" style="--f: 28%">
+                <span class="fill" style="width: var(--f)"></span>
+                <span class="lay dark"
+                  ><svg class="ico"><use href="#i-comfort" /></svg
+                  ><span class="pct crit num">28 %</span></span
+                >
+                <span class="lay light"
+                  ><svg class="ico"><use href="#i-comfort" /></svg
+                  ><span class="pct crit num">28 %</span></span
+                >
+              </div>
+            </div>
+            <div class="sweeplab">
+              <div>vor dem Zeichen</div>
+              <div>am linken Rand</div>
+              <div>im linken Drittel</div>
+              <div>in der Mitte</div>
+              <div>im rechten Drittel</div>
+              <div>hinter dem Zeichen</div>
+            </div>
+            <p class="cap">
+              Dasselbe Feld, dasselbe Zeichen. Weil das Zeichen links steht, trifft die
+              Kante es ausschließlich bei sehr niedriger Deckung — dort, wo das Feld rot
+              ist und die Zahl noch ganz auf blassem Grund liegt.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
