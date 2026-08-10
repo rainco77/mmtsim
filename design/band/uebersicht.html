@@ -42,22 +42,6 @@
         />
         <rect x="1.2" y="13.6" width="15.6" height="1.6" rx="0.8" />
       </symbol>
-      <!-- Fischernetz: a net bag hanging from its head rope, its mesh drawn as
-           crossing cord. Strokes, not fills - a net is holes held together. -->
-      <symbol id="i-net" viewBox="0 0 18 18">
-        <g
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.15"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M1.9 4.4h14.2" />
-          <path d="M2.9 4.4 9 15.6 15.1 4.4" />
-          <path d="M5.9 4.4 12 11.4M12.1 4.4 6 11.4" />
-          <path d="M4.2 8.1h9.6" />
-        </g>
-      </symbol>
       <!-- Ziel Brennholz: three split logs stacked at the camp, each with air
            around it so the pile does not read as one block. Deliberately no
            flame - the flame belongs to the need Feuer. -->
@@ -81,10 +65,15 @@
         <span class="brand">mmtsim</span>
         <span class="num" style="font-size: 16px">Tick 96</span>
         <span class="num" style="color: #b8c2ba">27 Menschen</span>
+        <!-- Four time grips in four fixed places, all four always on screen, all
+             four in the same quiet style: the clock offers, it does not
+             recommend. The game stands here, so the three that start it look
+             live and the pause looks dead. -->
         <nav class="timegrips">
-          <button title="Ein Tick">⏯</button>
-          <button class="primary" title="Bis zum Haltepunkt">⏩</button>
+          <button class="word" title="Ein Tick">+1</button>
+          <button title="Bis zum Haltepunkt">⏯</button>
           <button title="Laufen lassen">▶</button>
+          <button disabled title="Pause">⏸</button>
         </nav>
         <nav class="lang"><button class="on">DE</button><button>EN</button></nav>
       </header>
@@ -93,52 +82,115 @@
         <div class="bandhead">
           <h2>Gesamtübersicht</h2>
         </div>
+        <!-- Every field carries its writing twice: the dark copy for the pale
+             ground, the light copy clipped to the fill. --f is the fill width
+             and feeds both, so the tone switches exactly at the fill edge. -->
         <div class="bandrow">
-          <div class="fld" style="flex-grow: 30" title="Essen">
-            <span class="fill" style="width: 100%"></span>
-            <svg class="ico"><use href="#i-berry" /></svg><span class="nm">Essen</span>
+          <div class="fld" style="flex-grow: 30; --f: 100%" title="Essen">
+            <span class="fill"></span>
+            <span class="lay dark"
+              ><svg class="ico"><use href="#i-berry" /></svg
+              ><span class="nm">Essen</span></span
+            >
+            <span class="lay light"
+              ><svg class="ico"><use href="#i-berry" /></svg
+              ><span class="nm">Essen</span></span
+            >
           </div>
-          <div class="fld" style="flex-grow: 3" title="Feuer">
-            <span class="fill" style="width: 100%"></span>
-            <svg class="ico"><use href="#i-flame" /></svg><span class="nm">Feuer</span>
+          <div class="fld" style="flex-grow: 3; --f: 100%" title="Feuer">
+            <span class="fill"></span>
+            <span class="lay dark"
+              ><svg class="ico"><use href="#i-flame" /></svg
+              ><span class="nm">Feuer</span></span
+            >
+            <span class="lay light"
+              ><svg class="ico"><use href="#i-flame" /></svg
+              ><span class="nm">Feuer</span></span
+            >
           </div>
-          <div class="fld" style="flex-grow: 11" title="Kinderhut">
-            <span class="fill" style="width: 100%"></span>
-            <svg class="ico"><use href="#i-child" /></svg
-            ><span class="nm">Kinderhut</span>
+          <div class="fld" style="flex-grow: 11; --f: 100%" title="Kinderhut">
+            <span class="fill"></span>
+            <span class="lay dark"
+              ><svg class="ico"><use href="#i-child" /></svg
+              ><span class="nm">Kinderhut</span></span
+            >
+            <span class="lay light"
+              ><svg class="ico"><use href="#i-child" /></svg
+              ><span class="nm">Kinderhut</span></span
+            >
           </div>
-          <div class="fld claim build" style="flex-grow: 6" title="Fischernetz">
-            <span class="fill" style="width: 50%"></span>
-            <span class="lip"><i></i><i></i><i></i></span
-            ><svg class="ico"><use href="#i-net" /></svg>
-            <span class="pct ocker num">50 %</span>
+          <!-- A running project carries no sign: ochre frame, build colour and
+               its name below the band say what it is. -->
+          <div class="fld claim build" style="flex-grow: 6; --f: 50%" title="Fischernetz">
+            <span class="fill"></span>
+            <span class="lay dark"><span class="pct num">50 %</span></span>
+            <span class="lay light"><span class="pct num">50 %</span></span>
+            <span class="lip"><i></i><i></i><i></i></span>
           </div>
-          <div class="fld" style="flex-grow: 5" title="Kleidung">
-            <span class="fill" style="width: 100%"></span>
-            <svg class="ico"><use href="#i-garment" /></svg
-            ><span class="nm">Kleidung</span>
+          <div class="fld" style="flex-grow: 5; --f: 100%" title="Kleidung">
+            <span class="fill"></span>
+            <span class="lay dark"
+              ><svg class="ico"><use href="#i-garment" /></svg
+              ><span class="nm">Kleidung</span></span
+            >
+            <span class="lay light"
+              ><svg class="ico"><use href="#i-garment" /></svg
+              ><span class="nm">Kleidung</span></span
+            >
           </div>
-          <div class="fld claim store" style="flex-grow: 1" title="Ziel Brennholz">
-            <span class="fill" style="width: 100%"></span>
-            <span class="lip"><i></i><i></i><i></i></span
-            ><svg class="ico"><use href="#i-logs" /></svg>
+          <div
+            class="fld claim store"
+            style="flex-grow: 1; --f: 100%"
+            title="Ziel Brennholz"
+          >
+            <span class="fill"></span>
+            <span class="lay dark"
+              ><svg class="ico"><use href="#i-logs" /></svg
+            ></span>
+            <span class="lay light"
+              ><svg class="ico"><use href="#i-logs" /></svg
+            ></span>
+            <span class="lip"><i></i><i></i><i></i></span>
           </div>
-          <div class="fld short" style="flex-grow: 16" title="Sattessen">
-            <span class="fill" style="width: 62%"></span>
-            <svg class="ico"><use href="#i-bowl" /></svg><span class="nm">Sattessen</span>
-            <span class="pct crit num">62 %</span>
+          <div class="fld short" style="flex-grow: 16; --f: 62%" title="Sattessen">
+            <span class="fill"></span>
+            <span class="lay dark"
+              ><svg class="ico"><use href="#i-bowl" /></svg
+              ><span class="nm">Sattessen</span
+              ><span class="pct crit num">62 %</span></span
+            >
+            <span class="lay light"
+              ><svg class="ico"><use href="#i-bowl" /></svg
+              ><span class="nm">Sattessen</span
+              ><span class="pct crit num">62 %</span></span
+            >
           </div>
-          <div class="fld empty" style="flex-grow: 7" title="Behaglichkeit">
-            <span class="fill" style="width: 0%"></span>
-            <svg class="ico"><use href="#i-comfort" /></svg
-            ><span class="nm">Behaglichkeit</span>
-            <span class="pct dark num">0 %</span>
+          <div class="fld" style="flex-grow: 7; --f: 0%" title="Behaglichkeit">
+            <span class="fill"></span>
+            <span class="lay dark"
+              ><svg class="ico"><use href="#i-comfort" /></svg
+              ><span class="nm">Behaglichkeit</span><span class="pct num">0 %</span></span
+            >
+            <span class="lay light"
+              ><svg class="ico"><use href="#i-comfort" /></svg
+              ><span class="nm">Behaglichkeit</span><span class="pct num">0 %</span></span
+            >
           </div>
-          <div class="fld claim store" style="flex-grow: 11" title="Vorrat Nahrung">
-            <span class="fill" style="width: 37%"></span>
-            <span class="lip"><i></i><i></i><i></i></span
-            ><svg class="ico"><use href="#i-pit" /></svg>
-            <span class="pct ocker num">37 %</span>
+          <div
+            class="fld claim store"
+            style="flex-grow: 11; --f: 37%"
+            title="Vorrat Nahrung"
+          >
+            <span class="fill"></span>
+            <span class="lay dark"
+              ><svg class="ico"><use href="#i-pit" /></svg
+              ><span class="pct num">37 %</span></span
+            >
+            <span class="lay light"
+              ><svg class="ico"><use href="#i-pit" /></svg
+              ><span class="pct num">37 %</span></span
+            >
+            <span class="lip"><i></i><i></i><i></i></span>
           </div>
           <div class="fld idle" style="flex-grow: 10">
             <span>Arbeit liegt brach</span>

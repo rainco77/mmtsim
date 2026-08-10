@@ -30,7 +30,9 @@
   --fld-gap: 3px;
   --fld-r: 5px;
   --fld-name-min: 104px;
-  --pct-clear: 6px;
+  --fld-pct-min: 58px;
+  --fld-pct-solo-min: 34px;
+  --idle-text-min: 92px;
   --band-pad: 14px;
   --band-top: 13px;
   --name-h: 16px;
@@ -128,10 +130,18 @@ b {
   color: var(--ground);
   cursor: pointer;
 }
-.timegrips button.primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
+/* A grip that carries a written figure instead of a sign: same shape, same
+   size, a shade smaller so the two characters sit as calmly in the button as
+   one sign does, and tabular so the figure keeps the width of the others. */
+.timegrips button.word {
+  font-size: 17px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+/* All grips look alike: the clock offers, it does not recommend. */
+.timegrips button:disabled {
+  opacity: 0.35;
+  cursor: default;
 }
 .lang {
   display: flex;
@@ -172,9 +182,19 @@ b {
                      the icon; below it the name falls away and the icon stays.
                      Measured on the room inside the field, not on the field:
                      that is what a container query reports
-   --pct-clear  6px  the free ground a number needs between itself and the
-                     fill edge. Less than that and the number falls away, the
-                     same rule as for the name
+   --fld-pct-min
+               58px  from this width on a field carries its number: sign 18 +
+                     gap 6 + the widest number ("100 %") 34. Below it sign and
+                     number cannot stand side by side and the number falls
+                     away. It is the only reason a number falls: two-tone
+                     keeps it legible wherever the fill edge crosses it
+   --fld-pct-solo-min
+               34px  the same threshold for a field that carries no sign - a
+                     running project - where the number alone has to fit
+   --idle-text-min
+               92px  from this width on the hatched field carries the words
+                     "Arbeit liegt brach"; below it the hatching alone carries
+                     the meaning, and tapping explains it
    --band-pad  14px  inset of the band, left and right
    --band-top  13px  air above the need fields, into which the lips reach:
                      (--claim-h - --fld-h) + 1
@@ -211,7 +231,9 @@ b {
 }
 
 /* Each field is its own query container: what it shows depends on how wide
-   this tick made it, not on the screen. */
+   this tick made it, not on the screen. The field holds no writing itself -
+   its padding is what sets the room inside, and that room is what the
+   container query reports. The writing lives in the two layers below. */
 .fld {
   position: relative;
   container-type: inline-size;
@@ -227,76 +249,105 @@ b {
   padding: 0 7px;
   cursor: pointer;
 }
-/* The fill lies behind icon and number and grows from the left. */
+/* The fill lies behind the writing and grows from the left. --f carries its
+   width; the same custom property feeds the fill and the clip of the light
+   layer, so edge and cut can never drift apart. */
 .fld > .fill {
   position: absolute;
   left: 0;
   top: 0;
   bottom: 0;
+  width: var(--f);
   background: var(--ok);
 }
 .fld.short > .fill {
   background: var(--crit);
 }
-.fld > .ico {
-  position: relative;
+/* Two-tone: the writing of a field is drawn TWICE, as two identical stacked
+   copies over the same fill. The lower copy carries the dark tone meant for
+   the pale ground; the upper copy carries the light tone and is clipped to the
+   width of the fill. So the tone switches exactly at the fill edge, and a sign,
+   name or number that straddles it is half light, half dark. Both copies
+   repeat the field's own geometry, so every glyph sits on the very pixel of
+   its twin below. */
+.fld > .lay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 7px;
+  color: var(--muted);
+}
+.fld > .lay.light {
+  color: rgba(248, 249, 246, 0.94);
+  clip-path: inset(0 calc(100% - var(--f)) 0 0);
+}
+/* A need short of its coverage writes its number in the crisis colour where it
+   lies on the pale ground. */
+.fld > .lay.dark .pct.crit {
+  color: var(--crit);
+}
+.fld .ico {
   flex: none;
   width: 18px;
   height: 18px;
   fill: currentColor;
-  color: rgba(248, 249, 246, 0.94);
 }
-/* The name beside the icon. It appears from --fld-name-min on and falls away
-   below it; the icon stays either way. The container query has to repeat the
+/* The name beside the sign. It appears from --fld-name-min on and falls away
+   below it; the sign stays either way. The container query has to repeat the
    number, because a container condition cannot read a custom property. */
-.fld > .nm {
-  position: relative;
+.fld .nm {
   display: none;
   min-width: 0;
   overflow: hidden;
   white-space: nowrap;
   font-size: 12px;
-  color: rgba(248, 249, 246, 0.94);
 }
 @container (min-width: 104px) {
-  .fld > .nm {
+  .fld .nm {
     display: block;
   }
 }
-/* The number stands at the right edge. It is drawn only where the free ground
-   right of the fill can hold it with --pct-clear to spare - a number that
-   straddles the fill edge is unreadable, and the card carries it anyway. */
-.fld > .pct {
-  position: relative;
+/* The number stands at the right edge and never shrinks. It falls away only
+   where sign and number cannot stand side by side - a running project carries
+   no sign, so there the number alone has to fit. A field at full standing
+   carries no number at all; that is a matter of the markup, not of width.
+   The two conditions repeat --fld-pct-min and --fld-pct-solo-min as figures,
+   because a container condition cannot read a custom property. */
+.fld .pct {
+  display: none;
+  flex: none;
   margin-left: auto;
   font-size: 12px;
-  color: rgba(248, 249, 246, 0.94);
   font-variant-numeric: tabular-nums;
 }
-/* Icon, name and number sit sometimes on the fill, sometimes on the empty
-   ground - their colour follows the ground they lie on. */
-.fld.empty > .ico,
-.fld.empty > .nm {
-  color: var(--muted);
+@container (min-width: 58px) {
+  .fld .pct {
+    display: block;
+  }
 }
-.fld > .pct.dark {
-  color: var(--muted);
-}
-.fld > .pct.crit {
-  color: var(--crit);
-}
-.fld > .pct.ocker {
-  color: var(--accent-ink);
+@container (min-width: 34px) {
+  .fld.build .pct {
+    display: block;
+  }
 }
 
 /* A claim: taller, outlined in ochre, with a lip and grips. Throughout the
    game ochre means "yours, movable". Outline and lip together are the frame of
-   the segment. A claim carries an icon of its own, left-aligned like a need's,
-   so every project needs a sign. A claim never carries a name inside: its name
-   stands in the name row below the band. */
+   the segment. A store goal carries a sign of its own, left-aligned like a
+   need's - they are few, they last, and they return in every run. A running
+   project carries none: ochre frame, build colour and its name below the band
+   make it known, and a project that happens once needs no recognising. A claim
+   never carries a name inside: its name stands in the name row below the
+   band. */
 .fld.claim {
   height: var(--claim-h);
   border: 1.5px solid var(--accent-ink);
+  align-items: flex-end;
+  padding-bottom: 11px;
+}
+.fld.claim > .lay {
   align-items: flex-end;
   padding-bottom: 11px;
 }
@@ -334,7 +385,11 @@ b {
   background: rgba(248, 249, 246, 0.92);
 }
 
-/* Labour that no process called for: hatched, and without an icon. */
+/* Labour that no process called for: hatched, and without a sign. Where the
+   field grows too narrow for the words they fall away and the hatching alone
+   carries the meaning - it is christened once, and tapping explains it at any
+   time. The condition repeats --idle-text-min as a figure, because a container
+   condition cannot read a custom property. */
 .fld.idle {
   background:
     repeating-linear-gradient(45deg, transparent 0 5px, rgba(103, 112, 106, 0.3) 5px 7px),
@@ -345,7 +400,13 @@ b {
   cursor: default;
 }
 .fld.idle span {
+  display: none;
   white-space: nowrap;
+}
+@container (min-width: 92px) {
+  .fld.idle span {
+    display: block;
+  }
 }
 
 /* Name row - only claims carry a name. It is one line high and stays one line
@@ -897,6 +958,13 @@ b {
 .bandrow.dragmode .fld:not(.dragging) {
   opacity: 0.55;
 }
+/* While a claim is in the hand the name row goes: the floating flag carries the
+   name of the segment being moved, and no second reading of the names should
+   compete with it. Hidden, not removed - the row keeps its height, so the band
+   does not jump under the finger. */
+.bandrow.dragmode + .names {
+  visibility: hidden;
+}
 
 /* ---------- Specification sheet (band-detail) ----------
    Three columns under one full-width band:
@@ -927,7 +995,7 @@ b {
   text-transform: uppercase;
   color: var(--muted);
   font-weight: 600;
-  margin: 0 0 5px;
+  margin: 0 0 3px;
 }
 .study .panel {
   background: var(--surface);
@@ -936,10 +1004,9 @@ b {
   position: relative;
 }
 /* The band at study size: same widths as on the screen, taller fields, so the
-   lip and the gap below it can be read off. The number keeps its screen size
-   and the field its narrow inset: a claim as narrow as the net's has only a
-   few pixels of free ground left of its right edge, and a number grown along
-   with the field would sit on the fill again. */
+   lip and the gap below it can be read off. The number keeps its screen size,
+   because the width thresholds it falls away at are measured in screen sizes
+   and must not be a different rule here. */
 .study .big {
   --fld-h: 50px;
   --claim-h: 64px;
@@ -948,18 +1015,20 @@ b {
   --band-top: 15px;
   padding-bottom: 8px;
 }
-.study .big .fld {
+.study .big .fld,
+.study .big .fld > .lay {
   gap: 8px;
   padding: 0 8px;
 }
-.study .big .fld.claim {
+.study .big .fld.claim,
+.study .big .fld.claim > .lay {
   padding-bottom: 15px;
 }
-.study .big .fld > .ico {
+.study .big .fld .ico {
   width: 24px;
   height: 24px;
 }
-.study .big .fld > .nm {
+.study .big .fld .nm {
   font-size: 13px;
 }
 .study .spec {
@@ -970,10 +1039,14 @@ b {
   align-items: start;
   min-height: 0;
 }
+/* The three columns of the sheet are packed to the last line: the legend has
+   grown by the two-tone rule, so the air between the blocks is measured out,
+   not generous. It is air of this sheet only - the band on the screen is
+   untouched by it. */
 .study .col {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   min-width: 0;
 }
 /* On this sheet the card sits in the flow of its column; in the running screen
@@ -985,7 +1058,7 @@ b {
 .study .cap {
   font-size: 11.5px;
   color: var(--muted);
-  padding: 6px 12px 8px;
+  padding: 5px 12px 6px;
   line-height: 1.4;
 }
 .study .cap b {
@@ -996,7 +1069,7 @@ b {
 .keygrid {
   display: grid;
   grid-template-columns: 46px 1fr;
-  gap: 5px 14px;
+  gap: 4px 14px;
   align-items: center;
 }
 .keygrid p {
@@ -1082,6 +1155,45 @@ b {
   height: 4px;
   border-radius: 2px;
 }
+/* Two-tone in the legend: the same technique in miniature - sign and name
+   drawn twice, the light copy clipped to the width of the fill. */
+.sw.two {
+  position: relative;
+  overflow: hidden;
+}
+.sw.two > .f {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 55%;
+  background: var(--ok);
+}
+.sw.two > .lay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0 4px;
+  color: var(--muted);
+}
+.sw.two > .lay.light {
+  color: rgba(248, 249, 246, 0.9);
+  clip-path: inset(0 45% 0 0);
+}
+.sw.two .d {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: currentColor;
+}
+.sw.two .w {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: currentColor;
+}
 
 /* The width sentence carries one turn of phrase per need; they live in the
    translation layer, one key each. */
@@ -1114,12 +1226,12 @@ b {
   --claim-h: 34px;
   --lip-h: 9px;
   --lip-gap: 3px;
-  --band-top: 8px;
+  --band-top: 6px;
 }
 .bandrow.tight .fld.claim {
   padding-bottom: 6px;
 }
-.bandrow.tight .fld > .ico {
+.bandrow.tight .fld .ico {
   width: 14px;
   height: 14px;
 }
