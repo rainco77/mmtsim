@@ -32,18 +32,17 @@
   $: ended = state.abandonedAt !== undefined;
 
   /**
-   * The three time grips, in fixed places. The two that start a run carry the
-   * mode they put the clock into, so the running one can turn into the pause
-   * where it stands: nothing moves under the finger, and the grip that stopped
-   * the clock is the one that started it. The other two wait, greyed.
-   *
-   * The step grip is the odd one out — it never leaves the clock running, so
-   * it never becomes a pause.
+   * Four time grips in four fixed places, all four always on screen. Three
+   * start the clock and are dead while it walks; the fourth only pauses and is
+   * dead while it stands. No grip ever changes what it does under the finger:
+   * a run that halts by itself must not turn the button the hand is already
+   * reaching for into a different one.
    */
   const GRIPS = [
-    { key: "time.step", icon: "⏭", mode: undefined, press: step },
-    { key: "time.runToStop", icon: "⏯", mode: "toStop", press: runToStop },
-    { key: "time.runFree", icon: "▶", mode: "free", press: runFree },
+    { key: "time.step", icon: "⏭", pauses: false, press: step },
+    { key: "time.runToStop", icon: "⏯", pauses: false, press: runToStop },
+    { key: "time.runFree", icon: "▶", pauses: false, press: runFree },
+    { key: "time.pause", icon: "⏸", pauses: true, press: pause },
   ] as const;
 </script>
 
@@ -54,13 +53,12 @@
     <span class="num heads">{$t("people.count", { count: Math.round(view.heads) })}</span>
     <nav class="timegrips">
       {#each GRIPS as grip (grip.key)}
-        {@const holding = running && grip.mode === $game.mode}
         <button
-          title={holding ? $t("time.pause") : $t(grip.key)}
-          on:click={holding ? pause : grip.press}
-          disabled={ended || (running && !holding)}
+          title={$t(grip.key)}
+          on:click={grip.press}
+          disabled={grip.pauses ? !running : running || ended}
         >
-          {holding ? "⏸" : grip.icon}
+          {grip.icon}
         </button>
       {/each}
     </nav>
