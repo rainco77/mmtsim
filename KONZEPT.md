@@ -4289,6 +4289,19 @@ Legende, denn je Projekt bremsen andere Ressourcen — einen globalen Farbkanon 
 sich niemand. Bewusst ohne Sonderregeln: keine Schwelle für kleine Fehlmengen, keine
 eigene Marke für den Null-Tick.
 
+**Der Ursachen-Satz der Vorhaben-Karte spricht über ein Fenster, nie über den letzten
+Tick:** „Gebremst in 4 von 9 Ticks seit dem Start — es fehlte an Brennholz und
+Arbeit." Das Fenster beginnt mit der letzten Handlung des Spielers an diesem Vorhaben
+(Start, Umstellen, Pause aufgehoben) — eine Handlung setzt es zurück, der Satz
+bewertet also nie eine überholte Einstellung. Er erscheint, sobald im Fenster
+gebremst wurde, **ohne Schwelle** — die Zahlen selbst sagen, ob es wiegt. Genannt
+werden **alle** fehlenden Ressourcen, nach Häufigkeit geordnet; die Verteilung zeigt
+der Bremsteppich. Darunter die Auswege nach den vier Regeln, und **ein Ausweg-Griff
+nennt sein Ziel** („Vor Kleidung ziehen"). Das Vorziehen wirkt auf alle Ressourcen
+des Vorhabens, weil dessen Güter-Ansprüche mit seinem Rang in der Zuteilung stehen.
+Die Oberfläche führt dafür je Vorhaben den Tick der letzten eigenen Handlung —
+reine Oberflächen-Buchführung, kein Kern-Feld.
+
 **Die Erklärkarte eines Bedarfsfelds ist abgenommen** — Name mit Deckung, ein Satz zur
 Breite, der Verlauf der Deckung mit gestrichelter Voll-Linie, darunter der
 Engpass-Satz mit seinen Auswegen. Der Breiten-Satz spricht dabei **den Spieler an,
