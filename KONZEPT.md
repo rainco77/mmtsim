@@ -4261,16 +4261,23 @@ Tick der Anteil dessen, was ankam, an dem, was der Posten in diesem Tick wollte 
 gestrichelte Linie = voll. Bei Bedarfen ist das die Deckung, bei Vorhaben der
 Zufluss-Anteil (eine Zahl, weil alle Ressourcen im Gleichschritt fließen); gerechnet
 wird er aus dem Verlauf der Oberfläche, Fortschritts-Differenz je Tick durch den
-vollen Tick-Schritt. **Statt einer Kostenzeile trägt die laufende Karte eine sichere Untergrenze und
-nennt nur, was bremst:** „Fertig frühestens in ~N Ticks" (Rest ÷ voller Tick-Schritt —
-deterministisch, keine Prognose; unzuverlässige Restdauern werden nicht angezeigt).
+vollen Tick-Schritt. **Statt einer Kostenzeile trägt die laufende Karte eine Faktenzeile:** „Fertig
+frühestens: 3 Ticks · je Tick bis zu 6 % der Arbeit, samt Brennholz-Beschaffung."
+Die Dauer ist Rest ÷ voller Tick-Schritt — exakt gerechnet, darum **ohne Tilde**, und
+ein Frühestens, nie ein Höchstens; unzuverlässige Restdauern werden nicht angezeigt.
+Die Tick-Kosten rechnen **alle Ressourcen in einem Maß**: Güter gehen über ihre
+Beschaffungsarbeit ein, wie es die Breiten-Rechnung des Bands ohnehin tut, und der
+Nebensatz nennt sie beim Namen, ohne ihnen eine eigene Zahl zu geben — welches Gut
+wann wirklich klemmte, zeigt der Bremsteppich der Kurve.
 **Auf Spieler-Karten erscheint keine absolute Ressourcenzahl** — Kosten sprechen in
-Anteilen der Tick-Arbeit, Zeit in Ticks, und ein Gut wird nur genannt, wenn es diesen
-Tick den Schritt begrenzt hat („Brennholz bremste diesen Tick"); Status-Zeilen ohne
+Anteilen der Tick-Arbeit, Zeit in Ticks; Status-Zeilen ohne
 Aussage („liegt bereit" als Vorratsvergleich) gibt es nicht. Damit die Anzeige das
 aufzeichnungstreu sagen kann, hält der Kern **je Projekt und Tick fest, welche
 Ressource den Schritt begrenzt hat** — das Gegenstück zum Bremsen-Feld der Ränge.
 Gesamtkosten und Mindestdauer gehören dem Katalog und dem Start-Dialog.
+**Kennzahlen stehen in Faktenzeilen** (knapp, mit Punkt-Trennern, wie die
+Katalog-Zeile), **Sätze sind für Erklärungen reserviert** — einen eigenen Kosten-Satz
+gibt es auf der Vorhaben-Karte nicht mehr.
 
 **Die Brems-Anzeige der Vorhaben-Kurve (per Skizzen-Probe entschieden — der
 „Bremsteppich"):** Die **Fehlfläche** zwischen Kurve und Voll-Linie wird je Tick in
