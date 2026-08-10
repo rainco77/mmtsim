@@ -54,6 +54,16 @@ export class MovingPolicy implements Policy {
 
   decide(_state: GameState, derived: Derived, index: ConfigIndex): readonly Action[] {
     if (derived.projects.some((project) => project.running)) return [];
+    return this.walk(derived, index);
+  }
+
+  /**
+   * Walking, judged on its own — without the rule that one thing is undertaken
+   * at a time. A play that is looking for ground to dig in wants this
+   * judgement while it is still building: what it is doing meanwhile does not
+   * make a spent range any less spent.
+   */
+  walk(derived: Derived, index: ConfigIndex): readonly Action[] {
     const idle =
       derived.laborPerformance > 0 ? derived.laborUnused / derived.laborPerformance : 1;
     if (idle > BOUND) return [];
@@ -80,7 +90,7 @@ export class MovingPolicy implements Policy {
   }
 
   /** Quality of the land lived on now, its kinds weighted by area. */
-  private landQuality(derived: Derived, index: ConfigIndex): number {
+  landQuality(derived: Derived, index: ConfigIndex): number {
     let area = 0;
     let weighted = 0;
     for (const kind of Object.keys(index.config.land.perHeadAtStart)) {
