@@ -1,0 +1,391 @@
+/*
+ * The shared look of the interface, taken from the approved template
+ * (design/mock4.html). It is loaded once, from main.ts, and every tile draws
+ * from it instead of inventing its own colours: tokens for ground, ink and the
+ * three signal colours, three text styles, and the small parts that repeat —
+ * tile, card, chip, meter, progress, button.
+ *
+ * Why a plain stylesheet next to Svelte's scoped styles: these classes are
+ * shared across components, and scoped styles cannot be shared.
+ */
+
+:root {
+  --ground: #eceee9;
+  --surface: #f8f9f6;
+  --sunk: #dde1da;
+  --ink: #262a28;
+  --muted: #67706a;
+  --line: #cbd1cb;
+  --accent: #b0722a;
+  --accent-ink: #7d4f1a;
+  --ok: #4f7d4f;
+  --ok-soft: #cddac9;
+  --crit: #97352c;
+  --crit-soft: #ecd7d1;
+  --store: #33707c;
+  --store-soft: #c6d8db;
+  --p-gather: #6b8e5a;
+  --p-fish: #4d7f8c;
+  --p-hunt: #a3703c;
+  --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--ground);
+}
+
+/*
+ * Three text styles and one number rule. A heading is serif, the body text is
+ * 14, .sub is the quiet 12.5 grey — anything else is a fourth style and does
+ * not exist. Every figure is tabular so columns of numbers line up and a
+ * changing value does not make the line jump.
+ */
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+.sub {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+b {
+  font-weight: 600;
+}
+
+/** Something that answers when it is touched. */
+.tap {
+  text-decoration: underline dotted var(--muted);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/*
+ * The page: the top bar spans, then the four columns. The middle two carry
+ * minmax(0, …) so a wide row inside them scrolls instead of pushing the whole
+ * layout wider than the screen.
+ */
+.page {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  gap: 10px;
+  padding: 10px;
+  grid-template-columns:
+    minmax(230px, 18vw) minmax(0, 1.55fr)
+    minmax(0, 0.95fr) minmax(262px, 21vw);
+  grid-template-rows: 56px 1fr;
+  grid-template-areas:
+    "top top top top"
+    "cat ladder side frame";
+}
+
+.tile {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.tile > h2 {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 600;
+  padding: 10px 14px 6px;
+}
+
+/** Everything below a tile's heading scrolls on its own, never the page. */
+.tile > .tilebody {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 14px 12px;
+}
+
+/* The top bar: brand, the clock's figures, the time grips, the languages. */
+.page > .top {
+  grid-area: top;
+  background: var(--ink);
+  color: var(--ground);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 16px;
+}
+
+.top .brand {
+  font-family: var(--serif);
+  font-size: 18px;
+}
+
+.top .tick {
+  font-size: 16px;
+}
+
+.top .heads {
+  color: #b8c2ba;
+}
+
+.timegrips {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.timegrips button {
+  font: inherit;
+  width: 46px;
+  height: 42px;
+  font-size: 19px;
+  border-radius: 8px;
+  border: 1px solid #4a524d;
+  background: #343b37;
+  color: var(--ground);
+  cursor: pointer;
+}
+
+.timegrips button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.timegrips button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.lang {
+  display: flex;
+  gap: 4px;
+  margin-left: 10px;
+}
+
+.lang button {
+  height: 42px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid #4a524d;
+  background: none;
+  color: #b8c2ba;
+  font: inherit;
+  cursor: pointer;
+}
+
+.lang button.on {
+  background: var(--ground);
+  color: var(--ink);
+}
+
+/* The four places of the grid. */
+.page > .cat {
+  grid-area: cat;
+  overflow: hidden;
+}
+
+.page > .ladder {
+  grid-area: ladder;
+  overflow: hidden;
+}
+
+.page > .side {
+  grid-area: side;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+
+.page > .frame {
+  grid-area: frame;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+
+/* The range gets the taller share of its column, the stores the rest. */
+.side > .range {
+  flex: 1.7;
+  overflow: hidden;
+}
+
+.side > .stores {
+  flex: 1;
+  overflow: hidden;
+}
+
+/* People are as tall as they need; the log takes what is left. */
+.frame > .people {
+  flex: 0 0 auto;
+}
+
+.frame > .log {
+  flex: 1;
+  overflow: hidden;
+}
+
+/*
+ * A card is one thing the player can look at or act on — a project in the
+ * catalogue, a note beside a row.
+ */
+.card {
+  background: var(--ground);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.card .head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.card .name {
+  font-weight: 600;
+}
+
+/** The round grip that starts something. */
+.startbtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-size: 17px;
+  cursor: pointer;
+  flex: none;
+}
+
+/** A short standing word beside a name: a count, a warning. */
+.chip {
+  display: inline-block;
+  font-size: 11.5px;
+  padding: 3px 8px;
+  border-radius: 99px;
+  background: var(--sunk);
+  color: var(--muted);
+}
+
+.chip.crit {
+  background: var(--crit-soft);
+  color: var(--crit);
+}
+
+/** A thin bar for a share of something being built or gathered. */
+.progress {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--sunk);
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.progress i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+/** Bar plus its figure, for the has/needs lines of a locked project. */
+.needsbar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.needsbar .sub {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.needsbar .progress {
+  margin-top: 0;
+}
+
+.needsbar .progress i {
+  background: var(--ok);
+}
+
+/*
+ * The thick bar: coverage by default, and the colour says what kind of claim
+ * it is — short of what was asked, something being built, a store.
+ */
+.meter {
+  height: 12px;
+  border-radius: 6px;
+  background: var(--sunk);
+  overflow: hidden;
+}
+
+.meter i {
+  display: block;
+  height: 100%;
+  border-radius: 6px;
+  background: var(--ok);
+}
+
+.meter.short i {
+  background: var(--crit);
+}
+
+.meter.build i {
+  background: var(--accent);
+}
+
+.meter.store i {
+  background: var(--store);
+}
+
+/** A setting the player drags: a store's target, a rank. */
+.slider {
+  height: 12px;
+  border-radius: 6px;
+  background: var(--sunk);
+  position: relative;
+}
+
+.slider .knob {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--accent);
+}
+
+/** The colour key beside a stacked bar or a chart. */
+.dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  margin-right: 4px;
+}
