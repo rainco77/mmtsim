@@ -4115,6 +4115,13 @@ Tipp sagt es. Die ungenutzte Arbeit heißt am Spieler **„Arbeit liegt brach"**
 abgenutztes Revier heißt **ausgezehrt**, das nächste **unverbraucht** — nie müde oder
 ausgeruht. In den Momenten zählt alles in **Menschen**, nie in Köpfen.
 
+**Drei Feinheiten aus der Vorlagen-Abnahme:** Das Wort **„Suche"** (für alles Finden —
+Sammeln, Jagen, Fischen) wird im Eröffnungs-Guide einmal getauft und gilt danach als
+verstanden. Der Bremse-Satz trägt seine Zahl: „Das Suchen ist mühsam geworden — nur
+46 % der möglichen Kinder kommen zur Welt." Und für die Erklär-Schritte der Eröffnung
+gilt: **im Zweifel mehr und kleinere Schritte** — Überfrachtung ist teurer als ein
+Schritt zu viel.
+
 **Kein Speichern und Laden in der ersten Stufe.** Statt dessen kennt die Oberfläche
 **den ganzen Verlauf des Laufs**, nicht nur den letzten Tick: Für Testzwecke lässt sich
 damit einfach zurückrollen. Ob der Spieler später auch zurückrollen kann, ist offen.

@@ -127,7 +127,7 @@
       .slider .knob { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 28px; height: 28px; border-radius: 50%; background: #fff; border: 2px solid var(--accent); }
 
       .frame { grid-area: frame; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
-      .people { flex: 1.15; }
+      .people { flex: 0 0 auto; padding-bottom: 8px; }
       .people .count { font-family: var(--serif); font-size: 40px; padding: 0 14px; line-height: 1; }
       .people .chart { padding: 0 14px; margin-top: 4px; }
       .people .legendrow { display: flex; gap: 12px; padding: 4px 14px 0; }
@@ -193,7 +193,7 @@
           </div>
           <div class="card">
             <div class="head"><span class="name">Vorratsgrube <span class="chip num">×3</span></span><button class="startbtn" title="Starten">▶</button></div>
-            <p class="sub">Eine Grube speichert Nahrung für schlechte Ticks.</p>
+            <p class="sub">Eine Grube speichert Nahrung für Krisen.</p>
             <p class="sub num">Arbeit 24 · ≈ 6 Ticks · Brennholz 10 ≈ 2 Ticks Nachschub</p>
           </div>
           <h3>In Sicht</h3>
@@ -323,8 +323,7 @@
               </div>
               <span class="effort"><span class="word hot tap">sehr mühsam</span><svg width="64" height="16" viewBox="0 0 64 16"><path d="M0 12 L16 11 L32 8 L48 5 L64 3" fill="none" stroke="#97352c" stroke-width="1.5"/><circle cx="64" cy="3" r="2" fill="#97352c"/></svg></span>
               <div class="standtip">
-                <span class="num"><b>Die Beeren-Suche bringt nur noch 42 %</b> dessen, was sie bei eurer Ankunft brachte <b style="color: var(--crit)">(−58 %)</b></span><br />
-                <span class="sub num">2,4-mal so mühsam wie auf unberührtem Land · Stand 70 — Decke 138</span>
+                <span class="num">Ausbeute der Beeren-Suche: <b style="color: var(--crit)">−58 %</b> seit Ankunft · Stand 70 von 138</span>
               </div>
             </div>
             <div class="stand">
@@ -367,7 +366,7 @@
           <div class="storeline">
             <div class="head"><span><b>Nahrung</b> <span class="chip">Ziel = was die Gruben fassen</span></span><span class="num">37&nbsp;%</span></div>
             <div class="meter store"><i style="width: 37%"></i></div>
-            <div class="subrow"><span class="sub">3 Gruben — sie verfallen leise · hält noch ~4 Ticks Hunger</span><svg width="80" height="16" viewBox="0 0 80 16"><path d="M0 14 L20 14 L20 9 L42 9 L42 5 L66 5 L66 4 L80 4" fill="none" stroke="#33707c" stroke-width="1.5"/></svg></div>
+            <div class="subrow"><span class="sub">3 Gruben — sie verfallen langsam · hält noch ~4 Ticks Hunger</span><svg width="80" height="16" viewBox="0 0 80 16"><path d="M0 14 L20 14 L20 9 L42 9 L42 5 L66 5 L66 4 L80 4" fill="none" stroke="#33707c" stroke-width="1.5"/></svg></div>
           </div>
           <div class="storeline">
             <div class="head"><span><b>Brennholz</b></span><span class="num">100&nbsp;%</span></div>
@@ -390,7 +389,7 @@
             </svg>
           </div>
           <div class="legendrow sub"><span><i class="dot" style="background: #b0722a; opacity: 0.6"></i>Erwachsene 18</span><span><i class="dot" style="background: #33707c; opacity: 0.6"></i>Kinder 9</span></div>
-          <p class="brakeline"><span class="tap">Das Suchen ist mühsam geworden — deshalb kommen kaum Kinder zur Welt.</span></p>
+          <p class="brakeline"><span class="tap">Das Suchen ist mühsam geworden — nur 46 % der möglichen Kinder kommen zur Welt.</span></p>
         </section>
 
         <section class="tile log">
