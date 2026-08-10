@@ -72,27 +72,32 @@
     return parts.join(" · ");
   }
 
-  /** A condition of a locked project, as a label beside its has/needs bar. */
+  /**
+   * A condition of a locked project, as a label beside its has/needs bar. One
+   * key per kind the core knows, named after that kind — every kind is listed
+   * here, so a new one in the core shows up as a bare id and not as a raw key
+   * on the screen.
+   */
   function conditionLabel(condition: { kind: string } & Record<string, unknown>): string {
+    const key = `projects.condition.${condition.kind}`;
     switch (condition.kind) {
       case "projectDone":
-        return $t("projects.needsProject", {
-          project: $t(`name.project.${String(condition["id"])}`),
-        });
-      case "capacityPerHead":
-        return $t("projects.perHead", {
-          what: nameOf(String(condition["capacity"]), "capacity"),
-        });
+        return $t(key, { project: $t(`name.project.${String(condition["id"])}`) });
       case "ownedCapacity":
-        return $t("projects.owned", {
-          what: nameOf(String(condition["capacity"]), "capacity"),
-        });
+      case "capacityPerHead":
+        return $t(key, { what: nameOf(String(condition["capacity"]), "capacity") });
       case "stockPerHead":
-        return $t("projects.perHead", {
-          what: nameOf(String(condition["stock"]), "stock"),
-        });
+        return $t(key, { what: nameOf(String(condition["stock"]), "stock") });
+      case "population":
+      case "rule":
+      case "unownedCapacity":
+      case "coverage":
+      case "experience":
+      case "strain":
+      case "stockDear":
+        return $t(key);
       default:
-        return $t(`projects.condition.${condition.kind}`);
+        return condition.kind;
     }
   }
 </script>
