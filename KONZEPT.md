@@ -4223,8 +4223,10 @@ soweit sie auf der satten Füllung liegen, und dunkel, soweit sie auf dem blasse
 Grund liegen (der gedämpfte dunkle Ton der geprüften Probe) — der Wechsel sitzt genau an der Kante, und beim Bau hängen Füllbreite und
 Schnittkante an derselben Größe, sonst driften sie auseinander. Die Ocker-Einfärbung
 der Anspruchszahlen entfällt — „deins" sagt schon der Rahmen. Eine Zahl fällt nur noch
-weg, wo Zeichen und Zahl nicht nebeneinander ins Feld passen; volle Deckung bleibt ohne
-Zahl. Das Feld **„Arbeit
+weg, wo Zeichen und Zahl nicht nebeneinander ins Feld passen. **Im Band tragen auch
+voll gedeckte Felder ihre Zahl** — ein volles Feld ohne Zahl wirkt leer oder wie ein
+Fehler, und das Band wird uneinheitlich (Entscheid nach Sichtung; außerhalb des Bands
+bleibt volle Deckung zahlfrei, etwa im Karten-Schluss „— und alle wurden satt"). Das Feld **„Arbeit
 liegt brach"** verliert bei Platznot seinen Text — die Schraffur allein trägt dann die
 Bedeutung; sie wird einmal getauft, und Antippen erklärt sie jederzeit. **Die
 Namenszeile wird beim Ziehen ausgeblendet** — die Schwebe-Fahne trägt den Namen des
