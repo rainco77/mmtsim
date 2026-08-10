@@ -29,7 +29,7 @@
   --fld-min: 44px;
   --fld-gap: 3px;
   --fld-r: 5px;
-  --fld-name-min: 104px;
+  --fld-name-min: 144px;
   --fld-pct-min: 58px;
   --fld-pct-solo-min: 34px;
   --idle-text-min: 92px;
@@ -178,8 +178,13 @@ b {
    --fld-gap    3px  distance between two fields
    --fld-r      5px  corner radius of a field
    --fld-name-min
-              104px  from this width on a need field carries its name beside
+              144px  from this width on a need field carries its name beside
                      the icon; below it the name falls away and the icon stays.
+                     The name is the addition, the number is not: every field
+                     in the band carries its number, so the room for the name
+                     is what is left over - sign 18 + gap 6 + the widest name
+                     80 + gap 6 + the widest number ("100 %") 34. A name is
+                     never cut short; it either stands whole or it goes.
                      Measured on the room inside the field, not on the field:
                      that is what a container query reports
    --fld-pct-min
@@ -295,8 +300,10 @@ b {
   fill: currentColor;
 }
 /* The name beside the sign. It appears from --fld-name-min on and falls away
-   below it; the sign stays either way. The container query has to repeat the
-   number, because a container condition cannot read a custom property. */
+   below it; the sign stays either way, and so does the number - the name is
+   the one that yields, because it is the addition. The container query has to
+   repeat the number, because a container condition cannot read a custom
+   property. */
 .fld .nm {
   display: none;
   min-width: 0;
@@ -304,15 +311,16 @@ b {
   white-space: nowrap;
   font-size: 12px;
 }
-@container (min-width: 104px) {
+@container (min-width: 144px) {
   .fld .nm {
     display: block;
   }
 }
-/* The number stands at the right edge and never shrinks. It falls away only
-   where sign and number cannot stand side by side - a running project carries
-   no sign, so there the number alone has to fit. A field at full standing
-   carries no number at all; that is a matter of the markup, not of width.
+/* The number stands at the right edge and never shrinks. Every field in the
+   band carries it, the full ones too - a full field without a number reads as
+   empty or broken. It falls away only where sign and number cannot stand side
+   by side - a running project carries no sign, so there the number alone has
+   to fit. Outside the band full coverage stays numberless.
    The two conditions repeat --fld-pct-min and --fld-pct-solo-min as figures,
    because a container condition cannot read a custom property. */
 .fld .pct {
@@ -1217,6 +1225,42 @@ b {
   font-size: 11.5px;
   line-height: 1.35;
   color: var(--muted);
+}
+
+/* The elder's bubble as the sheet shows it: the same parts as at full size -
+   round face, surface, one border radius, one shadow - shrunk so it fits
+   beside a card. It stands for the moment of first appearance and is not a
+   permanent part of any card. */
+.firstsay {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+.firstsay .bubble {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 7px 10px;
+  font-size: 11.5px;
+  line-height: 1.35;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+.firstsay .face {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #8a6a4a;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f4ead8;
+  font-family: var(--serif);
+  font-size: 15px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+.firstsay + .cap {
+  padding-top: 3px;
 }
 
 /* The collision case shows the name row, not the fields, so its band is drawn

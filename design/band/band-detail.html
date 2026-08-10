@@ -42,7 +42,7 @@
         />
         <rect x="1.2" y="13.6" width="15.6" height="1.6" rx="0.8" />
       </symbol>
-      <!-- Ziel Brennholz: three split logs stacked at the camp, each with air
+      <!-- Brennholzvorrat: three split logs stacked at the camp, each with air
            around it so the pile does not read as one block. Deliberately no
            flame - the flame belongs to the need Feuer. -->
       <symbol id="i-logs" viewBox="0 0 18 18">
@@ -52,7 +52,7 @@
           <rect x="2.1" y="11.9" width="13.6" height="2.3" rx="1.15" />
         </g>
       </symbol>
-      <!-- Vorrat Nahrung: the covered pit the store is kept in - deep, tapering
+      <!-- Nahrungsvorrat: the covered pit the store is kept in - deep, tapering
            and lidded, so it does not read as the shallow bowl of Sattessen. -->
       <symbol id="i-pit" viewBox="0 0 18 18">
         <rect x="2.4" y="3.2" width="13.2" height="2.5" rx="1.25" />
@@ -79,34 +79,34 @@
           <div class="fld" style="flex-grow: 30; --f: 100%" title="Essen">
             <span class="fill"></span>
             <span class="lay dark"
-              ><svg class="ico"><use href="#i-berry" /></svg
-              ><span class="nm">Essen</span></span
+              ><svg class="ico"><use href="#i-berry" /></svg><span class="nm">Essen</span
+              ><span class="pct num">100 %</span></span
             >
             <span class="lay light"
-              ><svg class="ico"><use href="#i-berry" /></svg
-              ><span class="nm">Essen</span></span
+              ><svg class="ico"><use href="#i-berry" /></svg><span class="nm">Essen</span
+              ><span class="pct num">100 %</span></span
             >
           </div>
           <div class="fld" style="flex-grow: 3; --f: 100%" title="Feuer">
             <span class="fill"></span>
             <span class="lay dark"
-              ><svg class="ico"><use href="#i-flame" /></svg
-              ><span class="nm">Feuer</span></span
+              ><svg class="ico"><use href="#i-flame" /></svg><span class="nm">Feuer</span
+              ><span class="pct num">100 %</span></span
             >
             <span class="lay light"
-              ><svg class="ico"><use href="#i-flame" /></svg
-              ><span class="nm">Feuer</span></span
+              ><svg class="ico"><use href="#i-flame" /></svg><span class="nm">Feuer</span
+              ><span class="pct num">100 %</span></span
             >
           </div>
           <div class="fld" style="flex-grow: 11; --f: 100%" title="Kinderhut">
             <span class="fill"></span>
             <span class="lay dark"
               ><svg class="ico"><use href="#i-child" /></svg
-              ><span class="nm">Kinderhut</span></span
+              ><span class="nm">Kinderhut</span><span class="pct num">100 %</span></span
             >
             <span class="lay light"
               ><svg class="ico"><use href="#i-child" /></svg
-              ><span class="nm">Kinderhut</span></span
+              ><span class="nm">Kinderhut</span><span class="pct num">100 %</span></span
             >
           </div>
           <!-- A running project carries no sign: ochre frame, build colour and
@@ -121,17 +121,19 @@
             <span class="fill"></span>
             <span class="lay dark"
               ><svg class="ico"><use href="#i-garment" /></svg
-              ><span class="nm">Kleidung</span></span
+              ><span class="nm">Kleidung</span><span class="pct num">100 %</span></span
             >
             <span class="lay light"
               ><svg class="ico"><use href="#i-garment" /></svg
-              ><span class="nm">Kleidung</span></span
+              ><span class="nm">Kleidung</span><span class="pct num">100 %</span></span
             >
           </div>
+          <!-- At the minimum width sign and number cannot stand side by side, so
+               the number falls away here - the only reason a number falls. -->
           <div
             class="fld claim store"
             style="flex-grow: 1; --f: 100%"
-            title="Ziel Brennholz"
+            title="Brennholzvorrat"
           >
             <span class="fill"></span>
             <span class="lay dark"
@@ -169,7 +171,7 @@
           <div
             class="fld claim store"
             style="flex-grow: 11; --f: 37%"
-            title="Vorrat Nahrung"
+            title="Nahrungsvorrat"
           >
             <span class="fill"></span>
             <span class="lay dark"
@@ -192,10 +194,10 @@
           <div style="flex-grow: 11"></div>
           <div class="claim" style="flex-grow: 6"><span>Fischernetz</span></div>
           <div style="flex-grow: 5"></div>
-          <div class="claim" style="flex-grow: 1"><span>Ziel Brennholz</span></div>
+          <div class="claim" style="flex-grow: 1"><span>Brennholzvorrat</span></div>
           <div style="flex-grow: 16"></div>
           <div style="flex-grow: 7"></div>
-          <div class="claim" style="flex-grow: 11"><span>Vorrat Nahrung</span></div>
+          <div class="claim" style="flex-grow: 11"><span>Nahrungsvorrat</span></div>
           <div style="flex-grow: 10"></div>
         </div>
       </div>
@@ -215,8 +217,8 @@
               </p>
               <span class="sw fill"><i></i></span>
               <p>
-                Die <b>Füllung</b> ist, was ankam — voll gedeckt ohne Zahl, unterdeckt im
-                Krisenrot.
+                Die <b>Füllung</b> ist, was ankam — unterdeckt im Krisenrot. Auch das
+                volle Feld trägt seine <b>Zahl</b>.
               </p>
               <span class="sw ock"><i></i></span>
               <p>
@@ -276,11 +278,11 @@
                   <span class="fill"></span>
                   <span class="lay dark"
                     ><svg class="ico"><use href="#i-berry" /></svg
-                    ><span class="nm">Essen</span></span
+                    ><span class="nm">Essen</span><span class="pct num">100 %</span></span
                   >
                   <span class="lay light"
                     ><svg class="ico"><use href="#i-berry" /></svg
-                    ><span class="nm">Essen</span></span
+                    ><span class="nm">Essen</span><span class="pct num">100 %</span></span
                   >
                 </div>
                 <!-- No number on these two: at the minimum width sign and number
@@ -332,8 +334,8 @@
                     stroke-width="1"
                   />
                 </svg>
-                <span class="leadname" style="left: 70px">Ziel Brennholz</span>
-                <span class="leadname" style="left: 246px">Vorrat Nahrung</span>
+                <span class="leadname" style="left: 70px">Brennholzvorrat</span>
+                <span class="leadname" style="left: 246px">Nahrungsvorrat</span>
               </div>
               <p class="cap">
                 Überlappende Namen rücken auseinander; eine dünne Linie führt zurück. Die
@@ -377,7 +379,7 @@
 
           <h3>… und eines Vorratsziels, dessen Menge du setzt</h3>
           <div class="explain">
-            <h4>Ziel Brennholz <span class="cov store num">gefüllt 100 %</span></h4>
+            <h4>Brennholzvorrat <span class="cov store num">gefüllt 100 %</span></h4>
             <p class="means">
               Das Brennholz am Lager rührt niemand an, bis das Feuer es holt — dafür
               hältst du es zurück.
@@ -444,7 +446,7 @@
             <p><b>Nahrung wird knapp</b> — der Fischfang brach ein.</p>
             <div class="ways">
               <div class="way">
-                <span>Das Netz ist halb fertig — Arbeit vorziehen?</span>
+                <span>Das Netz ist angefangen — Arbeit vorziehen?</span>
                 <button title="Anspruch nach vorn ziehen">↑</button>
               </div>
               <div class="way">
@@ -456,21 +458,31 @@
 
           <h3>… und eines Vorrats, dessen Größe die Gruben fassen</h3>
           <div class="explain">
-            <h4>Vorrat Nahrung <span class="cov store num">gefüllt 37 %</span></h4>
+            <h4>Nahrungsvorrat <span class="cov store num">gefüllt 37 %</span></h4>
             <p class="means">
-              Gut ein Drittel dessen, was deine Gruben fassen, liegt darin — davon lebt
-              ihr, wenn die Suche nichts hergibt.
+              Deine Gruben halten die Nahrung zurück, von der ihr lebt, wenn die Suche
+              nichts hergibt.
             </p>
             <p class="cost sub num">Ziel = was 3 Gruben fassen · hält ~4 Ticks Hunger</p>
             <p class="width">
               Die Gruben zu füllen kostet diesen Tick <b class="num">11 %</b> der Arbeit —
               angekommen ist davon <b>nichts</b>.
             </p>
-            <p class="sub" style="margin-top: 9px">
+          </div>
+
+          <!-- A sentence explaining how an element works has no permanent place on
+               the card: the elder says it once, when the segment first appears. -->
+          <div class="firstsay">
+            <div class="bubble">
               Wie groß der Vorrat sein soll, entschied, wer grub — einen Mengen-Griff gibt
               es hier nicht, nur eine weitere Grube hebt das Ziel.
-            </p>
+            </div>
+            <div class="face">Ä</div>
           </div>
+          <p class="cap">
+            <b>Ersterklärung</b> — die Älteste sagt es einmal, wenn das Segment zuerst
+            erscheint.
+          </p>
         </div>
       </div>
     </div>
