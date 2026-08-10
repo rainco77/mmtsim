@@ -3908,9 +3908,9 @@ bei der Umsetzung ändern, wenn es gute Gründe gibt. Sechs Kacheln, eine domina
 - **Ereignis-Log**: rollend, Neuestes oben, jede Zeile mit Ticknummer; der Wetterwurf
   klein daneben. **Umgedreht werden die Ticks, nicht die Zeilen** — innerhalb eines
   Ticks bleibt die Reihenfolge, in der die Ereignisse entstehen, und die Not-Meldung
-  steht darin vorn. Sonst schiebt ein Tick mit vier Projektmeldungen genau die Zeile
-  ans Ende seines Blocks und aus der Kachel, die der Spieler nicht übersehen darf.
-  Sechs Ereignisarten in der ersten Stufe, alle aus dem Verlauf
+  steht darin vorn und **im Krisenrot**. Sonst schiebt ein Tick mit vier
+  Projektmeldungen genau die Zeile ans Ende seines Blocks und aus der Kachel, die der
+  Spieler nicht übersehen darf. Sechs Ereignisarten in der ersten Stufe, alle aus dem Verlauf
   abgeleitet, den die Oberfläche führt: Menschen gestorben (mit Betrag und Ursache aus
   der Aufzeichnung, dem verursachenden Tick zugeordnet) · Projekt sichtbar geworden ·
   Projekt ausführbar geworden · Projekt fertig (auch die Ein-Tick-Projekte) · Umzug
@@ -3928,12 +3928,16 @@ Kopfleiste** mit der Ticknummer und den Zeit-Griffen: einen Tick weiter, Lauf bi
 nächsten Haltepunkt, freier Lauf, Pause. Jeder Zeit-Griff ist nur erreichbar, wenn er
 gerade Sinn ergibt — die Pause nur, während es läuft; Schritt und Lauf nur im Stand.
 
-**Die drei Griffe behalten ihre Plätze, und die Pause wohnt in ihnen.** Es gibt drei
-feste Stellen; während ein Lauf geht, wird **der gedrückte Griff an seinem Platz zur
-Pause**, die beiden anderen sind derweil abgeschaltet. Nichts springt. Der Grund ist ein
-gemessener Fehlgriff: Wenn die Knöpfe beim Moduswechsel die Plätze tauschen, drückt man
-statt der Pause den freien Lauf. **Alle drei sehen gleich aus** — kein hervorgehobener
-Griff, denn eine Betonung liest sich als Empfehlung, und das Spiel benotet nicht.
+**Vier Griffe, vier feste Plätze, immer alle sichtbar** — einen Tick weiter, Lauf bis
+zum Haltepunkt, freier Lauf, Pause. Kein Knopf wechselt je, was er tut: Die drei
+Lauf-Griffe sind abgeschaltet, solange es läuft, die Pause, solange es steht. Der Grund
+sind zwei gemessene Fehlgriffe. Tauschen die Knöpfe beim Moduswechsel die Plätze, drückt
+man statt der Pause den freien Lauf. Und wird ein Griff an seinem Platz zur Pause und
+zurück, genügt ein **selbsttätiger Halt kurz vor dem Klick**, damit die Hand wieder auf
+dem Lauf-Knopf landet — die Stelle hat unter dem Finger die Bedeutung gewechselt. Ein
+abgeschalteter Knopf tut nichts; ein verwandelter tut das Falsche. **Alle Griffe sehen
+gleich aus** — kein hervorgehobener, denn eine Betonung liest sich als Empfehlung, und
+das Spiel benotet nicht.
 
 **Die Haltepunkte des automatischen Laufs.** „Lauf bis zum Haltepunkt" hält bei: einem
 Projekt, das sichtbar wird · einem, das ausführbar wird · einem, das fertig wird (der
