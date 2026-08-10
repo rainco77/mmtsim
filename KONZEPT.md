@@ -4023,6 +4023,29 @@ Geburtenbremse erscheint nie als Zahl:** Bei Relevanz steht der Satz „Das Such
 mühsam geworden — deshalb kommen kaum Kinder zur Welt", die Rechnung liegt hinter dem
 Tipp.
 
+**Das Weiterziehen wirkt sofort.** Es konkurriert nie in der Leiter um Arbeit und kann
+nie liegen bleiben: Drücken, ein Tick, ihr seid da. Es darf Arbeit kosten — aber die
+des Vollzugs-Ticks mit **absolutem Vorrang vor jedem Bedarf** (die Gemeinschaft geht,
+statt zu arbeiten; Gehen wird nie aus Arbeitsmangel verschoben). Der besichtigte
+Bericht wirkt im selben Zug; eine Zusicherungs-Zeile im Dialog braucht es damit nicht
+mehr. Im Dialog spricht die Älteste die Lage, darunter der Hier/Nebenan-Vergleich in
+drei Bildzeilen (Landgüte als Punkte, Suche als Wort mit Richtung, Zurückbleibendes
+in Menschen und Ticks), Fuß: Bleiben / Weiterziehen.
+
+**Die Eröffnung baut sich in der Anzeige auf, nicht im Modell.** Das Modell rechnet
+von Tick 1 an vollständig; die Leiter enthüllt ihre Zeilen nacheinander in erklärter
+Reihenfolge, während die ersten Ticks schon laufen — das Aufbauspiel-Gefühl kommt aus
+der Anzeige. Die Zeile „freie Arbeit" erscheint erst am Ende des Guides, weil die
+Gemeinschaft bis dahin sichtbar an mehr arbeitet, als schon gezeigt wird. Erst wenn
+das Probespiel zeigt, dass das verwirrt, wird eine Staffelung im Modell erwogen.
+Das Weiterziehen existiert am Anfang gar nicht auf dem Bildschirm; es erscheint mit
+seiner Ersterklärung, wenn das Revier erstmals spürbar dünn wird.
+
+**Rangzahlen erscheinen nie auf dem Bildschirm.** Die Leiter selbst ist die Ordnung —
+bedient wird von oben nach unten, und dass das so ist, sagt die Älteste in der
+Eröffnung. Verschoben wird durch Ziehen zwischen die Nachbarn; die Zahl dahinter ist
+Modell-Interna.
+
 **Eröffnung und Begleiter.** Der Bildschirm startet fast leer. Ein Guide von
 **höchstens vier Schritten** führt durch die Startelemente — jedes wird hervorgehoben
 und in einem Satz erklärt, das nächste erscheint beim Weiterklicken — und endet nicht
