@@ -4168,7 +4168,10 @@ ausgeruht. In den Momenten zählt alles in **Menschen**, nie in Köpfen.
 
 **Drei Feinheiten aus der Vorlagen-Abnahme:** Das Wort **„Suche"** (für alles Finden —
 Sammeln, Jagen, Fischen) wird im Eröffnungs-Guide einmal getauft und gilt danach als
-verstanden. Der Bremse-Satz trägt seine Zahl: „Das Suchen ist mühsam geworden — nur
+verstanden. Ebenso wird dort das Wort **„Tick"** getauft — es ist auch am Spieler das
+Zeitwort des Spiels (geprüft gegen „Runde" und bestätigt): ehrlich, weil es keine
+Weltdauer behauptet, und durch den Zähler in der Kopfleiste vom ersten Moment an
+konkret. Der Bremse-Satz trägt seine Zahl: „Das Suchen ist mühsam geworden — nur
 46 % der möglichen Kinder kommen zur Welt." Und für die Erklär-Schritte der Eröffnung
 gilt: **im Zweifel mehr und kleinere Schritte** — Überfrachtung ist teurer als ein
 Schritt zu viel.
