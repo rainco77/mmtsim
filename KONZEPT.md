@@ -4169,6 +4169,11 @@ dadurch verzerrte Breite erklärt die Erklärkarte. Die Icons stehen **linksbün
 Feld. Eine dauerhafte Erklärzeile im Bandkopf gibt es nicht — die Konvention führt die
 Älteste einmal ein, danach gilt sie als verstanden.
 
+**Die Lippe zeigt nach oben**, in den freien Raum unter der Kopfleiste: Die Unterkante
+des Bands bleibt glatt als Leselinie für Namen und Führungslinien, und die Namenszeile
+rückt nicht ab. Beim Ziehen trägt das gefasste Segment eine **Schwebe-Fahne** mit
+Namen und Einordnung („Fischernetz — vor Kleidung").
+
 **Die Füllung eines Anspruchs-Segments ist sein Gesamtstand**, nicht die Deckung eines
 Ticks: beim Vorhaben der Baufortschritt, beim Vorratsziel der Füllstand gemessen am
 Ziel. Die Lesart des Bands bleibt damit einheitlich — Breite = was der Posten diesen
