@@ -4306,6 +4306,14 @@ Kleidung bedient." Das ist deterministisch wahr, benennt Gewinn und Preis in ein
 und verspricht nichts übers Wetter; ob es schneller fertig wird, zeigen danach
 Bremsteppich und Faktenzeile. Generische Wendung mit Namen-Slots.
 
+**Jede Bedarfskarte beginnt mit ihrem Wirkungs-Satz** — je Bedarf handgeschrieben,
+das Gegenstück zum Nutzen-Satz der Projekte: Er sagt, worauf Unterdeckung real wirkt,
+und wird **streng entlang der im Inhalt festgelegten Wirkachse** geschrieben
+(Überleben, Arbeitskraft oder Geburten — eine Achse je Rang), nie frei erfunden.
+Sattessen trägt die Arbeitskraft: „Wer satt ist, schafft mehr." Behaglichkeit trägt
+die Geburten: „Wo es behaglich ist, kommen Kinder zur Welt." Wer die Sätze schreibt,
+schlägt die Achse im Inhalt nach.
+
 **Die Erklärkarte eines Bedarfsfelds ist abgenommen** — Name mit Deckung, ein Satz zur
 Breite, der Verlauf der Deckung mit gestrichelter Voll-Linie, darunter der
 Engpass-Satz mit seinen Auswegen. Der Breiten-Satz spricht dabei **den Spieler an,
