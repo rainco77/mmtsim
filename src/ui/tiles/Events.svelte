@@ -115,7 +115,27 @@
     return log;
   }
 
-  $: entries = grow($game.history).slice(-40).reverse();
+  /**
+   * Newest tick on top, but the order inside a tick is left alone: the ticks
+   * are turned around, not the lines. A tick that brought distress and four
+   * projects would otherwise show the four first and the distress last — the
+   * one line the player must not miss, pushed to the bottom of its own tick
+   * and out of the tile.
+   */
+  function newestTickFirst(entries: readonly Entry[]): Entry[] {
+    const out: Entry[] = [];
+    let end = entries.length;
+    while (end > 0) {
+      const tick = entries[end - 1]?.tick;
+      let start = end;
+      while (start > 0 && entries[start - 1]?.tick === tick) start -= 1;
+      out.push(...entries.slice(start, end));
+      end = start;
+    }
+    return out;
+  }
+
+  $: entries = newestTickFirst(grow($game.history).slice(-40));
   $: view = derive(currentState($game), index);
 
   function line(entry: Entry): string {
