@@ -4257,6 +4257,17 @@ sprechen den Spieler an** und reden von der Sache in der Welt — vom halb gekn�
 Netz, vom Lager, das so viele Ticks Feuer trägt —, nicht von der Anzeige; die
 Anzeigegesetze (Prozent nur für Verhältnisse, Ticks als Kosten-Anker, keine nackte Zahl
 ohne Anker, „liegt bereit", wenn der Bestand die Kosten deckt) gelten dort wie überall.
+**Kapazität, die ein Projekt ohne eigene Güte-Angabe hinzufügt, erbt die Güte ihrer
+Art im Revier** — das Boot-Wasser kam bisher immer mit Güte 1 an und verzerrte nach
+einem Umzug die angezeigte Landgüte (nachgespielter Befund: Umzug bei Tick 34 →
+1,013, ein Boot verwässert auf 1,004); die Landnahme behält ihre ausdrückliche
+Würfel-Quelle. **Der Protokoll-Griff:** Hängt man `#protokoll` an die Spiel-Adresse,
+lädt die Seite eine Textdatei — Seed und jede Handlung mit ihrem Tick, als
+einfügbare Zeilen fürs Sitzungswerkzeug (das Issue-Schema verlangt genau das) — und
+entfernt das Fragment; keine sichtbare Oberfläche. Die Oberfläche führt dafür ihr
+**Handlungs-Journal** (jede Handlung mit Tick), das zugleich die Handlungs-Fenster
+speist.
+
 **Jedes Feld trägt seinen Namen im Feld, wenn er passt** — Bedarfe wie Ansprüche;
 nur ein Anspruch, dessen Name nicht ins Segment passt, bekommt ihn in der Namenszeile
 darunter (dafür ist sie da, samt Führungslinien). Die Namenszeile behält ihre feste
