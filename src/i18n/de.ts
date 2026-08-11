@@ -37,7 +37,7 @@ export const de: Readonly<Record<string, string>> = {
   "projects.condition.strain": "Belastung",
   "projects.condition.stockDear": "mühsame Suche",
 
-  "events.distress": "{dead} Not-Tote — {cause} fehlte",
+  "events.distress": "{dead} Krisentote — {cause} fehlte",
   "events.seen": "{project} ist in Sicht gekommen",
   "events.buildable": "{project} ist jetzt ausführbar",
   "events.done": "{project} fertiggestellt",
