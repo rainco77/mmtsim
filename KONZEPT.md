@@ -4345,6 +4345,14 @@ Ersterklärung**, nicht der Karte: das Breiten-Prinzip des Bands, die
 Haltbar-Eigenschaft der Kleidung („nur der Verschleiß kostet"), die
 Gruben-fassen-das-Ziel-Erklärung des Nahrungsvorrats.
 
+**Die Karte des Brach-Felds** folgt derselben Grammatik mit den Plätzen, die etwas zu
+sagen haben: Titel + Stand („Arbeit liegt brach · 10 %") · Kopfsatz „Arbeit, die
+niemand nutzt, ist am Tickende weg." · Stufenkurve des Brach-Anteils je Tick aus der
+Arbeits-Aufzeichnung. Keine Faktenzeile, kein Ursachen-Satz, keine Auswege in der
+ersten Stufe — die Gründe je Brach-Tick zeichnet der Kern nicht auf, und erfunden
+wird nichts. **Das Kurvenfenster jeder Karte umfasst die letzten 20 Ticks** —
+kürzer, wenn das Ding jünger ist oder sein Handlungs-Fenster später beginnt.
+
 **Kein Speichern und Laden in der ersten Stufe.** Statt dessen kennt die Oberfläche
 **den ganzen Verlauf des Laufs**, nicht nur den letzten Tick: Für Testzwecke lässt sich
 damit einfach zurückrollen. Ob der Spieler später auch zurückrollen kann, ist offen.
