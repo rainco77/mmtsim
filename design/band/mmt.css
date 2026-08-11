@@ -22,11 +22,11 @@
   /* The brake colours of the card curves. They are cool on purpose: the
      palette holds exactly one warm identity and the project ochre owns it,
      so a warm brake colour would be indistinguishable from "yours".
-     --brake-work deepens --store, --brake-wood lightens --p-gather; the
+     --brake-work deepens --store, --brake-fibre lightens --p-gather; the
      goods that feed a need bring their own process colour. Which colour
      means what is read off the card's own legend, never learnt by heart. */
   --brake-work: #2c626e;
-  --brake-wood: #7fa26a;
+  --brake-fibre: #7fa26a;
   --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
 
   /* Band measurements — explained at the band itself, further down. */
@@ -797,7 +797,7 @@ b {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 10px;
-  padding: 10px 14px 11px;
+  padding: 9px 14px 10px;
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.2);
   z-index: 5;
 }
@@ -835,17 +835,21 @@ b {
 .explain h4 .cov.store {
   color: var(--store);
 }
-/* The head sentence, and it stands ABOVE the name: every card begins with
-   the one sentence written by hand - what a project is good for, what a
-   need's shortfall really acts on, what a store holds back. Everything
-   under it is generic out of the recording. */
+/* The seven places of the card grammar, in the one order every card keeps:
+   title with standing, head sentence, fact line, step curve, cause sentence,
+   remedies, administration last. A place appears only where it has something
+   to say. The head sentence is the one sentence written by hand - what a
+   project is good for, what a need's shortfall acts on, what a store holds
+   back; everything else is generic out of the recording. */
 .explain .means {
   line-height: 1.4;
-  margin-bottom: 1px;
+  margin-top: 3px;
 }
-/* The fact line, in the notation of the project catalogue: figures with
-   dot separators, costs as a share of this tick's labour, time in ticks,
-   never an absolute amount of a resource. Sentences are for explanations. */
+/* The fact line: STANDING properties only, with dot separators - what breathes
+   with the tick has no place here. A need has none at all. The project carries
+   its earliest completion (remainder / full tick step, exact, hence no tilde)
+   and the names of what it needs. A store carries its goal line. No absolute
+   amount of a resource ever. Sentences are for explanations. */
 .explain .cost {
   margin-top: 6px;
   line-height: 1.45;
@@ -859,20 +863,22 @@ b {
   line-height: 1.4;
 }
 .explain .curve {
-  margin: 7px 0 0;
+  margin: 6px 0 0;
 }
 .explain .curve svg {
   display: block;
 }
 .explain .rule {
   border-top: 1px dashed var(--line);
-  margin: 7px 0;
+  margin: 6px 0;
 }
-/* The grips of a running project: pause and abort. The claim card succeeds the
-   old ladder row, so they live here. Outlined, the second weight of the design
-   language after the filled circle of a start - these two hold work back or
-   destroy it, they never begin anything. Abort carries the crisis colour,
-   because what it throws away is built work. */
+/* Administration, at the very bottom: pause and abort of a running project.
+   They are no answers to a problem, so they stand below the remedies, and
+   abort is destructive and stands last. The claim card succeeds the old ladder
+   row, so they live here. Outlined, the second weight of the design language
+   after the filled circle of a start - these two hold work back or destroy it,
+   they never begin anything. Abort carries the crisis colour, because what it
+   throws away is built work. */
 .explain .grips {
   display: flex;
   gap: 8px;
@@ -892,13 +898,16 @@ b {
   border-color: var(--line);
   color: var(--crit);
 }
-/* The amount grip of a store goal - the same setting as in the stores tile,
-   a second window onto it. */
+/* The goal grip belongs to the store's fact line and serves in TICKS: the
+   frozen amount behind it stays internal, and it does not grow with the
+   people - the ageing of the setting is the game's content. Same setting as in
+   the stores tile, a second window onto it. The food store has no grip at all;
+   only another pit lifts its goal. */
 .explain .goalgrip {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 8px;
+  margin-top: 5px;
 }
 .explain .goalgrip .slider {
   flex: 1;
@@ -906,8 +915,8 @@ b {
 .ways {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-top: 8px;
+  gap: 5px;
+  margin-top: 7px;
 }
 .way {
   display: flex;
@@ -916,7 +925,7 @@ b {
   background: var(--ground);
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 6px 8px 6px 10px;
+  padding: 5px 8px 5px 10px;
 }
 .way span {
   font-size: 13px;
@@ -1009,8 +1018,9 @@ b {
    curve now, and four cards of that height no longer stand in two columns,
    so the sheet reads across:
    x 16..366   how the band reads          | how every card reads, the name
-                                             collision, the elder
-   x 380..776  the claim card of a project | the store goal with its amount
+                                             collision
+   x 380..776  the claim card of a project | the store goal with its amount,
+                                             and the elder below it
    x 790..1264 the need card at its field  | the store the pits size
    The middle column is exactly as wide as a card (396px); the right column
    starts where the card must start so that its beak sits over the centre of
@@ -1019,7 +1029,7 @@ b {
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 8px 16px 8px;
+  padding: 8px 16px 4px;
 }
 /* Title and lead share one line: the four cards need every pixel below. */
 .study .headline {
@@ -1060,7 +1070,7 @@ b {
   --lip-h: 14px;
   --lip-gap: 4px;
   --band-top: 13px;
-  padding-bottom: 5px;
+  padding-bottom: 3px;
 }
 .study .big .fld,
 .study .big .fld > .lay,
@@ -1094,7 +1104,7 @@ b {
 .study .col {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   min-width: 0;
 }
 /* On this sheet the card sits in the flow of its column; in the running screen
@@ -1117,7 +1127,7 @@ b {
 .keygrid {
   display: grid;
   grid-template-columns: 42px 1fr;
-  gap: 2px 10px;
+  gap: 1px 10px;
   align-items: center;
 }
 .keygrid p {

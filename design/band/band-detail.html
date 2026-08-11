@@ -64,9 +64,9 @@
       <div class="headline">
         <h1>Das Band im Großen</h1>
         <p class="sub lead">
-          Tick 96, dieselben Zahlen wie im Gesamtbild — nur die Felder sind höher
-          gezeichnet. Angetippt ist <b>Sattessen</b>; die Karte schwebt am Feld und
-          verschiebt nichts. Alle vier Karten stehen in derselben Ordnung.
+          Tick 96, dieselben Zahlen wie im Gesamtbild, nur höher gezeichnet. Angetippt
+          ist <b>Sattessen</b>; die Karte schwebt am Feld. Alle vier stehen in derselben
+          Ordnung.
         </p>
       </div>
 
@@ -252,13 +252,21 @@
           <h3>So liest sich jede Karte</h3>
           <div class="cardkey">
             <p>
-              <b>Kopfsatz · Name mit Stand · Kurve · Faktenzeile · Ursachen-Satz ·
-              Auswege</b> — nur der Kopfsatz ist von Hand geschrieben.
+              <b>Name mit Stand · Kopfsatz · Faktenzeile · Kurve · Ursachen-Satz ·
+              Auswege · Verwaltung</b> — in dieser Reihenfolge, und ein Platz steht nur
+              da, wo er etwas zu sagen hat. Nur der Kopfsatz ist von Hand geschrieben.
             </p>
             <p>
-              Die <b>Kurve</b> zeigt je Tick, was von dem ankam, was der Posten wollte;
-              die <b>Fehlfläche</b> trägt die Farbe dessen, was bremste — nur wo etwas
-              fehlte, je Karte eine eigene Legende.
+              Die <b>Faktenzeile</b> trägt nur stehende Eigenschaften — ein Bedarf hat
+              keine. Die <b>Stufenkurve</b> zeigt je Tick den Anteil dessen, was ankam,
+              an dem, was der Posten wollte; beim Vorrat ist das die Deckung seines
+              <b>Auffüll-Anspruchs</b>, und ein voller Vorrat zählt voll. ┄ heißt voll.
+            </p>
+            <p>
+              Der <b>Bremsteppich</b> füllt die ganze Spalte eines gebremsten Ticks in
+              der Farbe dessen, was ihn begrenzte — eigene Legende je Karte. Fehlte
+              nichts, fehlt auch der <b>Ursachen-Satz</b>; das Vorhaben ist
+              <b>verzögert</b>, Bedarf und Vorrat sind <b>unterdeckt</b>.
             </p>
           </div>
 
@@ -334,8 +342,61 @@
             </p>
           </div>
 
+        </div>
+
+        <div class="col">
+          <h3>Erklärkarte eines Anspruchs — laufendes Vorhaben</h3>
+          <!-- All seven places of the grammar in one card: title with standing,
+               head sentence, fact line, step curve with carpet, cause sentence,
+               remedies, administration last. -->
+          <div class="explain">
+            <h4>Fischernetz <span class="cov build num">gebaut 50 %</span></h4>
+            <p class="means">Ein Netz fängt den Fisch mit weniger Arbeit.</p>
+            <p class="cost sub num">Fertig frühestens: 6 Ticks · braucht Arbeit und Fasern</p>
+            <div class="curve" data-curve="netz"></div>
+            <div class="rule"></div>
+            <p class="cause">
+              Verzögert in <b class="num">4 von 9</b> Ticks seit dem Start — es fehlte an
+              <b>Fasern</b> und <b>Arbeit</b>.
+            </p>
+            <div class="ways">
+              <div class="way">
+                <span
+                  >Vor Kleidung ziehen — das Netz wird dann vor der Kleidung
+                  bedient.</span
+                >
+                <button title="Anspruch nach vorn ziehen">↑</button>
+              </div>
+            </div>
+            <!-- Administration, and it stands last: pause and abort answer no
+                 problem, and abort destroys built work. -->
+            <div class="grips">
+              <button title="Das Netz liegen lassen">Pause</button>
+              <button class="stop" title="Das halbe Netz aufgeben">Abbrechen</button>
+            </div>
+          </div>
+
+          <h3>… und eines Vorratsziels, dessen Menge du setzt — nichts bremste</h3>
+          <div class="explain">
+            <h4>Brennholzvorrat <span class="cov store num">gefüllt 100 %</span></h4>
+            <p class="means">
+              Dein Brennholz am Lager trägt das Feuer durch die schlechten Ticks.
+            </p>
+            <p class="cost sub num">Ziel: hält ~6 Ticks Feuer</p>
+            <!-- The grip of the goal line serves in ticks; the frozen amount
+                 behind it stays internal. -->
+            <div class="goalgrip">
+              <span class="sub">Ziel</span>
+              <div class="slider"><span class="knob" style="left: 46%"></span></div>
+              <span class="sub num">6 Ticks</span>
+            </div>
+            <div class="curve" data-curve="holz"></div>
+          </div>
+
           <!-- A sentence explaining how an element works has no permanent place on
-               the card: the elder says it once, when the segment first appears. -->
+               the card: the elder says it once, when the segment first appears. It
+               stands beside the store that HAS an amount grip, because what it
+               explains is the food store that has none. -->
           <div class="firstsay">
             <div class="bubble">
               Wie groß der Vorrat sein soll, entschied, wer grub — einen Mengen-Griff gibt
@@ -350,66 +411,12 @@
         </div>
 
         <div class="col">
-          <h3>Erklärkarte eines Anspruchs — laufendes Vorhaben</h3>
-          <div class="explain">
-            <p class="means">Ein Netz fängt den Fisch mit weniger Arbeit.</p>
-            <h4>Fischernetz <span class="cov build num">gebaut 50 %</span></h4>
-            <div class="curve" data-curve="netz"></div>
-            <p class="cost sub num">
-              Fertig frühestens: 3 Ticks · je Tick bis zu 6 % der Arbeit, samt
-              Brennholz-Beschaffung.
-            </p>
-            <!-- The grips of the running project. The claim card succeeds the old
-                 ladder row, so rank (by dragging the segment), pause and abort all
-                 live at the band now. -->
-            <div class="grips">
-              <button title="Das Netz liegen lassen">Pause</button>
-              <button class="stop" title="Das halbe Netz aufgeben">Abbrechen</button>
-            </div>
-            <div class="rule"></div>
-            <p class="cause">
-              Gebremst in <b class="num">4 von 9</b> Ticks seit dem Start — es fehlte an
-              <b>Brennholz</b> und <b>Arbeit</b>.
-            </p>
-            <div class="ways">
-              <div class="way">
-                <span
-                  >Vor Kleidung ziehen — das Netz wird dann vor der Kleidung
-                  bedient.</span
-                >
-                <button title="Anspruch nach vorn ziehen">↑</button>
-              </div>
-            </div>
-          </div>
-
-          <h3>… und eines Vorratsziels, dessen Menge du setzt — nichts bremste</h3>
-          <div class="explain">
-            <p class="means">
-              Dein Brennholz am Lager trägt das Feuer durch die schlechten Ticks.
-            </p>
-            <h4>Brennholzvorrat <span class="cov store num">gefüllt 100 %</span></h4>
-            <div class="curve" data-curve="holz"></div>
-            <p class="cost sub num">
-              Voll zu halten: 1 % der Arbeit dieses Ticks · angekommen: alle
-            </p>
-            <p class="cost sub num">Ziel 14 · hält ~6 Ticks Feuer</p>
-            <div class="goalgrip">
-              <span class="sub">Ziel</span>
-              <div class="slider"><span class="knob" style="left: 46%"></span></div>
-              <span class="sub num">14</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="col">
           <div class="explain">
             <span class="beak" style="left: 29px"></span>
-            <p class="means">Wer satt ist, schafft mehr.</p>
             <h4>Sattessen <span class="cov num">Deckung 62 %</span></h4>
+            <p class="means">Wer satt ist, schafft mehr.</p>
+            <!-- A need has no fact line: it owns no standing cost property. -->
             <div class="curve" data-curve="satt"></div>
-            <p class="cost sub num">
-              Voll zu decken: 16 % der Arbeit dieses Ticks · angekommen: 10
-            </p>
             <div class="rule"></div>
             <p class="cause">
               Unterdeckt in <b class="num">4 der letzten 20</b> Ticks — es fehlte an
@@ -429,21 +436,33 @@
 
           <h3>… und eines Vorrats, dessen Größe die Gruben fassen</h3>
           <div class="explain">
+            <h4>Nahrungsvorrat <span class="cov store num">gefüllt 37 %</span></h4>
             <p class="means">
               Deine Gruben halten die Nahrung zurück, von der ihr lebt, wenn die Suche
               nichts hergibt.
             </p>
-            <h4>Nahrungsvorrat <span class="cov store num">gefüllt 37 %</span></h4>
+            <!-- No amount grip here: the pit count is a built thing, not a
+                 resource, and only another pit lifts the goal. -->
+            <p class="cost sub num">Ziel: was 3 Gruben fassen · hält ~4 Ticks Hunger</p>
             <div class="curve" data-curve="grube"></div>
-            <p class="cost sub num">
-              Voll zu halten: 11 % der Arbeit dieses Ticks · angekommen: nichts
-            </p>
-            <p class="cost sub num">Ziel = was 3 Gruben fassen · hält ~4 Ticks Hunger</p>
             <div class="rule"></div>
             <p class="cause">
               Unterdeckt in <b class="num">6 von 14</b> Ticks seit dem Umstellen — es
               fehlte an <b>Arbeit</b>.
             </p>
+            <div class="ways">
+              <div class="way">
+                <span
+                  >Vor Behaglichkeit ziehen — der Vorrat wird dann vor der Behaglichkeit
+                  bedient.</span
+                >
+                <button title="Anspruch nach vorn ziehen">↑</button>
+              </div>
+              <div class="way">
+                <span>Das Netz ist angefangen — vor den Nahrungsvorrat ziehen?</span>
+                <button title="Anspruch nach vorn ziehen">↑</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -454,10 +473,18 @@
          of what the item wanted in that tick that actually arrived, a
          dashed line for full, and the shortfall between curve and full
          line filled per tick in the colour of the resource that limited
-         the step - the braking carpet. Colour appears only where something
-         was missing and is exactly as tall as what was missing; on a tie
-         two colours share the tick. No threshold for small shortfalls, no
-         mark of its own for a tick that got nothing.
+         the step - the braking carpet.
+         The curve is a STEP curve: one horizontal run per tick on its own
+         value, vertical jumps between them. A line drawn from tick point to
+         tick point would claim a course inside the tick that does not exist.
+         Because the curve is flat across a tick, the shortfall of a braked
+         tick is a full column - the carpet fills it whole, and it is exactly
+         as tall as what was missing. On a tie two colours share the column.
+         No threshold for small shortfalls, no mark of its own for a tick
+         that got nothing.
+         The dashed full line is drawn LAST, over the curve: a curve that
+         lies on it - a store that was full throughout - would otherwise hide
+         it, and "full throughout" is exactly what has to stay readable.
          The legend is card-local: every card is braked by different
          resources, and a global colour canon is nobody's to remember.
          The series below are frozen recordings of a run, written out here
@@ -469,7 +496,7 @@
         // identity of the palette belongs to the project ochre.
         const R = {
           work: { n: "Arbeit", c: "var(--brake-work)" },
-          wood: { n: "Brennholz", c: "var(--brake-wood)" },
+          fibre: { n: "Fasern", c: "var(--brake-fibre)" },
           fish: { n: "Fisch", c: "var(--p-fish)" },
           berry: { n: "Beeren", c: "var(--p-gather)" },
         };
@@ -479,19 +506,24 @@
         // sentence counts over, so drawing and sentence can never disagree.
         const CURVES = {
           // Started at tick 88, so nine ticks stand here - the window the
-          // cause sentence counts over.
+          // cause sentence counts over. The net takes twelve ticks at full
+          // step, so one full tick is 1/12 of the whole. The nine steps below
+          // add up to 6.0 full steps, which is the 50 % the card carries in
+          // its title; the 6.0 still missing are the "earliest 6 ticks" of the
+          // fact line. Five ticks ran full, four were braked - the count the
+          // cause sentence names.
           netz: {
             from: 88,
             d: [
               { g: 1.0, b: [] },
               { g: 1.0, b: [] },
-              { g: 0.42, b: ["wood"] },
+              { g: 0.45, b: ["fibre"] },
               { g: 1.0, b: [] },
-              { g: 0.28, b: ["work"] },
+              { g: 0.25, b: ["work"] },
               { g: 1.0, b: [] },
-              { g: 0.18, b: ["wood"] },
+              { g: 0.2, b: ["fibre"] },
               { g: 1.0, b: [] },
-              { g: 0.0, b: ["wood", "work"] },
+              { g: 0.1, b: ["fibre", "work"] },
             ],
           },
           // A need has no action of its own that could reset a window, so
@@ -551,71 +583,68 @@
           },
         };
 
-        // Plot 28 high, the legend row under it, 52 in all - the room a card
+        // Plot 26 high, the legend row under it, 47 in all - the room a card
         // can give a curve without pushing its remedies off the screen.
-        const TOP = 5,
-          BASE = 33,
-          LEG = 41,
-          H = 52;
+        const TOP = 4,
+          BASE = 30,
+          LEG = 36,
+          H = 47;
 
         function draw(host, s) {
           const W = Math.round(host.getBoundingClientRect().width);
           const N = s.d.length,
             TW = W / N;
-          const cx = (i) => i * TW + TW / 2;
+          // The tick edges are snapped to WHOLE pixels once and shared by
+          // everything drawn: curve, carpet and hairlines. Two columns that
+          // meet on a fractional edge are each blended against the ground on
+          // their own, and the pale seam that leaves reads as a division that
+          // is not there. Whole pixels make one tick a pixel wider than its
+          // neighbour, which nobody sees, and remove the seam entirely.
+          const E = Array.from({ length: N + 1 }, (_, i) => Math.round(i * TW));
           const y = (v) => TOP + (1 - v) * (BASE - TOP);
+          const f = (v) => v.toFixed(1);
 
-          // The curve runs through the tick centres and reaches both edges
-          // flat, so the first and the last tick are as wide as any other.
-          const spine = s.d
-            .map((p, i) => ` L${cx(i).toFixed(1)} ${y(p.g).toFixed(1)}`)
-            .join("");
-          const curve = `M0 ${y(s.d[0].g).toFixed(1)}${spine} L${W} ${y(s.d[N - 1].g).toFixed(1)}`;
-          const under = `M0 ${BASE}${` L0 ${y(s.d[0].g).toFixed(1)}`}${spine} L${W} ${y(s.d[N - 1].g).toFixed(1)} L${W} ${BASE} Z`;
-          // The shortfall: everything between the full line and the curve.
-          // This is the area the brake colour lives in - where nothing was
-          // missing there is nothing to colour, which is the point.
-          const miss = `M0 ${TOP} L0 ${y(s.d[0].g).toFixed(1)}${spine} L${W} ${y(s.d[N - 1].g).toFixed(1)} L${W} ${TOP} Z`;
+          // The step curve: a horizontal run across the whole width of each
+          // tick at its own value, vertical jumps in between. Every tick is
+          // as wide as any other, the first and the last included.
+          let step = `M${E[0]} ${f(y(s.d[0].g))}`;
+          s.d.forEach((p, i) => {
+            step += ` L${E[i]} ${f(y(p.g))} L${E[i + 1]} ${f(y(p.g))}`;
+          });
+          const under = `${step} L${E[N]} ${BASE} L${E[0]} ${BASE} Z`;
 
-          const uid = host.dataset.curve;
-          let g = `<defs><clipPath id="miss-${uid}"><path d="${miss}"/></clipPath></defs>`;
-          g += `<path d="${under}" fill="var(--sunk)"/>`;
+          let g = `<path d="${under}" fill="var(--sunk)"/>`;
 
-          // The blocks inside the shortfall, clipped to it. Neighbouring ticks
-          // braked by the same resource are drawn as ONE rectangle: a stretch
-          // of one brake should read as a stretch, and two abutting rectangles
-          // would leave a seam where their edges fall between pixels. A tie is
-          // split down the middle with a hairline of surface between the
-          // halves, so the split reads as a split and not as a shade, and where
-          // the colour changes from one tick to the next a hairline parts them.
-          g += `<g clip-path="url(#miss-${uid})">`;
-          const box = (x, w, c) =>
-            `<rect x="${x.toFixed(1)}" y="${TOP}" width="${w.toFixed(1)}" height="${BASE - TOP}" fill="${c}"/>`;
-          for (let i = 0; i < N; ) {
+          // The carpet: one full column per braked tick, from the full line
+          // down to the step - the whole gap, in the colour of what limited
+          // the tick. Columns of neighbouring ticks share their edge exactly,
+          // so a stretch of one brake reads as one mass; where the colour
+          // changes a hairline of surface parts them. A tie splits the column
+          // down the middle, with the same hairline between the halves, so the
+          // split reads as a split and not as a shade.
+          const col = (x0, x1, h, c) =>
+            `<rect x="${x0}" y="${TOP}" width="${x1 - x0}" height="${f(h)}" fill="${c}"/>`;
+          for (let i = 0; i < N; i++) {
             const b = s.d[i].b;
-            if (!b.length) {
-              i++;
-              continue;
-            }
-            let j = i;
-            while (j + 1 < N && s.d[j + 1].b.join() === b.join() && b.length === 1) j++;
-            const x = i * TW,
-              w = (j - i + 1) * TW;
+            if (!b.length) continue;
+            const h = y(s.d[i].g) - TOP;
+            // A hairline is a pixel left unpainted, not a pixel painted over:
+            // the ground shows through, and the two colours stay themselves.
+            const prev = i ? s.d[i - 1].b : [];
+            const x0 = E[i] + (prev.length && prev.join() !== b.join() ? 1 : 0);
             if (b.length === 1) {
-              g += box(x, w, R[b[0]].c);
+              g += col(x0, E[i + 1], h, R[b[0]].c);
             } else {
-              g += box(x, TW / 2 - 0.5, R[b[0]].c);
-              g += box(x + TW / 2 + 0.5, TW / 2 - 0.5, R[b[1]].c);
+              const m = Math.round((E[i] + E[i + 1]) / 2);
+              g += col(x0, m, h, R[b[0]].c);
+              g += col(m + 1, E[i + 1], h, R[b[1]].c);
             }
-            if (i && s.d[i - 1].b.length)
-              g += box(x - 0.5, 1, "var(--surface)");
-            i = j + 1;
           }
-          g += `</g>`;
 
-          g += `<line x1="0" y1="${TOP}" x2="${W}" y2="${TOP}" stroke="var(--line)" stroke-width="1" stroke-dasharray="3 4"/>`;
-          g += `<line x1="0" y1="${BASE}" x2="${W}" y2="${BASE}" stroke="var(--line)" stroke-width="1"/>`;
-          g += `<path d="${curve}" fill="none" stroke="var(--ink)" stroke-width="1.4" stroke-linejoin="round"/>`;
+          g += `<line x1="${E[0]}" y1="${BASE}" x2="${E[N]}" y2="${BASE}" stroke="var(--line)" stroke-width="1"/>`;
+          g += `<path d="${step}" fill="none" stroke="var(--ink)" stroke-width="1.4" stroke-linejoin="miter"/>`;
+          // Last of all, over the curve: see the note above the series.
+          g += `<line x1="${E[0]}" y1="${TOP}" x2="${E[N]}" y2="${TOP}" stroke="var(--line)" stroke-width="1" stroke-dasharray="3 4"/>`;
 
           // The card's own legend: the resources that braked in this window,
           // in the order the cause sentence names them, and at the right end
