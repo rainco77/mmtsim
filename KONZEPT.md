@@ -4262,7 +4262,7 @@ gestrichelte Linie = voll. Bei Bedarfen ist das die Deckung, bei Vorhaben der
 Zufluss-Anteil (eine Zahl, weil alle Ressourcen im Gleichschritt fließen); gerechnet
 wird er aus dem Verlauf der Oberfläche, Fortschritts-Differenz je Tick durch den
 vollen Tick-Schritt. **Statt einer Kostenzeile trägt die laufende Karte eine Faktenzeile:** „Fertig
-frühestens: 3 Ticks · je Tick bis zu 6 % der Arbeit, samt Brennholz-Beschaffung."
+frühestens: 3 Ticks · je Tick bis zu 6 % der Arbeit, samt Fasern-Beschaffung."
 Die Dauer ist Rest ÷ voller Tick-Schritt — exakt gerechnet, darum **ohne Tilde**, und
 ein Frühestens, nie ein Höchstens; unzuverlässige Restdauern werden nicht angezeigt.
 Die Tick-Kosten rechnen **alle Ressourcen in einem Maß**: Güter gehen über ihre
@@ -4290,7 +4290,7 @@ sich niemand. Bewusst ohne Sonderregeln: keine Schwelle für kleine Fehlmengen, 
 eigene Marke für den Null-Tick.
 
 **Der Ursachen-Satz der Vorhaben-Karte spricht über ein Fenster, nie über den letzten
-Tick:** „Gebremst in 4 von 9 Ticks seit dem Start — es fehlte an Brennholz und
+Tick:** „Gebremst in 4 von 9 Ticks seit dem Start — es fehlte an Fasern und
 Arbeit." Das Fenster beginnt mit der letzten Handlung des Spielers an diesem Vorhaben
 (Start, Umstellen, Pause aufgehoben) — eine Handlung setzt es zurück, der Satz
 bewertet also nie eine überholte Einstellung. Er erscheint, sobald im Fenster
