@@ -33,6 +33,14 @@
   /** Beyond this the finger is moving a segment and not tapping it. */
   const DRAG_SLOP = 4;
 
+  /**
+   * The hook of a leader line, in the specification sheet's measures (the
+   * `--leader-h` and `--leader-drop` tokens say the same in the stylesheet; a
+   * drawing cannot read a custom property, so the figures stand twice).
+   */
+  const LEADER_H = 13;
+  const LEADER_DROP = 6;
+
   $: state = currentState($game);
   $: rules = new Set(derive(state, index).rules);
   $: fields = bandFields($game.history, index, rules);
@@ -40,6 +48,22 @@
   let openKey: string | null = null;
   let dragKey: string | null = null;
   let dropAt = 0;
+
+  /**
+   * Where the segment in the hand is drawn.
+   *
+   * It follows the finger sideways and continuously — the thing being moved is
+   * under the hand at every moment, not at the place it would land — and it
+   * does not rise or fall: the band is one line to read along, and a segment
+   * lifting off it reads as a different element. What snaps is the gap in the
+   * dimmed band behind, and that is the only thing that should: it is the
+   * answer to "where would this land", and an answer that slides is no answer.
+   *
+   * The figures are pixels within the band, taken once when the segment is
+   * grasped, so that the width and the height under the hand stay what they
+   * were and only the one number moves.
+   */
+  let grabbed: { left: number; top: number; width: number } | null = null;
 
   let bandEl: HTMLElement | undefined;
   let rowEl: HTMLElement | undefined;
@@ -86,6 +110,14 @@
     if (!field.claim || event.button !== 0) return;
     const from = event.clientX;
     const at = ranked.findIndex((one) => one.key === field.key);
+    const box = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    const outer = bandEl?.getBoundingClientRect();
+    // Where the finger sits inside the segment, and where the segment sits in
+    // the band. Both are taken now and never again: the segment must not jump
+    // under the hand at the first millimetre of the pull.
+    const grip = from - box.left;
+    const top = outer === undefined ? 0 : box.top - outer.top;
+    const width = box.width;
     const move = (now: PointerEvent): void => {
       if (dragKey === null) {
         if (Math.abs(now.clientX - from) < DRAG_SLOP) return;
@@ -93,12 +125,15 @@
         dragKey = field.key;
         dropAt = at < 0 ? 0 : at;
       }
+      const band = bandEl?.getBoundingClientRect();
+      grabbed = { left: now.clientX - grip - (band?.left ?? 0), top, width };
       dropAt = dropIndexAt(now.clientX);
     };
     const release = (): void => {
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", release);
       if (dragKey !== null) drop();
+      grabbed = null;
     };
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", release);
@@ -280,24 +315,10 @@
   <div class="bandrow" class:dragmode={dragKey !== null} bind:this={rowEl}>
     {#each shown as field (field.key)}
       {#if field.key === dragKey}
-        <div class="slot" style={`flex-grow: ${field.share}`}>
-          <div class="fld claim dragging {field.tone}" style={`--f: ${pct(field.fill)}%`}>
-            <span class="fill"></span>
-            <span class="lay dark">
-              {#if field.icon}<svg class="ico"><use href={`#${field.icon}`} /></svg>{/if}
-              <span class="pct num">{pct(field.fill)} %</span>
-            </span>
-            <span class="lay light">
-              {#if field.icon}<svg class="ico"><use href={`#${field.icon}`} /></svg>{/if}
-              <span class="pct num">{pct(field.fill)} %</span>
-            </span>
-            <span class="lip"><i></i><i></i><i></i></span>
-            <span class="droptag">
-              {#each flag as piece, i (i)}{#if piece.strong}<b>{piece.text}</b
-                  >{:else}{piece.text}{/if}{/each}
-            </span>
-          </div>
-        </div>
+        <!-- The gap: it snaps to where the segment would land, and it is the
+             only thing here that snaps. What is in the hand is drawn over the
+             band, following the finger. -->
+        <div class="slot" style={`flex-grow: ${field.share}`}></div>
       {:else if field.kind === "idle"}
         <div
           class="fld idle"
@@ -344,12 +365,61 @@
     {/each}
   </div>
 
+  <!--
+    What is in the hand. It hangs over the band rather than in it, so it can
+    follow the finger to the pixel while the gap behind it snaps; and it keeps
+    the height and the top edge it was grasped at, because the band is a line
+    to read along and a segment that rises off it reads as something else.
+  -->
+  {#if dragKey !== null && grabbed !== null}
+    {@const carried = fields.find((one) => one.key === dragKey)}
+    {#if carried !== undefined}
+      <div
+        class="carry"
+        style={`left: ${grabbed.left.toFixed(1)}px; top: ${grabbed.top.toFixed(1)}px; width: ${grabbed.width.toFixed(1)}px`}
+      >
+        <div
+          class="fld claim dragging {carried.tone}"
+          style={`--f: ${pct(carried.fill)}%`}
+        >
+          <span class="fill"></span>
+          <span class="lay dark">
+            {#if carried.icon}<svg class="ico"><use href={`#${carried.icon}`} /></svg
+              >{/if}
+            <span class="pct num">{pct(carried.fill)} %</span>
+          </span>
+          <span class="lay light">
+            {#if carried.icon}<svg class="ico"><use href={`#${carried.icon}`} /></svg
+              >{/if}
+            <span class="pct num">{pct(carried.fill)} %</span>
+          </span>
+          <span class="lip"><i></i><i></i><i></i></span>
+          <span class="droptag">
+            {#each flag as piece, i (i)}{#if piece.strong}<b>{piece.text}</b
+                >{:else}{piece.text}{/if}{/each}
+          </span>
+        </div>
+      </div>
+    {/if}
+  {/if}
+
   <div class="names">
-    <svg class="leader" width={rowWidth} height="20" viewBox={`0 0 ${rowWidth} 20`}>
+    <!--
+      The hook of a leader line, at the height the specification sheet gives
+      it: down out of the field, across to where the name had to move, down
+      into the name. The sparing four-pixel version was all but invisible in
+      play, so the name row carries the sheet's measures and grows by them.
+    -->
+    <svg
+      class="leader"
+      width={rowWidth}
+      height={LEADER_H}
+      viewBox={`0 0 ${rowWidth} ${LEADER_H}`}
+    >
       {#each names as mark (mark.key)}
         {#if Math.abs(mark.at - mark.centre) > 0.5}
           <path
-            d={`M${mark.centre.toFixed(1)} 0 L${mark.centre.toFixed(1)} 2 L${mark.at.toFixed(1)} 2 L${mark.at.toFixed(1)} 4`}
+            d={`M${mark.centre.toFixed(1)} 0 L${mark.centre.toFixed(1)} ${LEADER_DROP} L${mark.at.toFixed(1)} ${LEADER_DROP} L${mark.at.toFixed(1)} ${LEADER_H - 1}`}
             fill="none"
             stroke="var(--accent-ink)"
             stroke-width="1"

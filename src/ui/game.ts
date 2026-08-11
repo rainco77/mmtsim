@@ -10,7 +10,7 @@ import {
   type Derived,
   type GameState,
 } from "../sim/index.ts";
-import { DISTRESS_TIERS } from "./presentation.ts";
+import { DISTRESS_TIERS, PLAYED_AT_ONCE } from "./presentation.ts";
 
 /**
  * The running game: the whole history of the run, not only the last tick
@@ -124,6 +124,21 @@ export function act(action: Action): void {
   });
 }
 
+/**
+ * Beginning an undertaking — and, for the ones this epoch carries out in the
+ * stroke they are begun, the tick that carries it out.
+ *
+ * Walking is the one such thing: the people who carry the camp are the people
+ * who walk, so the move is over on the tick after it is started whatever the
+ * hands are doing. Leaving the player to press the step himself would show him
+ * a claim standing in the band for exactly as long as it takes him to notice
+ * it, and invite him to weigh a decision that has already been taken.
+ */
+export function begin(id: string): void {
+  act({ type: "startProject", id });
+  if (PLAYED_AT_ONCE.includes(id)) step();
+}
+
 export function step(): void {
   game.update((value) =>
     over(value)
@@ -224,10 +239,12 @@ function stopsTheRun(
   if (next.abandonedAt !== undefined) return true;
   if (distress(next)) return true;
 
-  // A project shown for the first time.
-  for (const id of Object.keys(next.seenProjects)) {
-    if (!(id in previous.seenProjects)) return true;
-  }
+  // A project merely coming into sight does **not** halt the run. Coming into
+  // sight says "this is on its way", which is nothing to answer and nothing to
+  // decide; halting on it stopped the run every few ticks for something the
+  // player could do nothing about. Becoming buildable is the moment there is a
+  // choice, and that one halts. The log reports the sighting either way, so
+  // nothing is lost — it is read when the run next stops.
 
   // A project finished — the move and the epoch's end are projects too.
   for (const [id, count] of Object.entries(next.completedProjects)) {

@@ -29,6 +29,17 @@ export default tseslint.config(
     languageOptions: { parserOptions: { parser: tseslint.parser } },
   },
   /**
+   * The little scripts beside the design templates run in Node and say so.
+   * They are linted like everything else — a template generator that throws is
+   * as broken as anything — but they are allowed the globals Node gives them.
+   */
+  {
+    files: ["design/**/*.mjs", "tools/**/*.ts"],
+    languageOptions: {
+      globals: { process: "readonly", console: "readonly", Buffer: "readonly" },
+    },
+  },
+  /**
    * The shell lives in a browser and may say so. The core may not: it has no
    * DOM, no clock and no globals (T1), which is what the block below enforces.
    */

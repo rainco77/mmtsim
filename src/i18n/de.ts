@@ -49,20 +49,19 @@ export const de: Readonly<Record<string, string>> = {
 
   "project.use.mortar": "Ein Mörser holt mehr aus denselben Pflanzen.",
   "project.use.fire_setting":
-    "Ein Brand macht das Land eine Weile üppiger — er kostet Totholz und bleibt beim Weiterziehen zurück.",
+    "Ein Brand macht das Land eine Weile üppiger — er kostet Totholz und bleibt zurück, wenn ihr das Revier verlasst.",
   "project.use.earth_oven": "Ein Erdofen macht aus demselben Holz mehr Wärme.",
   "project.use.range_change":
-    "Weiterziehen in frisches Revier — Gruben, Boote und Vorräte bleiben zurück.",
+    "Weiterziehen in frisches Revier — was ihr gebaut und gelagert habt, bleibt zurück.",
   "project.use.sickle": "Eine Sichel macht das Sammeln ergiebiger.",
-  "project.use.stone_axe":
-    "Eine Axt macht das Holzsammeln leichter — und öffnet den Weg zu Grube und Boot.",
+  "project.use.stone_axe": "Eine Axt macht das Holzsammeln leichter.",
   "project.use.storage_pit": "Eine Grube speichert Nahrung für schlechte Ticks.",
   "project.use.fishing_net": "Ein Netz macht den Fang ergiebiger.",
   "project.use.fish_hook": "Haken und Schnur erreichen Fische, die dem Speer entgehen.",
-  "project.use.bone_needle": "Eine Nadel macht aus denselben Häuten mehr Kleidung.",
+  "project.use.bone_needle": "Eine Nadel macht aus denselben Fellen mehr Kleidung.",
   "project.use.bow_and_arrow": "Ein Bogen macht die Jagd ergiebiger.",
-  "project.use.twining": "Gezwirnte Fasern — die Grundlage für Netz und Schnur.",
-  "project.use.tanning": "Gegerbte Häute halten länger als rohe.",
+  "project.use.twining": "Gezwirnte Fasern halten, wo lose Fasern reißen.",
+  "project.use.tanning": "Gegerbte Felle halten länger als rohe.",
   "project.use.boat": "Ein Boot öffnet eigenes Wasser vor dem Ufer.",
   "project.use.sedentism": "Bleiben: Die Gemeinschaft bindet sich an diesen Ort.",
   "project.use.land_taking": "Neues Land wird in Besitz genommen.",
@@ -79,8 +78,10 @@ export const de: Readonly<Record<string, string>> = {
   "name.claim.wood": "Brennholzvorrat",
   "name.claim.food": "Nahrungsvorrat",
   // Am Spieler heißt die Arbeit Arbeit, auch wo das Modell die Menschen als
-  // Kapazität knapp werden sieht.
+  // Kapazität knapp werden sieht — und ebenso, wo es sie als Gut bucht.
   "name.brake.people": "Arbeit",
+  "name.brake.labor": "Arbeit",
+  "name.brake.weather": "Wetter",
 
   // Ein Satz je Bedarf, streng entlang der im Inhalt festgelegten Wirkachse.
   "need.effect.food_survival": "Bleibt das Essen aus, sterben Menschen.",
@@ -106,14 +107,44 @@ export const de: Readonly<Record<string, string>> = {
   "card.goal": "Ziel",
   "card.goalTicks": "{ticks} Ticks",
   "card.full": "voll",
-  "card.cause.delayed.since":
-    "Verzögert in {count} von {total} Ticks {since} — es fehlte an {what}.",
-  "card.cause.delayed.recent":
-    "Verzögert in {count} der letzten {total} Ticks — es fehlte an {what}.",
-  "card.cause.short.since":
-    "Unterdeckt in {count} von {total} Ticks {since} — es fehlte an {what}.",
-  "card.cause.short.recent":
-    "Unterdeckt in {count} der letzten {total} Ticks — es fehlte an {what}.",
+  // Der Ursachen-Satz spricht im Nominativ, in zwei Wendungen nach Anzahl —
+  // keine Beugungsformen je Gut, damit eine spätere Epoche Güter hinzufügen
+  // kann, ohne an Grammatik zu denken. Die dritte Wendung gehört dem Wetter:
+  // da fehlte nichts, es war schlicht nicht mehr zu holen.
+  "card.cause.delayed.since.one":
+    "Verzögert in {count} von {total} Ticks {since} — es fehlte {what}.",
+  "card.cause.delayed.since.many":
+    "Verzögert in {count} von {total} Ticks {since} — es fehlten {what}.",
+  "card.cause.delayed.since.weather":
+    "Verzögert in {count} von {total} Ticks {since} — das Wetter nahm den Rest.",
+  "card.cause.delayed.recent.one":
+    "Verzögert in {count} der letzten {total} Ticks — es fehlte {what}.",
+  "card.cause.delayed.recent.many":
+    "Verzögert in {count} der letzten {total} Ticks — es fehlten {what}.",
+  "card.cause.delayed.recent.weather":
+    "Verzögert in {count} der letzten {total} Ticks — das Wetter nahm den Rest.",
+  "card.cause.short.since.one":
+    "Unterdeckt in {count} von {total} Ticks {since} — es fehlte {what}.",
+  "card.cause.short.since.many":
+    "Unterdeckt in {count} von {total} Ticks {since} — es fehlten {what}.",
+  "card.cause.short.since.weather":
+    "Unterdeckt in {count} von {total} Ticks {since} — das Wetter nahm den Rest.",
+  "card.cause.short.recent.one":
+    "Unterdeckt in {count} der letzten {total} Ticks — es fehlte {what}.",
+  "card.cause.short.recent.many":
+    "Unterdeckt in {count} der letzten {total} Ticks — es fehlten {what}.",
+  "card.cause.short.recent.weather":
+    "Unterdeckt in {count} der letzten {total} Ticks — das Wetter nahm den Rest.",
+
+  // Der Folgen-Satz hängt am Ursachen-Satz und folgt der Wirkachse des Rangs.
+  "card.toll.survival": "Daran starben {who}.",
+  "card.toll.births": "Daran wurden {who} weniger geboren.",
+  "card.toll.work": "Das kostete {pct} % eurer Arbeit.",
+  "count.cohort.growing.one": "ein Kind",
+  "count.cohort.growing.many": "{count} Kinder",
+  "count.cohort.grown.one": "ein Erwachsener",
+  "count.cohort.grown.many": "{count} Erwachsene",
+
   "card.since.start": "seit dem Start",
   "card.since.rank": "seit dem Umstellen",
   "card.since.amount": "seit der neuen Menge",
@@ -122,19 +153,22 @@ export const de: Readonly<Record<string, string>> = {
   "card.way.buildable": "{project} anfangen — das Vorhaben dient {need}.",
   "card.way.behind": "{claim} steht vor {need} — dahinter ziehen?",
   "card.way.forward": "Vor {before} ziehen — {name} wird dann vor {before} bedient.",
-  "card.way.none": "Das Revier gibt gerade nicht mehr her.",
+  // Greift kein Ausweg, richtet sich die Leerzeile nach der Bremsen-Art des
+  // Fensters: kam die Bremse aus dem Revier oder von der Arbeit davor.
+  "card.way.none.range": "Das Revier gibt gerade nicht mehr her.",
+  "card.way.none.labour": "Was davor steht, nimmt alles.",
   "card.pause": "Pause",
   "card.resume": "Weiterbauen",
   "card.abandon": "Abbrechen",
 
-  "ladder.noHands": "bekommt gerade keine Arbeit",
-  "ladder.paused": "pausiert",
-  "ladder.pause": "Pausieren",
-  "ladder.resume": "Weiterbauen",
-  "ladder.abandon": "Abbrechen",
-  "ladder.rank": "Rang",
-  "ladder.amount": "Menge",
-  "ladder.store": "Vorrat: {from} → {to}",
+  "project.noHands": "bekommt gerade keine Arbeit",
+  "project.paused": "pausiert",
+  "project.pause": "Pausieren",
+  "project.resume": "Weiterbauen",
+  "project.abandon": "Abbrechen",
+  "store.rank": "Rang",
+  "store.amount": "Menge",
+  "store.moved": "Vorrat: {from} → {to}",
 
   // Ein Bedarf heißt nach dem Guten, das er sichert; der Mangel gehört der
   // Krise.
@@ -155,7 +189,7 @@ export const de: Readonly<Record<string, string>> = {
   "name.stock.trees": "Bäume",
   "name.stock.fish": "Fisch",
   "name.stock.shellfish": "Muscheln",
-  "name.stock.hides": "Häute",
+  "name.stock.hides": "Felle",
   "name.stock.fibre": "Fasern",
   "name.stock.clothing": "Kleidung",
   "name.stock.care": "Betreuung",
@@ -205,7 +239,7 @@ export const de: Readonly<Record<string, string>> = {
   "name.process.felling": "Fällen",
   "name.process.open_fire": "Offenes Feuer",
   "name.process.earth_oven": "Erdofen",
-  "name.process.hunting_hides": "Häutegewinnung",
+  "name.process.hunting_hides": "Fellgewinnung",
   "name.process.bast_gathering": "Bastsammeln",
   "name.process.hide_dressing": "Fellaufbereitung",
   "name.process.tanning": "Gerben",

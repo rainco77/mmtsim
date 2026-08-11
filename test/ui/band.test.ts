@@ -50,13 +50,42 @@ const fieldsOf = (history: readonly GameState[]): readonly BandField[] =>
   bandFields(history, index, rulesOf(history[history.length - 1] as GameState));
 
 describe("the band's fields (T9)", () => {
-  it("stands in rank order, left first, and the idle field stands last", () => {
+  it("stands in rank order, left first", () => {
     const fields = fieldsOf(played(12));
     const ranked = fields.filter((one) => one.kind !== "idle");
     for (let i = 1; i < ranked.length; i += 1) {
       expect(ranked[i]?.rank ?? 0).toBeGreaterThanOrEqual(ranked[i - 1]?.rank ?? 0);
     }
-    expect(fields[fields.length - 1]?.kind).toBe("idle");
+  });
+
+  it("shows the idle field only where labour really lay idle, and last", () => {
+    // The one field that is never held open: it has neither a sign nor a grip
+    // to keep room for, so where nothing lay idle it is not there at all.
+    for (const ticks of [6, 12, 20, 40]) {
+      const history = played(ticks);
+      const fields = fieldsOf(history);
+      const idle = fields.find((one) => one.kind === "idle");
+      const unused = history[history.length - 1]?.lastLabor.unused ?? 0;
+      expect(idle !== undefined).toBe(unused > 1e-9);
+      if (idle !== undefined) expect(fields[fields.length - 1]?.kind).toBe("idle");
+    }
+  });
+
+  it("keeps the undertaking that is over in one stroke out of the band", () => {
+    // Walking is done in the tick it is begun, so it is no claim to be weighed
+    // against the eating and never comes into the hand.
+    let state = createState(STAGE1, { seed: 42 });
+    const history = [state];
+    for (let i = 0; i < 6; i += 1) {
+      state = tick(state, index);
+      history.push(state);
+    }
+    state = apply(state, { type: "startProject", id: "range_change" }, index).state;
+    history[history.length - 1] = state;
+    expect(state.activeProjects.some((p) => p.id === "range_change")).toBe(true);
+    expect(fieldsOf(history).some((one) => one.key === "project:range_change")).toBe(
+      false,
+    );
   });
 
   it("carries every need of the content, whether or not it went short", () => {
@@ -187,13 +216,15 @@ describe("what a card's curve covers (T9)", () => {
   });
 
   it("names the resources of a window by how often they braked, commonest first", () => {
+    const work = { what: "labor", kind: "labour" } as const;
+    const fibre = { what: "fibre", kind: "stock" } as const;
     const points: CurvePoint[] = [
-      { tick: 1, value: 0.5, brake: ["labor"] },
+      { tick: 1, value: 0.5, brake: [work] },
       { tick: 2, value: 1, brake: [] },
-      { tick: 3, value: 0.2, brake: ["fibre", "labor"] },
-      { tick: 4, value: 0.9, brake: ["labor"] },
+      { tick: 3, value: 0.2, brake: [fibre, work] },
+      { tick: 4, value: 0.9, brake: [work] },
     ];
-    expect(brakesByFrequency(points)).toEqual(["labor", "fibre"]);
+    expect(brakesByFrequency(points)).toEqual([work, fibre]);
     expect(shortTicks(points)).toBe(3);
   });
 });

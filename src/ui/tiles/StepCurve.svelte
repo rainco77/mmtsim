@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { CurvePoint } from "../band.ts";
+  import { WEATHER, type CurvePoint } from "../band.ts";
 
   /**
    * The step curve of an explainer card, with its braking carpet (T9).
@@ -26,9 +26,9 @@
    * The braking colours. All cool: the palette holds exactly one warm
    * identity and the project ochre owns it, so a warm brake would be
    * indistinguishable from "yours". Labour and fibre have a colour of their
-   * own, a good that feeds a need brings its process colour, and anything else
-   * takes the next cool tone. Which colour means what is read off the card's
-   * own legend and never learnt by heart.
+   * own, the weather has one of its own, a good that feeds a need brings its
+   * process colour, and anything else takes the next cool tone. Which colour
+   * means what is read off the card's own legend and never learnt by heart.
    */
   const NAMED: Readonly<Record<string, string>> = {
     labor: "var(--brake-work)",
@@ -36,6 +36,7 @@
     fibre: "var(--brake-fibre)",
     fish: "var(--p-fish)",
     plants: "var(--p-gather)",
+    [WEATHER]: "var(--brake-weather)",
   };
   const SPARE = [
     "var(--brake-slate)",
@@ -57,7 +58,8 @@
   $: seen = (() => {
     const out: string[] = [];
     for (const point of points) {
-      for (const what of point.brake) if (!out.includes(what)) out.push(what);
+      for (const brake of point.brake)
+        if (!out.includes(brake.what)) out.push(brake.what);
     }
     return out;
   })();
@@ -108,12 +110,17 @@
     for (let i = 0; i < points.length; i += 1) {
       const point = points[i];
       if (point === undefined || point.brake.length === 0) continue;
+      // However small the shortfall, the tick that was braked draws its column
+      // and the legend names what braked it. A threshold here would have hidden
+      // exactly the ticks a player is meant to see coming — the small gaps that
+      // run one after another and add up.
       const height = yOf(point.value) - TOP;
-      if (height <= 0.05) continue;
       // A hairline is a pixel left unpainted, not a pixel painted over: the
       // ground shows through and the two colours stay themselves.
       const previous = points[i - 1]?.brake ?? [];
-      const parted = previous.length > 0 && previous.join() !== point.brake.join();
+      const same = (list: readonly { what: string }[]): string =>
+        list.map((one) => one.what).join();
+      const parted = previous.length > 0 && same(previous) !== same(point.brake);
       const left = edges[i] ?? 0;
       const from = left + (parted ? 1 : 0);
       const to = edges[i + 1] ?? width;
@@ -122,7 +129,7 @@
           x: from,
           w: to - from,
           h: height,
-          fill: colour.get(point.brake[0] ?? "") ?? "var(--brake-work)",
+          fill: colour.get(point.brake[0]?.what ?? "") ?? "var(--brake-work)",
         });
       } else {
         const middle = Math.round((left + to) / 2);
@@ -130,13 +137,13 @@
           x: from,
           w: middle - from,
           h: height,
-          fill: colour.get(point.brake[0] ?? "") ?? "var(--brake-work)",
+          fill: colour.get(point.brake[0]?.what ?? "") ?? "var(--brake-work)",
         });
         out.push({
           x: middle + 1,
           w: to - middle - 1,
           h: height,
-          fill: colour.get(point.brake[1] ?? "") ?? "var(--brake-work)",
+          fill: colour.get(point.brake[1]?.what ?? "") ?? "var(--brake-work)",
         });
       }
     }

@@ -19,7 +19,7 @@ import {
 const LABOR_STOCK: StockId = "labor";
 
 import { planByProgram } from "./program.ts";
-import { makePlan, type Demand, type Plan, type PlanContext } from "./plan.ts";
+import { makePlan, type Demand, type PlanContext } from "./plan.ts";
 import { shockFactor, type Shocks } from "./risk.ts";
 import { renewals, type Renewal } from "./phases.ts";
 import { capacityOf, weighedHeads, type GameState } from "./state.ts";
