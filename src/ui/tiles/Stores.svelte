@@ -12,7 +12,7 @@
    * store is, is what was decided when it was dug" — with the capacity drawn
    * as its own course, so every pit is a step and the quiet decay shows. A
    * good that keeps takes amount and rank from the player. The grips sit here
-   * and on the ladder row alike: one setting, two windows.
+   * and on the store's card in the band alike: one setting, two windows.
    */
   const t = fromStore(
     language,
@@ -66,9 +66,18 @@
     return rows;
   }
 
-  function setReserve(stock: string, amount: number, rank: number): void {
-    if (Number.isFinite(amount) && Number.isFinite(rank))
-      act({ type: "setStockTarget", stock, amount, rank });
+  /**
+   * The two grips are two actions, because one of the stores has no amount:
+   * what the pits hold is what was decided when they were dug, and only
+   * another pit lifts it. Sending a nought amount along with the rank was
+   * refused outright, so the sheltered store could not be ranked at all.
+   */
+  function setAmount(stock: string, amount: number): void {
+    if (Number.isFinite(amount)) act({ type: "setStockTarget", stock, amount });
+  }
+
+  function setRank(stock: string, rank: number): void {
+    if (Number.isFinite(rank)) act({ type: "setStockRank", stock, rank });
   }
 
   $: history = $game.history;
@@ -114,7 +123,7 @@
               type="number"
               value={row.target}
               on:change={(event) =>
-                setReserve(row.stock, Number(event.currentTarget.value), row.rank)}
+                setAmount(row.stock, Number(event.currentTarget.value))}
             />
           </label>
         {:else}
@@ -125,12 +134,7 @@
           <input
             type="number"
             value={row.rank}
-            on:change={(event) =>
-              setReserve(
-                row.stock,
-                row.adjustable ? row.target : 0,
-                Number(event.currentTarget.value),
-              )}
+            on:change={(event) => setRank(row.stock, Number(event.currentTarget.value))}
           />
         </label>
       </span>

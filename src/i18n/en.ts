@@ -6,7 +6,7 @@ export const en: Readonly<Record<string, string>> = {
   "time.runToStop": "To the next stop",
   "time.runFree": "Let it run",
   "time.pause": "Pause",
-  "tile.ladder": "Needs and claims",
+  "tile.overview": "Overview",
   "tile.people": "People",
   "tile.range": "Range",
   "tile.stores": "Stores",
@@ -70,22 +70,74 @@ export const en: Readonly<Record<string, string>> = {
   "project.use.afforestation": "Open land becomes forest again.",
   "project.use.fallowing": "Fallow lets the ground recover.",
 
-  "ladder.freeLabor": "Free labour",
-  "ladder.noHands": "getting no hands right now",
-  "ladder.binds": "held up by {what}",
+  // ---- the band and its explainer cards ----
+  "band.idle": "Labour lies idle",
+  "band.dropBefore": "{name} — before {before}",
+  "band.dropLast": "{name} — right at the back",
+  "list.and": "{head} and {last}",
+
+  "name.claim.wood": "Firewood store",
+  "name.claim.food": "Food store",
+  // At the player labour is labour, even where the model sees the people run
+  // short as a capacity.
+  "name.brake.people": "Labour",
+
+  // One sentence per need, strictly along the axis the content lays down.
+  "need.effect.food_survival": "When the food fails, people die.",
+  "need.effect.warmth_fire": "Let the fire go out and not everyone survives the cold.",
+  "need.effect.childcare": "Children nobody watches come to harm.",
+  "need.effect.clothing_cover": "Poorly clothed, you get less done outdoors.",
+  "need.effect.food_satiety": "Well fed, you get more done.",
+  "need.effect.warmth_comfort": "A warm camp brings the little ones through.",
+
+  "store.purpose.wood":
+    "Your firewood at the camp carries the fire through the bad ticks.",
+  "store.purpose.food":
+    "Your pits hold back the food you live on when the searching yields nothing.",
+  "idle.head": "Labour nobody uses is gone at the tick's end.",
+
+  "card.stand.need": "coverage {pct} %",
+  "card.stand.project": "built {pct} %",
+  "card.stand.store": "filled {pct} %",
+  "card.stand.idle": "{pct} %",
+  "card.fact.project": "Done at the earliest: {ticks} ticks · needs {needs}",
+  "card.fact.store.wood": "Goal: holds ~{ticks} ticks of fire",
+  "card.fact.store.food": "Goal: what {pits} pits hold · holds ~{ticks} ticks of hunger",
+  "card.goal": "Goal",
+  "card.goalTicks": "{ticks} ticks",
+  "card.full": "full",
+  "card.cause.delayed.since":
+    "Delayed in {count} of {total} ticks {since} — {what} were missing.",
+  "card.cause.delayed.recent":
+    "Delayed in {count} of the last {total} ticks — {what} were missing.",
+  "card.cause.short.since":
+    "Short in {count} of {total} ticks {since} — {what} were missing.",
+  "card.cause.short.recent":
+    "Short in {count} of the last {total} ticks — {what} were missing.",
+  "card.since.start": "since the start",
+  "card.since.rank": "since the move",
+  "card.since.amount": "since the new amount",
+  "card.since.pause": "since the pause",
+  "card.way.running": "{project} is begun — pull it before {need}?",
+  "card.way.buildable": "Start {project} — the undertaking serves {need}.",
+  "card.way.behind": "{claim} stands before {need} — pull it behind?",
+  "card.way.forward": "Pull before {before} — {name} is then served before {before}.",
+  "card.way.none": "The range gives no more just now.",
+  "card.pause": "Pause",
+  "card.resume": "Resume",
+  "card.abandon": "Abandon",
+
+  "ladder.noHands": "getting no labour right now",
   "ladder.paused": "paused",
   "ladder.pause": "Pause",
   "ladder.resume": "Resume",
   "ladder.abandon": "Abandon",
   "ladder.rank": "Rank",
   "ladder.amount": "Amount",
-  "ladder.reserve": "{stock} reserve",
   "ladder.store": "Store: {from} → {to}",
-  "ladder.supply": "Supply of {stock} — shared by all its ranks",
-  "ladder.work": "labour {n}",
-  "ladder.yield": "yield {n}",
 
-  "name.tier.food_survival": "Hunger",
+  // A need is named after the good it secures; the lack belongs to the crisis.
+  "name.tier.food_survival": "Food",
   "name.tier.warmth_fire": "Fire",
   "name.tier.childcare": "Childcare",
   "name.tier.clothing_cover": "Clothing",
@@ -94,9 +146,9 @@ export const en: Readonly<Record<string, string>> = {
 
   "name.stock.food": "Food",
   "name.stock.labor": "Labour",
-  "name.stock.wood": "Wood",
+  "name.stock.wood": "Firewood",
   "name.stock.warmth": "Warmth",
-  "name.stock.plants": "Plants",
+  "name.stock.plants": "Berries",
   "name.stock.game": "Game",
   "name.stock.deadwood": "Deadwood",
   "name.stock.trees": "Trees",

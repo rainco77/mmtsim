@@ -28,6 +28,28 @@ export default tseslint.config(
     files: ["**/*.svelte"],
     languageOptions: { parserOptions: { parser: tseslint.parser } },
   },
+  /**
+   * The shell lives in a browser and may say so. The core may not: it has no
+   * DOM, no clock and no globals (T1), which is what the block below enforces.
+   */
+  {
+    files: ["src/ui/**", "src/persistence/**"],
+    languageOptions: {
+      globals: {
+        CanvasRenderingContext2D: "readonly",
+        Element: "readonly",
+        HTMLElement: "readonly",
+        KeyboardEvent: "readonly",
+        MouseEvent: "readonly",
+        PointerEvent: "readonly",
+        document: "readonly",
+        localStorage: "readonly",
+        setInterval: "readonly",
+        clearInterval: "readonly",
+        window: "readonly",
+      },
+    },
+  },
   {
     files: ["src/sim/**/*.ts", "src/content/**/*.ts"],
     rules: {

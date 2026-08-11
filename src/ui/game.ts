@@ -47,6 +47,41 @@ export const game = writable<Game>({
   mode: "paused",
 });
 
+/**
+ * When the player last laid a hand on a claim of his own, and what he did.
+ *
+ * Pure book-keeping of the surface, deliberately not a field of the state: the
+ * model does not care who moved a rank, but the explainer card does. Its cause
+ * sentence counts from the last own deed, so that it never passes judgement on
+ * a setting that has since been changed — "short in six of fourteen ticks
+ * since the move" is about the setting that stands, and a count reaching back
+ * past the move would be about one that does not.
+ */
+export type Deed = "start" | "rank" | "amount" | "pause";
+
+export const ownDeeds = writable<Readonly<Record<string, { tick: number; what: Deed }>>>(
+  {},
+);
+
+/** Which claim an action belongs to, and what kind of deed it is. */
+function deedOf(action: Action): { key: string; what: Deed } | undefined {
+  switch (action.type) {
+    case "startProject":
+      return { key: `project:${action.id}`, what: "start" };
+    case "setProjectRank":
+    case "reorderProject":
+      return { key: `project:${action.id}`, what: "rank" };
+    case "pauseProject":
+      return { key: `project:${action.id}`, what: "pause" };
+    case "setStockTarget":
+      return { key: `store:${action.stock}`, what: "amount" };
+    case "setStockRank":
+      return { key: `store:${action.stock}`, what: "rank" };
+    case "abandonProject":
+      return undefined;
+  }
+}
+
 let timer: ReturnType<typeof setInterval> | undefined;
 
 /**
@@ -74,6 +109,17 @@ export function act(action: Action): void {
   game.update((value) => {
     const result = apply(currentState(value), action, index);
     if (result.rejected !== undefined) throw new Error(result.rejected);
+    const deed = deedOf(action);
+    ownDeeds.update((deeds) => {
+      if (action.type === "abandonProject") {
+        const { [`project:${action.id}`]: gone, ...rest } = deeds;
+        void gone;
+        return rest;
+      }
+      return deed === undefined
+        ? deeds
+        : { ...deeds, [deed.key]: { tick: result.state.tick, what: deed.what } };
+    });
     return { ...value, history: [...value.history.slice(0, -1), result.state] };
   });
 }
