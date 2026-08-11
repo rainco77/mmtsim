@@ -44,6 +44,26 @@ export interface Plan {
   /** Which input stopped the lowest tier that stayed uncovered. */
   readonly shortfall: ReadonlyMap<string, number>;
   /**
+   * The same question asked per rank: for a rank that did not get all it asked
+   * for, how much of each input **its own** unmet demand was missing.
+   *
+   * One figure for the whole plan cannot answer it. Every rank draws on the one
+   * pot, so the plan's worst input is the worst input of *some* rank, and
+   * handing it to all of them names sources a rank never touched — the woodpile
+   * answering "berries and fish". A rank is stopped by what its own chain ran
+   * out of, and that is what stands here.
+   *
+   * A rank that got everything it asked for has no entry. Neither has one that
+   * the plan covered and the draw then spoiled: nothing was short when the plan
+   * was made, and inventing an input afterwards would be a guess.
+   *
+   * The amounts are in each input's own units, as `shortfall` is, so comparing
+   * them across inputs compares an area with a quantity. The model has no
+   * common measure for that — there are no prices — so the largest figure wins
+   * and that is a convention, not a valuation.
+   */
+  readonly shortfallByTier?: ReadonlyMap<string, ReadonlyMap<string, number>>;
+  /**
    * What the plan **charged** each process for searching, so that carrying it
    * out charges the very same thing.
    *
@@ -583,6 +603,7 @@ export function makePlan(demands: readonly Demand[], ctx: PlanContext): Plan {
   // attempt that **failed**: the successful, cut-back one fits by construction
   // and so has nothing to report.
   let stopper: ReadonlyMap<string, number> | undefined;
+  const perTier = new Map<string, ReadonlyMap<string, number>>();
 
   for (const [tier, group] of inOrder) {
     const whole = planFor([...accepted, ...group], ctx);
@@ -592,6 +613,12 @@ export function makePlan(demands: readonly Demand[], ctx: PlanContext): Plan {
       continue;
     }
     stopper ??= whole.shortfall;
+    // This rank's own doing: everything above it is already in the plan and
+    // fits, so what the attempt spills over by is what *this* rank asked for
+    // and could not have. The figure covers the whole rank rather than only
+    // the part that stayed unserved — which input is the largest is what is
+    // read off it, and that does not turn on the scale.
+    perTier.set(tier, whole.shortfall);
     // Does not fit whole: find the largest share of this rank that does. The
     // share is a number in [0, 1], so a fixed number of halvings is enough — no
     // tolerance to tune (E26).
@@ -619,5 +646,10 @@ export function makePlan(demands: readonly Demand[], ctx: PlanContext): Plan {
     // hungry. What is left over is all a later rank can have anyway.
   }
 
-  return { ...plan, droppedTiers: dropped, shortfall: stopper ?? new Map() };
+  return {
+    ...plan,
+    droppedTiers: dropped,
+    shortfall: stopper ?? new Map(),
+    shortfallByTier: perTier,
+  };
 }
