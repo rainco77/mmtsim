@@ -28,6 +28,48 @@
   --p-fish: #4d7f8c;
   --p-hunt: #a3703c;
   --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
+
+  /*
+   * The braking colours of the card curves. They are cool on purpose: the
+   * palette holds exactly one warm identity and the project ochre owns it, so
+   * a warm brake colour would be indistinguishable from "yours". Labour and
+   * fibre have one of their own, a good that feeds a need brings its process
+   * colour, and whatever else brakes takes the next spare cool tone. Which
+   * colour means what is read off the card's own legend, never learnt by
+   * heart.
+   */
+  --brake-work: #2c626e;
+  --brake-fibre: #7fa26a;
+  --brake-slate: #5b6b8c;
+  --brake-teal: #3f7f6f;
+  --brake-moss: #7a8b5a;
+  --brake-indigo: #6a5f8c;
+
+  /*
+   * The measurements of the band. Whoever builds it reads them off here and
+   * invents none of his own — they come from the approved template
+   * (design/band/mmt.css) and are screen sizes, not the sizes of the drawing.
+   *
+   * --fld-min is the minimum width of EVERY field, need and claim alike: any
+   * narrower and the sign could not be drawn nor the lip grasped. What one
+   * field gains that way the others lose in proportion, and the explainer card
+   * explains the distortion.
+   */
+  --fld-h: 46px;
+  --claim-h: 58px;
+  --lip-h: 13px;
+  --lip-gap: 3px;
+  --fld-min: 44px;
+  --fld-gap: 3px;
+  --fld-r: 5px;
+  --fld-name-min: 144px;
+  --fld-pct-min: 58px;
+  --fld-pct-solo-min: 34px;
+  --idle-text-min: 92px;
+  --band-pad: 14px;
+  --band-top: 13px;
+  --name-h: 16px;
+  --card-gap: 8px;
 }
 
 * {
@@ -77,8 +119,9 @@ b {
 }
 
 /*
- * The page: the top bar spans, then the four columns. The middle two carry
- * minmax(0, …) so a wide row inside them scrolls instead of pushing the whole
+ * The page: the top bar spans, the band spans below it as the frame's head
+ * element, and the three columns take what is left. The middle carries
+ * minmax(0, …) so a wide row inside it scrolls instead of pushing the whole
  * layout wider than the screen.
  */
 .page {
@@ -87,13 +130,12 @@ b {
   height: 100%;
   gap: 10px;
   padding: 10px;
-  grid-template-columns:
-    minmax(230px, 18vw) minmax(0, 1.55fr)
-    minmax(0, 0.95fr) minmax(262px, 21vw);
-  grid-template-rows: 56px 1fr;
+  grid-template-columns: minmax(272px, 22%) minmax(0, 1fr) minmax(318px, 26%);
+  grid-template-rows: 56px auto minmax(0, 1fr);
   grid-template-areas:
-    "top top top top"
-    "cat ladder side frame";
+    "top  top  top"
+    "band band band"
+    "cat  mid  frame";
 }
 
 .tile {
@@ -209,13 +251,13 @@ b {
   overflow: hidden;
 }
 
-.page > .ladder {
-  grid-area: ladder;
-  overflow: hidden;
+.page > .bandtile {
+  grid-area: band;
+  padding-bottom: 4px;
 }
 
-.page > .side {
-  grid-area: side;
+.page > .mid {
+  grid-area: mid;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -230,14 +272,14 @@ b {
   min-height: 0;
 }
 
-/* The range gets the taller share of its column, the stores the rest. */
-.side > .range {
-  flex: 1.7;
+/* The range gets what is left of its column, the stores as much as they need. */
+.mid > .range {
+  flex: 1 1 auto;
   overflow: hidden;
 }
 
-.side > .stores {
-  flex: 1;
+.mid > .stores {
+  flex: 0 0 auto;
   overflow: hidden;
 }
 
@@ -394,4 +436,536 @@ b {
   height: 9px;
   border-radius: 2px;
   margin-right: 4px;
+}
+
+/* ---------------------------------------------------------------- the band
+ *
+ * The overview, as the frame's head element. A field's width is its share of
+ * this tick's full-coverage cost reckoning (the shares come to a hundred),
+ * with flex-basis nought — so a field that cost nothing falls to the minimum
+ * width and no further.
+ *
+ * The card floats at its field, so the band is the frame it is placed in.
+ */
+.band {
+  position: relative;
+}
+
+/*
+ * The band head carries its title and nothing else. There is no permanent
+ * explainer line: the elder introduces the convention once, and it holds.
+ */
+.bandhead {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 8px 14px 0;
+}
+
+.bandhead h2 {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 600;
+}
+
+/*
+ * Claims stand taller than need fields; the lip needs air above it. The lower
+ * edge of the band stays flush — it is the reading line for the names.
+ */
+.bandrow {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--fld-gap);
+  padding: var(--band-top) var(--band-pad) 0;
+}
+
+/*
+ * Each field is its own query container: what it shows depends on how wide
+ * this tick made it, not on the screen. The field holds no writing itself —
+ * its padding sets the room inside, and that room is what a container query
+ * reports. The writing lives in the two layers below.
+ */
+.fld {
+  position: relative;
+  container-type: inline-size;
+  flex: 0 1 0;
+  height: var(--fld-h);
+  min-width: var(--fld-min);
+  border-radius: var(--fld-r);
+  background: var(--sunk);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 7px;
+  cursor: pointer;
+}
+
+/*
+ * The fill lies behind the writing and grows from the left. --f carries its
+ * width; the same custom property feeds the fill and the clip of the light
+ * layer, so edge and cut can never drift apart.
+ */
+.fld > .fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--f);
+  background: var(--ok);
+}
+
+.fld.short > .fill {
+  background: var(--crit);
+}
+
+/*
+ * Two-tone: the writing of a field is drawn TWICE, as two identical stacked
+ * copies over the same fill. The lower copy carries the dark tone meant for
+ * the pale ground, the upper one the light tone, clipped to the width of the
+ * fill. So the tone switches exactly at the fill edge, and a sign, name or
+ * number that straddles it is half light, half dark.
+ */
+.fld > .lay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 7px;
+  color: var(--muted);
+}
+
+.fld > .lay.light {
+  color: rgba(248, 249, 246, 0.94);
+  clip-path: inset(0 calc(100% - var(--f)) 0 0);
+}
+
+/* A need short of its coverage writes its number in the crisis colour. */
+.fld > .lay.dark .pct.crit {
+  color: var(--crit);
+}
+
+.fld .ico {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/*
+ * The name beside the sign. It appears from --fld-name-min on and falls away
+ * below it; the sign stays either way, and so does the number — the name is
+ * the one that yields, because it is the addition. The container conditions
+ * repeat the tokens as figures, because a container condition cannot read a
+ * custom property.
+ */
+.fld .nm {
+  display: none;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+@container (min-width: 144px) {
+  .fld .nm {
+    display: block;
+  }
+}
+
+/*
+ * The number stands at the right edge and never shrinks. Every field in the
+ * band carries it, the full ones too — a full field without a number reads as
+ * empty or broken. It falls away only where sign and number cannot stand side
+ * by side; a running project carries no sign, so there the number alone has to
+ * fit. Outside the band full coverage stays numberless.
+ */
+.fld .pct {
+  display: none;
+  flex: none;
+  margin-left: auto;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+@container (min-width: 58px) {
+  .fld .pct {
+    display: block;
+  }
+}
+
+@container (min-width: 34px) {
+  .fld.build .pct {
+    display: block;
+  }
+}
+
+/*
+ * A claim: taller, outlined in ochre, with a lip and grips. Throughout the
+ * game ochre means "yours, movable". A store goal carries a sign of its own,
+ * left-aligned like a need's — they are few, they last and they return in
+ * every run. A running project carries none. A claim never carries a name
+ * inside: its name stands in the name row below the band.
+ */
+.fld.claim {
+  height: var(--claim-h);
+  border: 1.5px solid var(--accent-ink);
+  align-items: flex-end;
+  padding-bottom: 11px;
+}
+
+.fld.claim > .lay {
+  align-items: flex-end;
+  padding-bottom: 11px;
+}
+
+/*
+ * A claim's fill starts below the lip and never reaches it — the --lip-gap
+ * strip stays visible at every standing. The fill carries the colour of its
+ * kind: building project ochre, store goal teal.
+ */
+.fld.claim > .fill {
+  top: calc(var(--lip-h) + var(--lip-gap));
+}
+
+.fld.claim.build > .fill {
+  background: var(--accent);
+}
+
+.fld.claim.store > .fill {
+  background: var(--store);
+}
+
+/*
+ * The lip is always solid ochre — never translucent, never touched by the
+ * fill. It is the grip: three dots, light on the ochre.
+ */
+.lip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: var(--lip-h);
+  background: var(--accent-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: grab;
+}
+
+.lip i {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(248, 249, 246, 0.92);
+}
+
+/*
+ * Labour that no process called for: hatched, and without a sign. Where the
+ * field grows too narrow for the words they fall away and the hatching alone
+ * carries the meaning — it is christened once, and tapping explains it at any
+ * time, which is why it answers to a finger.
+ */
+.fld.idle {
+  background:
+    repeating-linear-gradient(45deg, transparent 0 5px, rgba(103, 112, 106, 0.3) 5px 7px),
+    var(--sunk);
+  justify-content: center;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.fld.idle span {
+  display: none;
+  white-space: nowrap;
+}
+
+@container (min-width: 92px) {
+  .fld.idle span {
+    display: block;
+  }
+}
+
+/*
+ * The name row — only claims carry a name, and it stays one line high even
+ * when names collide. The names are placed by measurement rather than by the
+ * flow, so a collision can move one aside and lead a hairline back to its
+ * field without the row growing.
+ */
+.names {
+  position: relative;
+  height: calc(var(--name-h) + 4px);
+  padding: 0 var(--band-pad);
+}
+
+.names > .leader {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+}
+
+.leadname {
+  position: absolute;
+  top: 4px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-ink);
+}
+
+/* ------------------------------------------------------------ the drag moment
+ *
+ * The gap stays open so it is visible where the claim will land. It carries
+ * the same padding and outline width as the field it stands for, so the gap is
+ * exactly as wide as what will land in it.
+ */
+.slot {
+  position: relative;
+  flex: 0 1 0;
+  min-width: var(--fld-min);
+  height: var(--fld-h);
+  padding: 0 7px;
+  border: 1.5px dashed var(--accent-ink);
+  border-radius: var(--fld-r);
+  background: rgba(176, 114, 42, 0.12);
+}
+
+.slot > .dragging {
+  position: absolute;
+  left: -5px;
+  right: -5px;
+  bottom: 22px;
+  overflow: visible;
+  box-shadow: 0 12px 24px rgba(38, 42, 40, 0.3);
+  z-index: 4;
+}
+
+.slot > .dragging > .fill {
+  border-radius: 3px 0 0 3px;
+}
+
+.slot > .dragging > .lip {
+  border-radius: 3px 3px 0 0;
+}
+
+/*
+ * The flag floats above everything, the dark top bar included. That is why it
+ * is light and carries a shadow, not the other way round.
+ */
+.droptag {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 9px);
+  transform: translateX(-50%);
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 6px 11px;
+  font-size: 12.5px;
+  white-space: nowrap;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.34);
+}
+
+.droptag b {
+  color: var(--accent-ink);
+}
+
+.droptag::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--surface);
+  filter: drop-shadow(0 1px 0 var(--line));
+}
+
+.bandrow.dragmode .fld:not(.dragging) {
+  opacity: 0.55;
+}
+
+/*
+ * While a claim is in the hand the name row goes: the floating flag carries
+ * the name of the segment being moved, and no second reading of the names
+ * should compete with it. Hidden, not removed — the row keeps its height, so
+ * the band does not jump under the finger.
+ */
+.bandrow.dragmode + .names {
+  visibility: hidden;
+}
+
+/* ------------------------------------------------------ the explainer card
+ *
+ * The card floats at its field and shifts no layout. It always opens
+ * DOWNWARD: its top edge sits --card-gap below the flush lower edge of the
+ * band. The lips of the claims reach upward, so neither the card nor its curve
+ * ever covers a neighbour's grip. Only ever one card open, and in it only ever
+ * one curve.
+ */
+.cardhold {
+  position: absolute;
+  z-index: 5;
+}
+
+.explain {
+  width: 396px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 9px 14px 10px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.explain .beak {
+  position: absolute;
+  top: -8px;
+  width: 14px;
+  height: 14px;
+  background: var(--surface);
+  border-left: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+  transform: rotate(45deg);
+}
+
+.explain h4 {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/*
+ * The number in the card head: for a need the coverage of this tick, for a
+ * claim the overall standing reached. Its colour follows the kind.
+ */
+.explain h4 .cov {
+  font-family: system-ui, sans-serif;
+  font-size: 15px;
+  color: var(--crit);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.explain h4 .cov.build {
+  color: var(--accent-ink);
+}
+
+.explain h4 .cov.store {
+  color: var(--store);
+}
+
+.explain .means {
+  line-height: 1.4;
+  margin-top: 3px;
+}
+
+/*
+ * The fact line: STANDING properties only, with dot separators — what breathes
+ * with the tick has no place here, and a need has none at all. No absolute
+ * amount of a resource ever; sentences are for explanations.
+ */
+.explain .cost {
+  margin-top: 6px;
+  line-height: 1.45;
+}
+
+/* The cause sentence speaks about a window, never about the last tick. */
+.explain .cause {
+  line-height: 1.4;
+}
+
+.explain .rule {
+  border-top: 1px dashed var(--line);
+  margin: 6px 0;
+}
+
+/*
+ * Administration, at the very bottom: pause and abandon of a running project.
+ * They are no answers to a problem, so they stand below the ways out, and
+ * abandon is destructive and stands last. Outlined, the second weight of the
+ * design language after the filled circle of a start — these two hold work
+ * back or destroy it, they never begin anything.
+ */
+.explain .grips {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.explain .grips button {
+  font: inherit;
+  flex: 1;
+  min-height: 44px;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  background: none;
+  color: var(--accent-ink);
+  cursor: pointer;
+}
+
+.explain .grips button.stop {
+  border-color: var(--line);
+  color: var(--crit);
+}
+
+/*
+ * The goal grip belongs to the store's fact line and serves in TICKS: the
+ * frozen amount behind it stays internal, and it does not grow with the
+ * people — the ageing of the setting is the game's content. The food store has
+ * no grip at all; only another pit lifts its goal.
+ */
+.explain .goalgrip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.explain .goalgrip .slider {
+  flex: 1;
+  cursor: pointer;
+}
+
+.ways {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 7px;
+}
+
+.way {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--ground);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 5px 8px 5px 10px;
+}
+
+.way span {
+  font-size: 13px;
+}
+
+.way button {
+  margin-left: auto;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
 }

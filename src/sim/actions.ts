@@ -29,7 +29,18 @@ export type Action =
       readonly amount: number;
       /** Omitted keeps whatever rank the reserve already claims at. */
       readonly rank?: number;
-    };
+    }
+  /**
+   * Where a reserve's claim stands, without touching how much is to be held.
+   *
+   * The two are separate grips because one of the reserves has no amount at
+   * all: what a sheltered good's store holds is what was decided when it was
+   * dug, and only another pit lifts it — but *where* it claims is the player's,
+   * exactly as it is for the good that keeps on its own. Folded into the
+   * amount, ranking the sheltered store meant naming an amount it does not
+   * have, and the only honest figure to name was nought.
+   */
+  | { readonly type: "setStockRank"; readonly stock: string; readonly rank: number };
 
 export interface ActionResult {
   readonly state: GameState;
@@ -58,6 +69,18 @@ export function apply(
             action.rank === undefined
               ? state.stockRanks
               : { ...state.stockRanks, [action.stock]: action.rank },
+        },
+      };
+    }
+    case "setStockRank": {
+      const def = index.stock.get(action.stock);
+      if (def?.keeping === undefined && def?.protectedBy === undefined) {
+        return { state, rejected: `${action.stock} makes no claim of its own` };
+      }
+      return {
+        state: {
+          ...state,
+          stockRanks: { ...state.stockRanks, [action.stock]: action.rank },
         },
       };
     }

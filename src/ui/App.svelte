@@ -4,17 +4,18 @@
   import { LANGUAGES, translate } from "../i18n/t.ts";
   import { derive } from "../sim/index.ts";
   import { currentState, game, index, pause, runFree, runToStop, step } from "./game.ts";
+  import Band from "./tiles/Band.svelte";
   import Events from "./tiles/Events.svelte";
-  import Ladder from "./tiles/Ladder.svelte";
   import People from "./tiles/People.svelte";
   import Projects from "./tiles/Projects.svelte";
   import Range from "./tiles/Range.svelte";
   import Stores from "./tiles/Stores.svelte";
 
   /**
-   * The screen of the first stage (T9): a top bar that spans, the catalogue
-   * left, the ladder in the middle, range over stores beside it, and the frame
-   * column — people over events — at the right. Frame and middle are the same
+   * The screen of the first stage (T9): a top bar that spans, the band below
+   * it spanning as well — the frame's head element and the one overview —,
+   * then the catalogue left, range over stores in the middle, and the frame
+   * column, people over events, at the right. Frame and middle are the same
    * split the concept names; the shell knows the places, the tiles know their
    * contents.
    */
@@ -76,17 +77,16 @@
     </nav>
   </header>
 
+  <section class="tile bandtile">
+    <Band />
+  </section>
+
   <section class="tile cat">
     <h2>{$t("tile.projects")}</h2>
     <div class="tilebody"><Projects /></div>
   </section>
 
-  <section class="tile ladder">
-    <h2>{$t("tile.ladder")}</h2>
-    <div class="tilebody"><Ladder /></div>
-  </section>
-
-  <div class="side">
+  <div class="mid">
     <section class="tile range">
       <h2>{$t("tile.range")}</h2>
       <div class="tilebody"><Range /></div>

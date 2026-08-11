@@ -120,6 +120,19 @@ export interface GameState {
   readonly lastCoverage: Readonly<Record<string, number>>;
 
   /**
+   * What each need asked for last tick, in units of its good — the figure
+   * `lastCoverage` beside it is the share of.
+   *
+   * History for the same reason: what a rank asked for is settled by the tick's
+   * own draw and by the heads it was counted over, and both are gone
+   * afterwards. Whoever wants to say what a rank *cost* — rather than what
+   * share of it arrived — cannot get there from the end state, and worked out
+   * afresh against the next tick's draw it is a different figure every time it
+   * is looked at.
+   */
+  readonly lastNeed: Readonly<Record<string, number>>;
+
+  /**
    * What taking each renewable stock cost last tick, against what the same
    * taking costs on fresh country (E29). One on untouched ground, higher the
    * harder it has grown to find.
@@ -203,10 +216,30 @@ export interface GameState {
   /**
    * What stopped each rank from getting more, as the tick's allocation found
    * it: a capacity, a stock, or nothing.
+   *
+   * Keyed by need tier and, beside them, by reserve claim (`keep:<good>`,
+   * `store:<good>`) — a reserve is a rank like any other and can go unserved
+   * like any other. What lies in a store at the tick's end is in the state and
+   * needs no record; why it did not get further is only knowable here.
    */
   readonly lastBinding: Readonly<
     Record<string, { kind: "capacity" | "stock" | "none"; what?: string }>
   >;
+
+  /**
+   * Which resources held each running project's step back last tick — the
+   * counterpart of the ranks' record above, for the claims that are not ranks
+   * of a good.
+   *
+   * Empty means the full step ran. Every resource of a project flows in
+   * lockstep (E18), so the pace is set by the scarcest of them and it is the
+   * scarcest ones that stand here; two of them, where two were equally scarce.
+   *
+   * History, and it cannot be worked out again: the state carries how far a
+   * project has come, not what it would have reached had everything been
+   * there — and by the time anything asks, the tick's stocks are spent.
+   */
+  readonly lastProjectBinding: Readonly<Record<ProjectId, readonly StockId[]>>;
 
   /**
    * What lay in store when the tick began and when it ended, per good. The

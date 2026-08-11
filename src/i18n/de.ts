@@ -6,7 +6,7 @@ export const de: Readonly<Record<string, string>> = {
   "time.runToStop": "Bis zum Haltepunkt",
   "time.runFree": "Laufen lassen",
   "time.pause": "Pause",
-  "tile.ladder": "Bedarfe und Ansprüche",
+  "tile.overview": "Gesamtübersicht",
   "tile.people": "Menschen",
   "tile.range": "Revier",
   "tile.stores": "Vorräte",
@@ -70,33 +70,86 @@ export const de: Readonly<Record<string, string>> = {
   "project.use.afforestation": "Offenes Land wird wieder Wald.",
   "project.use.fallowing": "Brache lässt den Boden sich erholen.",
 
-  "ladder.freeLabor": "Freie Arbeit",
-  "ladder.noHands": "bekommt gerade keine Hände",
-  "ladder.binds": "klemmt: {what}",
+  // ---- das Band und seine Erklärkarten ----
+  "band.idle": "Arbeit liegt brach",
+  "band.dropBefore": "{name} — vor {before}",
+  "band.dropLast": "{name} — ganz hinten",
+  "list.and": "{head} und {last}",
+
+  "name.claim.wood": "Brennholzvorrat",
+  "name.claim.food": "Nahrungsvorrat",
+  // Am Spieler heißt die Arbeit Arbeit, auch wo das Modell die Menschen als
+  // Kapazität knapp werden sieht.
+  "name.brake.people": "Arbeit",
+
+  // Ein Satz je Bedarf, streng entlang der im Inhalt festgelegten Wirkachse.
+  "need.effect.food_survival": "Bleibt das Essen aus, sterben Menschen.",
+  "need.effect.warmth_fire": "Geht das Feuer aus, überlebt nicht jeder die Kälte.",
+  "need.effect.childcare": "Unbehütete Kinder kommen zu Schaden.",
+  "need.effect.clothing_cover": "Wer schlecht gekleidet ist, schafft draußen weniger.",
+  "need.effect.food_satiety": "Wer satt ist, schafft mehr.",
+  "need.effect.warmth_comfort": "Ein warmes Lager bringt die Kleinen durch.",
+
+  "store.purpose.wood":
+    "Dein Brennholz am Lager trägt das Feuer durch die schlechten Ticks.",
+  "store.purpose.food":
+    "Deine Gruben halten die Nahrung zurück, von der ihr lebt, wenn die Suche nichts hergibt.",
+  "idle.head": "Arbeit, die niemand nutzt, ist am Tickende weg.",
+
+  "card.stand.need": "Deckung {pct} %",
+  "card.stand.project": "gebaut {pct} %",
+  "card.stand.store": "gefüllt {pct} %",
+  "card.stand.idle": "{pct} %",
+  "card.fact.project": "Fertig frühestens: {ticks} Ticks · braucht {needs}",
+  "card.fact.store.wood": "Ziel: hält ~{ticks} Ticks Feuer",
+  "card.fact.store.food": "Ziel: was {pits} Gruben fassen · hält ~{ticks} Ticks Hunger",
+  "card.goal": "Ziel",
+  "card.goalTicks": "{ticks} Ticks",
+  "card.full": "voll",
+  "card.cause.delayed.since":
+    "Verzögert in {count} von {total} Ticks {since} — es fehlte an {what}.",
+  "card.cause.delayed.recent":
+    "Verzögert in {count} der letzten {total} Ticks — es fehlte an {what}.",
+  "card.cause.short.since":
+    "Unterdeckt in {count} von {total} Ticks {since} — es fehlte an {what}.",
+  "card.cause.short.recent":
+    "Unterdeckt in {count} der letzten {total} Ticks — es fehlte an {what}.",
+  "card.since.start": "seit dem Start",
+  "card.since.rank": "seit dem Umstellen",
+  "card.since.amount": "seit der neuen Menge",
+  "card.since.pause": "seit dem Anhalten",
+  "card.way.running": "{project} ist angefangen — vor {need} ziehen?",
+  "card.way.buildable": "{project} anfangen — das Vorhaben dient {need}.",
+  "card.way.behind": "{claim} steht vor {need} — dahinter ziehen?",
+  "card.way.forward": "Vor {before} ziehen — {name} wird dann vor {before} bedient.",
+  "card.way.none": "Das Revier gibt gerade nicht mehr her.",
+  "card.pause": "Pause",
+  "card.resume": "Weiterbauen",
+  "card.abandon": "Abbrechen",
+
+  "ladder.noHands": "bekommt gerade keine Arbeit",
   "ladder.paused": "pausiert",
   "ladder.pause": "Pausieren",
   "ladder.resume": "Weiterbauen",
   "ladder.abandon": "Abbrechen",
   "ladder.rank": "Rang",
   "ladder.amount": "Menge",
-  "ladder.reserve": "Vorrat {stock}",
   "ladder.store": "Vorrat: {from} → {to}",
-  "ladder.supply": "Versorgung {stock} — gemeinsam für alle Ränge des Guts",
-  "ladder.work": "Arbeit {n}",
-  "ladder.yield": "Ertrag {n}",
 
-  "name.tier.food_survival": "Hunger",
+  // Ein Bedarf heißt nach dem Guten, das er sichert; der Mangel gehört der
+  // Krise.
+  "name.tier.food_survival": "Essen",
   "name.tier.warmth_fire": "Feuer",
-  "name.tier.childcare": "Betreuung",
+  "name.tier.childcare": "Kinderhut",
   "name.tier.clothing_cover": "Kleidung",
-  "name.tier.food_satiety": "Sättigung",
+  "name.tier.food_satiety": "Sattessen",
   "name.tier.warmth_comfort": "Behaglichkeit",
 
   "name.stock.food": "Nahrung",
   "name.stock.labor": "Arbeit",
-  "name.stock.wood": "Holz",
+  "name.stock.wood": "Brennholz",
   "name.stock.warmth": "Wärme",
-  "name.stock.plants": "Pflanzen",
+  "name.stock.plants": "Beeren",
   "name.stock.game": "Wild",
   "name.stock.deadwood": "Totholz",
   "name.stock.trees": "Bäume",
