@@ -16,7 +16,7 @@
       :root {
         /* The two braking resources. mmt.css carries no resource colours, so these
            two are new and derived from tokens that exist: --brake-work deepens
-           --store, --brake-wood lightens --p-gather. Both are cool on purpose.
+           --store, --brake-fibre lightens --p-gather. Both are cool on purpose.
            The palette holds exactly one warm identity and the project ochre
            --accent already owns it: any warm step near it is indistinguishable
            from it, so a warm resource colour is not available. Hue alone would
@@ -24,7 +24,7 @@
            lightness together, and every variant backs the colour with a second
            encoding (words, texture, or both). */
         --brake-work: #2c626e;
-        --brake-wood: #7fa26a;
+        --brake-fibre: #7fa26a;
       }
       body.probe {
         padding: 9px 14px 8px;
@@ -155,7 +155,7 @@
         H = 70,
         X0 = 4,
         TW = 18;
-      const COL = { w: "var(--brake-work)", h: "var(--brake-wood)" };
+      const COL = { w: "var(--brake-work)", h: "var(--brake-fibre)" };
       const NAME = { w: "Arbeit", h: "Brennholz" };
 
       const cx = (i) => X0 + i * TW + TW / 2;
