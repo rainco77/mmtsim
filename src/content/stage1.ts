@@ -526,9 +526,9 @@ export const STAGE1: Config = {
       unlockedFromStart: true,
     },
     {
-      // A set net fishes while you sleep. Still worse per hand than gathering —
-      // but it does not touch the wilderness and it does not fail in a poor
-      // draw, and once the land is full that is what decides.
+      // A set net fishes while you sleep: far fewer hands per fish than the
+      // shore, at the price of cord — it does not touch the wilderness, and
+      // once the land is full that is what decides. Weather still reaches it.
       id: "fishing_net",
       branch: "food",
       activity: "fishing",
