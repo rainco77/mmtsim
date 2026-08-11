@@ -1360,3 +1360,79 @@ describe("the tick's record says what the tick did", () => {
     }
   });
 });
+
+describe("what the record says about a claim", () => {
+  const index = indexConfig(STAGE1);
+
+  it("names what held a project's step back, and nothing where the whole step ran", () => {
+    let state = createState(STAGE1, { seed: 5 });
+    state = apply(state, { type: "startProject", id: "mortar", rank: 1 }, index).state;
+    const full = 1 / (index.project.get("mortar")?.minTicks ?? 1);
+    let judged = 0;
+    for (let i = 0; i < 20; i += 1) {
+      const before = state.activeProjects.find((p) => p.id === "mortar")?.progress;
+      state = tick(state, index);
+      const after = state.activeProjects.find((p) => p.id === "mortar")?.progress;
+      const held = state.lastProjectBinding["mortar"];
+      if (before === undefined || after === undefined || held === undefined) break;
+      if (after - before >= full - 1e-9) expect(held).toEqual([]);
+      else expect(held.length).toBeGreaterThan(0);
+      judged += 1;
+    }
+    expect(judged).toBeGreaterThan(0);
+  });
+
+  it("names nothing for a project the player has paused — a hand is not a resource", () => {
+    let state = createState(STAGE1, { seed: 5 });
+    state = apply(state, { type: "startProject", id: "mortar", rank: 1 }, index).state;
+    state = apply(
+      state,
+      { type: "pauseProject", id: "mortar", paused: true },
+      index,
+    ).state;
+    state = tick(state, index);
+    expect(state.lastProjectBinding["mortar"]).toEqual([]);
+  });
+
+  it("forgets a project that is over: the record is written afresh every tick", () => {
+    let state = createState(STAGE1, { seed: 5 });
+    state = apply(state, { type: "startProject", id: "mortar", rank: 1 }, index).state;
+    state = tick(state, index);
+    expect(state.lastProjectBinding["mortar"]).toBeDefined();
+    state = apply(state, { type: "abandonProject", id: "mortar" }, index).state;
+    state = tick(state, index);
+    expect(state.lastProjectBinding["mortar"]).toBeUndefined();
+  });
+
+  it("carries a binding for the reserve claims, not only for the needs", () => {
+    let state = createState(STAGE1, { seed: 5 });
+    state = apply(
+      state,
+      { type: "setStockTarget", stock: "wood", amount: 12 },
+      index,
+    ).state;
+    state = tick(state, index);
+    expect(state.lastBinding["keep:wood"]).toBeDefined();
+  });
+
+  it("records what each rank asked for beside the share of it that arrived", () => {
+    let state = createState(STAGE1, { seed: 5 });
+    for (let i = 0; i < 10; i += 1) {
+      state = tick(state, index);
+      for (const tier of index.config.needTiers) {
+        expect(state.lastNeed[tier.id] ?? 0).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it("lets a sheltered store be ranked without naming an amount it does not have", () => {
+    const state = createState(STAGE1, { seed: 5 });
+    const moved = apply(state, { type: "setStockRank", stock: "food", rank: 250 }, index);
+    expect(moved.rejected).toBeUndefined();
+    expect(moved.state.stockRanks["food"]).toBe(250);
+    // A good that claims nothing of its own cannot be ranked.
+    expect(
+      apply(state, { type: "setStockRank", stock: "warmth", rank: 1 }, index).rejected,
+    ).toBeDefined();
+  });
+});

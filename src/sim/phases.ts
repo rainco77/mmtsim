@@ -367,12 +367,17 @@ export class ProjectPhase implements Phase {
 
     const ordered = [...state.activeProjects].sort((a, b) => a.order - b.order);
     const remaining: ActiveProject[] = [];
+    // What held each project's step back, written afresh every tick: a project
+    // that is over or given up simply stops appearing.
+    const held: Record<ProjectId, readonly StockId[]> = {};
     let next = state;
 
     for (const active of ordered) {
       const def = index.project.get(active.id);
       if (def === undefined) continue;
       if (active.paused) {
+        // Nothing was scarce: the hand on the pause is not a resource.
+        held[active.id] = [];
         remaining.push(active);
         continue;
       }
@@ -386,14 +391,26 @@ export class ProjectPhase implements Phase {
       const laborWanted = def.laborCost * full;
 
       // Every resource in lockstep (E18): the pace is set by the scarcest of
-      // them, and exactly that fraction of each is taken.
-      let pace = 1;
-      if (laborWanted > 0) pace = Math.min(pace, laborLeft / laborWanted);
+      // them, and exactly that fraction of each is taken. What each of them
+      // would have allowed on its own is kept, so the scarcest can be named
+      // afterwards — two names where two were equally scarce.
+      const room: { stock: StockId; share: number }[] = [];
+      if (laborWanted > 0) room.push({ stock: "labor", share: laborLeft / laborWanted });
       for (const [id, total] of Object.entries(def.stockCost)) {
         const wanted = total * full;
-        if (wanted > 0) pace = Math.min(pace, (stocks[id] ?? 0) / wanted);
+        if (wanted > 0) room.push({ stock: id, share: (stocks[id] ?? 0) / wanted });
       }
+      let pace = 1;
+      for (const entry of room) pace = Math.min(pace, entry.share);
       pace = Math.max(0, Math.min(1, pace));
+      // A project that carries itself takes the whole step whatever it got, so
+      // nothing held it back however little there was.
+      held[active.id] =
+        pace >= 1 - 1e-9 || def.alwaysAtFullPace === true
+          ? []
+          : room
+              .filter((entry) => entry.share <= pace + 1e-9)
+              .map((entry) => entry.stock);
 
       // What the pace buys in progress. A project that carries itself is not
       // paced by what it got: it takes what is there — the pace still says how
@@ -451,6 +468,7 @@ export class ProjectPhase implements Phase {
           ? next.sectors
           : { ...next.sectors, [HOUSEHOLDS]: { ...current, stocks: kept } },
       activeProjects: remaining,
+      lastProjectBinding: held,
     };
   }
 }
@@ -519,6 +537,7 @@ export class ProductionPhase implements Phase {
       sectors: { ...state.sectors, [HOUSEHOLDS]: { ...sector, stocks } },
       leadProcess: result.leadProcess,
       lastCoverage: Object.fromEntries(result.tiers.map((t) => [t.tier, t.coverage])),
+      lastNeed: Object.fromEntries(result.tiers.map((t) => [t.tier, t.need])),
       lastEffort: result.effortPerStock,
       lastLabor: {
         available: result.laborAvailable,
@@ -531,7 +550,10 @@ export class ProductionPhase implements Phase {
         labor: run.labor,
         output: run.output,
       })),
-      lastBinding: Object.fromEntries(result.tiers.map((t) => [t.tier, t.binding])),
+      lastBinding: {
+        ...Object.fromEntries(result.tiers.map((t) => [t.tier, t.binding])),
+        ...result.claimBinding,
+      },
       lastStore: Object.fromEntries(
         Object.keys(result.storeBefore).map((id) => [
           id,

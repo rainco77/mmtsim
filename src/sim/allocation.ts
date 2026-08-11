@@ -126,6 +126,18 @@ export interface AllocationResult {
   readonly binding: Binding;
   readonly bindingTier?: NeedTierId;
 
+  /**
+   * What the plan came up short of, per reserve claim — the same answer the
+   * need tiers get, for the ranks that are not need tiers.
+   *
+   * A reserve is a rank like any other and can go unserved like any other, but
+   * it is not rationed in the tier loop below: what a store came to is simply
+   * what lies in it when the tick ends. So the one thing about it that cannot
+   * be read off the state afterwards is *why* it did not get further, and that
+   * is what stands here.
+   */
+  readonly claimBinding: Readonly<Record<string, Binding>>;
+
   /** Which process led per branch, and why (E5). */
   readonly leadProcess: Readonly<Record<BranchId, ProcessId>>;
   readonly orderingReason: Readonly<Record<BranchId, OrderingReason>>;
@@ -875,6 +887,16 @@ export function allocate(input: AllocationInput): AllocationResult {
   let overallBinding: Binding = { kind: "none" };
   let bindingTier: string | undefined;
 
+  // What the plan could not get enough of, kept for the reserve claims. One
+  // figure for all of them, because the plan holds one pot and comes up short
+  // of one input worst of all.
+  const planShort = bindingFromPlan(plan);
+  const claimBinding: Record<string, Binding> = {};
+  for (const demand of demands) {
+    const id = demand.tier.id;
+    if (id.startsWith("keep:") || id.startsWith("store:")) claimBinding[id] = planShort;
+  }
+
   for (const tier of tierList) {
     // What the draw really asked for, against what the plan set aside for an
     // average one. A hard draw therefore shows up as a gap, not as extra work.
@@ -885,8 +907,7 @@ export function allocate(input: AllocationInput): AllocationResult {
     pools.stock[tier.stock] = (pools.stock[tier.stock] ?? 0) - served;
 
     const coverage = need > 0 ? Math.min(1, served / need) : 1;
-    const binding =
-      coverage < 1 - 1e-9 ? bindingFromPlan(plan) : { kind: "none" as const };
+    const binding = coverage < 1 - 1e-9 ? planShort : { kind: "none" as const };
     tiers.push({ tier: tier.id, rank: tier.rank, need, served, coverage, binding });
     if (coverage < 1 - 1e-9 && bindingTier === undefined) {
       overallBinding = binding;
@@ -935,6 +956,7 @@ export function allocate(input: AllocationInput): AllocationResult {
     ),
     binding: overallBinding,
     ...(bindingTier === undefined ? {} : { bindingTier }),
+    claimBinding,
     leadProcess: Object.fromEntries(leadProcess),
     orderingReason: Object.fromEntries(orderingReason),
   };

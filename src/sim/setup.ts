@@ -122,6 +122,7 @@ export function createState(config: Config, options: StartOptions): GameState {
     landOffer: 1,
     // Nothing has happened yet, so nothing was short: the first tick may save.
     lastCoverage: {},
+    lastNeed: {},
     // Fresh country: nothing has been searched for yet.
     seenProjects: {},
     lastEffort: {},
@@ -134,6 +135,7 @@ export function createState(config: Config, options: StartOptions): GameState {
     lastBirthFactors: { coverage: 1, carrying: 1 },
     lastRuns: [],
     lastBinding: {},
+    lastProjectBinding: {},
     lastStore: {},
     completedProjects: {},
     activeProjects: [],
