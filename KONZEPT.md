@@ -3970,8 +3970,10 @@ und sagt nichts darüber, wie weit es geht; „+1" sagt genau das. Knopfform und
 bleiben dieselben.
 
 **Die Haltepunkte des automatischen Laufs.** „Lauf bis zum Haltepunkt" hält bei: einem
-Projekt, das sichtbar wird · einem, das ausführbar wird · einem, das fertig wird (der
-Umzug ist eines davon) · **Krisentoten** · Aufgabe oder Epochenende. „Ausführbar
+Projekt, das ausführbar wird · einem, das fertig wird (der
+Umzug ist eines davon) · **Krisentoten** · Aufgabe oder Epochenende. Ein Projekt, das
+nur **in Sicht** kommt, hält nicht — es bietet keine Handlung an; das Log meldet es
+trotzdem (aus dem Live-Spiel von Paket 2 entschieden). „Ausführbar
 geworden" zählt nur beim echten Übergang — nicht, wenn ein Wiederholbares nach seinem
 eigenen Abschluss bloß in die Liste zurückkehrt. **Krisentote** heißt: Ein als Notlage
 markierter Rang war unterdeckt, und im selben Tick fiel eine Kohorte unter ihre
@@ -4085,7 +4087,8 @@ In Sicht) · verschiebbare Zeilen heißen **Ansprüche** · **Vorrat** (was lieg
 wird; der Mangel gehört der Krise:** Essen (Hunger) · Feuer (Kälte) · Kinderhut ·
 Kleidung · Sattessen · Behaglichkeit. Kohorten am Spieler: **Kinder** und
 **Erwachsene**. Güter: **Beeren** (statt Pflanzen; die Ersterklärung nennt Wurzeln
-und Samen mit), **Brennholz** am Lager gegen **Totholz** im Revier.
+und Samen mit), **Brennholz** am Lager gegen **Totholz** im Revier, **Felle** (statt
+Häute — das Wort des Jägers, nicht des Gerbers).
 
 **Das eine Erklärmuster: Antippen öffnet die Erklärkarte am Element.** Kein Hover,
 keine Fragezeichen-Knöpfe; antippbare Zahlen sehen antippbar aus. Die Karte trägt die
@@ -4098,7 +4101,9 @@ mühsam geworden — deshalb kommen kaum Kinder zur Welt", die Rechnung liegt hi
 Tipp.
 
 **Das Weiterziehen wirkt sofort.** Es konkurriert nie in der Leiter um Arbeit und kann
-nie liegen bleiben: Drücken, ein Tick, ihr seid da. Es darf Arbeit kosten — aber die
+nie liegen bleiben: Drücken, ein Tick, ihr seid da. **Im Band erscheint es darum nie**
+— kein Segment, nichts zu verschieben —, und sein Start **spielt den Tick sofort ab**,
+sodass es im selben Zug fertig ist (aus dem Live-Spiel von Paket 2 entschieden). Es darf Arbeit kosten — aber die
 des Vollzugs-Ticks mit **absolutem Vorrang vor jedem Bedarf** (die Gemeinschaft geht,
 statt zu arbeiten; Gehen wird nie aus Arbeitsmangel verschoben). Der besichtigte
 Bericht wirkt im selben Zug; eine Zusicherungs-Zeile im Dialog braucht es damit nicht
