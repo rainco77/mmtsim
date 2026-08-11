@@ -4253,106 +4253,97 @@ ersten Mal erscheint. Auf der Karte bleibt die mechanische Zeile („Ziel = was 
 fassen"), deren Antippen die Rechnung zeigt; sie gehört zur Karte der Nahrung und zu
 keiner anderen.
 
-**Die Vorhaben-Karte beginnt mit dem Nutzen-Satz des Projekts** — demselben
-handgeschriebenen Übersetzungsschlüssel, den der Katalog zeigt; einen eigenen
-Zustands-Satz gibt es nicht (je Projekt existiert genau ein handgeschriebener Satz,
-alles Übrige der Karte ist generisch). **Jede Karten-Kurve liest sich gleich:** je
-Tick der Anteil dessen, was ankam, an dem, was der Posten in diesem Tick wollte —
-gestrichelte Linie = voll. Bei Bedarfen ist das die Deckung, bei Vorhaben der
-Zufluss-Anteil (eine Zahl, weil alle Ressourcen im Gleichschritt fließen); gerechnet
-wird er aus dem Verlauf der Oberfläche, Fortschritts-Differenz je Tick durch den
-vollen Tick-Schritt. **Statt einer Kostenzeile trägt die laufende Karte eine Faktenzeile:** „Fertig
-frühestens: 3 Ticks · je Tick bis zu 6 % der Arbeit, samt Fasern-Beschaffung."
-Die Dauer ist Rest ÷ voller Tick-Schritt — exakt gerechnet, darum **ohne Tilde**, und
-ein Frühestens, nie ein Höchstens; unzuverlässige Restdauern werden nicht angezeigt.
-Die Tick-Kosten rechnen **alle Ressourcen in einem Maß**: Güter gehen über ihre
-Beschaffungsarbeit ein, wie es die Breiten-Rechnung des Bands ohnehin tut, und der
-Nebensatz nennt sie beim Namen, ohne ihnen eine eigene Zahl zu geben — welches Gut
-wann wirklich klemmte, zeigt der Bremsteppich der Kurve.
-**Auf Spieler-Karten erscheint keine absolute Ressourcenzahl** — Kosten sprechen in
-Anteilen der Tick-Arbeit, Zeit in Ticks; Status-Zeilen ohne
-Aussage („liegt bereit" als Vorratsvergleich) gibt es nicht. Damit die Anzeige das
-aufzeichnungstreu sagen kann, hält der Kern **je Projekt und Tick fest, welche
-Ressource den Schritt begrenzt hat** — das Gegenstück zum Bremsen-Feld der Ränge.
-Gesamtkosten und Mindestdauer gehören dem Katalog und dem Start-Dialog.
-**Kennzahlen stehen in Faktenzeilen** (knapp, mit Punkt-Trennern, wie die
-Katalog-Zeile), **Sätze sind für Erklärungen reserviert** — einen eigenen Kosten-Satz
-gibt es auf der Vorhaben-Karte nicht mehr.
+**Die Kartengrammatik — eine Regel für jede Erklärkarte im Band** (Bedarf,
+Vorhaben, Vorrat; aus der Satz-für-Satz-Prüfung entschieden). Sieben Plätze in
+fester Reihenfolge — „Was → Warum → Wie lief es → Woran lag's → Was tun" —, und ein
+Platz erscheint nur, wenn er etwas zu sagen hat. Kennzahlen stehen in Faktenzeilen,
+Sätze sind für Erklärungen reserviert; Sätze sprechen den Spieler an, und **keine
+absolute Ressourcenzahl erscheint je auf einer Spieler-Karte**.
 
-**Die Brems-Anzeige der Vorhaben-Kurve (per Skizzen-Probe entschieden — der
-„Bremsteppich"):** Die **Fehlfläche** zwischen Kurve und Voll-Linie wird je Tick in
-der Farbe der Ressource gefüllt, die den Schritt begrenzt hat — Farbe erscheint nur,
-wo etwas fehlte, und ist so hoch wie das Fehlende; im Gleichstand teilen sich zwei
-Farben den Tick. Die Farben sind **kalt** (die eine warme Identität der Palette
-gehört dem Vorhaben-Ocker) und **karten-lokal**: Jede Karte trägt ihre eigene kleine
-Legende, denn je Projekt bremsen andere Ressourcen — einen globalen Farbkanon merkt
-sich niemand. Bewusst ohne Sonderregeln: keine Schwelle für kleine Fehlmengen, keine
-eigene Marke für den Null-Tick.
+1. **Titel + Stand**: „Sattessen · Deckung 62 %" · „Fischernetz · gebaut 50 %" ·
+   „Brennholzvorrat · gefüllt 100 %".
+2. **Kopfsatz** — der eine handgeschriebene Satz je Ding, alles Übrige der Karte ist
+   generisch: beim Projekt der Nutzen-Satz des Katalogs (derselbe Schlüssel, kein
+   eigener Zustands-Satz), beim Bedarf der Wirkungs-Satz **streng entlang der im
+   Inhalt festgelegten Wirkachse** (Überleben, Arbeitskraft oder Geburten — eine
+   Achse je Rang, nie frei erfunden; Sattessen trägt die Arbeitskraft: „Wer satt
+   ist, schafft mehr.", Behaglichkeit die Geburten: „Wo es behaglich ist, kommen
+   Kinder zur Welt."), beim Vorrat der Zweck-Satz („Dein Brennholz am Lager trägt
+   das Feuer durch die schlechten Ticks."). Wer die Sätze schreibt, schlägt die
+   Mechanik dahinter im Inhalt nach.
+3. **Faktenzeile** — knapp, mit Punkt-Trennern, und **nur stehende Eigenschaften**;
+   was mit dem Tick atmet, hat hier nichts verloren. Bedarf: **keine Faktenzeile**
+   (ein Bedarf hat keine stehende Kosten-Eigenschaft). Vorhaben: „Fertig frühestens:
+   6 Ticks · braucht Arbeit und Fasern" — die Dauer ist Rest ÷ voller Tick-Schritt,
+   exakt gerechnet, darum ohne Tilde, ein Frühestens und nie ein Höchstens;
+   unzuverlässige Restdauern werden nicht angezeigt, und die Ressourcen-Namen sind
+   eine feste Eigenschaft, ihre Anteile nicht. Vorrat: die Ziel-Zeile **samt
+   Regler**: „Ziel: hält ~6 Ticks Feuer" — der Regler bedient in Ticks, die
+   eingefrorene Menge bleibt intern (kein Mitwachsen; die sinkende Tick-Zahl bei
+   wachsendem Volk ist das festgelegte Altern der Vorgabe); beim Nahrungsvorrat ohne
+   Mengen-Griff: „Ziel: was 3 Gruben fassen · hält ~4 Ticks Hunger" (die Gruben-Zahl
+   zählt gebaute Dinge, keine Ressource). Gesamtkosten und Mindestdauer gehören dem
+   Katalog und dem Start-Dialog.
+4. **Stufenkurve mit Bremsteppich** — je Tick ein waagerechtes Stück auf seinem
+   Wert, senkrechte Sprünge dazwischen: Eine Linie zwischen Tick-Punkten behauptete
+   einen Verlauf innerhalb des Ticks, den es nicht gibt. Die Lesart ist überall
+   dieselbe: **je Tick der Anteil dessen, was ankam, an dem, was der Posten
+   wollte** — gestrichelte Linie = voll. Beim Bedarf ist das die Deckung, beim
+   Vorhaben der Zufluss-Anteil (eine Zahl, weil alle Ressourcen im Gleichschritt
+   fließen; Fortschritts-Differenz je Tick ÷ voller Schritt), beim Vorrat die
+   Deckung des Auffüll-Anspruchs (er ist ein Rang, sein Wunsch heißt „am Tickende
+   auf dem Ziel stehen"; ein voller Vorrat wünscht nichts und zählt voll). Der
+   **Bremsteppich**: Die Fehlfläche zwischen Kurve und Voll-Linie wird je Tick als
+   **volle Spalte** in der Farbe dessen gefüllt, was den Tick begrenzt hat
+   (Vorhaben: die knappste Ressource — der Kern hält sie je Projekt und Tick fest,
+   das Gegenstück zum Bremsen-Feld der Ränge; Bedarf und Vorrat: der größte
+   Fehl-Input des Rangs, Bestand oder Kapazität, namentlich aus der
+   Rang-Aufzeichnung); im Gleichstand teilen sich zwei Farben die Spalte. Die Farben
+   sind kalt (die eine warme Identität gehört dem Vorhaben-Ocker) und
+   **karten-lokal** mit eigener kleiner Legende — einen globalen Farbkanon merkt
+   sich niemand. Keine Schwelle für kleine Fehlmengen, keine Marke für den
+   Null-Tick.
+5. **Ursachen-Satz** — nur, wenn im Fenster etwas fehlte; ohne Schwelle (die Zahlen
+   wiegen selbst); genannt werden **alle** fehlenden Ressourcen bzw. Quellen,
+   namentlich, nach Häufigkeit. Vorhaben und Vorrat zählen über das
+   **Handlungs-Fenster**: „**Verzögert** in 4 von 9 Ticks seit dem Start — es fehlte
+   an Fasern und Arbeit." · „**Unterdeckt** in 6 von 14 Ticks seit dem Umstellen —
+   es fehlte an Arbeit." Es beginnt mit der letzten Handlung des Spielers am Ding
+   (Start, Umstellen, Menge, Pause) und wird von ihr zurückgesetzt — der Satz
+   bewertet nie eine überholte Einstellung; die Oberfläche führt dafür je Anspruch
+   den Tick der letzten eigenen Handlung (reine Oberflächen-Buchführung, kein
+   Kern-Feld). Der Bedarf zählt über das **Kurvenfenster** („Unterdeckt in 4 der
+   letzten 20 Ticks — es fehlte an Fisch und Beeren."), denn er hat keine eigene
+   Handlung. Kein Alarm-Präfix — „Nahrung wird knapp" bleibt der ungefragten
+   Engpass-Meldung der ersten Male vorbehalten. **Die Brücke zu den Quellen ist das
+   Wort**: „Fisch" heißt im Revier genauso; mehr Brücke gibt es nicht, denn die
+   schwebende Karte verdeckt die Mitte und kann dort nichts hervorheben.
+6. **Auswege** — nach den vier Quellen, höchstens zwei, jeder mit Griff. **Der Griff
+   nennt sein Ziel, die Folge ist die Reihenfolge, nie die Dauer**: „Vor Kleidung
+   ziehen — das Netz wird dann vor der Kleidung bedient." — deterministisch wahr,
+   benennt Gewinn und Preis in einem und verspricht nichts übers Wetter. Das
+   Vorziehen wirkt auf alle Ressourcen des Anspruchs, weil dessen Güter-Ansprüche
+   mit seinem Rang in der Zuteilung stehen. Der Weiterziehen-Ausweg trägt seine
+   Vorschau-Aussage („Im nächsten Revier ist die Suche leichter" — aus der
+   freigelegten Rechenfunktion, keine Prognose), und sein Griff **öffnet den
+   Weiterziehen-Dialog**, zieht nie direkt: Der Griff zum Dialog ist die direkte
+   Ausführbarkeit des Auswegs.
+7. **Verwaltung, ganz unten** — Pause und Abbrechen beim Vorhaben: keine Antworten
+   auf ein Problem, sondern Verwaltung; Abbrechen ist destruktiv und steht zuletzt.
 
-**Der Ursachen-Satz der Vorhaben-Karte spricht über ein Fenster, nie über den letzten
-Tick:** „Gebremst in 4 von 9 Ticks seit dem Start — es fehlte an Fasern und
-Arbeit." Das Fenster beginnt mit der letzten Handlung des Spielers an diesem Vorhaben
-(Start, Umstellen, Pause aufgehoben) — eine Handlung setzt es zurück, der Satz
-bewertet also nie eine überholte Einstellung. Er erscheint, sobald im Fenster
-gebremst wurde, **ohne Schwelle** — die Zahlen selbst sagen, ob es wiegt. Genannt
-werden **alle** fehlenden Ressourcen, nach Häufigkeit geordnet; die Verteilung zeigt
-der Bremsteppich. Darunter die Auswege nach den vier Regeln, und **ein Ausweg-Griff
-nennt sein Ziel** („Vor Kleidung ziehen"). Das Vorziehen wirkt auf alle Ressourcen
-des Vorhabens, weil dessen Güter-Ansprüche mit seinem Rang in der Zuteilung stehen.
-Die Oberfläche führt dafür je Vorhaben den Tick der letzten eigenen Handlung —
-reine Oberflächen-Buchführung, kein Kern-Feld. **Die Folge eines Ausweg-Griffs ist
-die Reihenfolge, nie die Dauer:** „Vor Kleidung ziehen — das Netz wird dann vor der
-Kleidung bedient." Das ist deterministisch wahr, benennt Gewinn und Preis in einem
-und verspricht nichts übers Wetter; ob es schneller fertig wird, zeigen danach
-Bremsteppich und Faktenzeile. Generische Wendung mit Namen-Slots.
-
-**Jede Bedarfskarte beginnt mit ihrem Wirkungs-Satz** — je Bedarf handgeschrieben,
-das Gegenstück zum Nutzen-Satz der Projekte: Er sagt, worauf Unterdeckung real wirkt,
-und wird **streng entlang der im Inhalt festgelegten Wirkachse** geschrieben
-(Überleben, Arbeitskraft oder Geburten — eine Achse je Rang), nie frei erfunden.
-Sattessen trägt die Arbeitskraft: „Wer satt ist, schafft mehr." Behaglichkeit trägt
-die Geburten: „Wo es behaglich ist, kommen Kinder zur Welt." Wer die Sätze schreibt,
-schlägt die Achse im Inhalt nach.
-
-**Die Bedarfskarte baut sich wie die Vorhaben-Karte** (aus der Satz-für-Satz-Prüfung
-entschieden): der Wirkungs-Satz · Name mit Deckung · die Kurve der Deckung je Tick mit
-gestrichelter Voll-Linie und **Bremsteppich** aus der Rang-Aufzeichnung (der Kern hält
-je Rang und Tick den größten Fehl-Input namentlich fest — Bestand oder Kapazität) ·
-eine **Faktenzeile statt des früheren Breiten-Satzes**: „Voll zu decken: 16 % der
-Arbeit dieses Ticks · angekommen: 10" (bei voller Deckung: „angekommen: alle") · der
-Ursachen-Satz · die Auswege. Die Faktenzeile erklärt die Feldbreite mit beiden Zahlen
-auf derselben Basis, braucht **kein Bedarfs-Verb und keine Zeitform** — damit entfällt
-die frühere Satzform („Alle satt zu bekommen kostet …") samt der Wendungsliste je
-Bedarf und dem zahllosen Voll-Schluss. Sätze sprechen weiterhin den Spieler an und
-vermeiden absolute Zahlen; das gilt unverändert.
-
-**Der Ursachen-Satz der Bedarfskarte zählt über das Kurvenfenster:** „Unterdeckt in 4
-der letzten 20 Ticks — es fehlte an Fisch und Beeren." Bedarfe haben keine eigene
-Spieler-Handlung, die ein Fenster zurücksetzen könnte (ziehbar sind nur Ansprüche),
-also gilt das Fenster der Kurve; wo die Fehl-Ticks liegen, zeigt der Bremsteppich.
-Die Quellen stehen namentlich, nach Häufigkeit, aus der Rang-Aufzeichnung; keine
-Schwelle. Das Alarm-Präfix („Nahrung wird knapp") gehört nicht auf die Karte —
-es bleibt der ungefragten Engpass-Meldung der ersten Male vorbehalten.
-
-**Die Auswege der Bedarfskarte folgen dem Vorhaben-Muster:** Der Vorhaben-Ausweg
-nennt sein Ziel und verspricht die Reihenfolge („Das Netz ist angefangen — vor
-Sattessen ziehen?" · Folge: „… wird dann vor Sattessen bedient"). Der
-Weiterziehen-Ausweg trägt seine Vorschau-Aussage („Im nächsten Revier ist die Suche
-leichter" — aus der freigelegten Rechenfunktion, keine Prognose), und sein Griff
-**öffnet den Weiterziehen-Dialog**, zieht nie direkt: Die Handlung verlangt ihre
-festgelegte Abwägung, und der Griff zum Dialog ist die direkte Ausführbarkeit des
-Auswegs.
-
-**Die Vorratskarten bauen sich nach demselben Prinzip** wie Bedarfs- und
-Vorhaben-Karte: handgeschriebener Kopfsatz je Vorrat (der Nahrungs-Satz existiert,
-das Brennholz bekommt seinen) · „gefüllt N %" · dieselbe Kurve mit Bremsteppich
-(Vorratsvorgaben stehen als eigene Ränge in der Zuteilung, die Rang-Aufzeichnung
-trägt sie) · Faktenzeile „Voll zu halten: 1 % der Arbeit dieses Ticks · angekommen:
-alle" · die mechanische Ziel-Zeile samt Regler bleibt wie festgelegt („Ziel 14 ·
-hält ~6 Ticks Feuer" — die Zielmenge ist die eingefrorene Spieler-Einstellung mit
-Ticks-Anker, keine Kostenzahl; beim Nahrungsvorrat ohne Mengen-Griff) ·
-Ursachen-Satz im Handlungs-Fenster (Vorräte haben eigene Handlungen: Menge, Rang) ·
-Auswege nach den vier Regeln.
+Drei Zuordnungen außerhalb der Karte: **Die Verfahren wohnen in der Revier-Kachel**
+(je Bestand aufklappbar, mit Arbeit und Ertrag, wie im Grundriss festgelegt) — und
+**dort sitzen auch die Verbesserungs-Griffe** (die Sichel an der Sammeln-Zeile, ein
+ungebautes Verfahren als stumme Zeile mit Griff zum Katalog); die Karte wiederholt
+sie nicht, und ein Vorhaben, das dort angeboten wird, bleibt trotzdem Quelle der
+Auswege. **Die Vorrats-Kachel zeigt den Bestand** (Füllstand, Kapazität, Verfall,
+Reichweite — der Kern kennt je Gut nur Stand vor und nach dem Tick, keinen
+getrennten Zu- und Abfluss), **die Anspruchs-Karte die Bedienung**; vom Bestand
+trägt sie nur „gefüllt N %" und die Ziel-Zeile — die festgelegte Doppelung „zwei
+Fenster auf eine Einstellung". **Stehende Funktionserklärungen gehören der
+Ersterklärung**, nicht der Karte: das Breiten-Prinzip des Bands, die
+Haltbar-Eigenschaft der Kleidung („nur der Verschleiß kostet"), die
+Gruben-fassen-das-Ziel-Erklärung des Nahrungsvorrats.
 
 **Kein Speichern und Laden in der ersten Stufe.** Statt dessen kennt die Oberfläche
 **den ganzen Verlauf des Laufs**, nicht nur den letzten Tick: Für Testzwecke lässt sich
