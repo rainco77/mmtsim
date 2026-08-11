@@ -4206,7 +4206,10 @@ Feld. Eine dauerhafte Erklärzeile im Bandkopf gibt es nicht — die Konvention 
 **Die Lippe zeigt nach oben**, in den freien Raum unter der Kopfleiste: Die Unterkante
 des Bands bleibt glatt als Leselinie für Namen und Führungslinien, und die Namenszeile
 rückt nicht ab. Beim Ziehen trägt das gefasste Segment eine **Schwebe-Fahne** mit
-Namen und Einordnung („Fischernetz — vor Kleidung").
+Namen und Einordnung („Fischernetz — vor Kleidung"). **Die Führungslinien
+kollidierender Namen brauchen die Höhe des Spezifikationsblatts (~13 px)** — die
+einzeilige Sparfassung mit ~4 px war im Live-Spiel kaum zu sehen (beobachtet und
+entschieden); die Namenszeile wird dafür entsprechend höher.
 
 **Die Füllung eines Anspruchs-Segments ist sein Gesamtstand**, nicht die Deckung eines
 Ticks: beim Vorhaben der Baufortschritt, beim Vorratsziel der Füllstand gemessen am
@@ -4380,7 +4383,18 @@ Rezept-Koeffizienten durch den Wurf-Faktor des Verfahrens.
 
 **Der Ursachen-Satz spricht im Nominativ:** „— es fehlte Arbeit." · „— es fehlten
 Felle und Arbeit." (zwei Wendungen nach Anzahl; keine Beugungsformen je Gut — jede
-spätere Epoche kann Güter hinzufügen, ohne an Grammatik zu denken). **Greift kein
+spätere Epoche kann Güter hinzufügen, ohne an Grammatik zu denken). **An ihm hängt
+der Folgen-Satz** — Ursache und Preis in einem Block, beide über dasselbe Fenster:
+„Unterdeckt in 4 der letzten 20 Ticks — es fehlten Felle und Arbeit. **Daran starben
+2 Kinder und ein Erwachsener.**" Die Wendung folgt der Wirkachse: Überleben →
+„Daran starben …", Geburten → „Daran wurden … weniger geboren", Arbeitskraft → „Das
+kostete 7 % eurer Arbeit." Genannt wird die Kohorte, auf die die Achse laut Inhalt
+wirkt; Menschen ganzzahlig über das Fenster-Buch; die Zeile erscheint nur, wenn das
+Fenster Verluste trägt. **Die wirklichen Verluste des Fensters werden additiv auf
+die unterdeckten Ränge aufgeteilt** — nach dem Beitrag jedes Rangs am Gesamtfaktor
+(die exakte, ordnungsunabhängige Zerlegung des Produkts): Wer die Karten summiert,
+landet genau beim echten Gesamtverlust. Das Aufteilungsverfahren ist eine bewusste
+Konvention. **Greift kein
 Ausweg, richtet sich die Leerzeile nach der Bremsen-Art des Fensters:** Kamen die
 Bremsen aus dem Revier (Bestand oder Kapazität): „Das Revier gibt gerade nicht mehr
 her." — war es die Arbeit: „Was davor steht, nimmt alles." Wohl wissend, dass knappe
