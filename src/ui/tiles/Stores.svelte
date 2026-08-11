@@ -99,7 +99,7 @@
       <span class="stat">{one(row.fill)} / {one(row.target)}</span>
       {#if moved !== undefined && Math.abs(moved.before - moved.after) > 0.05}
         <span class="moved">
-          {$t("ladder.store", { from: one(moved.before), to: one(moved.after) })}
+          {$t("store.moved", { from: one(moved.before), to: one(moved.after) })}
         </span>
       {/if}
     </div>
@@ -118,7 +118,7 @@
       <span class="grips">
         {#if row.adjustable}
           <label>
-            {$t("ladder.amount")}
+            {$t("store.amount")}
             <input
               type="number"
               value={row.target}
@@ -130,7 +130,7 @@
           <span class="hint">{$t("stores.dugTarget")}</span>
         {/if}
         <label>
-          {$t("ladder.rank")}
+          {$t("store.rank")}
           <input
             type="number"
             value={row.rank}

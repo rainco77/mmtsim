@@ -17,9 +17,11 @@ import {
   storeStanding,
   ticksLeft,
   unitCost,
+  WEATHER,
   type BandField,
   type CurvePoint,
 } from "../../src/ui/band.ts";
+import { translate } from "../../src/i18n/t.ts";
 
 /**
  * Tests of the band, kept apart from the tests of the core: the core knows
@@ -50,13 +52,42 @@ const fieldsOf = (history: readonly GameState[]): readonly BandField[] =>
   bandFields(history, index, rulesOf(history[history.length - 1] as GameState));
 
 describe("the band's fields (T9)", () => {
-  it("stands in rank order, left first, and the idle field stands last", () => {
+  it("stands in rank order, left first", () => {
     const fields = fieldsOf(played(12));
     const ranked = fields.filter((one) => one.kind !== "idle");
     for (let i = 1; i < ranked.length; i += 1) {
       expect(ranked[i]?.rank ?? 0).toBeGreaterThanOrEqual(ranked[i - 1]?.rank ?? 0);
     }
-    expect(fields[fields.length - 1]?.kind).toBe("idle");
+  });
+
+  it("shows the idle field only where labour really lay idle, and last", () => {
+    // The one field that is never held open: it has neither a sign nor a grip
+    // to keep room for, so where nothing lay idle it is not there at all.
+    for (const ticks of [6, 12, 20, 40]) {
+      const history = played(ticks);
+      const fields = fieldsOf(history);
+      const idle = fields.find((one) => one.kind === "idle");
+      const unused = history[history.length - 1]?.lastLabor.unused ?? 0;
+      expect(idle !== undefined).toBe(unused > 1e-9);
+      if (idle !== undefined) expect(fields[fields.length - 1]?.kind).toBe("idle");
+    }
+  });
+
+  it("keeps the undertaking that is over in one stroke out of the band", () => {
+    // Walking is done in the tick it is begun, so it is no claim to be weighed
+    // against the eating and never comes into the hand.
+    let state = createState(STAGE1, { seed: 42 });
+    const history = [state];
+    for (let i = 0; i < 6; i += 1) {
+      state = tick(state, index);
+      history.push(state);
+    }
+    state = apply(state, { type: "startProject", id: "range_change" }, index).state;
+    history[history.length - 1] = state;
+    expect(state.activeProjects.some((p) => p.id === "range_change")).toBe(true);
+    expect(fieldsOf(history).some((one) => one.key === "project:range_change")).toBe(
+      false,
+    );
   });
 
   it("carries every need of the content, whether or not it went short", () => {
@@ -186,14 +217,61 @@ describe("what a card's curve covers (T9)", () => {
     }
   });
 
+  it("reports a shortage of hands as the labour, and the weather as the weather", () => {
+    // The model books a shortage of hands as the capacity "people" running
+    // out. At the player that is the labour and nothing else: that more heads
+    // would help cannot be told from a better ranking, so it is not claimed —
+    // and the empty answer of a card turns on the same distinction.
+    const history = played(6);
+    const last = history[history.length - 1] as GameState;
+    const field = fieldsOf(history).find((one) => one.id === "food_survival");
+    const withRecord = (brake: {
+      kind: "capacity" | "stock" | "weather";
+      what?: string;
+    }): CurvePoint | undefined => {
+      const state: GameState = {
+        ...last,
+        lastCoverage: { ...last.lastCoverage, food_survival: 0.5 },
+        lastBinding: { food_survival: brake },
+      };
+      return curveOf([...history.slice(0, -1), state], index, field as BandField, 0).at(
+        -1,
+      );
+    };
+
+    expect(withRecord({ kind: "capacity", what: "people" })?.brake).toEqual([
+      { what: "people", kind: "labour" },
+    ]);
+    expect(withRecord({ kind: "capacity", what: "water" })?.brake).toEqual([
+      { what: "water", kind: "capacity" },
+    ]);
+    expect(withRecord({ kind: "stock", what: "fish" })?.brake).toEqual([
+      { what: "fish", kind: "stock" },
+    ]);
+    expect(withRecord({ kind: "weather" })?.brake).toEqual([
+      { what: WEATHER, kind: "weather" },
+    ]);
+
+    // And what the surface calls them: labour is labour in both languages.
+    for (const language of ["de", "en"] as const) {
+      expect(translate(language, "name.brake.people")).not.toBe("name.brake.people");
+      expect(translate(language, "name.brake.people").toLowerCase()).toBe(
+        language === "de" ? "arbeit" : "labour",
+      );
+      expect(translate(language, "name.brake.weather")).not.toBe("name.brake.weather");
+    }
+  });
+
   it("names the resources of a window by how often they braked, commonest first", () => {
+    const work = { what: "labor", kind: "labour" } as const;
+    const fibre = { what: "fibre", kind: "stock" } as const;
     const points: CurvePoint[] = [
-      { tick: 1, value: 0.5, brake: ["labor"] },
+      { tick: 1, value: 0.5, brake: [work] },
       { tick: 2, value: 1, brake: [] },
-      { tick: 3, value: 0.2, brake: ["fibre", "labor"] },
-      { tick: 4, value: 0.9, brake: ["labor"] },
+      { tick: 3, value: 0.2, brake: [fibre, work] },
+      { tick: 4, value: 0.9, brake: [work] },
     ];
-    expect(brakesByFrequency(points)).toEqual(["labor", "fibre"]);
+    expect(brakesByFrequency(points)).toEqual([work, fibre]);
     expect(shortTicks(points)).toBe(3);
   });
 });

@@ -5,6 +5,7 @@ import type {
   CohortId,
   ProcessId,
   ProjectId,
+  RandomStreamId,
   SectorId,
   StockId,
 } from "./ids.ts";
@@ -182,6 +183,17 @@ export interface GameState {
   readonly lastSurvival: Readonly<Record<CohortId, number>>;
 
   /**
+   * The draws the tick really made, one per stream (E24, E25).
+   *
+   * History like `lastBorn` above, and it cannot be had any other way: a draw
+   * is spent the moment it is taken, and peeking the stream afterwards answers
+   * about the **next** tick, not this one. Whatever shows the weather or prices
+   * a chain of making reads this, so that the display and the reckoning can
+   * never tell two stories about the same tick.
+   */
+  readonly lastShocks: Readonly<Record<RandomStreamId, number>>;
+
+  /**
    * How the tick's labour actually split (E16, E21): performed, into
    * production, into projects, left unused. Recorded from the allocation that
    * ran, for the same reason as `lastBorn` beside it.
@@ -215,7 +227,7 @@ export interface GameState {
 
   /**
    * What stopped each rank from getting more, as the tick's allocation found
-   * it: a capacity, a stock, or nothing.
+   * it: a capacity, a stock, the weather, or nothing.
    *
    * Keyed by need tier and, beside them, by reserve claim (`keep:<good>`,
    * `store:<good>`) — a reserve is a rank like any other and can go unserved
@@ -223,7 +235,7 @@ export interface GameState {
    * needs no record; why it did not get further is only knowable here.
    */
   readonly lastBinding: Readonly<
-    Record<string, { kind: "capacity" | "stock" | "none"; what?: string }>
+    Record<string, { kind: "capacity" | "stock" | "weather" | "none"; what?: string }>
   >;
 
   /**

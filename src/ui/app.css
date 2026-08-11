@@ -40,6 +40,12 @@
    */
   --brake-work: #2c626e;
   --brake-fibre: #7fa26a;
+  /*
+   * The weather: the residual brake, where a rank went short although nothing
+   * ran out. Cool like the rest, and pale — it is the one brake that names no
+   * source and offers no lever.
+   */
+  --brake-weather: #8fa3b5;
   --brake-slate: #5b6b8c;
   --brake-teal: #3f7f6f;
   --brake-moss: #7a8b5a;
@@ -69,6 +75,14 @@
   --band-pad: 14px;
   --band-top: 13px;
   --name-h: 16px;
+  /*
+   * The hook a leader line makes where two names collide: down out of the
+   * field, across, down into the name. The template's figure — the one-line
+   * sparing version of about four pixels was all but invisible in play, so the
+   * name row is given the room the sheet asks for and grows by it.
+   */
+  --leader-h: 13px;
+  --leader-drop: 6px;
   --card-gap: 8px;
 }
 
@@ -667,8 +681,13 @@ b {
  * field grows too narrow for the words they fall away and the hatching alone
  * carries the meaning — it is christened once, and tapping explains it at any
  * time, which is why it answers to a finger.
+ *
+ * **The one exception to the minimum width.** It has neither a sign nor a grip
+ * to keep room for, so it is never held open artificially; and where nothing
+ * lay idle it is not there at all, which the band itself draws (see band.ts).
  */
 .fld.idle {
+  min-width: 0;
   background:
     repeating-linear-gradient(45deg, transparent 0 5px, rgba(103, 112, 106, 0.3) 5px 7px),
     var(--sunk);
@@ -696,20 +715,20 @@ b {
  */
 .names {
   position: relative;
-  height: calc(var(--name-h) + 4px);
+  height: calc(var(--name-h) + var(--leader-h));
   padding: 0 var(--band-pad);
 }
 
 .names > .leader {
   position: absolute;
   left: 0;
-  top: 0;
+  top: 3px;
   overflow: visible;
 }
 
 .leadname {
   position: absolute;
-  top: 4px;
+  top: 14px;
   transform: translateX(-50%);
   white-space: nowrap;
   font-size: 12px;
@@ -734,21 +753,29 @@ b {
   background: rgba(176, 114, 42, 0.12);
 }
 
-.slot > .dragging {
+/*
+ * What is in the hand: it hangs over the band and follows the finger sideways
+ * to the pixel, at the height it was grasped at. It never rises — the band's
+ * lower edge is the line the names are read along, and a segment lifting off
+ * it reads as a different element altogether. Only the gap behind it snaps.
+ */
+.carry {
   position: absolute;
-  left: -5px;
-  right: -5px;
-  bottom: 22px;
-  overflow: visible;
-  box-shadow: 0 12px 24px rgba(38, 42, 40, 0.3);
   z-index: 4;
+  pointer-events: none;
 }
 
-.slot > .dragging > .fill {
+.carry > .dragging {
+  width: 100%;
+  overflow: visible;
+  box-shadow: 0 12px 24px rgba(38, 42, 40, 0.3);
+}
+
+.carry > .dragging > .fill {
   border-radius: 3px 0 0 3px;
 }
 
-.slot > .dragging > .lip {
+.carry > .dragging > .lip {
   border-radius: 3px 3px 0 0;
 }
 
@@ -796,7 +823,7 @@ b {
  * should compete with it. Hidden, not removed — the row keeps its height, so
  * the band does not jump under the finger.
  */
-.bandrow.dragmode + .names {
+.band.dragmode .names {
   visibility: hidden;
 }
 
@@ -882,6 +909,18 @@ b {
 /* The cause sentence speaks about a window, never about the last tick. */
 .explain .cause {
   line-height: 1.4;
+}
+
+/*
+ * The price of the window, in the same block as its cause. Set apart because it
+ * is the sentence a player has to carry away — what the shortfall came to, in
+ * people or in work.
+ */
+.explain .cause .toll {
+  color: var(--crit);
+  /* The word space the markup cannot carry: the two sentences are separate
+     nodes, and the space between them would be trimmed away. */
+  margin-left: 0.3em;
 }
 
 .explain .rule {

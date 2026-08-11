@@ -49,19 +49,18 @@ export const en: Readonly<Record<string, string>> = {
 
   "project.use.mortar": "A mortar gets more out of the same plants.",
   "project.use.fire_setting":
-    "A burn makes the land richer for a while — it costs deadwood and stays behind on a move.",
+    "A burn makes the land richer for a while — it costs deadwood and stays behind when you leave the range.",
   "project.use.earth_oven": "An earth oven turns the same wood into more warmth.",
   "project.use.range_change":
-    "Move on to fresh country — pits, boats and stores stay behind.",
+    "Move on to fresh country — what you built and stored stays behind.",
   "project.use.sickle": "A sickle makes gathering more fruitful.",
-  "project.use.stone_axe":
-    "An axe makes wood gathering easier — and opens the way to pit and boat.",
+  "project.use.stone_axe": "An axe makes wood gathering easier.",
   "project.use.storage_pit": "A pit stores food against the bad ticks.",
   "project.use.fishing_net": "A net makes the catch more fruitful.",
   "project.use.fish_hook": "Hook and line reach fish a spear never does.",
   "project.use.bone_needle": "A needle turns the same hides into more clothing.",
   "project.use.bow_and_arrow": "A bow makes the hunt more fruitful.",
-  "project.use.twining": "Twined fibre — the ground for net and line.",
+  "project.use.twining": "Twined fibre holds where loose fibre tears.",
   "project.use.tanning": "Tanned hides last longer than raw ones.",
   "project.use.boat": "A boat opens own water off the shore.",
   "project.use.sedentism": "Stay: the community binds itself to this place.",
@@ -79,8 +78,10 @@ export const en: Readonly<Record<string, string>> = {
   "name.claim.wood": "Firewood store",
   "name.claim.food": "Food store",
   // At the player labour is labour, even where the model sees the people run
-  // short as a capacity.
+  // short as a capacity — and equally where it books them as a good.
   "name.brake.people": "Labour",
+  "name.brake.labor": "Labour",
+  "name.brake.weather": "Weather",
 
   // One sentence per need, strictly along the axis the content lays down.
   "need.effect.food_survival": "When the food fails, people die.",
@@ -106,14 +107,43 @@ export const en: Readonly<Record<string, string>> = {
   "card.goal": "Goal",
   "card.goalTicks": "{ticks} ticks",
   "card.full": "full",
-  "card.cause.delayed.since":
+  // Two wordings by number, and no case forms per good: a later epoch adds
+  // goods and must be able to do it without thinking about grammar. The third
+  // belongs to the weather — nothing was missing, there was simply no more.
+  "card.cause.delayed.since.one":
+    "Delayed in {count} of {total} ticks {since} — {what} was missing.",
+  "card.cause.delayed.since.many":
     "Delayed in {count} of {total} ticks {since} — {what} were missing.",
-  "card.cause.delayed.recent":
+  "card.cause.delayed.since.weather":
+    "Delayed in {count} of {total} ticks {since} — the weather took the rest.",
+  "card.cause.delayed.recent.one":
+    "Delayed in {count} of the last {total} ticks — {what} was missing.",
+  "card.cause.delayed.recent.many":
     "Delayed in {count} of the last {total} ticks — {what} were missing.",
-  "card.cause.short.since":
+  "card.cause.delayed.recent.weather":
+    "Delayed in {count} of the last {total} ticks — the weather took the rest.",
+  "card.cause.short.since.one":
+    "Short in {count} of {total} ticks {since} — {what} was missing.",
+  "card.cause.short.since.many":
     "Short in {count} of {total} ticks {since} — {what} were missing.",
-  "card.cause.short.recent":
+  "card.cause.short.since.weather":
+    "Short in {count} of {total} ticks {since} — the weather took the rest.",
+  "card.cause.short.recent.one":
+    "Short in {count} of the last {total} ticks — {what} was missing.",
+  "card.cause.short.recent.many":
     "Short in {count} of the last {total} ticks — {what} were missing.",
+  "card.cause.short.recent.weather":
+    "Short in {count} of the last {total} ticks — the weather took the rest.",
+
+  // The price hangs on the cause and follows the axis the rank works on.
+  "card.toll.survival": "It killed {who}.",
+  "card.toll.births": "It meant {who} fewer.",
+  "card.toll.work": "That cost you {pct} % of your labour.",
+  "count.cohort.growing.one": "one child",
+  "count.cohort.growing.many": "{count} children",
+  "count.cohort.grown.one": "one adult",
+  "count.cohort.grown.many": "{count} adults",
+
   "card.since.start": "since the start",
   "card.since.rank": "since the move",
   "card.since.amount": "since the new amount",
@@ -122,19 +152,22 @@ export const en: Readonly<Record<string, string>> = {
   "card.way.buildable": "Start {project} — the undertaking serves {need}.",
   "card.way.behind": "{claim} stands before {need} — pull it behind?",
   "card.way.forward": "Pull before {before} — {name} is then served before {before}.",
-  "card.way.none": "The range gives no more just now.",
+  // Where no way out applies, the empty line follows the window's brake: the
+  // range that gave no more, or the ranks in front that took it all.
+  "card.way.none.range": "The range gives no more just now.",
+  "card.way.none.labour": "What stands ahead of it takes everything.",
   "card.pause": "Pause",
   "card.resume": "Resume",
   "card.abandon": "Abandon",
 
-  "ladder.noHands": "getting no labour right now",
-  "ladder.paused": "paused",
-  "ladder.pause": "Pause",
-  "ladder.resume": "Resume",
-  "ladder.abandon": "Abandon",
-  "ladder.rank": "Rank",
-  "ladder.amount": "Amount",
-  "ladder.store": "Store: {from} → {to}",
+  "project.noHands": "getting no labour right now",
+  "project.paused": "paused",
+  "project.pause": "Pause",
+  "project.resume": "Resume",
+  "project.abandon": "Abandon",
+  "store.rank": "Rank",
+  "store.amount": "Amount",
+  "store.moved": "Store: {from} → {to}",
 
   // A need is named after the good it secures; the lack belongs to the crisis.
   "name.tier.food_survival": "Food",

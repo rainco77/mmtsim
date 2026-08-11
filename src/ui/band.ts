@@ -1,10 +1,12 @@
 import {
   HOUSEHOLDS,
+  shockFactor,
   type ConfigIndex,
   type GameState,
   type ProcessDef,
   type StockId,
 } from "../sim/index.ts";
+import { PLAYED_AT_ONCE } from "./presentation.ts";
 
 /**
  * What the band shows, worked out from the record and from nothing else (T9).
@@ -71,6 +73,18 @@ const LABOR: StockId = "labor";
  * the tick's runs, so it carries what searching cost this tick: the effort of
  * a thinning range is charged to the labour of the process that searches it.
  *
+ * **The draw is divided out of the recipe.** What a run put in stands against
+ * what came out of it, and between the two lies the tick's draw: a recipe's
+ * coefficient is per unit of the level that was set, while the output is that
+ * level times the draw. Left in, a good draw made every chain look cheap in its
+ * inputs and dear in nothing, and the band's widths moved with the weather
+ * instead of with the work. The labour needs no such correction — it is read
+ * off the run as it really went.
+ *
+ * The draw is read out of the tick's record and never peeked from the stream:
+ * peeking answers about the coming tick, and then the band would price this
+ * tick with next tick's weather.
+ *
  * A good nothing was made of this tick has no price here. The last one it had
  * stands in for it — see `unitCost` below, which is where that rule lives.
  */
@@ -89,9 +103,11 @@ function unitCostsOfTick(state: GameState, index: ConfigIndex): Map<StockId, num
     const entry = tally.get(made) ?? { output: 0, labor: 0, inputs: new Map() };
     entry.output += run.output;
     entry.labor += run.labor;
+    const shock = shockFactor(process, state.lastShocks);
     for (const [id, per] of Object.entries(process.intermediatesPerOutput)) {
       if (id === LABOR || per <= 0) continue;
-      entry.inputs.set(id, (entry.inputs.get(id) ?? 0) + run.output * per);
+      const perOutput = shock > 0 ? per / shock : per;
+      entry.inputs.set(id, (entry.inputs.get(id) ?? 0) + run.output * perOutput);
     }
     tally.set(made, entry);
   }
@@ -282,6 +298,10 @@ export function bandFields(
   for (const active of state.activeProjects) {
     const def = index.project.get(active.id);
     if (def === undefined) continue;
+    // An undertaking that is over in the stroke it was begun is no claim to be
+    // weighed against the eating: it never stands in the band and never comes
+    // into the hand.
+    if (PLAYED_AT_ONCE.includes(active.id)) continue;
     const step = 1 / def.minTicks;
     // A paused project claims nothing this tick, and its field falls to the
     // minimum width — it stays on the band because it is still the player's.
@@ -329,17 +349,23 @@ export function bandFields(
   }
 
   fields.sort((a, b) => a.rank - b.rank || a.key.localeCompare(b.key));
-  fields.push({
-    key: "idle",
-    kind: "idle",
-    id: "idle",
-    rank: Number.MAX_SAFE_INTEGER,
-    cost: Math.max(0, state.lastLabor.unused),
-    share: 0,
-    fill: 0,
-    short: false,
-    claim: false,
-  });
+  // Lay nothing idle, no idle field. It is the one field with neither a sign
+  // nor a grip to keep room for, so it is never held open artificially and
+  // never shown for nothing — the only exception to the minimum width.
+  const idle = Math.max(0, state.lastLabor.unused);
+  if (idle > 1e-9) {
+    fields.push({
+      key: "idle",
+      kind: "idle",
+      id: "idle",
+      rank: Number.MAX_SAFE_INTEGER,
+      cost: idle,
+      share: 0,
+      fill: 0,
+      short: false,
+      claim: false,
+    });
+  }
 
   const total = fields.reduce((sum, field) => sum + field.cost, 0);
   return fields.map((field) => ({
@@ -353,13 +379,34 @@ export function bandFields(
 /** The window every card's curve is drawn over — shorter, never longer (T9). */
 export const CURVE_TICKS = 20;
 
+/**
+ * Where a brake came from, as far as the player's own lever is concerned.
+ *
+ * The distinction the empty answer of a card turns on: what the range would not
+ * give more of, against what the ranks in front took. Both are in the end the
+ * range's doing — hands are short because searching is dear — but only one of
+ * them is a thing the player can move, so the two are told apart.
+ *
+ * `weather` is the residual the core reports where nothing at all ran out.
+ */
+export type BrakeKind = "stock" | "capacity" | "labour" | "weather";
+
+/** What braked a tick: the id the surface names it by, and where it came from. */
+export interface Brake {
+  readonly what: string;
+  readonly kind: BrakeKind;
+}
+
+/** The id the weather answers under; it names no stock and no capacity. */
+export const WEATHER: string = "weather";
+
 /** One tick of a card's curve: what arrived, and what held it back. */
 export interface CurvePoint {
   readonly tick: number;
   /** 0 … 1 — the share of what the claim wanted that arrived. */
   readonly value: number;
   /** What limited this tick; empty where nothing did. */
-  readonly brake: readonly string[];
+  readonly brake: readonly Brake[];
 }
 
 /**
@@ -396,10 +443,24 @@ function pointOf(
 ): CurvePoint | undefined {
   const state = history[at];
   if (state === undefined) return undefined;
-  const named = (binding: { kind: string; what?: string } | undefined): string[] =>
-    binding === undefined || binding.kind === "none" || binding.what === undefined
-      ? []
-      : [binding.what];
+
+  /**
+   * The rank's own record, read as a brake. A capacity the people stand behind
+   * is the labour: that is what the model calls a shortage of hands, and the
+   * player is told about it in the only terms he can act in.
+   */
+  const named = (binding: { kind: string; what?: string } | undefined): Brake[] => {
+    if (binding === undefined || binding.kind === "none") return [];
+    if (binding.kind === "weather") return [{ what: WEATHER, kind: "weather" }];
+    if (binding.what === undefined) return [];
+    if (binding.kind === "capacity") {
+      const fromPeople = index.config.capacities.find(
+        (one) => one.id === binding.what,
+      )?.fromPopulation;
+      return [{ what: binding.what, kind: fromPeople === true ? "labour" : "capacity" }];
+    }
+    return [{ what: binding.what, kind: "stock" }];
+  };
 
   switch (field.kind) {
     case "need": {
@@ -421,10 +482,15 @@ function pointOf(
         0,
         Math.min(1, (now.progress - (was?.progress ?? 0)) / step),
       );
+      // A project's record names the resources themselves; the labour among
+      // them is the labour and is told apart from the goods.
       return {
         tick: state.tick,
         value,
-        brake: state.lastProjectBinding[field.id] ?? [],
+        brake: (state.lastProjectBinding[field.id] ?? []).map((stock) => ({
+          what: stock,
+          kind: stock === LABOR ? ("labour" as const) : ("stock" as const),
+        })),
       };
     }
     case "store": {
@@ -447,12 +513,16 @@ function pointOf(
 }
 
 /** How often each brake appeared in a window, the commonest first. */
-export function brakesByFrequency(points: readonly CurvePoint[]): readonly string[] {
-  const counts = new Map<string, number>();
+export function brakesByFrequency(points: readonly CurvePoint[]): readonly Brake[] {
+  const counts = new Map<string, { brake: Brake; times: number }>();
   for (const point of points) {
-    for (const what of point.brake) counts.set(what, (counts.get(what) ?? 0) + 1);
+    for (const brake of point.brake) {
+      const seen = counts.get(brake.what);
+      if (seen === undefined) counts.set(brake.what, { brake, times: 1 });
+      else seen.times += 1;
+    }
   }
-  return [...counts.entries()].sort((a, b) => b[1] - a[1]).map(([what]) => what);
+  return [...counts.values()].sort((a, b) => b.times - a.times).map((one) => one.brake);
 }
 
 /** How many ticks of the window fell short of what the claim wanted. */

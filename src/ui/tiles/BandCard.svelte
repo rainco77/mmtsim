@@ -15,7 +15,9 @@
     ticksLeft,
     type BandField,
   } from "../band.ts";
-  import { act, currentState, game, index, ownDeeds } from "../game.ts";
+  import { act, begin, currentState, game, index, ownDeeds } from "../game.ts";
+  import { windowBook } from "../losses.ts";
+  import { STORE_GOAL_TICKS_MAX } from "../presentation.ts";
   import StepCurve from "./StepCurve.svelte";
 
   /**
@@ -38,9 +40,6 @@
     ($language) => (key: string, params?: Readonly<Record<string, string | number>>) =>
       translate($language, key, params),
   );
-
-  /** The goal grip serves in ticks, and this is how far it reaches. */
-  const GOAL_TICKS_MAX = 12;
 
   $: history = $game.history;
   $: state = currentState($game);
@@ -163,7 +162,7 @@
     const move = (at: PointerEvent): void => {
       const box = rail.getBoundingClientRect();
       const share = Math.max(0, Math.min(1, (at.clientX - box.left) / box.width));
-      setGoalTicks(Math.round(share * GOAL_TICKS_MAX));
+      setGoalTicks(Math.round(share * STORE_GOAL_TICKS_MAX));
     };
     move(event);
     rail.setPointerCapture(event.pointerId);
@@ -279,7 +278,7 @@
             need: labelOf(field),
           }),
           icon: "▶",
-          run: () => act({ type: "startProject", id: buildable.id }),
+          run: () => begin(buildable.id),
         });
       }
       // A claim of the player's own that pushes in ahead of the short rank.
@@ -311,21 +310,82 @@
    * It counts over the window the curve is drawn over, so drawing and sentence
    * can never disagree, and it names **all** the resources that were missing,
    * the commonest first.
+   *
+   * It speaks in the nominative, and it has two wordings — one thing missing
+   * or several. No case forms per good: a later epoch adds goods, and it must
+   * be able to do so without thinking about grammar.
+   *
+   * The weather is the exception, because it is not a thing that was missing:
+   * where it led the window there was nothing to be had more of, and the
+   * sentence says so instead of naming a source. Which of the three wordings
+   * is used follows the brake that led the window — the same one the sentence
+   * would name first anyway.
    */
+  $: leading = brakes[0];
+  $: missing = brakes.filter((one) => one.kind !== "weather");
+  $: causeKey = `card.cause.${field.kind === "project" ? "delayed" : "short"}.${
+    sinceDeed ? "since" : "recent"
+  }.${leading?.kind === "weather" ? "weather" : missing.length === 1 ? "one" : "many"}`;
   $: cause = ((): readonly Segment[] =>
     segments(
       $language,
-      `card.cause.${field.kind === "project" ? "delayed" : "short"}.${
-        sinceDeed ? "since" : "recent"
-      }`,
+      causeKey,
       {
         count: missed,
         total: points.length,
         since: $t(`card.since.${deed?.what ?? "start"}`),
-        what: listed(brakes.map(brakeName)),
+        what: listed(missing.map((one) => brakeName(one.what))),
       },
       ["count", "total", "what"],
     ))();
+
+  /**
+   * The price of the window, in the same block as its cause — cause and price
+   * belong together, and both are counted over the same ticks.
+   *
+   * The wording follows the axis the content gives the rank, and never a freely
+   * chosen one: survival names the cohorts it reaches, the births say how many
+   * did not come, work says what share of the community's own strength it took.
+   * People are whole numbers out of the window's book, so summing the cards of
+   * a window lands on what really happened.
+   */
+  $: book = windowBook(history, index);
+  $: toll = field.kind === "need" ? book.get(field.id) : undefined;
+
+  /** "2 Kinder und ein Erwachsener" — whole people, cohort by cohort. */
+  function whoOf(people: Readonly<Record<string, number>>): string {
+    const parts: string[] = [];
+    for (const cohort of index.config.population.cohorts) {
+      const heads = people[cohort.id] ?? 0;
+      if (heads <= 0) continue;
+      parts.push(
+        $t(`count.cohort.${cohort.id}.${heads === 1 ? "one" : "many"}`, {
+          count: heads,
+        }),
+      );
+    }
+    return listed(parts);
+  }
+
+  $: price = ((): string => {
+    if (toll === undefined) return "";
+    if (toll.axis === "work") {
+      const share = Math.round(toll.share * 100);
+      return share > 0 ? $t("card.toll.work", { pct: share }) : "";
+    }
+    const who = whoOf(toll.people);
+    if (who === "") return "";
+    return $t(`card.toll.${toll.axis}`, { who });
+  })();
+
+  /**
+   * Where no way out applies, the empty line follows the window's brake: what
+   * the range would not give more of, or what the ranks in front took. Both
+   * hang on the range in the end — hands are short because searching is dear —
+   * but only one of them is a lever the player has, and that is what the
+   * difference tells him.
+   */
+  $: noWay = leading?.kind === "labour" ? "card.way.none.labour" : "card.way.none.range";
 
   $: paused =
     field.kind === "project" &&
@@ -372,12 +432,12 @@
           tabindex="0"
           aria-valuenow={goalTicks}
           aria-valuemin="0"
-          aria-valuemax={GOAL_TICKS_MAX}
+          aria-valuemax={STORE_GOAL_TICKS_MAX}
           on:pointerdown={grabGoal}
         >
           <span
             class="knob"
-            style:left={`${Math.min(100, (goalTicks / GOAL_TICKS_MAX) * 100)}%`}
+            style:left={`${Math.min(100, (goalTicks / STORE_GOAL_TICKS_MAX) * 100)}%`}
           ></span>
         </div>
         <span class="sub num">{$t("card.goalTicks", { ticks: goalTicks })}</span>
@@ -401,7 +461,8 @@
     -->
     <p class="cause">
       {#each cause as piece, i (i)}{#if piece.strong}<b>{piece.text}</b
-          >{:else}{piece.text}{/if}{/each}
+          >{:else}{piece.text}{/if}{/each}{#if price !== ""}<b class="toll">{price}</b
+        >{/if}
     </p>
     <div class="ways">
       {#each ways as way (way.text)}
@@ -411,7 +472,7 @@
         </div>
       {/each}
       {#if ways.length === 0}
-        <p class="sub">{$t("card.way.none")}</p>
+        <p class="sub">{$t(noWay)}</p>
       {/if}
     </div>
   {/if}

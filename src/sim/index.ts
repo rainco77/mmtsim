@@ -49,6 +49,7 @@ export { applyEffect, effectTypesWithHandler, nextRangeQuality } from "./effects
 export type {
   CapacityId,
   BranchId,
+  CohortId,
   NeedTierId,
   ProcessId,
   ProjectId,

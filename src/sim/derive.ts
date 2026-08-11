@@ -122,10 +122,13 @@ export interface Derived {
   /** The tick it happened at; absent while it is still going. */
   readonly abandonedAt?: number;
 
-  /** What stops the lowest uncovered tier — the check on E6. */
-  readonly binding: AllocationResult["binding"];
-  readonly bindingTier?: string;
-
+  /**
+   * There is deliberately **no tick-wide brake** here. Every rank draws on the
+   * one pot, so a single figure for the whole tick belongs to some other rank
+   * as often as not; what stopped a rank stands beside it in `tiers`, and the
+   * claims that are not ranks of a good have the same answer in the state's own
+   * record.
+   */
   readonly projects: readonly ProjectView[];
   readonly branches: readonly string[];
   readonly processes: readonly string[];
@@ -455,10 +458,6 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     survival,
     communityGivenUp: state.abandonedAt !== undefined,
     ...(state.abandonedAt === undefined ? {} : { abandonedAt: state.abandonedAt }),
-    binding: allocation.binding,
-    ...(allocation.bindingTier === undefined
-      ? {}
-      : { bindingTier: allocation.bindingTier }),
     // Sorted by what each is worth against what is scarce now, the declared
     // order breaking ties. A list has an order whether one is chosen or not.
     projects: [...projects].sort((a, b) => b.worth - a.worth),

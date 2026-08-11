@@ -3,7 +3,7 @@
   import { language } from "../../i18n/language.ts";
   import { translate } from "../../i18n/t.ts";
   import { derive, type ActiveProject } from "../../sim/index.ts";
-  import { act, currentState, game, index } from "../game.ts";
+  import { act, begin, currentState, game, index } from "../game.ts";
 
   /**
    * The project catalogue (T9), three groups: running with their grips,
@@ -113,9 +113,9 @@
       </span>
       <span class="stat">{Math.round(project.progress * 100)} %</span>
       {#if project.paused}
-        <span class="note">{$t("ladder.paused")}</span>
+        <span class="note">{$t("project.paused")}</span>
       {:else if starved(project.id)}
-        <span class="note">{$t("ladder.noHands")}</span>
+        <span class="note">{$t("project.noHands")}</span>
       {/if}
       {#if active !== undefined}
         <span class="grips">
@@ -123,10 +123,10 @@
             on:click={() =>
               act({ type: "pauseProject", id: project.id, paused: !active.paused })}
           >
-            {active.paused ? $t("ladder.resume") : $t("ladder.pause")}
+            {active.paused ? $t("project.resume") : $t("project.pause")}
           </button>
           <button on:click={() => act({ type: "abandonProject", id: project.id })}>
-            {$t("ladder.abandon")}
+            {$t("project.abandon")}
           </button>
         </span>
       {/if}
@@ -144,10 +144,7 @@
           <span class="counter">×{project.completed}</span>
         {/if}
       </span>
-      <button
-        class="start"
-        on:click={() => act({ type: "startProject", id: project.id })}
-      >
+      <button class="start" on:click={() => begin(project.id)}>
         {$t("projects.start")}
       </button>
     </div>

@@ -241,8 +241,18 @@ const scope = {
         };
       })(),
       shocks: from(Object.keys(session.cfg.shocks), (id) => round(d.shocks[id] ?? 1)),
-      short:
-        d.binding.kind === "none" ? null : `${d.binding.kind}:${d.binding.what ?? ""}`,
+      // What stopped each rank, out of the tick's own record. There is no
+      // tick-wide figure any more: every rank draws on the one pot, so a single
+      // answer belongs to some other rank as often as not. A rank that got all
+      // it asked for is not in here at all.
+      short: Object.fromEntries(
+        Object.entries(state.lastBinding)
+          .filter(([, brake]) => brake.kind !== "none")
+          .map(([id, brake]) => [
+            id,
+            brake.what === undefined ? brake.kind : `${brake.kind}:${brake.what}`,
+          ]),
+      ),
       projects: {
         building: Object.fromEntries(
           d.projects.filter((p) => p.running).map((p) => [p.id, round(p.progress)]),
