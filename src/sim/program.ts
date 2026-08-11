@@ -415,14 +415,147 @@ export function planByProgram(input: ProgramInput): Plan {
   const shortfall = new Map<string, number>();
   if (missing > 1e-9) {
     for (const id of answer.binding) {
-      const input = id.startsWith("depth:")
-        ? `stock:${id.slice(6).split("#")[0] ?? ""}`
-        : id;
-      if (input.startsWith("capacity:") || input.startsWith("stock:")) {
+      const input = inputOf(id);
+      if (input !== undefined)
         shortfall.set(input, (shortfall.get(input) ?? 0) + missing);
-      }
     }
   }
 
-  return { levels, output, droppedTiers, shortfall, effortPerProcess };
+  return {
+    levels,
+    output,
+    droppedTiers,
+    shortfall,
+    shortfallByTier: shortfallPerClaim(
+      claims,
+      answer,
+      chainNeeds(columns, answer.levels),
+    ),
+    effortPerProcess,
+  };
+}
+
+/**
+ * The input a limit stands for, or nothing where it stands for no input at all.
+ *
+ * A step of a stand answers as the stand itself: the depth is a working detail
+ * of how the rising search cost is written down, and the country is what a
+ * reader wants named. A claim's own ceiling and the closing balance behind a
+ * held good are not inputs and are left out — they say the claim asked for no
+ * more, not that anything ran out.
+ */
+function inputOf(id: string): string | undefined {
+  const input = id.startsWith("depth:")
+    ? `stock:${id.slice("depth:".length).split("#")[0] ?? ""}`
+    : id;
+  return input.startsWith("capacity:") || input.startsWith("stock:") ? input : undefined;
+}
+
+/**
+ * What one unit of a good takes of the country and the hands, chain and all.
+ *
+ * The mix, not one process: a good is usually made on several at once — food
+ * out of the plants, the shore and the chase together — and a further unit of
+ * it would have been made the way this tick made the rest. So each way counts
+ * for the share of the good it carried. Where nothing at all ran, the first
+ * column stands in; the columns are sorted thriftiest of hands first, so that
+ * is the way the plan would have chosen.
+ *
+ * A good the community makes for itself is never an answer: what it really
+ * takes is what *its* making takes, one step further up. Labour resolves to the
+ * people, wood to the fallen wood and the hands that gather it. What is left at
+ * the bottom is capacities and the stands nobody makes, which is what a reader
+ * can act on.
+ */
+function chainNeeds(
+  columns: readonly Column[],
+  levels: readonly number[],
+): (good: StockId) => ReadonlyMap<string, number> {
+  const mix = new Map<StockId, { column: Column; weight: number }[]>();
+  const total = new Map<StockId, number>();
+  columns.forEach((column, j) => {
+    const good = column.produces;
+    if (good === undefined) return;
+    const weight = levels[j] ?? 0;
+    mix.set(good, [...(mix.get(good) ?? []), { column, weight }]);
+    total.set(good, (total.get(good) ?? 0) + weight);
+  });
+
+  const cache = new Map<StockId, ReadonlyMap<string, number>>();
+  const walk = (good: StockId, seen: Set<StockId>): ReadonlyMap<string, number> => {
+    const ready = cache.get(good);
+    if (ready !== undefined) return ready;
+    const ways = mix.get(good);
+    // A cycle cannot arise from the content we have; if one ever did, the chain
+    // stops here rather than running away.
+    if (ways === undefined || ways.length === 0 || seen.has(good)) return new Map();
+    seen.add(good);
+
+    const made = total.get(good) ?? 0;
+    const out = new Map<string, number>();
+    for (const way of ways) {
+      const share = made > 1e-12 ? way.weight / made : way === ways[0] ? 1 : 0;
+      if (share <= 0) continue;
+      for (const [input, per] of way.column.inputs) {
+        if (per <= 0) continue;
+        const upstream = input.startsWith("stock:")
+          ? walk(input.slice("stock:".length), seen)
+          : undefined;
+        if (upstream === undefined || upstream.size === 0) {
+          out.set(input, (out.get(input) ?? 0) + share * per);
+          continue;
+        }
+        for (const [id, deep] of upstream) {
+          out.set(id, (out.get(id) ?? 0) + share * per * deep);
+        }
+      }
+    }
+
+    seen.delete(good);
+    cache.set(good, out);
+    return out;
+  };
+  return (good) => walk(good, new Set());
+}
+
+/**
+ * What each rank alone came up short of.
+ *
+ * Two things together, and neither answers on its own. **What the rank's own
+ * chain is made of**, so that a rank never names a source it does not touch —
+ * the hut over the children hangs on hands and nothing else, and it said "the
+ * fish were short" because some other rank had picked the shore over. And **what
+ * the program pressed right up against**, because an input the tick still had to
+ * spare stopped nobody. What is left is the exhausted inputs of this rank's own
+ * chain, and where two ranks starved on the same emptied stand both name it,
+ * which is the truth.
+ *
+ * How much is missing is the rank's own unserved demand carried up its chain:
+ * so much of the good never made, so much of that input never to be had. In
+ * each input's own units, so the amounts say which shortage was the large one
+ * and are not a price.
+ */
+function shortfallPerClaim(
+  claims: readonly Demand[],
+  answer: { readonly values: readonly number[]; readonly binding: readonly string[] },
+  needs: (good: StockId) => ReadonlyMap<string, number>,
+): ReadonlyMap<string, ReadonlyMap<string, number>> {
+  const exhausted = new Set<string>();
+  for (const id of answer.binding) {
+    const input = inputOf(id);
+    if (input !== undefined) exhausted.add(input);
+  }
+
+  const out = new Map<string, ReadonlyMap<string, number>>();
+  claims.forEach((claim, r) => {
+    const gap = claim.amount - (answer.values[r] ?? 0);
+    if (gap <= 1e-9) return;
+    const own = new Map<string, number>();
+    for (const [input, per] of needs(claim.stock)) {
+      if (per <= 0 || !exhausted.has(input)) continue;
+      own.set(input, gap * per);
+    }
+    if (own.size > 0) out.set(claim.tier.id, own);
+  });
+  return out;
 }

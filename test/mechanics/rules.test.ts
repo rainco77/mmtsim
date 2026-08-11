@@ -1415,6 +1415,120 @@ describe("what the record says about a claim", () => {
     expect(state.lastBinding["keep:wood"]).toBeDefined();
   });
 
+  /**
+   * Two shortages at once, each on its own road, so that a record which mixes
+   * them up cannot pass: food can only come off cleared land, and there is
+   * almost none of it; the fire can only come off fallen wood, and there is
+   * almost none of that. The hands are many, so nothing hangs on them.
+   */
+  function twoShortages(): GameState {
+    const start = createState(STAGE1, { seed: 3, heads: 60, wilderness: 900 });
+    const sector = start.sectors["households"]!;
+    return {
+      ...start,
+      stockTargets: { wood: 50 },
+      sectors: {
+        ...start.sectors,
+        households: {
+          ...sector,
+          stocks: { ...sector.stocks, food: 0, wood: 0, warmth: 0, deadwood: 0.5 },
+          capacityHeld: { cleared: { amount: 1, quality: 1 } },
+        },
+      },
+    };
+  }
+
+  const onTwoShortages = (): AllocationResult =>
+    allocate({
+      state: twoShortages(),
+      index,
+      sectorId: "households",
+      shocks: {},
+      tierPerHead: new Map(),
+      // Only one road to each good: food off the fields, warmth off the fallen
+      // wood. Gathering, hunting and felling stay shut, so neither rank has a
+      // second source to be blamed on.
+      unlockedBranches: new Set(["labor", "food", "wood", "warmth"]),
+      unlockedProcesses: new Set(["labor", "farming", "wood_gathering", "open_fire"]),
+    });
+
+  it("names each rank what its own chain ran out of, never another rank's", () => {
+    const result = onTwoShortages();
+    const food = result.tiers.find((t) => t.tier === "food_survival");
+    const fire = result.tiers.find((t) => t.tier === "warmth_fire");
+
+    // Both are short, so both have something to report.
+    expect(food?.coverage ?? 1).toBeLessThan(1);
+    expect(fire?.coverage ?? 1).toBeLessThan(1);
+
+    // The field the food hangs on, and the fallen wood the fire hangs on —
+    // and neither rank is handed the other's shortage.
+    expect(food?.binding).toEqual({ kind: "capacity", what: "cleared" });
+    expect(fire?.binding).toEqual({ kind: "stock", what: "deadwood" });
+  });
+
+  it("names a reserve claim what its own chain ran out of, not the needs'", () => {
+    // The very thing the player is told beside his woodpile: the pile did not
+    // fill because there was nothing left to pick up, not because the fields
+    // were small.
+    expect(onTwoShortages().claimBinding["keep:wood"]).toEqual({
+      kind: "stock",
+      what: "deadwood",
+    });
+  });
+
+  it("names nothing for a reserve on its goal, though other ranks went short", () => {
+    // The fallen wood is plentiful and the woodpile fills; the fields are tiny
+    // and the food does not. A record that hands the tick's worst shortage to
+    // every claim alike puts the fields under the woodpile, where they have no
+    // business at all.
+    const start = createState(STAGE1, { seed: 3, heads: 60, wilderness: 900 });
+    const sector = start.sectors["households"]!;
+    const result = allocate({
+      state: {
+        ...start,
+        stockTargets: { wood: 1 },
+        sectors: {
+          ...start.sectors,
+          households: {
+            ...sector,
+            stocks: { ...sector.stocks, food: 0, wood: 0, warmth: 0 },
+            capacityHeld: { cleared: { amount: 1, quality: 1 } },
+          },
+        },
+      },
+      index,
+      sectorId: "households",
+      shocks: {},
+      tierPerHead: new Map(),
+      unlockedBranches: new Set(["labor", "food", "wood", "warmth"]),
+      unlockedProcesses: new Set(["labor", "farming", "wood_gathering", "open_fire"]),
+    });
+    expect(
+      result.tiers.find((t) => t.tier === "food_survival")?.coverage ?? 1,
+    ).toBeLessThan(1);
+    expect(result.claimBinding["keep:wood"]).toEqual({ kind: "none" });
+  });
+
+  it("names nothing for a rank that got everything it asked for", () => {
+    const result = allocate({
+      state: createState(STAGE1, { seed: 3, heads: 20, wilderness: 900, water: 400 }),
+      index,
+      sectorId: "households",
+      shocks: {},
+      tierPerHead: new Map(),
+      unlockedBranches: new Set(["labor", "food"]),
+      unlockedProcesses: new Set(["labor", "gathering"]),
+    });
+    const food = result.tiers.find((t) => t.tier === "food_survival");
+    expect(food?.coverage).toBeCloseTo(1, 9);
+    expect(food?.binding).toEqual({ kind: "none" });
+    // And it holds of every covered rank, not only of that one.
+    for (const tier of result.tiers) {
+      if (tier.coverage >= 1 - 1e-9) expect(tier.binding.kind).toBe("none");
+    }
+  });
+
   it("records what each rank asked for beside the share of it that arrived", () => {
     let state = createState(STAGE1, { seed: 5 });
     for (let i = 0; i < 10; i += 1) {

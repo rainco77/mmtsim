@@ -68,6 +68,19 @@ export interface TierOutcome {
   readonly served: number;
   /** In [0, 1]: what arrived, against what was needed. */
   readonly coverage: number;
+  /**
+   * What stopped **this** rank: the largest input its own unmet demand was
+   * missing, or nothing where it was covered whole.
+   *
+   * Never the tick's worst input over all ranks. Every rank draws on one pot,
+   * so that figure belongs to some other rank as often as not, and handed to
+   * all of them it names sources a rank never touched — care answering "it was
+   * the fish", the woodpile answering "berries and fish".
+   *
+   * Nothing, too, where the plan covered the rank and the draw then spoiled it:
+   * no input was short when the plan was made, and naming one afterwards would
+   * be a guess.
+   */
   readonly binding: Binding;
 }
 
@@ -122,12 +135,18 @@ export interface AllocationResult {
    */
   readonly capacityTotal: Readonly<Record<CapacityId, number>>;
 
-  /** The lowest tier that is not fully covered, and what stopped it (E6). */
+  /**
+   * The lowest tier that is not fully covered, and the tick's worst missing
+   * input over the whole plan (E6).
+   *
+   * A tick-wide figure, not the rank's own: what stopped the named tier stands
+   * beside it in `tiers`, per rank.
+   */
   readonly binding: Binding;
   readonly bindingTier?: NeedTierId;
 
   /**
-   * What the plan came up short of, per reserve claim — the same answer the
+   * What each reserve claim came up short of — the same per-rank answer the
    * need tiers get, for the ranks that are not need tiers.
    *
    * A reserve is a rank like any other and can go unserved like any other, but
@@ -887,14 +906,21 @@ export function allocate(input: AllocationInput): AllocationResult {
   let overallBinding: Binding = { kind: "none" };
   let bindingTier: string | undefined;
 
-  // What the plan could not get enough of, kept for the reserve claims. One
-  // figure for all of them, because the plan holds one pot and comes up short
-  // of one input worst of all.
-  const planShort = bindingFromPlan(plan);
+  // What the plan could not get enough of at all — the worst input over the
+  // whole tick, which is what `binding` below reports.
+  const planShort = bindingFromPlan(plan, index);
+  /**
+   * What **this** rank alone ran out of. One figure for every rank named
+   * sources a rank had never touched: the woodpile answering "berries and
+   * fish", because some other rank had pressed against the shore.
+   */
+  const shortOf = (tierId: NeedTierId): Binding =>
+    bindingFrom(plan.shortfallByTier?.get(tierId), index);
+
   const claimBinding: Record<string, Binding> = {};
   for (const demand of demands) {
     const id = demand.tier.id;
-    if (id.startsWith("keep:") || id.startsWith("store:")) claimBinding[id] = planShort;
+    if (id.startsWith("keep:") || id.startsWith("store:")) claimBinding[id] = shortOf(id);
   }
 
   for (const tier of tierList) {
@@ -907,10 +933,10 @@ export function allocate(input: AllocationInput): AllocationResult {
     pools.stock[tier.stock] = (pools.stock[tier.stock] ?? 0) - served;
 
     const coverage = need > 0 ? Math.min(1, served / need) : 1;
-    const binding = coverage < 1 - 1e-9 ? planShort : { kind: "none" as const };
+    const binding = coverage < 1 - 1e-9 ? shortOf(tier.id) : { kind: "none" as const };
     tiers.push({ tier: tier.id, rank: tier.rank, need, served, coverage, binding });
     if (coverage < 1 - 1e-9 && bindingTier === undefined) {
-      overallBinding = binding;
+      overallBinding = planShort;
       bindingTier = tier.id;
     }
 
@@ -1004,21 +1030,51 @@ function topological(
   return order;
 }
 
-/** Which input stopped the plan — the check on E6. */
-function bindingFromPlan(plan: Plan): Binding {
+/** Which input stopped the plan as a whole — the check on E6. */
+function bindingFromPlan(plan: Plan, index: ConfigIndex): Binding {
+  return bindingFrom(plan.shortfall, index);
+}
+
+/**
+ * The largest missing input of one shortfall record, named — and named
+ * **upstream**.
+ *
+ * A good the community makes for itself is never the answer. Whatever is made
+ * and spent in the same tick has its own limit pressed against in every such
+ * tick, so it would be named constantly while saying no more than "there was
+ * not enough of it" — which is the one thing the reader can already see for
+ * himself. What ran out is a capacity or a stand nobody makes, one step further
+ * up: not the wood but the fallen wood, not the food but the shore, and a
+ * shortage of hands as the people running out (E6).
+ *
+ * The amounts stand in each input's own units, so the comparison holds an area
+ * against a quantity of a stand. There is no common measure for that in this
+ * epoch — no prices — so the plain largest figure wins, which is a convention
+ * and not a valuation.
+ */
+function bindingFrom(
+  shortfall: ReadonlyMap<string, number> | undefined,
+  index: ConfigIndex,
+): Binding {
   let worst: string | undefined;
   let value = 0;
-  for (const [input, missing] of plan.shortfall) {
-    if (missing > value) {
-      value = missing;
-      worst = input;
-    }
+  for (const [input, missing] of shortfall ?? []) {
+    if (missing <= value) continue;
+    if (input.startsWith("stock:") && madeHere(index, input.slice("stock:".length)))
+      continue;
+    value = missing;
+    worst = input;
   }
   if (worst === undefined) return { kind: "none" };
   if (worst.startsWith("capacity:")) {
     return { kind: "capacity", what: worst.slice("capacity:".length) };
   }
   return { kind: "stock", what: worst.slice("stock:".length) };
+}
+
+/** Does a branch make this good, or does the country simply hold it? */
+function madeHere(index: ConfigIndex, stock: StockId): boolean {
+  return index.config.branches.some((branch) => branch.produces === stock);
 }
 
 /**
