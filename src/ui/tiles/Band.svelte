@@ -309,7 +309,7 @@
 
 <BandIcons />
 
-<div class="band" bind:this={bandEl}>
+<div class="band" class:dragmode={dragKey !== null} bind:this={bandEl}>
   <div class="bandhead"><h2>{$t("tile.overview")}</h2></div>
 
   <div class="bandrow" class:dragmode={dragKey !== null} bind:this={rowEl}>

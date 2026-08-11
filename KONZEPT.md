@@ -4211,6 +4211,18 @@ kollidierender Namen brauchen die Höhe des Spezifikationsblatts (~13 px)** — 
 einzeilige Sparfassung mit ~4 px war im Live-Spiel kaum zu sehen (beobachtet und
 entschieden); die Namenszeile wird dafür entsprechend höher.
 
+**Das Ziehen folgt dem Finger:** Das gefasste Segment folgt dem Finger **waagerecht und
+stufenlos** und bewegt sich dabei weder nach oben noch nach unten — geschnappt wird
+allein die Lücke im abgeblendeten Band. Sie ist die Antwort auf „wo landet das", und
+eine Antwort, die mitgleitet, ist keine. Die Schwelle von 4 px, die den Zug vom
+Antippen trennt, bleibt.
+
+**Das Weiterziehen steht nicht im Band und ist nicht ziehbar:** Es ist in dem Zug
+erledigt, in dem es begonnen wird — das Starten spielt den Tick sofort ab, dieselbe
+Wirkung, als würde unmittelbar danach „+1" gedrückt. Also gibt es kein Segment dafür
+und nichts zu verschieben: Ein Anspruch, den man verschieben kann, ist ein Anspruch,
+der dauert.
+
 **Die Füllung eines Anspruchs-Segments ist sein Gesamtstand**, nicht die Deckung eines
 Ticks: beim Vorhaben der Baufortschritt, beim Vorratsziel der Füllstand gemessen am
 Ziel. Die Lesart des Bands bleibt damit einheitlich — Breite = was der Posten diesen

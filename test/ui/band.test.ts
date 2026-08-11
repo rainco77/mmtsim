@@ -17,9 +17,11 @@ import {
   storeStanding,
   ticksLeft,
   unitCost,
+  WEATHER,
   type BandField,
   type CurvePoint,
 } from "../../src/ui/band.ts";
+import { translate } from "../../src/i18n/t.ts";
 
 /**
  * Tests of the band, kept apart from the tests of the core: the core knows
@@ -212,6 +214,51 @@ describe("what a card's curve covers (T9)", () => {
       // Nothing is named where the whole step ran, and something where it did
       // not: the carpet and the curve can never disagree.
       if (point.value >= 1 - 1e-9) expect(point.brake).toEqual([]);
+    }
+  });
+
+  it("reports a shortage of hands as the labour, and the weather as the weather", () => {
+    // The model books a shortage of hands as the capacity "people" running
+    // out. At the player that is the labour and nothing else: that more heads
+    // would help cannot be told from a better ranking, so it is not claimed —
+    // and the empty answer of a card turns on the same distinction.
+    const history = played(6);
+    const last = history[history.length - 1] as GameState;
+    const field = fieldsOf(history).find((one) => one.id === "food_survival");
+    const withRecord = (brake: {
+      kind: "capacity" | "stock" | "weather";
+      what?: string;
+    }): CurvePoint | undefined => {
+      const state: GameState = {
+        ...last,
+        lastCoverage: { ...last.lastCoverage, food_survival: 0.5 },
+        lastBinding: { food_survival: brake },
+      };
+      return curveOf([...history.slice(0, -1), state], index, field as BandField, 0).at(
+        -1,
+      );
+    };
+
+    expect(withRecord({ kind: "capacity", what: "people" })?.brake).toEqual([
+      { what: "people", kind: "labour" },
+    ]);
+    expect(withRecord({ kind: "capacity", what: "water" })?.brake).toEqual([
+      { what: "water", kind: "capacity" },
+    ]);
+    expect(withRecord({ kind: "stock", what: "fish" })?.brake).toEqual([
+      { what: "fish", kind: "stock" },
+    ]);
+    expect(withRecord({ kind: "weather" })?.brake).toEqual([
+      { what: WEATHER, kind: "weather" },
+    ]);
+
+    // And what the surface calls them: labour is labour in both languages.
+    for (const language of ["de", "en"] as const) {
+      expect(translate(language, "name.brake.people")).not.toBe("name.brake.people");
+      expect(translate(language, "name.brake.people").toLowerCase()).toBe(
+        language === "de" ? "arbeit" : "labour",
+      );
+      expect(translate(language, "name.brake.weather")).not.toBe("name.brake.weather");
     }
   });
 

@@ -823,7 +823,7 @@ b {
  * should compete with it. Hidden, not removed — the row keeps its height, so
  * the band does not jump under the finger.
  */
-.bandrow.dragmode + .names {
+.band.dragmode .names {
   visibility: hidden;
 }
 
@@ -918,6 +918,9 @@ b {
  */
 .explain .cause .toll {
   color: var(--crit);
+  /* The word space the markup cannot carry: the two sentences are separate
+     nodes, and the space between them would be trimmed away. */
+  margin-left: 0.3em;
 }
 
 .explain .rule {

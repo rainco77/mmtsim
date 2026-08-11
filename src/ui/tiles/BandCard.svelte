@@ -461,8 +461,8 @@
     -->
     <p class="cause">
       {#each cause as piece, i (i)}{#if piece.strong}<b>{piece.text}</b
-          >{:else}{piece.text}{/if}{/each}{#if price !== ""}
-        <b class="toll">{price}</b>{/if}
+          >{:else}{piece.text}{/if}{/each}{#if price !== ""}<b class="toll">{price}</b
+        >{/if}
     </p>
     <div class="ways">
       {#each ways as way (way.text)}
