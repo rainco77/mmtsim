@@ -4257,6 +4257,20 @@ sprechen den Spieler an** und reden von der Sache in der Welt — vom halb gekn�
 Netz, vom Lager, das so viele Ticks Feuer trägt —, nicht von der Anzeige; die
 Anzeigegesetze (Prozent nur für Verhältnisse, Ticks als Kosten-Anker, keine nackte Zahl
 ohne Anker, „liegt bereit", wenn der Bestand die Kosten deckt) gelten dort wie überall.
+**Jedes Feld trägt seinen Namen im Feld, wenn er passt** — Bedarfe wie Ansprüche;
+nur ein Anspruch, dessen Name nicht ins Segment passt, bekommt ihn in der Namenszeile
+darunter (dafür ist sie da, samt Führungslinien). Die Namenszeile behält ihre feste
+Höhe, auch leer — das Band springt nie. **Deckungs-Prozente werden abgerundet:**
+„100 %" steht nur bei echter Volldeckung; Zahl und Krisenfarbe können damit nie
+auseinanderfallen (behobener Fehler: 0,996 zeigte „100 %" in Rot). **Ein Projekt
+kommt erst in Sicht, wenn alle Projekte, auf denen seine Bedingungen fußen, selbst
+mindestens in Sicht sind** — generisch aus den Bedingungsdaten abgeleitet; einmal
+Sichtbares bleibt sichtbar (behobener Fehler: Netz und Angelhaken erschienen vor dem
+Zwirnen). Zwei Klarstellungen zum Folgen-Satz: Das Arbeits-Prozent ist das **Mittel
+über die Fenster-Ticks** (eine Summe wäre kein Prozent, ein Maximum keine Bilanz),
+und welche Satzfassung gilt (fehlte/fehlten/Wetter), entscheidet die **häufigste
+Bremse des Fensters**.
+
 **Die Vorratsziel-Segmente heißen nach dem, was sie halten: „Brennholzvorrat" und
 „Nahrungsvorrat"** — ein Muster für beide, keine technische Voranstellung „Ziel"; das
 Wort Ziel lebt weiter am Regler der Karte („Ziel 14 — hält ~6 Ticks Feuer").
