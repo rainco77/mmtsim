@@ -61,12 +61,14 @@
     </svg>
 
     <div class="sheetpage">
-      <h1>Das Band im Großen</h1>
-      <p class="sub lead">
-        Tick 96, dieselben Zahlen wie im Gesamtbild — nur die Felder sind höher
-        gezeichnet. Angetippt ist <b>Sattessen</b>; die Karte schwebt am Feld und
-        verschiebt nichts.
-      </p>
+      <div class="headline">
+        <h1>Das Band im Großen</h1>
+        <p class="sub lead">
+          Tick 96, dieselben Zahlen wie im Gesamtbild — nur die Felder sind höher
+          gezeichnet. Angetippt ist <b>Sattessen</b>; die Karte schwebt am Feld und
+          verschiebt nichts. Alle vier Karten stehen in derselben Ordnung.
+        </p>
+      </div>
 
       <!-- The band in its normal state, with every kind of field: covered needs, one
            need short in crisis red, an empty rank at 0 %, a building project, two
@@ -203,270 +205,132 @@
       </div>
 
       <div class="spec">
+        <!-- Row 1, left: how the band reads. -->
         <div class="col">
-          <div>
-            <h3>So liest sich das Band</h3>
-            <div class="keygrid">
-              <span class="sw ord"><i></i><i></i><i></i></span>
-              <p>
-                Was <b>links</b> steht, bekommt Arbeit zuerst. Rangzahlen gibt es nicht.
-              </p>
-              <span class="sw wide"></span>
-              <p>
-                Die <b>Breite</b> ist, was volle Deckung dieses Rangs diesen Tick kostete.
-              </p>
-              <span class="sw fill"><i></i></span>
-              <p>
-                Die <b>Füllung</b> ist, was ankam — unterdeckt im Krisenrot. Auch das
-                volle Feld trägt seine <b>Zahl</b>.
-              </p>
-              <span class="sw ock"><i></i></span>
-              <p>
-                <b>Ocker</b> heißt deins. Die <b>Lippe</b> ist immer voll ocker, die
-                Füllung erreicht sie nie.
-              </p>
-              <span class="sw lbl"><i></i><i></i></span>
-              <p>
-                <b>Mindestbreite</b> überall — für Lippe und <b>Zeichen</b>. Vorratsziele
-                tragen eines, laufende Vorhaben keines; breite Felder den <b>Namen</b>.
-              </p>
-              <span class="sw two"
-                ><i class="f"></i>
-                <span class="lay dark"><i class="d"></i><i class="w"></i></span>
-                <span class="lay light"><i class="d"></i><i class="w"></i></span
-              ></span>
-              <p>
-                Beschriftungen wechseln an der <b>Füllkante</b> den Ton: hell auf der
-                Füllung, dunkel daneben. Die <b>Zahl</b> fällt nur bei Platznot neben dem
-                Zeichen.
-              </p>
-              <span class="sw hat"></span>
-              <p>
-                <b>Schraffur</b> ist Arbeit, die kein Verfahren abgerufen hat; zu schmal,
-                trägt sie allein.
-              </p>
-            </div>
-          </div>
-
-          <div>
-            <h3>Der Breiten-Satz: je Bedarf eine Wendung</h3>
-            <dl class="phrases">
-              <dt>Essen</dt>
-              <dd>Alle zu ernähren …</dd>
-              <dt>Feuer</dt>
-              <dd>Das Feuer für alle …</dd>
-              <dt>Kinderhut</dt>
-              <dd>Die Kinder zu hüten …</dd>
-              <dt>Kleidung</dt>
-              <dd>Alle einzukleiden …</dd>
-              <dt>Sattessen</dt>
-              <dd>Alle satt zu bekommen …</dd>
-              <dt>Behaglichkeit</dt>
-              <dd>Es allen behaglich zu machen …</dd>
-            </dl>
-            <p class="tail">
-              … <b>kostet diesen Tick 16 % der Arbeit — angekommen sind davon 10.</b> Voll
-              gedeckt ohne Zahl: „— und alle wurden satt."
+          <h3>So liest sich das Band</h3>
+          <div class="keygrid">
+            <span class="sw ord"><i></i><i></i><i></i></span>
+            <p>
+              Was <b>links</b> steht, bekommt Arbeit zuerst. Rangzahlen gibt es nicht.
+            </p>
+            <span class="sw wide"></span>
+            <p>
+              Die <b>Breite</b> ist, was volle Deckung dieses Rangs diesen Tick kostete.
+            </p>
+            <span class="sw fill"><i></i></span>
+            <p>
+              Die <b>Füllung</b> ist, was ankam — unterdeckt im Krisenrot. Auch das volle
+              Feld trägt seine <b>Zahl</b>.
+            </p>
+            <span class="sw ock"><i></i></span>
+            <p>
+              <b>Ocker</b> heißt deins. Die <b>Lippe</b> ist immer voll ocker, die Füllung
+              erreicht sie nie.
+            </p>
+            <span class="sw lbl"><i></i><i></i></span>
+            <p>
+              <b>Mindestbreite</b> überall — für Lippe und <b>Zeichen</b>. Vorratsziele
+              tragen eines, laufende Vorhaben keines; breite Felder den <b>Namen</b>.
+            </p>
+            <span class="sw two"
+              ><i class="f"></i>
+              <span class="lay dark"><i class="d"></i><i class="w"></i></span>
+              <span class="lay light"><i class="d"></i><i class="w"></i></span
+            ></span>
+            <p>
+              Beschriftungen wechseln an der <b>Füllkante</b> den Ton: hell auf der
+              Füllung, dunkel daneben. Die <b>Zahl</b> fällt nur bei Platznot neben dem
+              Zeichen.
+            </p>
+            <span class="sw hat"></span>
+            <p>
+              <b>Schraffur</b> ist Arbeit, die kein Verfahren abgerufen hat; zu schmal,
+              trägt sie allein.
             </p>
           </div>
 
-          <div>
-            <h3>Sonderfall: die Namen stoßen zusammen</h3>
-            <div class="panel">
-              <div class="bandrow tight">
-                <div class="fld" style="flex: 0 0 120px; --f: 100%">
-                  <span class="fill"></span>
-                  <span class="lay dark"
-                    ><svg class="ico"><use href="#i-berry" /></svg
-                    ><span class="nm">Essen</span><span class="pct num">100 %</span></span
-                  >
-                  <span class="lay light"
-                    ><svg class="ico"><use href="#i-berry" /></svg
-                    ><span class="nm">Essen</span><span class="pct num">100 %</span></span
-                  >
-                </div>
-                <!-- No number on these two: at the minimum width sign and number
-                     cannot stand side by side, so the number falls away. -->
-                <div class="fld claim store" style="flex: 0 0 44px; --f: 100%">
-                  <span class="fill"></span>
-                  <span class="lay dark"
-                    ><svg class="ico"><use href="#i-logs" /></svg
-                  ></span>
-                  <span class="lay light"
-                    ><svg class="ico"><use href="#i-logs" /></svg
-                  ></span>
-                  <span class="lip"><i></i><i></i><i></i></span>
-                </div>
-                <div class="fld claim store" style="flex: 0 0 44px; --f: 37%">
-                  <span class="fill"></span>
-                  <span class="lay dark"
-                    ><svg class="ico"><use href="#i-pit" /></svg
-                  ></span>
-                  <span class="lay light"
-                    ><svg class="ico"><use href="#i-pit" /></svg
-                  ></span>
-                  <span class="lip"><i></i><i></i><i></i></span>
-                </div>
-                <div class="fld short" style="flex: 0 0 92px; --f: 62%">
-                  <span class="fill"></span>
-                  <span class="lay dark"
-                    ><svg class="ico"><use href="#i-bowl" /></svg
-                    ><span class="pct crit num">62 %</span></span
-                  >
-                  <span class="lay light"
-                    ><svg class="ico"><use href="#i-bowl" /></svg
-                    ><span class="pct crit num">62 %</span></span
-                  >
-                </div>
+          <h3>So liest sich jede Karte</h3>
+          <div class="cardkey">
+            <p>
+              <b>Kopfsatz · Name mit Stand · Kurve · Faktenzeile · Ursachen-Satz ·
+              Auswege</b> — nur der Kopfsatz ist von Hand geschrieben.
+            </p>
+            <p>
+              Die <b>Kurve</b> zeigt je Tick, was von dem ankam, was der Posten wollte;
+              die <b>Fehlfläche</b> trägt die Farbe dessen, was bremste — nur wo etwas
+              fehlte, je Karte eine eigene Legende.
+            </p>
+          </div>
+
+          <h3>Sonderfall: die Namen stoßen zusammen</h3>
+          <div class="panel">
+            <div class="bandrow tight">
+              <div class="fld" style="flex: 0 0 120px; --f: 100%">
+                <span class="fill"></span>
+                <span class="lay dark"
+                  ><svg class="ico"><use href="#i-berry" /></svg
+                  ><span class="nm">Essen</span><span class="pct num">100 %</span></span
+                >
+                <span class="lay light"
+                  ><svg class="ico"><use href="#i-berry" /></svg
+                  ><span class="nm">Essen</span><span class="pct num">100 %</span></span
+                >
               </div>
-              <div class="collide" style="width: 320px">
-                <svg class="leader" width="320" height="13" viewBox="0 0 320 13">
-                  <path
-                    d="M145 0 L145 6 L70 6 L70 12"
-                    fill="none"
-                    stroke="#7d4f1a"
-                    stroke-width="1"
-                  />
-                  <path
-                    d="M192 0 L192 6 L246 6 L246 12"
-                    fill="none"
-                    stroke="#7d4f1a"
-                    stroke-width="1"
-                  />
-                </svg>
-                <span class="leadname" style="left: 70px">Brennholzvorrat</span>
-                <span class="leadname" style="left: 246px">Nahrungsvorrat</span>
+              <!-- No number on these two: at the minimum width sign and number
+                   cannot stand side by side, so the number falls away. -->
+              <div class="fld claim store" style="flex: 0 0 44px; --f: 100%">
+                <span class="fill"></span>
+                <span class="lay dark"
+                  ><svg class="ico"><use href="#i-logs" /></svg
+                ></span>
+                <span class="lay light"
+                  ><svg class="ico"><use href="#i-logs" /></svg
+                ></span>
+                <span class="lip"><i></i><i></i><i></i></span>
               </div>
-              <p class="cap">
-                Überlappende Namen rücken auseinander; eine dünne Linie führt zurück. Die
-                Zeile bleibt eine Zeile hoch.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="col">
-          <h3>Erklärkarte eines Anspruchs — laufendes Vorhaben</h3>
-          <div class="explain">
-            <h4>Fischernetz <span class="cov build num">gebaut 50 %</span></h4>
-            <p class="means">
-              Das Netz liegt am Ufer, so weit geknüpft, wie du knüpfen ließest; kein Tick
-              Arbeit daran geht verloren.
-            </p>
-            <p class="cost sub num">
-              Arbeit 20 · ≈ 5 Ticks · bei diesem Rang noch ~9 Ticks
-            </p>
-            <p class="width">
-              Am Netz weiterzuknüpfen kostet diesen Tick <b class="num">6 %</b> der Arbeit
-              — angekommen ist davon <b>nichts</b>.
-            </p>
-            <!-- The grips of the running project. The claim card succeeds the old
-                 ladder row, so rank (by dragging the segment), pause and abort all
-                 live at the band now. -->
-            <div class="grips">
-              <button title="Das Netz liegen lassen">Pause</button>
-              <button class="stop" title="Das halbe Netz aufgeben">Abbrechen</button>
-            </div>
-            <div class="rule"></div>
-            <p><b>Niemand knüpft daran</b> — was davor steht, nimmt alles.</p>
-            <div class="ways">
-              <div class="way">
-                <span>Vor Kleidung ziehen — dann fertig in ~3 Ticks.</span>
-                <button title="Anspruch nach vorn ziehen">↑</button>
+              <div class="fld claim store" style="flex: 0 0 44px; --f: 37%">
+                <span class="fill"></span>
+                <span class="lay dark"
+                  ><svg class="ico"><use href="#i-pit" /></svg
+                ></span>
+                <span class="lay light"
+                  ><svg class="ico"><use href="#i-pit" /></svg
+                ></span>
+                <span class="lip"><i></i><i></i><i></i></span>
+              </div>
+              <div class="fld short" style="flex: 0 0 92px; --f: 62%">
+                <span class="fill"></span>
+                <span class="lay dark"
+                  ><svg class="ico"><use href="#i-bowl" /></svg
+                  ><span class="pct crit num">62 %</span></span
+                >
+                <span class="lay light"
+                  ><svg class="ico"><use href="#i-bowl" /></svg
+                  ><span class="pct crit num">62 %</span></span
+                >
               </div>
             </div>
-          </div>
-
-          <h3>… und eines Vorratsziels, dessen Menge du setzt</h3>
-          <div class="explain">
-            <h4>Brennholzvorrat <span class="cov store num">gefüllt 100 %</span></h4>
-            <p class="means">
-              Das Brennholz am Lager rührt niemand an, bis das Feuer es holt — dafür
-              hältst du es zurück.
-            </p>
-            <p class="cost sub num">Ziel 14 · hält ~6 Ticks Feuer</p>
-            <p class="width">
-              Das Lager voll zu halten kostet diesen Tick <b class="num">1 %</b> der
-              Arbeit — und das Holz kam an.
-            </p>
-            <div class="goalgrip">
-              <span class="sub">Ziel</span>
-              <div class="slider"><span class="knob" style="left: 46%"></span></div>
-              <span class="sub num">14</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="col">
-          <!-- The need card floats at its field: the beak sits over the centre of
-               "Sattessen", and the card opens below the band, so it never covers a
-               neighbouring lip - the curve inside it least of all. -->
-          <div class="explain">
-            <span class="beak" style="left: 29px"></span>
-            <h4>Sattessen <span class="cov num">Deckung 62 %</span></h4>
-            <p class="width">
-              Alle satt zu bekommen kostet diesen Tick <b class="num">16 %</b> der Arbeit
-              — angekommen sind davon <b class="num">10</b>.
-            </p>
-            <div class="curve">
-              <svg
-                width="100%"
-                height="50"
-                viewBox="0 0 366 66"
-                preserveAspectRatio="none"
-              >
-                <line
-                  x1="0"
-                  y1="8"
-                  x2="366"
-                  y2="8"
-                  stroke="#cbd1cb"
-                  stroke-width="1"
-                  stroke-dasharray="3 4"
-                  vector-effect="non-scaling-stroke"
-                />
+            <div class="collide" style="width: 320px">
+              <svg class="leader" width="320" height="13" viewBox="0 0 320 13">
                 <path
-                  d="M0 8 L19 8 L39 8 L58 8 L77 8 L96 10.4 L116 8 L135 8 L154 14 L173 17.6 L193 12.8 L212 20 L231 27.2 L250 32 L270 36.8 L289 41.6 L308 44 L328 48.8 L347 51.2 L366 53.6 L366 66 L0 66 Z"
-                  fill="#ecd7d1"
-                />
-                <path
-                  d="M0 8 L19 8 L39 8 L58 8 L77 8 L96 10.4 L116 8 L135 8 L154 14 L173 17.6 L193 12.8 L212 20 L231 27.2 L250 32 L270 36.8 L289 41.6 L308 44 L328 48.8 L347 51.2 L366 53.6"
+                  d="M145 0 L145 6 L70 6 L70 12"
                   fill="none"
-                  stroke="#97352c"
-                  stroke-width="1.6"
-                  vector-effect="non-scaling-stroke"
+                  stroke="#7d4f1a"
+                  stroke-width="1"
+                />
+                <path
+                  d="M192 0 L192 6 L246 6 L246 12"
+                  fill="none"
+                  stroke="#7d4f1a"
+                  stroke-width="1"
                 />
               </svg>
-              <div class="sub num" style="display: flex; justify-content: space-between">
-                <span>Deckung, Tick 77 bis 96</span
-                ><span>gestrichelt: volle Deckung</span>
-              </div>
+              <span class="leadname" style="left: 70px">Brennholzvorrat</span>
+              <span class="leadname" style="left: 246px">Nahrungsvorrat</span>
             </div>
-            <div class="rule"></div>
-            <p><b>Nahrung wird knapp</b> — der Fischfang brach ein.</p>
-            <div class="ways">
-              <div class="way">
-                <span>Das Netz ist angefangen — Arbeit vorziehen?</span>
-                <button title="Anspruch nach vorn ziehen">↑</button>
-              </div>
-              <div class="way">
-                <span>Im nächsten Revier ist die Suche leichter.</span>
-                <button title="Weiterziehen">→</button>
-              </div>
-            </div>
-          </div>
-
-          <h3>… und eines Vorrats, dessen Größe die Gruben fassen</h3>
-          <div class="explain">
-            <h4>Nahrungsvorrat <span class="cov store num">gefüllt 37 %</span></h4>
-            <p class="means">
-              Deine Gruben halten die Nahrung zurück, von der ihr lebt, wenn die Suche
-              nichts hergibt.
-            </p>
-            <p class="cost sub num">Ziel = was 3 Gruben fassen · hält ~4 Ticks Hunger</p>
-            <p class="width">
-              Die Gruben zu füllen kostet diesen Tick <b class="num">11 %</b> der Arbeit —
-              angekommen ist davon <b>nichts</b>.
+            <p class="cap">
+              Überlappende Namen rücken auseinander, eine dünne Linie führt zurück; die
+              Zeile bleibt eine Zeile hoch.
             </p>
           </div>
 
@@ -480,11 +344,312 @@
             <div class="face">Ä</div>
           </div>
           <p class="cap">
-            <b>Ersterklärung</b> — die Älteste sagt es einmal, wenn das Segment zuerst
-            erscheint.
+            <b>Ersterklärung des Nahrungsvorrats</b> — einmal beim ersten Erscheinen des
+            Segments, nie auf der Karte.
           </p>
+        </div>
+
+        <div class="col">
+          <h3>Erklärkarte eines Anspruchs — laufendes Vorhaben</h3>
+          <div class="explain">
+            <p class="means">Ein Netz fängt den Fisch mit weniger Arbeit.</p>
+            <h4>Fischernetz <span class="cov build num">gebaut 50 %</span></h4>
+            <div class="curve" data-curve="netz"></div>
+            <p class="cost sub num">
+              Fertig frühestens: 3 Ticks · je Tick bis zu 6 % der Arbeit, samt
+              Brennholz-Beschaffung.
+            </p>
+            <!-- The grips of the running project. The claim card succeeds the old
+                 ladder row, so rank (by dragging the segment), pause and abort all
+                 live at the band now. -->
+            <div class="grips">
+              <button title="Das Netz liegen lassen">Pause</button>
+              <button class="stop" title="Das halbe Netz aufgeben">Abbrechen</button>
+            </div>
+            <div class="rule"></div>
+            <p class="cause">
+              Gebremst in <b class="num">4 von 9</b> Ticks seit dem Start — es fehlte an
+              <b>Brennholz</b> und <b>Arbeit</b>.
+            </p>
+            <div class="ways">
+              <div class="way">
+                <span
+                  >Vor Kleidung ziehen — das Netz wird dann vor der Kleidung
+                  bedient.</span
+                >
+                <button title="Anspruch nach vorn ziehen">↑</button>
+              </div>
+            </div>
+          </div>
+
+          <h3>… und eines Vorratsziels, dessen Menge du setzt — nichts bremste</h3>
+          <div class="explain">
+            <p class="means">
+              Dein Brennholz am Lager trägt das Feuer durch die schlechten Ticks.
+            </p>
+            <h4>Brennholzvorrat <span class="cov store num">gefüllt 100 %</span></h4>
+            <div class="curve" data-curve="holz"></div>
+            <p class="cost sub num">
+              Voll zu halten: 1 % der Arbeit dieses Ticks · angekommen: alle
+            </p>
+            <p class="cost sub num">Ziel 14 · hält ~6 Ticks Feuer</p>
+            <div class="goalgrip">
+              <span class="sub">Ziel</span>
+              <div class="slider"><span class="knob" style="left: 46%"></span></div>
+              <span class="sub num">14</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="explain">
+            <span class="beak" style="left: 29px"></span>
+            <p class="means">Wer satt ist, schafft mehr.</p>
+            <h4>Sattessen <span class="cov num">Deckung 62 %</span></h4>
+            <div class="curve" data-curve="satt"></div>
+            <p class="cost sub num">
+              Voll zu decken: 16 % der Arbeit dieses Ticks · angekommen: 10
+            </p>
+            <div class="rule"></div>
+            <p class="cause">
+              Unterdeckt in <b class="num">4 der letzten 20</b> Ticks — es fehlte an
+              <b>Fisch</b> und <b>Beeren</b>.
+            </p>
+            <div class="ways">
+              <div class="way">
+                <span>Das Netz ist angefangen — vor Sattessen ziehen?</span>
+                <button title="Anspruch nach vorn ziehen">↑</button>
+              </div>
+              <div class="way">
+                <span>Im nächsten Revier ist die Suche leichter.</span>
+                <button title="Weiterziehen-Dialog öffnen">→</button>
+              </div>
+            </div>
+          </div>
+
+          <h3>… und eines Vorrats, dessen Größe die Gruben fassen</h3>
+          <div class="explain">
+            <p class="means">
+              Deine Gruben halten die Nahrung zurück, von der ihr lebt, wenn die Suche
+              nichts hergibt.
+            </p>
+            <h4>Nahrungsvorrat <span class="cov store num">gefüllt 37 %</span></h4>
+            <div class="curve" data-curve="grube"></div>
+            <p class="cost sub num">
+              Voll zu halten: 11 % der Arbeit dieses Ticks · angekommen: nichts
+            </p>
+            <p class="cost sub num">Ziel = was 3 Gruben fassen · hält ~4 Ticks Hunger</p>
+            <div class="rule"></div>
+            <p class="cause">
+              Unterdeckt in <b class="num">6 von 14</b> Ticks seit dem Umstellen — es
+              fehlte an <b>Arbeit</b>.
+            </p>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- ------------------------------------------------------------------
+         The card curves. Every card reads the same way: per tick the share
+         of what the item wanted in that tick that actually arrived, a
+         dashed line for full, and the shortfall between curve and full
+         line filled per tick in the colour of the resource that limited
+         the step - the braking carpet. Colour appears only where something
+         was missing and is exactly as tall as what was missing; on a tie
+         two colours share the tick. No threshold for small shortfalls, no
+         mark of its own for a tick that got nothing.
+         The legend is card-local: every card is braked by different
+         resources, and a global colour canon is nobody's to remember.
+         The series below are frozen recordings of a run, written out here
+         because this sheet has no model behind it.
+         ------------------------------------------------------------------ -->
+    <script>
+      (function () {
+        // The braking resources of these four cards. All cool: the one warm
+        // identity of the palette belongs to the project ochre.
+        const R = {
+          work: { n: "Arbeit", c: "var(--brake-work)" },
+          wood: { n: "Brennholz", c: "var(--brake-wood)" },
+          fish: { n: "Fisch", c: "var(--p-fish)" },
+          berry: { n: "Beeren", c: "var(--p-gather)" },
+        };
+
+        // g = the share that arrived, b = what braked the tick (two entries
+        // on a tie). The window of each card is the window its cause
+        // sentence counts over, so drawing and sentence can never disagree.
+        const CURVES = {
+          // Started at tick 88, so nine ticks stand here - the window the
+          // cause sentence counts over.
+          netz: {
+            from: 88,
+            d: [
+              { g: 1.0, b: [] },
+              { g: 1.0, b: [] },
+              { g: 0.42, b: ["wood"] },
+              { g: 1.0, b: [] },
+              { g: 0.28, b: ["work"] },
+              { g: 1.0, b: [] },
+              { g: 0.18, b: ["wood"] },
+              { g: 1.0, b: [] },
+              { g: 0.0, b: ["wood", "work"] },
+            ],
+          },
+          // A need has no action of its own that could reset a window, so
+          // the window of the curve holds: the last twenty ticks.
+          satt: {
+            from: 77,
+            d: [
+              { g: 1.0, b: [] },
+              { g: 1.0, b: [] },
+              { g: 1.0, b: [] },
+              { g: 1.0, b: [] },
+              { g: 1.0, b: [] },
+              { g: 1.0, b: [] },
+              { g: 1.0, b: [] },
+              { g: 0.88, b: ["fish"] },
+              { g: 1.0, b: [] },
+              { g: 1.0, b: [] },
+              { g: 1.0, b: [] },
+              { g: 1.0, b: [] },
+              { g: 0.71, b: ["fish"] },
+              { g: 1.0, b: [] },
+              { g: 1.0, b: [] },
+              { g: 1.0, b: [] },
+              { g: 0.8, b: ["berry"] },
+              { g: 1.0, b: [] },
+              { g: 1.0, b: [] },
+              { g: 0.62, b: ["fish"] },
+            ],
+          },
+          // The quiet state: the store sat at its goal and got everything it
+          // asked for, so the carpet stays empty and no cause sentence
+          // appears under it.
+          holz: {
+            from: 77,
+            d: Array.from({ length: 20 }, () => ({ g: 1.0, b: [] })),
+          },
+          // The rank was moved fourteen ticks ago; that action opened the
+          // window this card counts over.
+          grube: {
+            from: 83,
+            d: [
+              { g: 1.0, b: [] },
+              { g: 0.55, b: ["work"] },
+              { g: 1.0, b: [] },
+              { g: 0.4, b: ["work"] },
+              { g: 0.1, b: ["work"] },
+              { g: 1.0, b: [] },
+              { g: 0.62, b: ["work"] },
+              { g: 1.0, b: [] },
+              { g: 1.0, b: [] },
+              { g: 0.35, b: ["work"] },
+              { g: 1.0, b: [] },
+              { g: 1.0, b: [] },
+              { g: 1.0, b: [] },
+              { g: 0.0, b: ["work"] },
+            ],
+          },
+        };
+
+        // Plot 28 high, the legend row under it, 52 in all - the room a card
+        // can give a curve without pushing its remedies off the screen.
+        const TOP = 5,
+          BASE = 33,
+          LEG = 41,
+          H = 52;
+
+        function draw(host, s) {
+          const W = Math.round(host.getBoundingClientRect().width);
+          const N = s.d.length,
+            TW = W / N;
+          const cx = (i) => i * TW + TW / 2;
+          const y = (v) => TOP + (1 - v) * (BASE - TOP);
+
+          // The curve runs through the tick centres and reaches both edges
+          // flat, so the first and the last tick are as wide as any other.
+          const spine = s.d
+            .map((p, i) => ` L${cx(i).toFixed(1)} ${y(p.g).toFixed(1)}`)
+            .join("");
+          const curve = `M0 ${y(s.d[0].g).toFixed(1)}${spine} L${W} ${y(s.d[N - 1].g).toFixed(1)}`;
+          const under = `M0 ${BASE}${` L0 ${y(s.d[0].g).toFixed(1)}`}${spine} L${W} ${y(s.d[N - 1].g).toFixed(1)} L${W} ${BASE} Z`;
+          // The shortfall: everything between the full line and the curve.
+          // This is the area the brake colour lives in - where nothing was
+          // missing there is nothing to colour, which is the point.
+          const miss = `M0 ${TOP} L0 ${y(s.d[0].g).toFixed(1)}${spine} L${W} ${y(s.d[N - 1].g).toFixed(1)} L${W} ${TOP} Z`;
+
+          const uid = host.dataset.curve;
+          let g = `<defs><clipPath id="miss-${uid}"><path d="${miss}"/></clipPath></defs>`;
+          g += `<path d="${under}" fill="var(--sunk)"/>`;
+
+          // The blocks inside the shortfall, clipped to it. Neighbouring ticks
+          // braked by the same resource are drawn as ONE rectangle: a stretch
+          // of one brake should read as a stretch, and two abutting rectangles
+          // would leave a seam where their edges fall between pixels. A tie is
+          // split down the middle with a hairline of surface between the
+          // halves, so the split reads as a split and not as a shade, and where
+          // the colour changes from one tick to the next a hairline parts them.
+          g += `<g clip-path="url(#miss-${uid})">`;
+          const box = (x, w, c) =>
+            `<rect x="${x.toFixed(1)}" y="${TOP}" width="${w.toFixed(1)}" height="${BASE - TOP}" fill="${c}"/>`;
+          for (let i = 0; i < N; ) {
+            const b = s.d[i].b;
+            if (!b.length) {
+              i++;
+              continue;
+            }
+            let j = i;
+            while (j + 1 < N && s.d[j + 1].b.join() === b.join() && b.length === 1) j++;
+            const x = i * TW,
+              w = (j - i + 1) * TW;
+            if (b.length === 1) {
+              g += box(x, w, R[b[0]].c);
+            } else {
+              g += box(x, TW / 2 - 0.5, R[b[0]].c);
+              g += box(x + TW / 2 + 0.5, TW / 2 - 0.5, R[b[1]].c);
+            }
+            if (i && s.d[i - 1].b.length)
+              g += box(x - 0.5, 1, "var(--surface)");
+            i = j + 1;
+          }
+          g += `</g>`;
+
+          g += `<line x1="0" y1="${TOP}" x2="${W}" y2="${TOP}" stroke="var(--line)" stroke-width="1" stroke-dasharray="3 4"/>`;
+          g += `<line x1="0" y1="${BASE}" x2="${W}" y2="${BASE}" stroke="var(--line)" stroke-width="1"/>`;
+          g += `<path d="${curve}" fill="none" stroke="var(--ink)" stroke-width="1.4" stroke-linejoin="round"/>`;
+
+          // The card's own legend: the resources that braked in this window,
+          // in the order the cause sentence names them, and at the right end
+          // the tick range and what the dashed line means.
+          const seen = [];
+          s.d.forEach((p) => p.b.forEach((k) => seen.indexOf(k) < 0 && seen.push(k)));
+          const tie = s.d.some((p) => p.b.length > 1);
+          let x = 0;
+          const chip = (c) => {
+            const r = `<rect x="${x.toFixed(1)}" y="${LEG}" width="9" height="9" rx="1" fill="${c}"/>`;
+            x += 12;
+            return r;
+          };
+          for (const k of seen) {
+            g += chip(R[k].c);
+            g += `<text x="${x.toFixed(1)}" y="${LEG + 7.4}" font-size="9" fill="var(--ink)">${R[k].n}</text>`;
+            x += R[k].n.length * 4.9 + 11;
+          }
+          if (tie) {
+            g += `<rect x="${x.toFixed(1)}" y="${LEG}" width="4.5" height="9" rx="1" fill="${R[seen[0]].c}"/>`;
+            g += `<rect x="${(x + 4.5).toFixed(1)}" y="${LEG}" width="4.5" height="9" rx="1" fill="${R[seen[1]].c}"/>`;
+            x += 12;
+            g += `<text x="${x.toFixed(1)}" y="${LEG + 7.4}" font-size="9" fill="var(--ink)">beide</text>`;
+          }
+          const tail = `Tick ${s.from}–${s.from + N - 1} · ┄ voll`;
+          g += `<text x="${W}" y="${LEG + 7.4}" font-size="8.5" fill="var(--muted)" text-anchor="end">${tail}</text>`;
+
+          host.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${g}</svg>`;
+        }
+
+        document
+          .querySelectorAll("[data-curve]")
+          .forEach((el) => draw(el, CURVES[el.dataset.curve]));
+      })();
+    </script>
   </body>
 </html>
