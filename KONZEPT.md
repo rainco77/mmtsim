@@ -4267,8 +4267,9 @@ absolute Ressourcenzahl erscheint je auf einer Spieler-Karte**.
    eigener Zustands-Satz), beim Bedarf der Wirkungs-Satz **streng entlang der im
    Inhalt festgelegten Wirkachse** (Überleben, Arbeitskraft oder Geburten — eine
    Achse je Rang, nie frei erfunden; Sattessen trägt die Arbeitskraft: „Wer satt
-   ist, schafft mehr.", Behaglichkeit die Geburten: „Wo es behaglich ist, kommen
-   Kinder zur Welt."), beim Vorrat der Zweck-Satz („Dein Brennholz am Lager trägt
+   ist, schafft mehr.", Behaglichkeit das Überleben der Kleinen: „Ein warmes Lager
+   bringt die Kleinen durch." — die Geburten hängen allein an der Bremse aus den
+   Suchkosten, an keiner Deckung), beim Vorrat der Zweck-Satz („Dein Brennholz am Lager trägt
    das Feuer durch die schlechten Ticks."). Wer die Sätze schreibt, schlägt die
    Mechanik dahinter im Inhalt nach.
 3. **Faktenzeile** — knapp, mit Punkt-Trennern, und **nur stehende Eigenschaften**;
