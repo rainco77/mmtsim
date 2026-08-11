@@ -140,6 +140,12 @@ export function laborPerformance(
  * One draw per random stream per tick (E24, E25). Every process reacts with its
  * own exposure — and two processes on the same stream break down together,
  * which is what makes moving to another stream a real spreading of risk.
+ *
+ * What was drawn is written into the state as well as into the context. The
+ * context is thrown away at the tick's end, and a draw cannot be had again
+ * afterwards: peeking the stream answers about the next tick. So anything that
+ * wants to say what *this* tick's weather was — the log, the unit costs of a
+ * chain — reads the record rather than reaching for the stream.
  */
 export class ShockPhase implements Phase {
   readonly id = "shocks";
@@ -147,7 +153,7 @@ export class ShockPhase implements Phase {
   run(state: GameState, index: ConfigIndex, ctx: TickContext): GameState {
     const { shocks, random } = drawShocks(state.random, index.config);
     ctx.shocks = shocks;
-    return { ...state, random };
+    return { ...state, random, lastShocks: shocks };
   }
 }
 

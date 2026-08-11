@@ -8,6 +8,7 @@ import {
   computeUnlocks,
   createState,
   derive,
+  drawShocks,
   effectTypesWithHandler,
   indexConfig,
   nextRangeQuality,
@@ -667,9 +668,122 @@ describe("allocation runs rank by rank (E21)", () => {
     };
     const d = derive(state, index);
     expect(d.coverage["food_survival"] ?? 1).toBeLessThan(1);
-    expect(d.bindingTier).toBe("food_survival");
-    expect(d.binding.kind).not.toBe("none");
-    expect(d.binding.what).not.toBe("food");
+    // The answer is the rank's own and there is no tick-wide one beside it:
+    // every rank draws on the one pot, so a single figure for the whole tick
+    // belongs to some other rank as often as not.
+    const short = d.tiers.find((t) => t.tier === "food_survival");
+    expect(short?.binding.kind).not.toBe("none");
+    expect(short?.binding.what).not.toBe("food");
+  });
+
+  /**
+   * The weather is the fourth kind of brake and it is the **residual**: a rank
+   * that went short although the solution exhausted no input of its chain was
+   * held back by the draw and by nothing else.
+   *
+   * The case cannot arise out of this epoch's content — every process in it
+   * finds its return and therefore sees the draw while it works, so the plan
+   * promises exactly what the draw allows. It is reachable only where the
+   * effort goes out before the draw is known, and a sown crop is the plainest
+   * such thing. So one is built here: it takes hands and nothing else, and
+   * there are hands to spare, so nothing whatever can run out on it.
+   */
+  describe("the weather as the fourth brake (T9)", () => {
+    const sown: Config = {
+      ...STAGE1,
+      projects: [],
+      stocks: [...STAGE1.stocks, { id: "grain", decayPerTick: 1 }],
+      branches: [
+        ...STAGE1.branches,
+        { id: "grain", produces: "grain", unlockedFromStart: true },
+      ],
+      processes: [
+        ...STAGE1.processes,
+        {
+          id: "sowing",
+          branch: "grain",
+          activity: "sowing",
+          priority: 100,
+          unlockedFromStart: true,
+          // One sows and the weather decides afterwards: the effort is
+          // committed before the draw is known.
+          yield: "committed",
+          exposure: { weather: 1 },
+          capacityPerOutput: {},
+          intermediatesPerOutput: { labor: 1 },
+          qualityWeight: 0,
+        },
+      ],
+      needTiers: [
+        {
+          id: "grain_need",
+          rank: 100,
+          stock: "grain",
+          branch: "grain",
+          // Small, so the hands are never the thing that binds.
+          perHead: 0.2,
+          perHeadWeight: { growing: 1, grown: 1 },
+          consumedOnUse: 1,
+        },
+      ],
+    };
+    const sownIndex = indexConfig(sown);
+
+    /** A seed whose draw falls below the one the plan reckoned with. */
+    const poorDraw = (): { state: GameState; shocks: Record<string, number> } => {
+      const planned = 1 - sown.risk.caution;
+      for (let seed = 1; seed < 200; seed += 1) {
+        const state = createState(sown, { seed });
+        const shocks = drawShocks(state.random, sown);
+        if ((shocks.shocks["weather"] ?? 1) < planned - 1e-6)
+          return { state, shocks: { ...shocks.shocks } };
+      }
+      throw new Error("no seed drew below the planned draw");
+    };
+
+    const outcome = (): AllocationResult => {
+      const { state, shocks } = poorDraw();
+      const unlocks = computeUnlocks(state, sownIndex);
+      return allocate({
+        state,
+        index: sownIndex,
+        sectorId: "households",
+        shocks,
+        tierPerHead: unlocks.tierPerHead,
+        unlockedBranches: unlocks.branches,
+        unlockedProcesses: unlocks.processes,
+      });
+    };
+
+    it("names the weather where the rank went short and nothing ran out", () => {
+      const tier = outcome().tiers.find((t) => t.tier === "grain_need");
+      expect(tier?.coverage ?? 1).toBeLessThan(1);
+      expect(tier?.binding.kind).toBe("weather");
+      // Nothing is named beside it: there was nothing to name.
+      expect(tier?.binding.what).toBeUndefined();
+    });
+
+    it("between plan and outcome lies only the draw", () => {
+      const { state, shocks } = poorDraw();
+      const unlocks = computeUnlocks(state, sownIndex);
+      const result = allocate({
+        state,
+        index: sownIndex,
+        sectorId: "households",
+        shocks,
+        tierPerHead: unlocks.tierPerHead,
+        unlockedBranches: unlocks.branches,
+        unlockedProcesses: unlocks.processes,
+      });
+      const tier = result.tiers.find((t) => t.tier === "grain_need");
+      // The plan committed enough to reach its target at the draw it reckoned
+      // with; what came back is that same commitment at the draw that fell. So
+      // the coverage is the one draw over the other and nothing else.
+      expect(tier?.coverage ?? 0).toBeCloseTo(
+        (shocks["weather"] ?? 1) / (1 - sown.risk.caution),
+        6,
+      );
+    });
   });
 });
 
@@ -1263,8 +1377,9 @@ describe("supply chains (E4)", () => {
     };
     const d = derive(state, index);
     expect(d.coverage["warmth_fire"] ?? 1).toBeLessThan(1);
-    expect(d.binding.kind).toBe("stock");
-    expect(d.binding.what).toBe("deadwood");
+    const fire = d.tiers.find((t) => t.tier === "warmth_fire");
+    expect(fire?.binding.kind).toBe("stock");
+    expect(fire?.binding.what).toBe("deadwood");
   });
 });
 

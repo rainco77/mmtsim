@@ -1,5 +1,6 @@
 import {
   HOUSEHOLDS,
+  shockFactor,
   type ConfigIndex,
   type GameState,
   type ProcessDef,
@@ -71,6 +72,18 @@ const LABOR: StockId = "labor";
  * the tick's runs, so it carries what searching cost this tick: the effort of
  * a thinning range is charged to the labour of the process that searches it.
  *
+ * **The draw is divided out of the recipe.** What a run put in stands against
+ * what came out of it, and between the two lies the tick's draw: a recipe's
+ * coefficient is per unit of the level that was set, while the output is that
+ * level times the draw. Left in, a good draw made every chain look cheap in its
+ * inputs and dear in nothing, and the band's widths moved with the weather
+ * instead of with the work. The labour needs no such correction — it is read
+ * off the run as it really went.
+ *
+ * The draw is read out of the tick's record and never peeked from the stream:
+ * peeking answers about the coming tick, and then the band would price this
+ * tick with next tick's weather.
+ *
  * A good nothing was made of this tick has no price here. The last one it had
  * stands in for it — see `unitCost` below, which is where that rule lives.
  */
@@ -89,9 +102,11 @@ function unitCostsOfTick(state: GameState, index: ConfigIndex): Map<StockId, num
     const entry = tally.get(made) ?? { output: 0, labor: 0, inputs: new Map() };
     entry.output += run.output;
     entry.labor += run.labor;
+    const shock = shockFactor(process, state.lastShocks);
     for (const [id, per] of Object.entries(process.intermediatesPerOutput)) {
       if (id === LABOR || per <= 0) continue;
-      entry.inputs.set(id, (entry.inputs.get(id) ?? 0) + run.output * per);
+      const perOutput = shock > 0 ? per / shock : per;
+      entry.inputs.set(id, (entry.inputs.get(id) ?? 0) + run.output * perOutput);
     }
     tally.set(made, entry);
   }

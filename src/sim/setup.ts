@@ -131,6 +131,8 @@ export function createState(config: Config, options: StartOptions): GameState {
     // No tick has run, so nothing has been done yet.
     lastBorn: 0,
     lastSurvival: {},
+    // No tick has drawn yet, so there is no draw to report.
+    lastShocks: {},
     lastLabor: { available: 0, toProduction: 0, toProjects: 0, unused: 0 },
     lastBirthFactors: { coverage: 1, carrying: 1 },
     lastRuns: [],

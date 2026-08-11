@@ -39,12 +39,22 @@ import { capacityOf, weighedHeads, type GameState } from "./state.ts";
 /**
  * Why a tier could not be covered further.
  *
- * Two kinds, because the model knows two kinds of input (E4): capacity, which
- * is occupied and given back, and a stock, which is used up. Labour used to be
- * a third and is not any more — a shortage of hands shows up as the capacity
- * "people" running out, like any other.
+ * Three kinds. Two of them are the model's two kinds of input (E4): capacity,
+ * which is occupied and given back, and a stock, which is used up. Labour used
+ * to be a third and is not any more — a shortage of hands shows up as the
+ * capacity "people" running out, like any other.
+ *
+ * The third is **the weather, and it is the residual**: a rank that did not get
+ * what it asked for although the solution exhausted no input of its chain was
+ * held back by the draw and by nothing else. It is reckoned against the tick's
+ * real factors, never against the ones the plan reckoned with — the coverage
+ * that decides is the one the tick came out with. Where a process sees the draw
+ * while it works, the case cannot arise: what the plan promised is what the
+ * draw already said. It arises where the effort goes out before the draw is
+ * known — one has sown — and there naming an input would be a guess and saying
+ * nothing at all would leave the reader with an unexplained gap.
  */
-export type BindingKind = "capacity" | "stock" | "none";
+export type BindingKind = "capacity" | "stock" | "weather" | "none";
 
 export interface Binding {
   readonly kind: BindingKind;
@@ -77,9 +87,9 @@ export interface TierOutcome {
    * all of them it names sources a rank never touched — care answering "it was
    * the fish", the woodpile answering "berries and fish".
    *
-   * Nothing, too, where the plan covered the rank and the draw then spoiled it:
-   * no input was short when the plan was made, and naming one afterwards would
-   * be a guess.
+   * The weather, where the rank came out short and the solution exhausted no
+   * input of its chain: nothing was there to be had more of, so what is left is
+   * the draw.
    */
   readonly binding: Binding;
 }
@@ -134,16 +144,6 @@ export interface AllocationResult {
    * the utilisation of the people read zero while they were fully at work.
    */
   readonly capacityTotal: Readonly<Record<CapacityId, number>>;
-
-  /**
-   * The lowest tier that is not fully covered, and the tick's worst missing
-   * input over the whole plan (E6).
-   *
-   * A tick-wide figure, not the rank's own: what stopped the named tier stands
-   * beside it in `tiers`, per rank.
-   */
-  readonly binding: Binding;
-  readonly bindingTier?: NeedTierId;
 
   /**
    * What each reserve claim came up short of — the same per-rank answer the
@@ -903,12 +903,7 @@ export function allocate(input: AllocationInput): AllocationResult {
   // reckoned against a cautious draw, never the need less the store. So a good
   // draw leaves something over and a bad one eats into it.
   const tiers: TierOutcome[] = [];
-  let overallBinding: Binding = { kind: "none" };
-  let bindingTier: string | undefined;
 
-  // What the plan could not get enough of at all — the worst input over the
-  // whole tick, which is what `binding` below reports.
-  const planShort = bindingFromPlan(plan, index);
   /**
    * What **this** rank alone ran out of. One figure for every rank named
    * sources a rank had never touched: the woodpile answering "berries and
@@ -917,10 +912,29 @@ export function allocate(input: AllocationInput): AllocationResult {
   const shortOf = (tierId: NeedTierId): Binding =>
     bindingFrom(plan.shortfallByTier?.get(tierId), index);
 
+  /**
+   * The brake of one rank: what its own chain ran out of, and where it ran out
+   * of nothing although it went short, the weather as the residual.
+   *
+   * `short` is the tick's own outcome and never the plan's expectation, which
+   * is the whole point: between what was planned and what came out lies only
+   * the draw, so a gap the solution cannot account for is the draw's.
+   */
+  const brakeOf = (tierId: NeedTierId, short: boolean): Binding => {
+    if (!short) return { kind: "none" };
+    const found = shortOf(tierId);
+    return found.kind === "none" ? { kind: "weather" } : found;
+  };
+
+  // A claim is not rationed in the tier loop below, so the tick's own outcome
+  // for it is what the plan could not fit: it asked for a closing balance and
+  // was cut back to what there was room for.
+  const claimShort = new Set(plan.droppedTiers);
   const claimBinding: Record<string, Binding> = {};
   for (const demand of demands) {
     const id = demand.tier.id;
-    if (id.startsWith("keep:") || id.startsWith("store:")) claimBinding[id] = shortOf(id);
+    if (id.startsWith("keep:") || id.startsWith("store:"))
+      claimBinding[id] = brakeOf(id, claimShort.has(id));
   }
 
   for (const tier of tierList) {
@@ -933,12 +947,8 @@ export function allocate(input: AllocationInput): AllocationResult {
     pools.stock[tier.stock] = (pools.stock[tier.stock] ?? 0) - served;
 
     const coverage = need > 0 ? Math.min(1, served / need) : 1;
-    const binding = coverage < 1 - 1e-9 ? shortOf(tier.id) : { kind: "none" as const };
+    const binding = brakeOf(tier.id, coverage < 1 - 1e-9);
     tiers.push({ tier: tier.id, rank: tier.rank, need, served, coverage, binding });
-    if (coverage < 1 - 1e-9 && bindingTier === undefined) {
-      overallBinding = planShort;
-      bindingTier = tier.id;
-    }
 
     const eaten = served * tier.consumedOnUse;
     if (eaten > 0) consumed[tier.stock] = (consumed[tier.stock] ?? 0) + eaten;
@@ -980,8 +990,6 @@ export function allocate(input: AllocationInput): AllocationResult {
         pool.available,
       ]),
     ),
-    binding: overallBinding,
-    ...(bindingTier === undefined ? {} : { bindingTier }),
     claimBinding,
     leadProcess: Object.fromEntries(leadProcess),
     orderingReason: Object.fromEntries(orderingReason),
@@ -1028,11 +1036,6 @@ function topological(
     }
   }
   return order;
-}
-
-/** Which input stopped the plan as a whole — the check on E6. */
-function bindingFromPlan(plan: Plan, index: ConfigIndex): Binding {
-  return bindingFrom(plan.shortfall, index);
 }
 
 /**

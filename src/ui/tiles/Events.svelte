@@ -111,7 +111,7 @@
   }
 
   $: entries = newestTickFirst(grow($game.history).slice(-40));
-  $: view = derive(currentState($game), index);
+  $: state = currentState($game);
 
   function line(entry: Entry): string {
     const params = { ...entry.params };
@@ -127,13 +127,21 @@
   }
 </script>
 
+<!--
+  The weather of the tick that has just run, out of its own record. Peeking the
+  stream instead would show the draw of the tick to come — a figure nothing on
+  the screen beside it has been reckoned with. A tick that has not run yet has
+  no weather to report, and then the line stays away rather than showing one.
+-->
 <div class="weather">
   {#each Object.keys(index.config.shocks) as shock (shock)}
-    <span
-      >{$t(`events.shock.${shock}`, {
-        value: (view.shocks[shock] ?? 1).toFixed(2),
-      })}</span
-    >
+    {#if state.lastShocks[shock] !== undefined}
+      <span
+        >{$t(`events.shock.${shock}`, {
+          value: (state.lastShocks[shock] ?? 1).toFixed(2),
+        })}</span
+      >
+    {/if}
   {/each}
 </div>
 
