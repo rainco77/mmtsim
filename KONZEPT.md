@@ -4356,7 +4356,41 @@ sagen haben: Titel + Stand („Arbeit liegt brach · 10 %") · Kopfsatz „Arbei
 niemand nutzt, ist am Tickende weg." · Stufenkurve des Brach-Anteils je Tick aus der
 Arbeits-Aufzeichnung. Keine Faktenzeile, kein Ursachen-Satz, keine Auswege in der
 ersten Stufe — die Gründe je Brach-Tick zeichnet der Kern nicht auf, und erfunden
-wird nichts. **Das Kurvenfenster jeder Karte umfasst die letzten 20 Ticks** —
+wird nichts. **Das Brach-Feld ist die eine Ausnahme der Mindestbreiten-Regel:** Es hat
+weder Zeichen noch Griff zu schützen — lag nichts brach, erscheint es gar nicht, und
+es wird nie künstlich breit gehalten.
+
+**Was die Bremsen-Aufzeichnung nennt (aus dem Live-Spiel von Paket 2 entschieden):**
+Ein Gut, das die Gemeinschaft selbst herstellt, wird nie als das Fehlende genannt —
+genannt wird die Stufe darüber (nicht das Holz, sondern das Totholz). **Fehlende
+Arbeit heißt am Spieler „Arbeit"**, nie „Menschen": Dass mehr Köpfe hülfen, kann die
+Rechnung nicht von einer besseren Rangordnung unterscheiden, also behauptet sie es
+nicht. Fehlmengen verschiedener Eingänge werden in ihren eigenen Einheiten
+verglichen, die größte gewinnt — ein gemeinsames Maß gibt es nicht. Die frühere
+tick-weite Gesamtangabe entfällt; auch das Sitzungswerkzeug liest die
+Rang-Aufzeichnung. **Gerechnet wird die Bremse gegen die Ist-Faktoren des Ticks, nie
+gegen die Plan-Faktoren; „Wetter" ist die vierte Bremsen-Art als Rest-Fall**, wenn in
+der Lösung kein Eingang ausgeschöpft war (eigene Teppich-Farbe, eigene Wendung „— das
+Wetter nahm den Rest."). In Epoche 1 ist der Fall unbeobachtbar, weil alle Verfahren
+gegen den echten Wurf planen; der Zweig wird mit einem synthetischen Sä-Verfahren im
+Test geprüft, samt der Identität „zwischen Plan und Ist liegt nur der Wurf". Damit
+Anzeige und Stückkosten Aufzeichnung lesen statt zu spähen, **hält der Kern die
+gezogenen Würfe des Ticks fest**; die Ketten-Stückkosten teilen die
+Rezept-Koeffizienten durch den Wurf-Faktor des Verfahrens.
+
+**Der Ursachen-Satz spricht im Nominativ:** „— es fehlte Arbeit." · „— es fehlten
+Felle und Arbeit." (zwei Wendungen nach Anzahl; keine Beugungsformen je Gut — jede
+spätere Epoche kann Güter hinzufügen, ohne an Grammatik zu denken). **Greift kein
+Ausweg, richtet sich die Leerzeile nach der Bremsen-Art des Fensters:** Kamen die
+Bremsen aus dem Revier (Bestand oder Kapazität): „Das Revier gibt gerade nicht mehr
+her." — war es die Arbeit: „Was davor steht, nimmt alles." Wohl wissend, dass knappe
+Arbeit über die Suchkosten letztlich auch am Revier hängt; die Unterscheidung zeigt
+dem Spieler, wo sein Hebel läge. **Ein Nutzen-Satz nennt nie andere Projekte** — die
+Sätze sind statisch und können Sichtbarkeit nicht prüfen, jeder Projektname darin
+würde irgendwann vor seiner Enthüllung ausgesprochen; die Abhängigkeit zeigt die
+Bedingungszeile des verriegelten Projekts am richtigen Ort. **Bedien-Spannen der
+Regler sind Epochen-Politik** und leben in der Präsentations-Sektion der Oberfläche
+(der Brennholz-Regler vorerst 0 bis 12 Ticks). **Das Kurvenfenster jeder Karte umfasst die letzten 20 Ticks** —
 kürzer, wenn das Ding jünger ist oder sein Handlungs-Fenster später beginnt.
 
 **Kein Speichern und Laden in der ersten Stufe.** Statt dessen kennt die Oberfläche
