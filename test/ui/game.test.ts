@@ -91,15 +91,17 @@ describe("the play log the protocol grip hands out (T9)", () => {
       14,
     );
     expect(text.split("\n")).toEqual([
-      "s = reset(42)",
+      "s = reset(42);",
       "// bis Tick 5 laufen",
-      "s = run(s, 5)",
-      `s = act(s, {"type":"startProject","id":"mortar"})`,
-      `s = act(s, {"type":"setProjectRank","id":"mortar","rank":250})`,
+      "s = run(s, 5);",
+      `s = act(s, {"type":"startProject","id":"mortar"});`,
+      `s = act(s, {"type":"setProjectRank","id":"mortar","rank":250});`,
       "// bis Tick 9 laufen",
-      "s = run(s, 4)",
-      `s = act(s, {"type":"setStockTarget","stock":"wood","amount":12})`,
+      "s = run(s, 4);",
+      `s = act(s, {"type":"setStockTarget","stock":"wood","amount":12});`,
       "// bis Tick 14 laufen",
+      // The last statement carries no semicolon: it is the value the session
+      // tool answers with, and a block ending in one has none.
       "s = run(s, 5)",
       "",
     ]);
@@ -108,7 +110,7 @@ describe("the play log the protocol grip hands out (T9)", () => {
   it("walks to the tick on the screen even where nothing was ever done", () => {
     // A finding is written about a position, and the log has to reach it.
     expect(protocolText(7, [], 3)).toBe(
-      ["s = reset(7)", "// bis Tick 3 laufen", "s = run(s, 3)", ""].join("\n"),
+      ["s = reset(7);", "// bis Tick 3 laufen", "s = run(s, 3)", ""].join("\n"),
     );
   });
 

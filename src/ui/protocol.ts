@@ -43,7 +43,23 @@ export function protocolText(
     lines.push(`s = act(s, ${JSON.stringify(doing.action)})`);
   }
   walkTo(now);
-  return `${lines.join("\n")}\n`;
+
+  /**
+   * Every line closes with a semicolon **but the last**: the session tool
+   * takes a block whose last statement is a value and answers with it, and a
+   * block that ends in a semicolon leaves it with nothing to return. Pasted
+   * whole, the log therefore walks the run and hands back the state it
+   * reached; pasted line by line, it does the same one step at a time.
+   */
+  const last = lines.reduce((at, line, i) => (isRemark(line) ? at : i), 0);
+  const closed = lines.map((line, i) =>
+    isRemark(line) || i === last ? line : `${line};`,
+  );
+  return `${closed.join("\n")}\n`;
+}
+
+function isRemark(line: string): boolean {
+  return line.startsWith("//");
 }
 
 /**
