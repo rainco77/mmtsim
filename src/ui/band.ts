@@ -49,6 +49,22 @@ export interface BandField {
   readonly tone?: "build" | "store";
 }
 
+/**
+ * A coverage or a standing as the screen writes it: **rounded down**.
+ *
+ * "100 %" therefore stands only where the claim really is whole. Rounded to
+ * the nearest, a coverage of 0.996 wrote "100 %" and painted it in the crisis
+ * colour at the same time — the number said one thing and the colour another,
+ * and of the two the colour was right. The full mark uses the same tolerance
+ * the shortfall does, so number and colour are decided by one figure.
+ */
+export const FULL: number = 1 - 1e-9;
+
+export function shownPercent(value: number): number {
+  const held = Math.max(0, Math.min(1, value));
+  return held >= FULL ? 100 : Math.floor(held * 100);
+}
+
 /** The one place the surface says which sign belongs to which rank. */
 const ICONS: Readonly<Record<string, string>> = {
   food_survival: "i-berry",
@@ -600,6 +616,28 @@ export function builtCount(state: GameState, index: ConfigIndex, stock: StockId)
     if (adds) built += state.completedProjects[def.id] ?? 0;
   }
   return built;
+}
+
+// ------------------------------------------------------------- where a name goes
+
+/**
+ * From what width **inside** a field its own name stands in it — the
+ * stylesheet's `--fld-name-min`. A measuring pass cannot read a custom
+ * property, so the figure stands in both places, as the leader line's does.
+ */
+export const NAME_FITS_FROM = 144;
+
+/**
+ * Whether a field's name has to go into the row below the band.
+ *
+ * Every field carries its name inside it where the name fits, needs and claims
+ * alike; the row below is for the one case the field cannot serve — a claim
+ * squeezed too narrow for it. A need that is too narrow simply keeps its sign:
+ * it has no name in the row, because the row is where a leader line has to
+ * find its segment again, and only claims are moved about.
+ */
+export function nameBelow(field: BandField, inner: number): boolean {
+  return field.claim && inner < NAME_FITS_FROM;
 }
 
 // ---------------------------------------------------------------- re-ranking

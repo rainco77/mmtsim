@@ -3,6 +3,7 @@
   import { language } from "../../i18n/language.ts";
   import { translate } from "../../i18n/t.ts";
   import { derive, type ActiveProject } from "../../sim/index.ts";
+  import { shownPercent } from "../band.ts";
   import { act, begin, currentState, game, index } from "../game.ts";
 
   /**
@@ -111,7 +112,8 @@
       <span class="bar">
         <span class="fill" style:width={`${project.progress * 100}%`}></span>
       </span>
-      <span class="stat">{Math.round(project.progress * 100)} %</span>
+      <!-- Rounded down like every standing on the screen: "100 %" means done. -->
+      <span class="stat">{shownPercent(project.progress)} %</span>
       {#if project.paused}
         <span class="note">{$t("project.paused")}</span>
       {:else if starved(project.id)}
