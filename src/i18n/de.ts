@@ -47,10 +47,10 @@ export const de: Readonly<Record<string, string>> = {
   "events.nothing": "Noch nichts geschehen.",
   "events.shock.weather": "Wetter {value}",
 
-  "project.use.mortar": "Ein Mörser holt mehr aus denselben Pflanzen.",
+  "project.use.mortar": "Ein Mörser holt mehr aus denselben Beeren.",
   "project.use.fire_setting":
     "Ein Brand macht das Land eine Weile üppiger — er kostet Totholz und bleibt zurück, wenn ihr das Revier verlasst.",
-  "project.use.earth_oven": "Ein Erdofen macht aus demselben Holz mehr Wärme.",
+  "project.use.earth_oven": "Ein Erdofen macht aus demselben Brennholz mehr Wärme.",
   "project.use.range_change":
     "Weiterziehen in frisches Revier — was ihr gebaut und gelagert habt, bleibt zurück.",
   "project.use.sickle": "Eine Sichel macht das Sammeln ergiebiger.",
@@ -62,7 +62,7 @@ export const de: Readonly<Record<string, string>> = {
   "project.use.bow_and_arrow": "Ein Bogen macht die Jagd ergiebiger.",
   "project.use.twining": "Gezwirnte Fasern halten, wo lose Fasern reißen.",
   "project.use.tanning": "Gegerbte Felle halten länger als rohe.",
-  "project.use.boat": "Ein Boot öffnet eigenes Wasser vor dem Ufer.",
+  "project.use.boat": "Ein Boot öffnet eigene Fischgründe vor dem Ufer.",
   "project.use.sedentism": "Bleiben: Die Gemeinschaft bindet sich an diesen Ort.",
   "project.use.land_taking": "Neues Land wird in Besitz genommen.",
   "project.use.clearing": "Wald wird zu offenem Land.",
@@ -215,7 +215,7 @@ export const de: Readonly<Record<string, string>> = {
   "name.cohort.grown": "erwachsen",
 
   "name.capacity.wilderness": "Wildnis",
-  "name.capacity.water": "Wasser",
+  "name.capacity.water": "Fischgründe",
   "name.capacity.cleared": "Erschlossene Fläche",
   "name.capacity.people": "Menschen",
   "name.capacity.storage": "Speicher",

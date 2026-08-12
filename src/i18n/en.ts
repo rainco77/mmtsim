@@ -47,10 +47,10 @@ export const en: Readonly<Record<string, string>> = {
   "events.nothing": "Nothing has happened yet.",
   "events.shock.weather": "Weather {value}",
 
-  "project.use.mortar": "A mortar gets more out of the same plants.",
+  "project.use.mortar": "A mortar gets more out of the same berries.",
   "project.use.fire_setting":
     "A burn makes the land richer for a while — it costs deadwood and stays behind when you leave the range.",
-  "project.use.earth_oven": "An earth oven turns the same wood into more warmth.",
+  "project.use.earth_oven": "An earth oven turns the same firewood into more warmth.",
   "project.use.range_change":
     "Move on to fresh country — what you built and stored stays behind.",
   "project.use.sickle": "A sickle makes gathering more fruitful.",
@@ -62,7 +62,7 @@ export const en: Readonly<Record<string, string>> = {
   "project.use.bow_and_arrow": "A bow makes the hunt more fruitful.",
   "project.use.twining": "Twined fibre holds where loose fibre tears.",
   "project.use.tanning": "Tanned hides last longer than raw ones.",
-  "project.use.boat": "A boat opens own water off the shore.",
+  "project.use.boat": "A boat opens fishing grounds of your own off the shore.",
   "project.use.sedentism": "Stay: the community binds itself to this place.",
   "project.use.land_taking": "New land is taken into possession.",
   "project.use.clearing": "Forest becomes open land.",
@@ -213,7 +213,7 @@ export const en: Readonly<Record<string, string>> = {
   "name.cohort.grown": "grown",
 
   "name.capacity.wilderness": "Wilderness",
-  "name.capacity.water": "Water",
+  "name.capacity.water": "Fishing grounds",
   "name.capacity.cleared": "Cleared land",
   "name.capacity.people": "People",
   "name.capacity.storage": "Storage",
