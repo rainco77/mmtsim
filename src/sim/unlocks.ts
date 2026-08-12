@@ -1,5 +1,5 @@
-import type { Condition, ConfigIndex } from "./config.ts";
-import type { ActivityId, CapacityId, StockId } from "./ids.ts";
+import type { Condition, ConfigIndex, ProjectDef } from "./config.ts";
+import type { ActivityId, CapacityId, ProjectId, StockId } from "./ids.ts";
 
 type StrainMeasure =
   | { readonly labourPerHead: ActivityId }
@@ -199,6 +199,57 @@ export function allHold(
   ctx: ConditionContext,
 ): boolean {
   return conditions.every((condition) => conditionHolds(condition, ctx));
+}
+
+/**
+ * Which projects the community can see (E12, E31).
+ *
+ * A project comes into sight when its own sight conditions hold **and every
+ * project its conditions build on is at least in sight itself**. Otherwise the
+ * tree is told out of order: the net and the hook stood in the list, locked
+ * behind twining, before twining had been so much as mentioned — a demand
+ * pointing at something nobody has heard of.
+ *
+ * Read off the condition data and nothing else, so no project is named here
+ * and a new one in the content needs no line of code. Both lists count: what a
+ * project needs in order to be *built* is as much a part of what it builds on
+ * as what it needs in order to be *seen*.
+ *
+ * **Once in sight, always in sight**: what the phase wrote down cannot come
+ * undone, and the gate is not asked again for it.
+ */
+export function sightedProjects(ctx: ConditionContext): ReadonlySet<ProjectId> {
+  const settled = new Map<ProjectId, boolean>();
+  const asking = new Set<ProjectId>();
+
+  const look = (id: ProjectId): boolean => {
+    const known = settled.get(id);
+    if (known !== undefined) return known;
+    const def = ctx.index.project.get(id);
+    if (def === undefined) return false;
+    // A ring of conditions sights nobody: neither of them could be the first.
+    if (asking.has(id)) return false;
+    asking.add(id);
+    const answer =
+      ctx.state.seenProjects[id] !== undefined ||
+      (allHold(def.visibleWhen, ctx) && buildsOn(def).every(look));
+    asking.delete(id);
+    settled.set(id, answer);
+    return answer;
+  };
+
+  const sighted = new Set<ProjectId>();
+  for (const def of ctx.index.config.projects) if (look(def.id)) sighted.add(def.id);
+  return sighted;
+}
+
+/** The projects a project's own conditions rest on, whichever list they stand in. */
+function buildsOn(def: ProjectDef): readonly ProjectId[] {
+  const out: ProjectId[] = [];
+  for (const condition of [...def.visibleWhen, ...def.availableWhen]) {
+    if (condition.kind === "projectDone") out.push(condition.id);
+  }
+  return out;
 }
 
 /**

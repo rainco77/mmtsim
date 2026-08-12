@@ -16,8 +16,8 @@ import {
   type SectorState,
 } from "./state.ts";
 import {
-  allHold,
   computeUnlocks,
+  sightedProjects,
   type ConditionContext,
   type Unlocks,
 } from "./unlocks.ts";
@@ -767,10 +767,14 @@ export class OfferPhase implements Phase {
       population: totalHeads(state.sectors[HOUSEHOLDS]?.cohorts ?? {}),
       startReadings: ctx.startReadings,
     };
+    // Who is in sight is one question for the whole tree and is asked in one
+    // place: a project waits for the ones its conditions build on, so that the
+    // tree is never told out of order (see `sightedProjects`).
+    const inSight = sightedProjects(ctxFor);
     let seen: Record<ProjectId, number> | undefined;
     for (const project of index.config.projects) {
       if (state.seenProjects[project.id] !== undefined) continue;
-      if (!allHold(project.visibleWhen, ctxFor)) continue;
+      if (!inSight.has(project.id)) continue;
       seen ??= { ...state.seenProjects };
       seen[project.id] = state.tick;
     }

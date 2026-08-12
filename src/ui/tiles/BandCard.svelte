@@ -12,6 +12,7 @@
     projectResources,
     ranksForOrder,
     shortTicks,
+    shownPercent,
     ticksLeft,
     type BandField,
   } from "../band.ts";
@@ -45,7 +46,8 @@
   $: state = currentState($game);
   $: view = derive(state, index);
 
-  const pct = (value: number): number => Math.round(value * 100);
+  /** Coverage, built, filled: all rounded down, as everywhere on the screen. */
+  const pct = shownPercent;
 
   /** A name, wherever the surface keeps it: rank, project, good, capacity. */
   function nameOf(kind: string, id: string): string {

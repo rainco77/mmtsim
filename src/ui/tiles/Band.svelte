@@ -4,7 +4,13 @@
   import { language } from "../../i18n/language.ts";
   import { segments, translate, type Segment } from "../../i18n/t.ts";
   import { derive, type Action } from "../../sim/index.ts";
-  import { bandFields, ranksForOrder, type BandField } from "../band.ts";
+  import {
+    bandFields,
+    nameBelow,
+    ranksForOrder,
+    shownPercent,
+    type BandField,
+  } from "../band.ts";
   import { act, currentState, game, index } from "../game.ts";
   import BandCard from "./BandCard.svelte";
   import BandIcons from "./BandIcons.svelte";
@@ -40,6 +46,14 @@
    */
   const LEADER_H = 13;
   const LEADER_DROP = 6;
+
+  /**
+   * The air a field keeps left and right of its writing (`.fld` padding). It
+   * is subtracted from the measured box, because what decides whether a name
+   * fits is the room inside the field — the very size a container query
+   * reports.
+   */
+  const FIELD_PAD = 7;
 
   $: state = currentState($game);
   $: rules = new Set(derive(state, index).rules);
@@ -83,7 +97,12 @@
 
   $: open = openKey === null ? undefined : fields.find((one) => one.key === openKey);
 
-  const pct = (value: number): number => Math.round(value * 100);
+  /**
+   * The number in the field, and the width of the fill behind it: one figure
+   * for both, rounded down, so the writing and the edge it switches tone at
+   * can never drift apart and "100 %" never stands under the crisis colour.
+   */
+  const pct = shownPercent;
 
   function labelOf(one: BandField): string {
     const key =
@@ -190,11 +209,14 @@
   // -------------------------------------------------------------- the names
 
   /**
-   * The name row below the band — claims only, and it stays one line high.
-   * Names that would collide move apart and a thin line leads back to the
-   * field they belong to.
+   * The name row below the band. **Every field carries its own name inside it
+   * where the name fits**, needs and claims alike; the row below is for the
+   * one case a field cannot serve — a claim squeezed too narrow for its name.
+   * The row keeps its height even when it holds nothing, so the band never
+   * jumps; names that would collide move apart and a thin line leads back to
+   * the segment they belong to.
    *
-   * The centres are measured off the row after it has been laid out, because
+   * The places are measured off the row after it has been laid out, because
    * the widths are not simply the shares: every field has the same minimum
    * width, and what one field gains that way the others lose.
    */
@@ -205,27 +227,38 @@
     text: string;
   }
 
-  let centres: Record<string, number> = {};
+  /** Where a field sits in the row, and how much room it has inside. */
+  interface Place {
+    centre: number;
+    inner: number;
+  }
+
+  let places: Record<string, Place> = {};
   let rowWidth = 0;
 
   afterUpdate(() => {
     if (rowEl === undefined) return;
     const kids = [...rowEl.children] as HTMLElement[];
     const outer = rowEl.getBoundingClientRect();
-    const found: Record<string, number> = {};
+    const found: Record<string, Place> = {};
     for (let i = 0; i < shown.length; i += 1) {
       const one = shown[i];
       const el = kids[i];
       if (one === undefined || el === undefined || !one.claim) continue;
       const box = el.getBoundingClientRect();
-      found[one.key] = box.left - outer.left + box.width / 2;
+      found[one.key] = {
+        centre: box.left - outer.left + box.width / 2,
+        inner: el.clientWidth - 2 * FIELD_PAD,
+      };
     }
     const same =
-      Object.keys(found).length === Object.keys(centres).length &&
+      Object.keys(found).length === Object.keys(places).length &&
       Object.entries(found).every(
-        ([key, at]) => Math.abs((centres[key] ?? -1) - at) < 0.5,
+        ([key, place]) =>
+          Math.abs((places[key]?.centre ?? -1) - place.centre) < 0.5 &&
+          Math.abs((places[key]?.inner ?? -1) - place.inner) < 0.5,
       );
-    if (!same) centres = found;
+    if (!same) places = found;
     if (Math.abs(rowWidth - outer.width) > 0.5) rowWidth = outer.width;
   });
 
@@ -245,9 +278,14 @@
   $: names = ((): readonly NameMark[] => {
     const marks: NameMark[] = [];
     for (const one of shown) {
-      const centre = centres[one.key];
-      if (!one.claim || centre === undefined) continue;
-      marks.push({ key: one.key, centre, at: centre, text: labelOf(one) });
+      const place = places[one.key];
+      if (place === undefined || !nameBelow(one, place.inner)) continue;
+      marks.push({
+        key: one.key,
+        centre: place.centre,
+        at: place.centre,
+        text: labelOf(one),
+      });
     }
     // Left to right, pushing aside a name that would sit on its neighbour;
     // then back from the right edge, so nothing is pushed off the band.
@@ -346,15 +384,20 @@
           on:keydown={(event) => onKey(event, field)}
           on:pointerdown={(event) => grab(event, field)}
         >
+          <!--
+            Every field carries its name where the name fits — the stylesheet
+            drops it below `--fld-name-min` and the sign stays. Only a claim
+            too narrow for it gets its name in the row below the band.
+          -->
           <span class="fill"></span>
           <span class="lay dark">
             {#if field.icon}<svg class="ico"><use href={`#${field.icon}`} /></svg>{/if}
-            {#if field.kind === "need"}<span class="nm">{labelOf(field)}</span>{/if}
+            <span class="nm">{labelOf(field)}</span>
             <span class="pct num" class:crit={field.short}>{pct(field.fill)} %</span>
           </span>
           <span class="lay light">
             {#if field.icon}<svg class="ico"><use href={`#${field.icon}`} /></svg>{/if}
-            {#if field.kind === "need"}<span class="nm">{labelOf(field)}</span>{/if}
+            <span class="nm">{labelOf(field)}</span>
             <span class="pct num" class:crit={field.short}>{pct(field.fill)} %</span>
           </span>
           {#if field.claim}

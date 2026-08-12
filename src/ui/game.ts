@@ -1,4 +1,4 @@
-import { get, writable } from "svelte/store";
+import { derived as fromStore, get, writable } from "svelte/store";
 import { STAGE1 } from "../content/stage1.ts";
 import {
   apply,
@@ -42,25 +42,62 @@ const LONGEST_RUN = 1000;
  */
 const BEAT_MILLIS = 500;
 
+/** The draw the run is played on; the protocol names it so a run can be replayed. */
+export const SEED = 42;
+
 export const game = writable<Game>({
-  history: [createState(STAGE1, { seed: 42 })],
+  history: [createState(STAGE1, { seed: SEED })],
   mode: "paused",
 });
 
+/** One deed of the player: what he did, and the tick he did it at. */
+export interface Doing {
+  readonly tick: number;
+  readonly action: Action;
+}
+
 /**
- * When the player last laid a hand on a claim of his own, and what he did.
+ * **The action journal**: every deed of the player in the order he did them.
  *
- * Pure book-keeping of the surface, deliberately not a field of the state: the
- * model does not care who moved a rank, but the explainer card does. Its cause
- * sentence counts from the last own deed, so that it never passes judgement on
- * a setting that has since been changed — "short in six of fourteen ticks
- * since the move" is about the setting that stands, and a count reaching back
- * past the move would be about one that does not.
+ * One book, two readers. The protocol grip writes it out as lines to paste
+ * into the session tool, so a finding can be replayed step by step; and the
+ * explainer cards read their action window out of the same book. Kept in one
+ * place because two books of the same thing drift apart, and the one that is
+ * only read by a card would drift unnoticed.
+ *
+ * Book-keeping of the surface, deliberately not a field of the state: the
+ * model does not care who moved a rank.
+ */
+export const journal = writable<readonly Doing[]>([]);
+
+/**
+ * When the player last laid a hand on a claim of his own, and what he did —
+ * read out of the journal, never written beside it.
+ *
+ * The explainer card's cause sentence counts from the last own deed, so that
+ * it never passes judgement on a setting that has since been changed — "short
+ * in six of fourteen ticks since the move" is about the setting that stands,
+ * and a count reaching back past the move would be about one that does not.
+ *
+ * Giving an undertaking up takes its entry with it: what comes after is a
+ * fresh start and not a continuation.
  */
 export type Deed = "start" | "rank" | "amount" | "pause";
 
-export const ownDeeds = writable<Readonly<Record<string, { tick: number; what: Deed }>>>(
-  {},
+export const ownDeeds = fromStore(
+  journal,
+  ($journal): Readonly<Record<string, { tick: number; what: Deed }>> => {
+    const deeds: Record<string, { tick: number; what: Deed }> = {};
+    for (const doing of $journal) {
+      if (doing.action.type === "abandonProject") {
+        delete deeds[`project:${doing.action.id}`];
+        continue;
+      }
+      const deed = deedOf(doing.action);
+      if (deed !== undefined) deeds[deed.key] = { tick: doing.tick, what: deed.what };
+    }
+    return deeds;
+  },
 );
 
 /** Which claim an action belongs to, and what kind of deed it is. */
@@ -109,17 +146,9 @@ export function act(action: Action): void {
   game.update((value) => {
     const result = apply(currentState(value), action, index);
     if (result.rejected !== undefined) throw new Error(result.rejected);
-    const deed = deedOf(action);
-    ownDeeds.update((deeds) => {
-      if (action.type === "abandonProject") {
-        const { [`project:${action.id}`]: gone, ...rest } = deeds;
-        void gone;
-        return rest;
-      }
-      return deed === undefined
-        ? deeds
-        : { ...deeds, [deed.key]: { tick: result.state.tick, what: deed.what } };
-    });
+    // Into the book first, and every deed goes in: what the cards read and
+    // what the protocol writes out are the same list.
+    journal.update((doings) => [...doings, { tick: result.state.tick, action }]);
     return { ...value, history: [...value.history.slice(0, -1), result.state] };
   });
 }
@@ -230,7 +259,7 @@ function diedBeyondBase(state: GameState): boolean {
 }
 
 /** What halts the run-to-stop: the concept's stop points (V2). */
-function stopsTheRun(
+export function stopsTheRun(
   previous: GameState,
   next: GameState,
   before: Derived,

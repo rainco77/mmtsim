@@ -619,8 +619,9 @@ b {
  * A claim: taller, outlined in ochre, with a lip and grips. Throughout the
  * game ochre means "yours, movable". A store goal carries a sign of its own,
  * left-aligned like a need's — they are few, they last and they return in
- * every run. A running project carries none. A claim never carries a name
- * inside: its name stands in the name row below the band.
+ * every run. A running project carries none. Its name a claim carries inside
+ * like every other field, as long as there is room for it; where there is not,
+ * it stands in the name row below the band.
  */
 .fld.claim {
   height: var(--claim-h);
@@ -708,8 +709,9 @@ b {
 }
 
 /*
- * The name row — only claims carry a name, and it stays one line high even
- * when names collide. The names are placed by measurement rather than by the
+ * The name row — it carries the name of a claim too narrow to hold its own,
+ * and nothing else. Its height stands whether it holds a name or none, so the
+ * band never jumps. The names are placed by measurement rather than by the
  * flow, so a collision can move one aside and lead a hairline back to its
  * field without the row growing.
  */

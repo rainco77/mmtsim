@@ -12,8 +12,11 @@ import {
   bandFields,
   brakesByFrequency,
   curveOf,
+  nameBelow,
+  NAME_FITS_FROM,
   ranksForOrder,
   shortTicks,
+  shownPercent,
   storeStanding,
   ticksLeft,
   unitCost,
@@ -327,6 +330,67 @@ describe("what a drop commits (T9)", () => {
     expect(front.get("project:net") ?? 0).toBeLessThan(100);
     const back = ranksForOrder([need("a", 100), claim("net", 5)]);
     expect(back.get("project:net") ?? 0).toBeGreaterThan(100);
+  });
+});
+
+describe("what a percentage says (T9)", () => {
+  it("rounds down, so a hundred stands only where the claim is whole", () => {
+    // The case that made the rule: rounded to the nearest, this wrote "100 %"
+    // and painted it in the crisis colour in the same breath.
+    expect(shownPercent(0.996)).toBe(99);
+    expect(shownPercent(0.999999)).toBe(99);
+    expect(shownPercent(1)).toBe(100);
+    expect(shownPercent(0.5)).toBe(50);
+    expect(shownPercent(0.004)).toBe(0);
+  });
+
+  it("agrees with the crisis colour on every field of a played run", () => {
+    // Number and colour hang on one figure: whatever is short is under a
+    // hundred, and whatever shows a hundred is not short.
+    for (const ticks of [8, 20, 40]) {
+      for (const field of fieldsOf(played(ticks))) {
+        if (field.short) expect(shownPercent(field.fill)).toBeLessThan(100);
+        else if (shownPercent(field.fill) === 100) expect(field.short).toBe(false);
+      }
+    }
+  });
+});
+
+describe("where a field's name stands (T9)", () => {
+  const claim = (): BandField => ({
+    key: "project:fishing_net",
+    kind: "project",
+    id: "fishing_net",
+    rank: 500,
+    cost: 1,
+    share: 1,
+    fill: 0.5,
+    short: false,
+    claim: true,
+    tone: "build",
+  });
+  const need = (): BandField => ({
+    key: "need:food_survival",
+    kind: "need",
+    id: "food_survival",
+    rank: 100,
+    cost: 1,
+    share: 1,
+    fill: 1,
+    short: false,
+    claim: false,
+  });
+
+  it("leaves the name in the segment wherever it fits", () => {
+    expect(nameBelow(claim(), NAME_FITS_FROM)).toBe(false);
+    expect(nameBelow(need(), NAME_FITS_FROM)).toBe(false);
+  });
+
+  it("hands only a claim's name to the row below, and only when it is squeezed", () => {
+    // The row below is where a leader line has to find its segment again, and
+    // only a claim is ever taken by the hand.
+    expect(nameBelow(claim(), NAME_FITS_FROM - 1)).toBe(true);
+    expect(nameBelow(need(), NAME_FITS_FROM - 1)).toBe(false);
   });
 });
 

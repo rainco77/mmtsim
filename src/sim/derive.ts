@@ -29,6 +29,7 @@ import {
 import {
   allHold,
   computeUnlocks,
+  sightedProjects,
   unmetConditions,
   type ConditionContext,
   type Unlocks,
@@ -378,6 +379,7 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     return total + worthOfMoving(def);
   };
 
+  const inSight = sightedProjects(ctx);
   const projects: ProjectView[] = index.config.projects.map((def) => {
     const active = state.activeProjects.find((p) => p.id === def.id);
     const done = state.completedProjects[def.id] ?? 0;
@@ -398,8 +400,11 @@ export function derive(state: GameState, index: ConfigIndex): Derived {
     // Once shown, always shown — the phase wrote down when it first was, and
     // that cannot come undone. And nothing is startable that is not on the
     // screen: availability is the second gate, not a separate door.
-    const visible =
-      state.seenProjects[def.id] !== undefined || allHold(def.visibleWhen, ctx);
+    //
+    // Who is in sight is worked out in one place for the whole tree, because
+    // it is not a question about one project: a project waits for the ones its
+    // conditions build on (see `sightedProjects`).
+    const visible = inSight.has(def.id);
     return {
       id: def.id,
       visible,
