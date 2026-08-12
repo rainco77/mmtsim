@@ -1,3 +1,8 @@
 dist/
 node_modules/
 *.md
+
+# The approved design templates. They are read as drawings, not as source: the
+# figures and the shape of the markup are what the shell is built against, and
+# a reformatting would move them without anyone deciding it.
+design/
