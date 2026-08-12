@@ -82,4 +82,10 @@ export {
 } from "./state.ts";
 export { tick } from "./tick.ts";
 export type { ConditionContext, Unlocks } from "./unlocks.ts";
-export { allHold, computeUnlocks, conditionHolds, unmetConditions } from "./unlocks.ts";
+export {
+  allHold,
+  computeUnlocks,
+  conditionHolds,
+  sightedProjects,
+  unmetConditions,
+} from "./unlocks.ts";

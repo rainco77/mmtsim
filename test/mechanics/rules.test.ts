@@ -3,6 +3,7 @@ import { STAGE1 } from "../../src/content/stage1.ts";
 import {
   allocate,
   apply,
+  applyEffect,
   backloadFactor,
   completedCount,
   computeUnlocks,
@@ -1042,6 +1043,120 @@ describe("the next range (E13, E29)", () => {
       nextRangeQuality({ ...state, landOffer: offer }, STAGE1, "wilderness");
     expect(offered(1)).toBeCloseTo(1 - step, 9);
     expect(offered(1 + STAGE1.land.qualitySpread)).toBeGreaterThan(1);
+  });
+});
+
+describe("what comes into sight (E12, E31)", () => {
+  /** Every project in sight at this state, by id. */
+  const sighted = (state: GameState): ReadonlySet<string> =>
+    new Set(
+      derive(state, index)
+        .projects.filter((project) => project.visible)
+        .map((project) => project.id),
+    );
+
+  /** The tick each of these was first in sight at, over a played run. */
+  function firstSeen(ids: readonly string[], ticks: number): Record<string, number> {
+    const at: Record<string, number> = {};
+    let state = createState(STAGE1, { seed: 42 });
+    for (let i = 0; i < ticks; i += 1) {
+      state = tick(state, index);
+      for (const id of sighted(state)) if (at[id] === undefined) at[id] = state.tick;
+      if (ids.every((id) => at[id] !== undefined)) break;
+    }
+    return at;
+  }
+
+  it("never shows a project before the ones its own conditions build on", () => {
+    // Generic over the whole tree and over both lists: what a project needs in
+    // order to be built is as much a part of what it builds on as what it
+    // needs in order to be seen. Nothing is named here — a new project in the
+    // content is covered by the same run.
+    let state = createState(STAGE1, { seed: 42 });
+    let anySighted = false;
+    for (let i = 0; i < 120; i += 1) {
+      state = tick(state, index);
+      const inSight = sighted(state);
+      anySighted ||= inSight.size > 0;
+      for (const def of STAGE1.projects) {
+        if (!inSight.has(def.id)) continue;
+        for (const condition of [...def.visibleWhen, ...def.availableWhen]) {
+          if (condition.kind !== "projectDone") continue;
+          expect(inSight.has(condition.id)).toBe(true);
+        }
+      }
+    }
+    expect(anySighted).toBe(true);
+  });
+
+  it("keeps the net and the hook out of sight until twining is in sight", () => {
+    // Both are locked behind twining, and both used to stand in the list from
+    // the opening ticks — a demand pointing at something nobody had heard of.
+    const at = firstSeen(["twining", "fishing_net", "fish_hook"], 120);
+    expect(at["twining"]).toBeGreaterThan(0);
+    expect(at["fishing_net"]).toBeGreaterThan(0);
+    expect(at["fish_hook"]).toBeGreaterThan(0);
+    expect(at["fishing_net"]).toBeGreaterThanOrEqual(at["twining"] ?? 0);
+    expect(at["fish_hook"]).toBeGreaterThanOrEqual(at["twining"] ?? 0);
+  });
+
+  it("does not take back what has once been seen", () => {
+    // The strain that opened a project eases again — the sight of it does not.
+    let state = createState(STAGE1, { seed: 42 });
+    const ever = new Set<string>();
+    for (let i = 0; i < 60; i += 1) {
+      state = tick(state, index);
+      const inSight = sighted(state);
+      for (const id of ever) expect(inSight.has(id)).toBe(true);
+      for (const id of inSight) ever.add(id);
+    }
+    expect(ever.size).toBeGreaterThan(0);
+  });
+});
+
+describe("room a project adds (E13)", () => {
+  /** The quality of the ground the community lives on, weighted by area. */
+  function landQuality(state: GameState): number {
+    let area = 0;
+    let weighted = 0;
+    for (const kind of Object.keys(STAGE1.land.perHeadAtStart)) {
+      const holders = [
+        state.unownedCapacity[kind],
+        ...Object.values(state.sectors).map((holder) => holder.capacityHeld[kind]),
+      ];
+      for (const held of holders) {
+        if (held === undefined) continue;
+        area += held.amount;
+        weighted += held.amount * held.quality;
+      }
+    }
+    return area > 0 ? weighted / area : 1;
+  }
+
+  it("takes the quality that kind of ground stands at, where it names no source", () => {
+    // After a move the range is worth less than fresh country. The water a
+    // boat opens carries no quality of its own — so it has to arrive at what
+    // the water is worth now, and the quality the range reports must not
+    // move because a hull was finished.
+    const moved = finish(createState(STAGE1, { seed: 7 }), "range_change");
+    expect(completedCount(moved, "range_change")).toBe(1);
+    const before = landQuality(moved);
+    expect(Math.abs(before - 1)).toBeGreaterThan(0.01);
+
+    const boat = index.project.get("boat");
+    if (boat === undefined) throw new Error("boat");
+    // The boat's own effects, as the content declares them: nothing here says
+    // what the water is worth, and that is the case under test.
+    expect(
+      boat.effects.some(
+        (effect) => effect.type === "capacity" && effect.quality === undefined,
+      ),
+    ).toBe(true);
+    let after = moved;
+    for (const effect of boat.effects) {
+      after = applyEffect(after, effect, STAGE1, "households");
+    }
+    expect(landQuality(after)).toBeCloseTo(before, 12);
   });
 });
 
