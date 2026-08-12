@@ -70,6 +70,19 @@ class CapacityEffectHandler implements EffectHandler<CapacityEffect> {
       effect,
       effect.capacity,
     );
+    /**
+     * Room added without a quality of its own arrives at the quality that kind
+     * of ground stands at in the range — held and unowned together, weighted by
+     * area. It is the only figure that changes nothing: the average the range
+     * reports is the same before and after, and what is added is neither better
+     * nor worse than what is there.
+     *
+     * At one it was better than the range as soon as the range had been walked
+     * once, and the boat's water quietly pulled the reported land quality back
+     * up towards fresh country. A taking says where its quality comes from and
+     * keeps saying it; this is for everything that does not.
+     */
+    const arriving = quality ?? averageQuality(state, effect.capacity);
     const withTaking = advanceTaking
       ? { ...state, landTakings: state.landTakings + 1 }
       : state;
@@ -87,7 +100,7 @@ class CapacityEffectHandler implements EffectHandler<CapacityEffect> {
         ...next,
         unownedCapacity: {
           ...next.unownedCapacity,
-          [effect.capacity]: blend(current, effect.amount, quality),
+          [effect.capacity]: blend(current, effect.amount, arriving),
         },
       };
     }
@@ -104,7 +117,7 @@ class CapacityEffectHandler implements EffectHandler<CapacityEffect> {
           ...holder,
           capacityHeld: {
             ...holder.capacityHeld,
-            [effect.capacity]: blend(current, effect.amount, quality),
+            [effect.capacity]: blend(current, effect.amount, arriving),
           },
         },
       },
