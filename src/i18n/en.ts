@@ -20,22 +20,27 @@ export const en: Readonly<Record<string, string>> = {
 
   "projects.running": "Running",
   "projects.buildable": "Buildable",
+  "projects.done": "Done",
   "projects.locked": "In sight",
   "projects.start": "Start",
   "projects.nothing": "Nothing on offer right now.",
   "projects.costLabor": "labour {labor}",
   "projects.duration": "{ticks} ticks",
-  "projects.condition.population": "population",
-  "projects.condition.projectDone": "needs {project}",
-  "projects.condition.rule": "prerequisite",
-  "projects.condition.unownedCapacity": "free land",
-  "projects.condition.ownedCapacity": "own {what}",
-  "projects.condition.coverage": "coverage",
-  "projects.condition.stockPerHead": "{what} per head",
-  "projects.condition.capacityPerHead": "{what} per head",
-  "projects.condition.experience": "practice",
-  "projects.condition.strain": "strain",
-  "projects.condition.stockDear": "hard searching",
+  // Every condition line names its event and does not inflect: thing plus
+  // participle. How far along it is stands beside it as bar and percent — no
+  // raw pairs anywhere. "Built" carries the ownness: built is always built
+  // oneself, and what the range holds free counts for no such condition.
+  "projects.condition.population": "People grown",
+  "projects.condition.projectDone": "{project} built",
+  "projects.condition.rule": "Prerequisite met",
+  "projects.condition.unownedCapacity": "Free land found",
+  "projects.condition.ownedCapacity": "{what} built",
+  "projects.condition.coverage": "{what} covered",
+  "projects.condition.stockPerHead": "{what} per head stored",
+  "projects.condition.capacityPerHead": "{what} per head built",
+  "projects.condition.experience": "{what} practised",
+  "projects.condition.strain": "Strain risen",
+  "projects.condition.stockDear": "Searching grown hard",
 
   "events.distress": "{dead} lost to distress — {cause} went short",
   "events.seen": "{project} has come into sight",
@@ -101,7 +106,14 @@ export const en: Readonly<Record<string, string>> = {
   "card.stand.project": "built {pct} %",
   "card.stand.store": "filled {pct} %",
   "card.stand.idle": "{pct} %",
-  "card.fact.project": "Done at the earliest: {ticks} ticks · needs {needs}",
+  // The tick cost stands per resource as a share of its own stream — the one
+  // wanted exception to a fact line carrying standing properties only. The
+  // shares breathe with the streams, hence the tilde. The plain wording holds
+  // as long as no stream of one of the resources is known yet.
+  "card.fact.project":
+    "Done at the earliest: {ticks} ticks · per tick: {shares} of the supply",
+  "card.fact.project.plain": "Done at the earliest: {ticks} ticks · needs {needs}",
+  "card.fact.share": "{what} ~{pct} %",
   "card.fact.store.wood": "Goal: holds ~{ticks} ticks of fire",
   "card.fact.store.food": "Goal: what {pits} pits hold · holds ~{ticks} ticks of hunger",
   "card.goal": "Goal",
@@ -208,6 +220,19 @@ export const en: Readonly<Record<string, string>> = {
   "range.pair": "own land {standing} · on offer {offered}",
   "range.move": "Move on",
   "range.movePrice": "What stays behind:",
+
+  // The activities practice is counted in — verbal nouns, so that the
+  // condition line "Gathering practised" needs no inflection.
+  "name.activity.working": "Working",
+  "name.activity.gathering": "Gathering",
+  "name.activity.hunting": "Hunting",
+  "name.activity.fishing": "Fishing",
+  "name.activity.woodcutting": "Wood gathering",
+  "name.activity.firemaking": "Firemaking",
+  "name.activity.farming": "Farming",
+  "name.activity.bastgathering": "Bast gathering",
+  "name.activity.clothmaking": "Clothmaking",
+  "name.activity.caring": "Caring",
 
   "name.cohort.growing": "growing",
   "name.cohort.grown": "grown",

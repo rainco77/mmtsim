@@ -4,15 +4,23 @@
   import { translate } from "../../i18n/t.ts";
   import { derive, type ActiveProject } from "../../sim/index.ts";
   import { shownPercent } from "../band.ts";
-  import { act, begin, currentState, game, index } from "../game.ts";
+  import { act, begin, catalogueGroups, currentState, game, index } from "../game.ts";
 
   /**
-   * The project catalogue (T9), three groups: running with their grips,
-   * buildable with the split card — the use-line written by hand, costs and
-   * duration from the data, the consequences as figures — and the visible but
-   * locked ones with a has/needs bar per condition, the progress bar the
-   * monotony rule was made for. Once seen stays seen; the offers come sorted
-   * by the core's own worth figure.
+   * The project catalogue (T9), four groups in this order: **running** with
+   * their grips, **buildable** with the split card — the use-line written by
+   * hand, costs and duration from the data — **done** with name and check, and
+   * the visible but **in sight** ones with a has/needs bar per condition, the
+   * progress bar the monotony rule was made for.
+   *
+   * Done holds what can never be started again: a one-off that is built, a
+   * repeatable whose count is spent. A repeatable with room left comes back to
+   * buildable with its counter and never lands in done — it is not over.
+   * Without the group a finished one-off fell back among the ones in sight, as
+   * though it had never been built.
+   *
+   * Once seen stays seen; the offers come sorted by the core's own worth
+   * figure.
    */
   const t = fromStore(
     language,
@@ -25,13 +33,11 @@
   $: state = currentState($game);
   $: previous = $game.history[$game.history.length - 2];
   $: view = derive(state, index);
-  $: running = view.projects.filter((project) => project.running);
-  $: buildable = view.projects
-    .filter((project) => project.available && !project.running)
-    .sort((a, b) => b.worth - a.worth);
-  $: locked = view.projects.filter(
-    (project) => project.visible && !project.available && !project.running,
-  );
+  $: groups = catalogueGroups(view);
+  $: running = groups.running;
+  $: buildable = groups.buildable;
+  $: done = groups.done;
+  $: locked = groups.inSight;
 
   function activeOf(id: string): ActiveProject | undefined {
     return state.activeProjects.find((project) => project.id === id);
@@ -49,16 +55,19 @@
     );
   }
 
-  function nameOf(id: string, kind: "stock" | "capacity" | "either"): string {
-    const keys =
-      kind === "either"
-        ? [`name.stock.${id}`, `name.capacity.${id}`]
-        : [`name.${kind}.${id}`];
-    for (const key of keys) {
-      const named = $t(key);
-      if (named !== key) return named;
-    }
-    return id;
+  /** A name, wherever the surface keeps it: good, capacity, rank, activity. */
+  function nameOf(kind: string, id: string): string {
+    const key = `name.${kind}.${id}`;
+    const named = $t(key);
+    return named === key ? id : named;
+  }
+
+  /** "Sammeln, Jagen und Fischen" — the last two joined, the rest by commas. */
+  function listed(names: readonly string[]): string {
+    if (names.length === 0) return "";
+    if (names.length === 1) return names[0] ?? "";
+    const head = names.slice(0, -1).join(", ");
+    return $t("list.and", { head, last: names[names.length - 1] ?? "" });
   }
 
   /** The generic cost line, read from the content and never written by hand. */
@@ -67,39 +76,62 @@
     if (def === undefined) return "";
     const parts = [$t("projects.costLabor", { labor: one(def.laborCost) })];
     for (const [stock, amount] of Object.entries(def.stockCost)) {
-      parts.push(`${nameOf(stock, "stock")} ${one(amount)}`);
+      parts.push(`${nameOf("stock", stock)} ${one(amount)}`);
     }
     parts.push($t("projects.duration", { ticks: def.minTicks }));
     return parts.join(" · ");
   }
 
   /**
-   * A condition of a locked project, as a label beside its has/needs bar. One
-   * key per kind the core knows, named after that kind — every kind is listed
-   * here, so a new one in the core shows up as a bare id and not as a raw key
-   * on the screen.
+   * A condition of a locked project, as a label beside its has/needs bar.
+   *
+   * **It names the event and carries no raw figures.** "Fischgründe gebaut"
+   * rather than a pair of numbers: the bar and its rounded-down percent say how
+   * far along it is, and a pair like "13 / 25" made the player read a rule
+   * where he only wanted to know whether he was getting closer. Every wording
+   * is uninflectable — thing plus participle — so a later epoch can add
+   * conditions without thinking about grammar. "Gebaut" carries the ownness:
+   * built is always built oneself, and what the range holds free counts for no
+   * such condition.
+   *
+   * One key per kind the core knows, named after that kind — every kind is
+   * listed here, so a new one in the core shows up as a bare id and not as a
+   * raw key on the screen.
    */
   function conditionLabel(condition: { kind: string } & Record<string, unknown>): string {
     const key = `projects.condition.${condition.kind}`;
     switch (condition.kind) {
       case "projectDone":
-        return $t(key, { project: $t(`name.project.${String(condition["id"])}`) });
+        return $t(key, { project: nameOf("project", String(condition["id"])) });
       case "ownedCapacity":
       case "capacityPerHead":
-        return $t(key, { what: nameOf(String(condition["capacity"]), "capacity") });
+        return $t(key, { what: nameOf("capacity", String(condition["capacity"])) });
       case "stockPerHead":
-        return $t(key, { what: nameOf(String(condition["stock"]), "stock") });
+        return $t(key, { what: nameOf("stock", String(condition["stock"])) });
+      case "coverage":
+        return $t(key, { what: nameOf("tier", String(condition["tier"])) });
+      case "experience":
+        return $t(key, {
+          what: listed(
+            (Array.isArray(condition["activities"]) ? condition["activities"] : []).map(
+              (activity: unknown) => nameOf("activity", String(activity)),
+            ),
+          ),
+        });
       case "population":
       case "rule":
       case "unownedCapacity":
-      case "coverage":
-      case "experience":
       case "strain":
       case "stockDear":
         return $t(key);
       default:
         return condition.kind;
     }
+  }
+
+  /** How far a condition stands, rounded down as every standing on the screen. */
+  function conditionPercent(unmet: { have: number; need: number }): number {
+    return shownPercent(unmet.need > 0 ? unmet.have / unmet.need : 0);
   }
 </script>
 
@@ -157,6 +189,21 @@
   <p class="empty">{$t("projects.nothing")}</p>
 {/each}
 
+<!--
+  Done: name and check mark, nothing more. What a finished thing does for the
+  community is a display of its own and comes later; standing here it at least
+  stops looking as if it had never been built.
+-->
+{#if done.length > 0}
+  <h3>{$t("projects.done")}</h3>
+  {#each done as project (project.id)}
+    <div class="row finished">
+      <span class="name">{$t(`name.project.${project.id}`)}</span>
+      <span class="check">✓</span>
+    </div>
+  {/each}
+{/if}
+
 {#if locked.length > 0}
   <h3>{$t("projects.locked")}</h3>
   {#each locked as project (project.id)}
@@ -174,7 +221,7 @@
               style:width={`${unmet.need > 0 ? Math.min(1, unmet.have / unmet.need) * 100 : 0}%`}
             ></span>
           </span>
-          <span class="stat">{one(unmet.have)} / {one(unmet.need)}</span>
+          <span class="stat">{conditionPercent(unmet)} %</span>
         </div>
       {/each}
     </div>
@@ -261,6 +308,12 @@
   }
   .card.locked .name {
     color: #8a8578;
+  }
+  .finished .name {
+    font-weight: 400;
+  }
+  .finished .check {
+    color: #6b8f2f;
   }
   .condition .label {
     min-width: 9rem;

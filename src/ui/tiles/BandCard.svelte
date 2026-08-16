@@ -13,6 +13,7 @@
     ranksForOrder,
     shortTicks,
     shownPercent,
+    tickShares,
     ticksLeft,
     type BandField,
   } from "../band.ts";
@@ -137,6 +138,38 @@
 
   $: resources = projectResources(index, field.id).map((id) => nameOf("stock", id));
   $: resourceList = listed(resources);
+
+  /**
+   * The tick cost per resource, each against its own stream — the one place a
+   * breathing figure is wanted in a fact line, because only it says which
+   * resource the undertaking leans on and whether that is affordable.
+   *
+   * Where one of the resources has no stream to be measured against — nothing
+   * of it has come in yet at all — the line falls back to naming the resources
+   * plainly: a list in which one share is silently missing would read as if
+   * that resource cost nothing.
+   */
+  $: shares = field.kind === "project" ? tickShares(history, index, field.id) : [];
+  $: shareLine = shares.every((one) => one.share !== undefined)
+    ? shares
+        .map((one) =>
+          $t("card.fact.share", {
+            what: nameOf("stock", one.stock),
+            pct: Math.floor((one.share ?? 0) * 100),
+          }),
+        )
+        .join(" · ")
+    : "";
+  $: factLine =
+    shareLine === ""
+      ? $t("card.fact.project.plain", {
+          ticks: ticksLeft(index, field.id, field.fill),
+          needs: resourceList,
+        })
+      : $t("card.fact.project", {
+          ticks: ticksLeft(index, field.id, field.fill),
+          shares: shareLine,
+        });
 
   /** "Arbeit und Fasern" — the last two joined, the rest by commas. */
   function listed(names: readonly string[]): string {
@@ -410,15 +443,12 @@
 
   <!--
     The fact line carries standing properties only — what breathes with the
-    tick has no place here, and a need has none at all.
+    tick has no place here, save the one wanted exception: an undertaking's
+    tick cost per resource, which only means anything against the stream it is
+    taken from. A need has no fact line at all.
   -->
   {#if field.kind === "project"}
-    <p class="cost sub num">
-      {$t("card.fact.project", {
-        ticks: ticksLeft(index, field.id, field.fill),
-        needs: resourceList,
-      })}
-    </p>
+    <p class="cost sub num">{factLine}</p>
   {:else if field.kind === "store"}
     <p class="cost sub num">
       {adjustable

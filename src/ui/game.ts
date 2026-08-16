@@ -9,6 +9,7 @@ import {
   type Action,
   type Derived,
   type GameState,
+  type ProjectView,
 } from "../sim/index.ts";
 import { DISTRESS_TIERS, PLAYED_AT_ONCE } from "./presentation.ts";
 
@@ -292,4 +293,52 @@ export function stopsTheRun(
     return true;
   }
   return false;
+}
+
+/** Built and never to be built again: the count has reached what it may be. */
+export function spentProject(project: ProjectView): boolean {
+  return (
+    !project.running &&
+    project.completed > 0 &&
+    project.limit !== undefined &&
+    project.completed >= project.limit
+  );
+}
+
+/** The catalogue's four groups, in the order they stand on the screen. */
+export interface Catalogue {
+  readonly running: readonly ProjectView[];
+  readonly buildable: readonly ProjectView[];
+  readonly done: readonly ProjectView[];
+  readonly inSight: readonly ProjectView[];
+}
+
+/**
+ * How the catalogue is laid out (T9): **running · buildable · done · in
+ * sight**, and every project stands in one group at most.
+ *
+ * Done holds what can never be begun again — a one-off that is built, a
+ * repeatable whose count is spent. A repeatable with room left comes back to
+ * buildable with its counter and never lands in done: it is not over. Without
+ * the group such a project fell in among the ones in sight, as though it had
+ * never been built at all.
+ *
+ * The buildable ones are ordered by the core's own worth figure, the rest keep
+ * the order the content gives them.
+ */
+export function catalogueGroups(view: Derived): Catalogue {
+  return {
+    running: view.projects.filter((project) => project.running),
+    buildable: view.projects
+      .filter((project) => project.available && !project.running)
+      .sort((a, b) => b.worth - a.worth),
+    done: view.projects.filter((project) => spentProject(project)),
+    inSight: view.projects.filter(
+      (project) =>
+        project.visible &&
+        !project.available &&
+        !project.running &&
+        !spentProject(project),
+    ),
+  };
 }
