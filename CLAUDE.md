@@ -291,6 +291,51 @@ fragen.
 
 ---
 
+## Wie mit Bau- und Design-Agenten gearbeitet wird
+
+So hat sich die Arbeit an der Oberfläche eingespielt, und so wird sie fortgesetzt:
+
+**Der Takt: sammeln → schnüren → freigeben → bauen → prüfen → live testen.**
+Entscheidungen werden Runde für Runde besprochen und gesammelt (nichts wird nebenbei
+umgesetzt, auch nichts Kleines). Sind alle Fragen eines Zusammenhangs geklärt, wird
+`KONZEPT.md` fortgeschrieben und **ein Arbeitspaket geschnürt und zur Freigabe
+vorgelegt** — erst mit der Freigabe wird gebaut.
+
+**Gebaut wird durch einen Agenten** (Opus für alles mit Designentscheidungen, kleinere
+Modelle für mechanische Sonden) **in eigenem Arbeitsbereich auf eigenem Zweig** ab dem
+Arbeitszweig; er pusht seinen Zweig und **mergt nie**. Sein Auftrag nennt die
+maßgeblichen `KONZEPT.md`-Abschnitte als Gesetz und die Abnahme: Typprüfung, Lint,
+Prettier, **alle** Tests (Kern und Oberfläche getrennt gezählt), `tools/measure.ts`
+vollständig bestanden, Build, Bildschirmfotos des laufenden Spiels. Ein Agenten-Server
+läuft nur auf Port 5175, und er beendet nur eigene Prozesse — 5173 gehört dem
+Auftraggeber.
+
+**Der Agent baut ausschließlich das Beauftragte.** Vorlagen (derzeit `design/mock4*`
+und `design/band/*`) und Konzept sind Gesetz; eigene Verbesserungsideen kommen als
+„Vorschläge" in den Bericht, nie in den Code. Zeigt sich ein Konflikt zwischen Konzept
+und Wirklichkeit, wird der kleinste ehrliche Zwischenstand gebaut und der Konflikt
+prominent gemeldet — nie still entschieden. Mock-Zahlen werden beim echten Bau durch
+Kernwerte ersetzt. Sätze, die der Agent schreibt (Nutzen-, Wirkungs-, Zweck-Sätze),
+belegen ihre Mechanik mit Fundstelle im Inhalt.
+
+**Der Bericht ist auf Deutsch und vollständig** — er ist die einzige Kopie, die der
+Auftraggeber je sieht: jeder Befund, jede Abweichung, jeder Vorschlag einzeln; gekürzt
+werden darf Prozess-Rauschen, nie Inhalt. Auch beim Weitergeben eines Berichts in der
+Konversation gilt: nichts auswählend zusammenfassen.
+
+**Danach:** Diff, Tests, Kriterien und Bilder werden geprüft, der Zweig wird in den
+Arbeitszweig gemergt, der Auftraggeber testet live auf 5173. Sein Feedback geht
+**wörtlich** in die nächste Runde. Sicherheitswarnungen der Umgebung über
+Agenten-Pushes sind in diesem delegierten Fluss Fehlalarme. Verworfene Entwürfe und
+erledigte Probeseiten fliegen aus dem Repo, damit nichts Überholtes je als Referenz
+dient.
+
+**Design-Erkundungen laufen als billige statische Probeseiten** (eine Frage, eine
+Seite, echte Maße), die nach der Entscheidung gelöscht werden; Entwürfe werden als
+Pfad und Dev-Server-URL genannt, nicht als neu erzeugte Bildschirmfotos geschickt.
+
+---
+
 ## Git
 
 **Jede git-Handlung braucht vorher eine ausdrückliche Zustimmung:** committen, einen
