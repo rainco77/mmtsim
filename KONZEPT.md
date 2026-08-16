@@ -3912,12 +3912,21 @@ bei der Umsetzung ändern, wenn es gute Gründe gibt. Sechs Kacheln, eine domina
   Zeile in der Rangleiter — es sind dieselben Einstellwerte, zwei Fenster auf eine
   Einstellung. Der Rang-Griff zeigt die Position („zwischen Kleidung und Sättigung"),
   und ein Tipp auf die Vorratszeile hebt ihre Zeile in der Leiter hervor.
-- **Projekte**: der Katalog in drei Gruppen. **Laufend** (steht zusätzlich in der
-  Leiter): Fortschritt, der Hinweis „bekommt gerade keine Hände", Griffe Rang/Pause/
+- **Projekte**: der Katalog in **vier Gruppen, in dieser Reihenfolge: Läuft ·
+  Ausführbar · Fertig · In Sicht** (aus dem Live-Spiel entschieden — fertige
+  Einmal-Projekte fielen sonst zurück ins Fach „In Sicht", als wären sie nie
+  gebaut). **Laufend** (steht zusätzlich im Band): Fortschritt, der Hinweis
+  „bekommt gerade keine Arbeit", Griffe Rang/Pause/
   Abbruch. **Ausführbar**: je Projekt die zweigeteilte Auskunft — Nutzen-Satz von
   Hand, Kosten und Dauer generisch —, der Start-Griff, bei Wiederholbaren der Zähler
-  („Grube ×5"). **Sichtbar, noch nicht ausführbar**: dieselbe Karte plus der
-  Hat/Braucht-Balken je Bedingung. Was einmal sichtbar war, bleibt sichtbar. Sichtbare,
+  („Grube ×5"; Wiederholbare kehren hierher zurück, nie nach Fertig). **Fertig**:
+  die abgeschlossenen Einmal-Projekte mit Namen und Haken; die Anzeige „wie es
+  hilft" kommt mit Paket 4 dazu. **In Sicht**: dieselbe Karte wie Ausführbar plus
+  je Bedingung ihre Zeile — und **die Bedingungszeile trägt keine Rohzahlen**:
+  Sie nennt das Ereignis unbeugbar („Fischgründe gebaut") mit Hat/Braucht-Balken
+  und abgerundetem Prozent („Fischgründe gebaut · 52 %"); „gebaut" trägt darin das
+  Eigene, denn gebaut ist immer selbst — die freien Bestände des Reviers zählen
+  für solche Bedingungen nicht. Was einmal sichtbar war, bleibt sichtbar. Sichtbare,
   noch nicht ausführbare stehen nie in der Leiter: Sie beanspruchen nichts. Keine
   Baum-Ansicht in der ersten Stufe — die Abhängigkeiten nennt das Verriegelte selbst;
   ein gezeichneter Baum ist Didaktik späterer Stufen.
@@ -4314,10 +4323,16 @@ absolute Ressourcenzahl erscheint je auf einer Spieler-Karte**.
 3. **Faktenzeile** — knapp, mit Punkt-Trennern, und **nur stehende Eigenschaften**;
    was mit dem Tick atmet, hat hier nichts verloren. Bedarf: **keine Faktenzeile**
    (ein Bedarf hat keine stehende Kosten-Eigenschaft). Vorhaben: „Fertig frühestens:
-   6 Ticks · braucht Arbeit und Fasern" — die Dauer ist Rest ÷ voller Tick-Schritt,
+   6 Ticks · **je Tick: Arbeit ~8 % · Fasern ~25 % des Nachschubs**" — die Dauer ist
+   Rest ÷ voller Tick-Schritt,
    exakt gerechnet, darum ohne Tilde, ein Frühestens und nie ein Höchstens;
-   unzuverlässige Restdauern werden nicht angezeigt, und die Ressourcen-Namen sind
-   eine feste Eigenschaft, ihre Anteile nicht. Vorrat: die Ziel-Zeile **samt
+   unzuverlässige Restdauern werden nicht angezeigt. Die Tick-Kosten stehen **je
+   Ressource als Anteil ihres eigenen Stroms** (nur so sieht der Spieler, welche
+   Ressource das Projekt belastet und ob er sich das leisten will); die Anteile
+   atmen mit dem Strom und tragen darum die Tilde — die eine gewollte Ausnahme vom
+   Nur-Stehendes-Grundsatz, ausdrücklich verlangt. Ohne laufenden Nachschub gilt der
+   letzte bekannte Strom (Null-Ertrag-Logik). Dieselbe Form ersetzt später die
+   Rohzahlen der Katalog-Karten. Vorrat: die Ziel-Zeile **samt
    Regler**: „Ziel: hält ~6 Ticks Feuer" — der Regler bedient in Ticks, die
    eingefrorene Menge bleibt intern (kein Mitwachsen; die sinkende Tick-Zahl bei
    wachsendem Volk ist das festgelegte Altern der Vorgabe); beim Nahrungsvorrat ohne
