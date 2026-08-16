@@ -35,7 +35,7 @@ export function protocolText(
   let at = 0;
   const walkTo = (tick: number): void => {
     if (tick <= at) return;
-    lines.push(`// bis Tick ${tick} laufen`, `s = run(s, ${tick - at})`);
+    lines.push(`// run to tick ${tick}`, `s = run(s, ${tick - at})`);
     at = tick;
   };
   for (const doing of doings) {

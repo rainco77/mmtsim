@@ -571,6 +571,92 @@ export function ticksLeft(index: ConfigIndex, id: string, progress: number): num
   return Math.max(1, Math.ceil((1 - progress) / (1 / def.minTicks) - 1e-9));
 }
 
+/**
+ * What one tick brought in of each resource: for labour what the people
+ * performed, for a good what the runs turned out of it.
+ *
+ * This is the measure a project's tick cost is read against. What it takes of
+ * a resource says nothing on its own — twelve of fibre is nothing where fibre
+ * pours in and everything where it trickles.
+ */
+function streamsOfTick(state: GameState, index: ConfigIndex): Map<StockId, number> {
+  const streams = new Map<StockId, number>();
+  // A tick that performed nothing has no stream to speak of and is passed
+  // over, exactly as a good nobody made this tick is.
+  if (state.lastLabor.available > 0) streams.set(LABOR, state.lastLabor.available);
+  for (const run of state.lastRuns) {
+    if (run.output <= 0) continue;
+    const process = index.process.get(run.process);
+    if (process === undefined) continue;
+    const made = index.branch.get(process.branch)?.produces;
+    if (made === undefined || made === LABOR) continue;
+    streams.set(made, (streams.get(made) ?? 0) + run.output);
+  }
+  return streams;
+}
+
+/** The streams of one tick, kept once worked out — as the prices are. */
+const streamCache = new WeakMap<GameState, Map<StockId, number>>();
+
+function streamsOf(state: GameState, index: ConfigIndex): Map<StockId, number> {
+  const known = streamCache.get(state);
+  if (known !== undefined) return known;
+  const streams = streamsOfTick(state, index);
+  streamCache.set(state, streams);
+  return streams;
+}
+
+/**
+ * What comes in of a resource in a tick, and what stands in where this tick
+ * brought none of it: **the last stream it was known to have** — the same
+ * answer the widths give a good nobody made this tick. Nought where no tick of
+ * the run ever brought any: then there is no stream to measure against.
+ */
+export function streamOf(
+  history: readonly GameState[],
+  index: ConfigIndex,
+  stock: StockId,
+): number {
+  for (let i = history.length - 1; i >= 0; i -= 1) {
+    const state = history[i];
+    if (state === undefined) continue;
+    const flow = streamsOf(state, index).get(stock);
+    if (flow !== undefined) return flow;
+  }
+  return 0;
+}
+
+/** What a project takes of one resource in a tick, against that resource's own stream. */
+export interface TickShare {
+  readonly stock: StockId;
+  /** Absent where no stream of the resource is known: then it cannot be told. */
+  readonly share?: number;
+}
+
+/**
+ * The tick cost of a project, **per resource as a share of its own stream**.
+ *
+ * The whole step is counted, not what the project got: the figure answers what
+ * the undertaking asks of the community each tick, which is what a player has
+ * to weigh before he lets it run. The shares breathe with the streams behind
+ * them, and the card says so with a tilde.
+ */
+export function tickShares(
+  history: readonly GameState[],
+  index: ConfigIndex,
+  id: string,
+): readonly TickShare[] {
+  const def = index.project.get(id);
+  if (def === undefined) return [];
+  const step = 1 / def.minTicks;
+  return projectResources(index, id).map((stock) => {
+    const perTick =
+      (stock === LABOR ? def.laborCost : (def.stockCost[stock] ?? 0)) * step;
+    const flow = streamOf(history, index, stock);
+    return flow > 1e-9 ? { stock, share: perTick / flow } : { stock };
+  });
+}
+
 // ------------------------------------------------------------- what a store holds
 
 /**

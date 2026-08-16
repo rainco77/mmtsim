@@ -18,6 +18,8 @@ import {
   shortTicks,
   shownPercent,
   storeStanding,
+  streamOf,
+  tickShares,
   ticksLeft,
   unitCost,
   WEATHER,
@@ -401,5 +403,49 @@ describe("what a project's fact line says (T9)", () => {
     expect(ticksLeft(index, "mortar", 0.5)).toBe(Math.ceil(minTicks / 2));
     // However little is left, the earliest is still a whole tick away.
     expect(ticksLeft(index, "mortar", 0.999)).toBe(1);
+  });
+
+  it("measures the tick cost of a resource against the stream of that resource", () => {
+    const history = played(20);
+    const state = history[history.length - 1] as GameState;
+    const def = index.project.get("mortar");
+    const share = tickShares(history, index, "mortar").find(
+      (one) => one.stock === "labor",
+    );
+    // The whole step is counted, never what the project happened to get: the
+    // figure answers what the undertaking asks of the community each tick.
+    const perTick = (def?.laborCost ?? 0) / (def?.minTicks ?? 1);
+    expect(share?.share).toBeCloseTo(perTick / state.lastLabor.available, 8);
+  });
+
+  it("names every resource the project claims, labour among them", () => {
+    const history = played(20);
+    expect(tickShares(history, index, "sickle").map((one) => one.stock)).toEqual([
+      "labor",
+      "wood",
+    ]);
+  });
+
+  it("keeps the last known stream where this tick brought none of the resource", () => {
+    const history = played(20);
+    const before = streamOf(history, index, "food");
+    expect(before).toBeGreaterThan(0);
+    // A tick in which nothing at all was made and nobody worked: the stream a
+    // claim is measured against is the last one that was really seen.
+    const barren: GameState = {
+      ...(history[history.length - 1] as GameState),
+      lastRuns: [],
+      lastLabor: { available: 0, toProduction: 0, toProjects: 0, unused: 0 },
+    };
+    expect(streamOf([...history, barren], index, "food")).toBeCloseTo(before, 8);
+  });
+
+  it("tells no share where no stream of the resource is known at all", () => {
+    // Before the first tick nothing has come in of anything, and then the
+    // share cannot be told — a nought there would read as costing nothing.
+    const fresh = [createState(STAGE1, { seed: 42 })];
+    const shares = tickShares(fresh, index, "sickle");
+    expect(shares.length).toBe(2);
+    expect(shares.every((one) => one.share === undefined)).toBe(true);
   });
 });

@@ -20,22 +20,27 @@ export const de: Readonly<Record<string, string>> = {
 
   "projects.running": "Laufend",
   "projects.buildable": "Ausführbar",
+  "projects.done": "Fertig",
   "projects.locked": "In Sicht",
   "projects.start": "Starten",
   "projects.nothing": "Gerade nichts im Angebot.",
   "projects.costLabor": "Arbeit {labor}",
   "projects.duration": "{ticks} Ticks",
-  "projects.condition.population": "Kopfzahl",
-  "projects.condition.projectDone": "braucht {project}",
-  "projects.condition.rule": "Voraussetzung",
-  "projects.condition.unownedCapacity": "freies Land",
-  "projects.condition.ownedCapacity": "eigenes {what}",
-  "projects.condition.coverage": "Deckung",
-  "projects.condition.stockPerHead": "{what} je Kopf",
-  "projects.condition.capacityPerHead": "{what} je Kopf",
-  "projects.condition.experience": "Übung",
-  "projects.condition.strain": "Belastung",
-  "projects.condition.stockDear": "mühsame Suche",
+  // Jede Bedingungszeile nennt ihr Ereignis und beugt sich nicht: Ding plus
+  // Partizip. Wie weit es ist, sagen Balken und Prozent daneben — Rohzahlen
+  // stehen nirgends mehr. „Gebaut" trägt dabei das Eigene: gebaut ist immer
+  // selbst gebaut, freie Bestände des Reviers zählen dafür nicht.
+  "projects.condition.population": "Volk gewachsen",
+  "projects.condition.projectDone": "{project} gebaut",
+  "projects.condition.rule": "Voraussetzung erfüllt",
+  "projects.condition.unownedCapacity": "Freies Land gefunden",
+  "projects.condition.ownedCapacity": "{what} gebaut",
+  "projects.condition.coverage": "{what} gedeckt",
+  "projects.condition.stockPerHead": "{what} je Kopf gelagert",
+  "projects.condition.capacityPerHead": "{what} je Kopf gebaut",
+  "projects.condition.experience": "{what} geübt",
+  "projects.condition.strain": "Belastung gestiegen",
+  "projects.condition.stockDear": "Suche mühsam geworden",
 
   "events.distress": "{dead} Krisentote — {cause} fehlte",
   "events.seen": "{project} ist in Sicht gekommen",
@@ -101,7 +106,14 @@ export const de: Readonly<Record<string, string>> = {
   "card.stand.project": "gebaut {pct} %",
   "card.stand.store": "gefüllt {pct} %",
   "card.stand.idle": "{pct} %",
-  "card.fact.project": "Fertig frühestens: {ticks} Ticks · braucht {needs}",
+  // Die Tick-Kosten stehen je Ressource als Anteil ihres eigenen Stroms — die
+  // eine gewollte Ausnahme davon, dass in einer Faktenzeile nur Stehendes
+  // steht. Sie atmen mit dem Strom, darum die Tilde. Die schlichte Fassung
+  // greift, solange von einer Ressource noch gar kein Strom bekannt ist.
+  "card.fact.project":
+    "Fertig frühestens: {ticks} Ticks · je Tick: {shares} des Nachschubs",
+  "card.fact.project.plain": "Fertig frühestens: {ticks} Ticks · braucht {needs}",
+  "card.fact.share": "{what} ~{pct} %",
   "card.fact.store.wood": "Ziel: hält ~{ticks} Ticks Feuer",
   "card.fact.store.food": "Ziel: was {pits} Gruben fassen · hält ~{ticks} Ticks Hunger",
   "card.goal": "Ziel",
@@ -210,6 +222,19 @@ export const de: Readonly<Record<string, string>> = {
   "range.pair": "eigenes Land {standing} · Angebot {offered}",
   "range.move": "Weiterziehen",
   "range.movePrice": "Was zurückbleibt:",
+
+  // Die Tätigkeiten, nach denen die Übung zählt — Verbnomen, damit die
+  // Bedingungszeile „Sammeln geübt" ohne Beugung auskommt.
+  "name.activity.working": "Arbeiten",
+  "name.activity.gathering": "Sammeln",
+  "name.activity.hunting": "Jagen",
+  "name.activity.fishing": "Fischen",
+  "name.activity.woodcutting": "Holzholen",
+  "name.activity.firemaking": "Feuermachen",
+  "name.activity.farming": "Ackerbau",
+  "name.activity.bastgathering": "Bastsammeln",
+  "name.activity.clothmaking": "Kleidermachen",
+  "name.activity.caring": "Behüten",
 
   "name.cohort.growing": "wachsend",
   "name.cohort.grown": "erwachsen",
