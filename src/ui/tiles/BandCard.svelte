@@ -1,7 +1,7 @@
 <script lang="ts">
   import { derived as fromStore } from "svelte/store";
   import { language } from "../../i18n/language.ts";
-  import { segments, translate, type Segment } from "../../i18n/t.ts";
+  import { segments, translate, type Segment, type Translate } from "../../i18n/t.ts";
   import { derive, type Action, type StockId } from "../../sim/index.ts";
   import {
     brakesByFrequency,
@@ -50,21 +50,28 @@
   /** Coverage, built, filled: all rounded down, as everywhere on the screen. */
   const pct = shownPercent;
 
+  /**
+   * **Whoever writes a line takes the translating with it.** A place in the
+   * markup is drawn again when something it names has changed; what a helper
+   * reaches for inside itself is named nowhere, and a line built that way went
+   * on standing in the old language until the next tick moved its data.
+   */
+
   /** A name, wherever the surface keeps it: rank, project, good, capacity. */
-  function nameOf(kind: string, id: string): string {
+  function nameOf(say: Translate, kind: string, id: string): string {
     const key = `name.${kind}.${id}`;
-    const named = $t(key);
+    const named = say(key);
     return named === key ? id : named;
   }
 
   /** What a brake is called at the player: labour is labour, not "people". */
-  function brakeName(what: string): string {
+  function brakeName(say: Translate, what: string): string {
     for (const key of [
       `name.brake.${what}`,
       `name.stock.${what}`,
       `name.capacity.${what}`,
     ]) {
-      const named = $t(key);
+      const named = say(key);
       if (named !== key) return named;
     }
     return what;
@@ -72,11 +79,11 @@
 
   $: title =
     field.kind === "need"
-      ? nameOf("tier", field.id)
+      ? nameOf($t, "tier", field.id)
       : field.kind === "project"
-        ? nameOf("project", field.id)
+        ? nameOf($t, "project", field.id)
         : field.kind === "store"
-          ? nameOf("claim", field.id)
+          ? nameOf($t, "claim", field.id)
           : $t("band.idle");
 
   $: idleShare =
@@ -136,8 +143,8 @@
 
   // ----------------------------------------------------------- the fact line
 
-  $: resources = projectResources(index, field.id).map((id) => nameOf("stock", id));
-  $: resourceList = listed(resources);
+  $: resources = projectResources(index, field.id).map((id) => nameOf($t, "stock", id));
+  $: resourceList = listed($t, resources);
 
   /**
    * The tick cost per resource, each against its own stream — the one place a
@@ -154,7 +161,7 @@
     ? shares
         .map((one) =>
           $t("card.fact.share", {
-            what: nameOf("stock", one.stock),
+            what: nameOf($t, "stock", one.stock),
             pct: Math.floor((one.share ?? 0) * 100),
           }),
         )
@@ -172,11 +179,11 @@
         });
 
   /** "Arbeit und Fasern" — the last two joined, the rest by commas. */
-  function listed(names: readonly string[]): string {
+  function listed(say: Translate, names: readonly string[]): string {
     if (names.length === 0) return "";
     if (names.length === 1) return names[0] ?? "";
     const head = names.slice(0, -1).join(", ");
-    return $t("list.and", { head, last: names[names.length - 1] ?? "" });
+    return say("list.and", { head, last: names[names.length - 1] ?? "" });
   }
 
   $: goal = field.kind === "store" ? goalOf(state, index, field.id) : 0;
@@ -262,12 +269,12 @@
       .findIndex((one) => one.key === key);
   }
 
-  function labelOf(one: BandField): string {
+  function labelOf(say: Translate, one: BandField): string {
     return one.kind === "need"
-      ? nameOf("tier", one.id)
+      ? nameOf(say, "tier", one.id)
       : one.kind === "project"
-        ? nameOf("project", one.id)
-        : nameOf("claim", one.id);
+        ? nameOf(say, "project", one.id)
+        : nameOf(say, "claim", one.id);
   }
 
   /**
@@ -295,8 +302,8 @@
       if (running !== undefined) {
         out.push({
           text: $t("card.way.running", {
-            project: labelOf(running),
-            need: labelOf(field),
+            project: labelOf($t, running),
+            need: labelOf($t, field),
           }),
           icon: "↑",
           run: () => moveTo(running.key, here),
@@ -309,8 +316,8 @@
       if (out.length < 2 && buildable !== undefined) {
         out.push({
           text: $t("card.way.buildable", {
-            project: nameOf("project", buildable.id),
-            need: labelOf(field),
+            project: nameOf($t, "project", buildable.id),
+            need: labelOf($t, field),
           }),
           icon: "▶",
           run: () => begin(buildable.id),
@@ -320,7 +327,10 @@
       const ahead = ranked.filter((one, at) => one.claim && at < here).pop();
       if (out.length < 2 && ahead !== undefined) {
         out.push({
-          text: $t("card.way.behind", { claim: labelOf(ahead), need: labelOf(field) }),
+          text: $t("card.way.behind", {
+            claim: labelOf($t, ahead),
+            need: labelOf($t, field),
+          }),
           icon: "↓",
           run: () => moveTo(ahead.key, here),
         });
@@ -332,7 +342,10 @@
     const ahead = ranked[here - 1];
     if (ahead !== undefined) {
       out.push({
-        text: $t("card.way.forward", { before: labelOf(ahead), name: labelOf(field) }),
+        text: $t("card.way.forward", {
+          before: labelOf($t, ahead),
+          name: labelOf($t, field),
+        }),
         icon: "↑",
         run: () => moveTo(field.key, here - 1),
       });
@@ -369,7 +382,10 @@
         count: missed,
         total: points.length,
         since: $t(`card.since.${deed?.what ?? "start"}`),
-        what: listed(missing.map((one) => brakeName(one.what))),
+        what: listed(
+          $t,
+          missing.map((one) => brakeName($t, one.what)),
+        ),
       },
       ["count", "total", "what"],
     ))();
@@ -388,18 +404,18 @@
   $: toll = field.kind === "need" ? book.get(field.id) : undefined;
 
   /** "2 Kinder und ein Erwachsener" — whole people, cohort by cohort. */
-  function whoOf(people: Readonly<Record<string, number>>): string {
+  function whoOf(say: Translate, people: Readonly<Record<string, number>>): string {
     const parts: string[] = [];
     for (const cohort of index.config.population.cohorts) {
       const heads = people[cohort.id] ?? 0;
       if (heads <= 0) continue;
       parts.push(
-        $t(`count.cohort.${cohort.id}.${heads === 1 ? "one" : "many"}`, {
+        say(`count.cohort.${cohort.id}.${heads === 1 ? "one" : "many"}`, {
           count: heads,
         }),
       );
     }
-    return listed(parts);
+    return listed(say, parts);
   }
 
   $: price = ((): string => {
@@ -408,7 +424,7 @@
       const share = Math.round(toll.share * 100);
       return share > 0 ? $t("card.toll.work", { pct: share }) : "";
     }
-    const who = whoOf(toll.people);
+    const who = whoOf($t, toll.people);
     if (who === "") return "";
     return $t(`card.toll.${toll.axis}`, { who });
   })();
@@ -479,7 +495,7 @@
 
   <StepCurve
     {points}
-    nameOf={brakeName}
+    nameOf={(what) => brakeName($t, what)}
     plain={field.kind === "idle"}
     fullLabel={$t("card.full")}
   />

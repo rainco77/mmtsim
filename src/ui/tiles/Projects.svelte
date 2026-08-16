@@ -1,17 +1,17 @@
 <script lang="ts">
   import { derived as fromStore } from "svelte/store";
   import { language } from "../../i18n/language.ts";
-  import { translate } from "../../i18n/t.ts";
+  import { translate, type Translate } from "../../i18n/t.ts";
   import { derive, type ActiveProject } from "../../sim/index.ts";
   import { shownPercent } from "../band.ts";
   import { act, begin, catalogueGroups, currentState, game, index } from "../game.ts";
 
   /**
-   * The project catalogue (T9), four groups in this order: **running** with
-   * their grips, **buildable** with the split card — the use-line written by
-   * hand, costs and duration from the data — **done** with name and check, and
-   * the visible but **in sight** ones with a has/needs bar per condition, the
-   * progress bar the monotony rule was made for.
+   * The project catalogue (T9), four groups in this order: **done** with name
+   * and check at the very top, **running** with their grips, **buildable**
+   * with the split card — the use-line written by hand, costs and duration
+   * from the data — and the visible but **in sight** ones with a has/needs bar
+   * per condition, the progress bar the monotony rule was made for.
    *
    * Done holds what can never be started again: a one-off that is built, a
    * repeatable whose count is spent. A repeatable with room left comes back to
@@ -55,30 +55,37 @@
     );
   }
 
+  /**
+   * **Whoever writes a line takes the translating with it.** A place in the
+   * markup is drawn again when something it names has changed; what a helper
+   * reaches for inside itself is named nowhere, and a line built that way went
+   * on standing in the old language until the next tick moved its data.
+   */
+
   /** A name, wherever the surface keeps it: good, capacity, rank, activity. */
-  function nameOf(kind: string, id: string): string {
+  function nameOf(say: Translate, kind: string, id: string): string {
     const key = `name.${kind}.${id}`;
-    const named = $t(key);
+    const named = say(key);
     return named === key ? id : named;
   }
 
   /** "Sammeln, Jagen und Fischen" — the last two joined, the rest by commas. */
-  function listed(names: readonly string[]): string {
+  function listed(say: Translate, names: readonly string[]): string {
     if (names.length === 0) return "";
     if (names.length === 1) return names[0] ?? "";
     const head = names.slice(0, -1).join(", ");
-    return $t("list.and", { head, last: names[names.length - 1] ?? "" });
+    return say("list.and", { head, last: names[names.length - 1] ?? "" });
   }
 
   /** The generic cost line, read from the content and never written by hand. */
-  function costsOf(id: string): string {
+  function costsOf(say: Translate, id: string): string {
     const def = index.project.get(id);
     if (def === undefined) return "";
-    const parts = [$t("projects.costLabor", { labor: one(def.laborCost) })];
+    const parts = [say("projects.costLabor", { labor: one(def.laborCost) })];
     for (const [stock, amount] of Object.entries(def.stockCost)) {
-      parts.push(`${nameOf("stock", stock)} ${one(amount)}`);
+      parts.push(`${nameOf(say, "stock", stock)} ${one(amount)}`);
     }
-    parts.push($t("projects.duration", { ticks: def.minTicks }));
+    parts.push(say("projects.duration", { ticks: def.minTicks }));
     return parts.join(" · ");
   }
 
@@ -98,23 +105,29 @@
    * listed here, so a new one in the core shows up as a bare id and not as a
    * raw key on the screen.
    */
-  function conditionLabel(condition: { kind: string } & Record<string, unknown>): string {
+  function conditionLabel(
+    say: Translate,
+    condition: { kind: string } & Record<string, unknown>,
+  ): string {
     const key = `projects.condition.${condition.kind}`;
     switch (condition.kind) {
       case "projectDone":
-        return $t(key, { project: nameOf("project", String(condition["id"])) });
+        return say(key, { project: nameOf(say, "project", String(condition["id"])) });
       case "ownedCapacity":
       case "capacityPerHead":
-        return $t(key, { what: nameOf("capacity", String(condition["capacity"])) });
+        return say(key, {
+          what: nameOf(say, "capacity", String(condition["capacity"])),
+        });
       case "stockPerHead":
-        return $t(key, { what: nameOf("stock", String(condition["stock"])) });
+        return say(key, { what: nameOf(say, "stock", String(condition["stock"])) });
       case "coverage":
-        return $t(key, { what: nameOf("tier", String(condition["tier"])) });
+        return say(key, { what: nameOf(say, "tier", String(condition["tier"])) });
       case "experience":
-        return $t(key, {
+        return say(key, {
           what: listed(
+            say,
             (Array.isArray(condition["activities"]) ? condition["activities"] : []).map(
-              (activity: unknown) => nameOf("activity", String(activity)),
+              (activity: unknown) => nameOf(say, "activity", String(activity)),
             ),
           ),
         });
@@ -123,7 +136,7 @@
       case "unownedCapacity":
       case "strain":
       case "stockDear":
-        return $t(key);
+        return say(key);
       default:
         return condition.kind;
     }
@@ -134,6 +147,21 @@
     return shownPercent(unmet.need > 0 ? unmet.have / unmet.need : 0);
   }
 </script>
+
+<!--
+  Done stands at the very top: name and check mark, nothing more. What a
+  finished thing does for the community is a display of its own and comes
+  later; standing here it at least stops looking as if it had never been built.
+-->
+{#if done.length > 0}
+  <h3>{$t("projects.done")}</h3>
+  {#each done as project (project.id)}
+    <div class="row finished">
+      <span class="name">{$t(`name.project.${project.id}`)}</span>
+      <span class="check">✓</span>
+    </div>
+  {/each}
+{/if}
 
 {#if running.length > 0}
   <h3>{$t("projects.running")}</h3>
@@ -183,26 +211,11 @@
       </button>
     </div>
     <p class="use">{$t(`project.use.${project.id}`)}</p>
-    <p class="costs">{costsOf(project.id)}</p>
+    <p class="costs">{costsOf($t, project.id)}</p>
   </div>
 {:else}
   <p class="empty">{$t("projects.nothing")}</p>
 {/each}
-
-<!--
-  Done: name and check mark, nothing more. What a finished thing does for the
-  community is a display of its own and comes later; standing here it at least
-  stops looking as if it had never been built.
--->
-{#if done.length > 0}
-  <h3>{$t("projects.done")}</h3>
-  {#each done as project (project.id)}
-    <div class="row finished">
-      <span class="name">{$t(`name.project.${project.id}`)}</span>
-      <span class="check">✓</span>
-    </div>
-  {/each}
-{/if}
 
 {#if locked.length > 0}
   <h3>{$t("projects.locked")}</h3>
@@ -214,7 +227,7 @@
       <p class="use">{$t(`project.use.${project.id}`)}</p>
       {#each project.missing as unmet (JSON.stringify(unmet.condition))}
         <div class="row condition">
-          <span class="label">{conditionLabel(unmet.condition)}</span>
+          <span class="label">{conditionLabel($t, unmet.condition)}</span>
           <span class="bar">
             <span
               class="fill needs"

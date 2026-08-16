@@ -1,7 +1,7 @@
 <script lang="ts">
   import { derived as fromStore } from "svelte/store";
   import { language } from "../../i18n/language.ts";
-  import { translate } from "../../i18n/t.ts";
+  import { translate, type Translate } from "../../i18n/t.ts";
   import { derive, type GameState } from "../../sim/index.ts";
   import { currentState, distress, game, index } from "../game.ts";
   import { DISTRESS_KEY, newestTickFirst, type Entry } from "../log.ts";
@@ -113,17 +113,23 @@
   $: entries = newestTickFirst(grow($game.history).slice(-40));
   $: state = currentState($game);
 
-  function line(entry: Entry): string {
+  /**
+   * **Whoever writes a line takes the translating with it.** A place in the
+   * markup is drawn again when something it names has changed; what a helper
+   * reaches for inside itself is named nowhere, and a line built that way went
+   * on standing in the old language until the next tick moved its data.
+   */
+  function line(say: Translate, entry: Entry): string {
     const params = { ...entry.params };
     if (typeof params["project"] === "string")
-      params["project"] = $t(`name.project.${params["project"]}`);
+      params["project"] = say(`name.project.${params["project"]}`);
     if (typeof params["cause"] === "string")
       params["cause"] = params["cause"]
         .split("|")
         .filter((id) => id !== "")
-        .map((id) => $t(`name.tier.${id}`))
+        .map((id) => say(`name.tier.${id}`))
         .join(", ");
-    return $t(entry.key, params);
+    return say(entry.key, params);
   }
 </script>
 
@@ -149,7 +155,7 @@
   {#each entries as entry, i (entry.tick + entry.key + i)}
     <li>
       <span class="tick">{entry.tick}</span>
-      <span class:crisis={entry.key === DISTRESS_KEY}>{line(entry)}</span>
+      <span class:crisis={entry.key === DISTRESS_KEY}>{line($t, entry)}</span>
     </li>
   {:else}
     <li class="empty">{$t("events.nothing")}</li>

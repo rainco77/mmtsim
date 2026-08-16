@@ -307,14 +307,14 @@ export function spentProject(project: ProjectView): boolean {
 
 /** The catalogue's four groups, in the order they stand on the screen. */
 export interface Catalogue {
+  readonly done: readonly ProjectView[];
   readonly running: readonly ProjectView[];
   readonly buildable: readonly ProjectView[];
-  readonly done: readonly ProjectView[];
   readonly inSight: readonly ProjectView[];
 }
 
 /**
- * How the catalogue is laid out (T9): **running · buildable · done · in
+ * How the catalogue is laid out (T9): **done · running · buildable · in
  * sight**, and every project stands in one group at most.
  *
  * Done holds what can never be begun again — a one-off that is built, a
@@ -328,11 +328,11 @@ export interface Catalogue {
  */
 export function catalogueGroups(view: Derived): Catalogue {
   return {
+    done: view.projects.filter((project) => spentProject(project)),
     running: view.projects.filter((project) => project.running),
     buildable: view.projects
       .filter((project) => project.available && !project.running)
       .sort((a, b) => b.worth - a.worth),
-    done: view.projects.filter((project) => spentProject(project)),
     inSight: view.projects.filter(
       (project) =>
         project.visible &&

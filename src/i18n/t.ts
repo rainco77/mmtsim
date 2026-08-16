@@ -13,6 +13,21 @@ export const LANGUAGES: readonly Language[] = ["de", "en"];
 
 const tables: Record<Language, Readonly<Record<string, string>>> = { de, en };
 
+/**
+ * Translating with the language already chosen — what a helper that writes a
+ * message out of several keys is handed.
+ *
+ * **It is handed over and never reached for.** A place on the screen is drawn
+ * again when something it names has changed; what a helper reaches for inside
+ * itself is named nowhere, so a line built that way went on standing in the
+ * old language until the next tick moved its data. Passed in, the language is
+ * part of what the place names, and the line follows the switch at once.
+ */
+export type Translate = (
+  key: string,
+  params?: Readonly<Record<string, string | number>>,
+) => string;
+
 export function translate(
   language: Language,
   key: string,
