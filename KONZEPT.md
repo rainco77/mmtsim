@@ -3912,10 +3912,11 @@ bei der Umsetzung ändern, wenn es gute Gründe gibt. Sechs Kacheln, eine domina
   Zeile in der Rangleiter — es sind dieselben Einstellwerte, zwei Fenster auf eine
   Einstellung. Der Rang-Griff zeigt die Position („zwischen Kleidung und Sättigung"),
   und ein Tipp auf die Vorratszeile hebt ihre Zeile in der Leiter hervor.
-- **Projekte**: der Katalog in **vier Gruppen, in dieser Reihenfolge: Läuft ·
-  Ausführbar · Fertig · In Sicht** (aus dem Live-Spiel entschieden — fertige
+- **Projekte**: der Katalog in **vier Gruppen, in dieser Reihenfolge: Fertig ·
+  Läuft · Ausführbar · In Sicht** (aus dem Live-Spiel entschieden — fertige
   Einmal-Projekte fielen sonst zurück ins Fach „In Sicht", als wären sie nie
-  gebaut). **Laufend** (steht zusätzlich im Band): Fortschritt, der Hinweis
+  gebaut; **Fertig steht ganz oben**, weil dort steht, was die Gemeinschaft
+  erreicht hat). **Laufend** (steht zusätzlich im Band): Fortschritt, der Hinweis
   „bekommt gerade keine Arbeit", Griffe Rang/Pause/
   Abbruch. **Ausführbar**: je Projekt die zweigeteilte Auskunft — Nutzen-Satz von
   Hand, Kosten und Dauer generisch —, der Start-Griff, bei Wiederholbaren der Zähler
@@ -4331,8 +4332,11 @@ absolute Ressourcenzahl erscheint je auf einer Spieler-Karte**.
    Ressource das Projekt belastet und ob er sich das leisten will); die Anteile
    atmen mit dem Strom und tragen darum die Tilde — die eine gewollte Ausnahme vom
    Nur-Stehendes-Grundsatz, ausdrücklich verlangt. Ohne laufenden Nachschub gilt der
-   letzte bekannte Strom (Null-Ertrag-Logik). Dieselbe Form ersetzt später die
-   Rohzahlen der Katalog-Karten. Vorrat: die Ziel-Zeile **samt
+   letzte bekannte Strom (Null-Ertrag-Logik). **War von einer Ressource noch nie
+   etwas da**, gibt es keinen Strom, gegen den zu messen wäre; dann nennt die Zeile
+   nur die Ressourcen („braucht Arbeit und Fasern"), denn eine Liste, in der ein
+   Anteil stillschweigend fehlt, liest sich, als koste diese Ressource nichts.
+   Dieselbe Form ersetzt später die Rohzahlen der Katalog-Karten. Vorrat: die Ziel-Zeile **samt
    Regler**: „Ziel: hält ~6 Ticks Feuer" — der Regler bedient in Ticks, die
    eingefrorene Menge bleibt intern (kein Mitwachsen; die sinkende Tick-Zahl bei
    wachsendem Volk ist das festgelegte Altern der Vorgabe); beim Nahrungsvorrat ohne

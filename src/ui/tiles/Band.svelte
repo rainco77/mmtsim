@@ -2,7 +2,7 @@
   import { afterUpdate } from "svelte";
   import { derived as fromStore } from "svelte/store";
   import { language } from "../../i18n/language.ts";
-  import { segments, translate, type Segment } from "../../i18n/t.ts";
+  import { segments, translate, type Segment, type Translate } from "../../i18n/t.ts";
   import { derive, type Action } from "../../sim/index.ts";
   import {
     bandFields,
@@ -104,7 +104,13 @@
    */
   const pct = shownPercent;
 
-  function labelOf(one: BandField): string {
+  /**
+   * **Whoever writes a label takes the translating with it.** A place in the
+   * markup is drawn again when something it names has changed; what a helper
+   * reaches for inside itself is named nowhere, and a label built that way went
+   * on standing in the old language until the next tick moved its data.
+   */
+  function labelOf(say: Translate, one: BandField): string {
     const key =
       one.kind === "need"
         ? `name.tier.${one.id}`
@@ -113,7 +119,7 @@
           : one.kind === "store"
             ? `name.claim.${one.id}`
             : "band.idle";
-    const named = $t(key);
+    const named = say(key);
     return named === key ? one.id : named;
   }
 
@@ -198,10 +204,10 @@
     const order = shown.filter((one) => one.kind !== "idle");
     const at = order.findIndex((one) => one.key === dragKey);
     const behind = order[at + 1];
-    const name = labelOf(held);
+    const name = labelOf($t, held);
     return behind === undefined
       ? segments($language, "band.dropLast", { name }, ["name"])
-      : segments($language, "band.dropBefore", { name, before: labelOf(behind) }, [
+      : segments($language, "band.dropBefore", { name, before: labelOf($t, behind) }, [
           "name",
         ]);
   })();
@@ -284,7 +290,7 @@
         key: one.key,
         centre: place.centre,
         at: place.centre,
-        text: labelOf(one),
+        text: labelOf($t, one),
       });
     }
     // Left to right, pushing aside a name that would sit on its neighbour;
@@ -379,7 +385,7 @@
           style={`flex-grow: ${field.share}; --f: ${pct(field.fill)}%`}
           role="button"
           tabindex="0"
-          title={labelOf(field)}
+          title={labelOf($t, field)}
           on:click={() => tap(field)}
           on:keydown={(event) => onKey(event, field)}
           on:pointerdown={(event) => grab(event, field)}
@@ -392,12 +398,12 @@
           <span class="fill"></span>
           <span class="lay dark">
             {#if field.icon}<svg class="ico"><use href={`#${field.icon}`} /></svg>{/if}
-            <span class="nm">{labelOf(field)}</span>
+            <span class="nm">{labelOf($t, field)}</span>
             <span class="pct num" class:crit={field.short}>{pct(field.fill)} %</span>
           </span>
           <span class="lay light">
             {#if field.icon}<svg class="ico"><use href={`#${field.icon}`} /></svg>{/if}
-            <span class="nm">{labelOf(field)}</span>
+            <span class="nm">{labelOf($t, field)}</span>
             <span class="pct num" class:crit={field.short}>{pct(field.fill)} %</span>
           </span>
           {#if field.claim}
